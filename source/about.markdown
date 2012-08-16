@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: about
 title: "about"
 date: 2012-08-16 02:23
 comments: false
