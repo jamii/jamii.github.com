@@ -20,7 +20,7 @@ I am interested in communications, distributed systems and p2p networks.
 
 Provided [item-item article recommendations](https://github.com/jamii/springer-recommendations) for [Springer](http://springer.com) users based on ~300m past downloads.
 
-Developed a durable, low-latency, replicated event processing framework for the [Smarkets](http://smarkets.com) exchange.
+Developed a durable, low-latency, replicated [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) framework for the [Smarkets](http://smarkets.com) exchange.
 
 Performed extensive testing and benchmarking for [Smarkets](http://smarkets.com) exchange.
 
@@ -72,7 +72,7 @@ Studied randomised algorithms, probabilistic model checking, logics of multi-age
 
 Dissertation: [Design and analysis of a gossip overlay](http://github.com/jamii/dissertation).
 
-### BA Maths, University of Cambridge
+### BA Mathematics, University of Cambridge
 #### Sep 2005 - July 2008
 
 Transferred from computer science.
