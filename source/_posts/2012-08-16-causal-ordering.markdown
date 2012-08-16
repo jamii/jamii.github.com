@@ -4,7 +4,7 @@ title: "Causal ordering"
 date: 2012-08-16 05:16
 comments: true
 categories:
-- distributed systems
+- theory
 ---
 
 Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler.
@@ -72,7 +72,7 @@ The first choice risks violating consistency if some other machine makes the sam
 
     Ordering requires waiting
 
-Even your hardware [cannot escape](http://en.wikipedia.org/wiki/Memory_barrier) this law. 
+Even your hardware [cannot escape](http://en.wikipedia.org/wiki/Memory_barrier) this law. It provides the illusion of synchronous access to memory at the cost of availabilty. If you want to write fast parallel programs then you need to understand the messaging model used by the underlying hardware.
 
 ## Eventual Consistency
 
