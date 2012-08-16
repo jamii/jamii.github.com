@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "dial-a-stranger"
+title: "Dial-a-stranger"
 date: 2011-07-10 06:16
 comments: true
 categories:

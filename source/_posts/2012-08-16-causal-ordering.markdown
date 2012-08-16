@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "causal ordering"
+title: "Causal ordering"
 date: 2012-08-16 05:16
 comments: true
 categories:

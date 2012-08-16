@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "frustrations with erlang"
+title: "Frustrations with erlang"
 date: 2012-01-03 06:16
 comments: true
 categories:
