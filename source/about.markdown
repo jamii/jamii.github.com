@@ -22,7 +22,7 @@ Provided [item-item article recommendations](https://github.com/jamii/springer-r
 
 Developed a durable, low-latency, replicated [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) framework for the [Smarkets](http://smarkets.com) exchange.
 
-Performed extensive testing and benchmarking for [Smarkets](http://smarkets.com) exchange.
+Performed extensive testing and benchmarking for the [Smarkets](http://smarkets.com) exchange.
 
 Developed a [download analytics tool](https://github.com/jamii/springer-analytics) for [Springer](http://springer.com).
 
@@ -33,7 +33,7 @@ Developed classification algorithms for a large financial dataset.
 
 Developed a denotational semantics and accompanying tests for [Nile](http://osdir.com/ml/general/2012-07/msg36469.html).
 
-Built trading bots for electronic mock trading competitions.
+Built trading bots for competitions on a mock exchange.
 
 ### Extended travelling
 #### Sep 2010 - Sep 2011
