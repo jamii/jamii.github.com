@@ -377,3 +377,23 @@ task :list do
   puts "Tasks: #{(Rake::Task.tasks - [Rake::Task[:list]]).join(', ')}"
   puts "(type rake -T for more detail)\n\n"
 end
+
+desc "Generates a new aside in #{source_dir}/_includes/custom/asides"
+task :new_aside, :title do |t, args|
+  raise "### You haven't set anything up yet. First run `rake install` to set up an Octopress theme." unless File.directory?(source_dir)
+  mkdir_p "#{source_dir}/_includes/custom/asides"
+  args.with_defaults(:title => 'new-aside')
+  title = args.title
+  safe_filename = title.downcase.gsub(/[^\w\s_]+/, '').gsub(/(^|\b\s)\s+($|\s?\b)/, '\\1\\2').gsub(/\s+/, '_')
+  filename = "#{source_dir}/_includes/custom/asides/#{safe_filename}.html"
+  if File.exist?(filename)
+    abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?", ['y', 'n']) == 'n'
+  end
+  puts "Creating new aside: #{filename}"
+  open(filename, 'w') do |aside|
+    aside.puts "<section>"
+    aside.puts "<h1>#{title.gsub(/&/,'&amp;')}</h1>"
+    aside.puts "</section>"
+  end
+  puts "Aside #{filename} created. Update _config.yml to add it to site."
+end

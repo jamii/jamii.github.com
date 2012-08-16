@@ -19,7 +19,8 @@ date_format: "%d %b %Y"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: "jamie@scattered-thoughts.net"
+tel: "jamie-brandon"
 
 # ----------------------- #
 #    Jekyll & Plugins     #
@@ -97,3 +98,6 @@ google_analytics_tracking_id: UA-18515092-1
 
 # Facebook Like
 facebook_like: false
+
+# LinkedIn
+linkedin_user: "jamie@scattered-thoughts.net"
