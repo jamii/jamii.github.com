@@ -189,6 +189,6 @@ Running the examples is a little tricky because some of them create bindings or 
   (insert-readme-test "README.md"))
 ```
 
-This is fun. Not only does strucjure parse its own syntax, it checks its own documentation!
+This is fun. Not only does strucjure parse its own syntax, it reads its own documentation!
 
 Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I'm also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I'm going to be moving on to using strucjure to build other useful DSLs.
