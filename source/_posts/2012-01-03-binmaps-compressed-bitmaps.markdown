@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Binmaps - compressed bitmaps"
+title: "Binmaps: compressed bitmaps"
 date: 2012-01-03 06:16
 comments: true
 categories:
 - ocaml
 - data structures
 - binmap
----  
+---
 
 Lately I've been porting some code from c++. The code in question is a compressed bitmap used in [swift](http://libswift.org) to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.
 

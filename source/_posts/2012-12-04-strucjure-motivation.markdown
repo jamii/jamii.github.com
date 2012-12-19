@@ -3,7 +3,7 @@ layout: post
 title: "Strucjure: motivation"
 date: 2012-12-04 02:31
 comments: true
-categories: strucjure
+categories: clojure strucjure
 ---
 I feel that the readme for [strucjure](https://github.com/jamii/strucjure) does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I'm going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is [very simple](http://en.wikipedia.org/wiki/Parsing_expression_grammar) but liable to keep changing).
 

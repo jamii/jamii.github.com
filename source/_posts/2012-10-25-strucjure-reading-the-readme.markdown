@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Strucjure - reading the readme"
+title: "Strucjure: reading the readme"
 date: 2012-10-25 19:37
 comments: true
 categories: clojure strucjure
