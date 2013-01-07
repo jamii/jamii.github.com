@@ -70,9 +70,11 @@ Added XMPP and Wordpress connectors to [Locker](http://lockerproject.org/).
 
 Built [strucjure](https://github.com/jamii/strucjure): a clojure DSL for pattern matching and parsing using [PEGs](http://en.wikipedia.org/wiki/Parsing_expression_grammar).
 
-Built [droplet](https://github.com/jamii/droplet): a clojure DSL for specifying distributed systems, based on the [bloom](http://www.bloom-lang.net/) language.
+Began [droplet](https://github.com/jamii/droplet): a clojure DSL for specifying distributed systems, based on the [bloom](http://www.bloom-lang.net/) language.
 
 Built [concerto](https://github.com/jamii/concerto): a multi-user clojure REPL aimed at collaborative [live-coding](http://en.wikipedia.org/wiki/Live_coding).
+
+Extended [core.logic](https://github.com/clojure/core.logic) with [fair conjunction and a parallel solver](https://github.com/clojure/core.logic/pull/13).
 
 ### MSc Computer Science, Oxford University
 #### Oct 2008 - Sep 2010
