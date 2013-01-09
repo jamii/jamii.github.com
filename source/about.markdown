@@ -4,7 +4,7 @@ title: "About"
 date: 2012-08-16 02:23
 comments: false
 sharing: false
-footer: true
+footer: false
 ---
 
 I am a nomadic freelance software developer.
