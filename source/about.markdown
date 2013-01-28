@@ -9,9 +9,9 @@ footer: false
 
 I am a nomadic freelance software developer.
 
-I work mainly with python, erlang and ocaml on backend software.
+I work mainly with clojure, python, erlang and ocaml on research problems.
 
-I am interested in communications, distributed systems and p2p networks.
+I am interested in machine learning, distributed systems and p2p networks.
 
 ## Employment
 
