@@ -29,9 +29,9 @@ Built a [download analytics tool](https://github.com/jamii/springer-analytics) f
 ### Intern at [Jane Street Capital](http://www.janestreet.com/)
 #### Jun 2012 - Aug 2012
 
-Built classification algorithms for a large financial dataset.
+Developed classification algorithms for a large financial dataset.
 
-Built a denotational semantics and accompanying tests for [Nile](http://osdir.com/ml/general/2012-07/msg36469.html).
+Developed a denotational semantics and accompanying tests for [Nile](http://osdir.com/ml/general/2012-07/msg36469.html).
 
 Built trading bots for competitions on a mock exchange.
 
