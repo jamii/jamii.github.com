@@ -7,24 +7,32 @@ sharing: false
 footer: false
 ---
 
-I am a nomadic freelance software developer.
+Software developer and consultant. I find simple solutions to hard problems.
 
-I work mainly with clojure, python, erlang and ocaml on research problems.
+I focus on systems engineering and infrastructure. I have a strong background in mathematics and computer science.
 
-I am interested in machine learning, distributed systems and p2p networks.
+I'm interested in the use of staged compilation, domain-specific languages and data-centric programming to reduce incidental complexity in software systems, especially distributed systems and p2p networks.
 
 ## Employment
 
 ### Director of Scattered Thoughts Ltd
 #### Oct 2011 - today
 
-Provided [item-item article recommendations](https://github.com/jamii/springer-recommendations) for [Springer](http://springer.com) users based on ~300m past downloads.
+Provided [item-item article recommendations](https://github.com/jamii/springer-recommendations) for [Springer](http://springer.com) users based on ~600m past downloads.
 
 Built a durable, low-latency, replicated [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) framework for the [Smarkets](http://smarkets.com) exchange.
 
 Performed extensive testing and benchmarking for the [Smarkets](http://smarkets.com) exchange.
 
 Built a [download analytics tool](https://github.com/jamii/springer-analytics) for [Springer](http://springer.com).
+
+#### May 2009 - Sep 2010 (part-time)
+
+Built [texsearch](https://github.com/jamii/texsearch): a LaTeX aware search engine featuring approximate matching on LaTeX syntax trees for use in Springer's [latexsearch.com](http://latexsearch.com). Currently in production indexing a corpus of ~3.5m LaTeX equations.
+
+Built [retex](https://github.com/jamii/retex): a LaTeX captcha modelled after recaptcha.
+
+Added XMPP and Wordpress connectors to [Locker](http://lockerproject.org/).
 
 ### Intern at [Jane Street Capital](http://www.janestreet.com/)
 #### Jun 2012 - Aug 2012
@@ -48,15 +56,6 @@ Built and documented the [Smarkets public API](https://smarkets.com/api).
 Replaced the core transaction engine.
 
 Researched algorithms for automated market-making.
-
-### Freelancer (part-time)
-#### May 2009 - Sep 2010
-
-Built [texsearch](https://github.com/jamii/texsearch): a LaTeX aware search engine featuring approximate matching on LaTeX syntax trees for use in Springer's [latexsearch.com](http://latexsearch.com). Currently in production indexing a corpus of ~3.5m LaTeX equations.
-
-Built [retex](https://github.com/jamii/retex): a LaTeX captcha modelled after recaptcha.
-
-Added XMPP and Wordpress connectors to [Locker](http://lockerproject.org/).
 
 ### [Google Summer of Code](http://code.google.com/soc/)
 #### May 2008 - Aug 2008
