@@ -1,0 +1,183 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Dial-a-stranger - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="This spawnfest entry is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Dial-a-stranger</h1>
+	<div class="entry-content"><p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&#8217;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
+
+<!--more-->
+
+
+<p>I&#8217;ve built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
+
+<p>This isn&#8217;t a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
+
+<p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
+
+<p>I&#8217;m not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-07-10T06:16:00+01:00" pubdate data-updated="true">10 Jul 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/dial-a-stranger/'>dial-a-stranger</a>, <a class='category' href='/blog/categories/erlang/'>erlang</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: dial-a-stranger | Scattered Thoughts]]></title>
+  <link href="http://scattered-thoughts.net/blog/categories/dial-a-stranger/atom.xml" rel="self"/>
+  <link href="http://scattered-thoughts.net/"/>
+  <updated>2013-05-21T21:14:51+01:00</updated>
+  <id>http://scattered-thoughts.net/</id>
+  <author>
+    <name><![CDATA[Jamie Brandon]]></name>
+    <email><![CDATA[jamie@scattered-thoughts.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Dial-a-stranger]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
+    <updated>2011-07-10T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn't be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
+
+<!--more-->
+
+
+<p>I've built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
+
+<p>This isn't a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
+
+<p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
+
+<p>I'm not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: erlang | Scattered Thoughts]]></title>
+  <link href="http://scattered-thoughts.net/blog/categories/erlang/atom.xml" rel="self"/>
+  <link href="http://scattered-thoughts.net/"/>
+  <updated>2013-05-21T21:14:51+01:00</updated>
+  <id>http://scattered-thoughts.net/</id>
+  <author>
+    <name><![CDATA[Jamie Brandon]]></name>
+    <email><![CDATA[jamie@scattered-thoughts.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Frustrations with erlang]]></title>
+    <link href="http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang/"/>
+    <updated>2012-01-03T06:16:00+00:00</updated>
+    <id>http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang</id>
+    <content type="html"><![CDATA[<p>With my work on erl-telehash and at Smarkets I find myself fighting erlang more and more. The biggest pains are the dearth of libraries, the lack of polymorphism and being forced into a single model of concurrency.</p>
+
+<!--more-->
+
+
+<p>The first is self-explanatory and pretty well-known. I frequently have to fire up a python process through a port to do something simple like send an email. Even the standard library is incomplete and inconsistent.</p>
+
+<p>The second doesn't start to hurt until your codebase gets a bit bigger. For example, Smarkets makes a lot of use of fixed-precision decimal arithmetic which leads to code like this:</p>
+
+<p><code>erlang
+decimal:mult(Qty,  decimal:sub(decimal:to_decimal(1), Price))
+</code>
+It also means any time you want to change a data-structure for one with an equivalent interface you have to rewrite whole swathes of code.</p>
+
+<p>The third point is a bit more contentious. I'm fairly convinced that the erlang philosophy of fail-early, crash-only, restartable tasks is the right solution for most problems. What bugs me is that erlang conflates addresses, queues and actors by giving each process a single mailbox. This leads to problems like requiring the recipient of a message to have a global name if it is to be independently restartable, which means you can't run more than one copy of that message topology on the same node. It also encourages processes to send messages directly to other processes which makes it difficult to create flexible, rewirable topologies or to isolate pieces of a topology for testing. I would prefer a model in which processes send and receive messages through queues which are wired together outside of the process. This would also allow restarting a process (and clearing but not deleting its queues) without giving it a global name.</p>
+
+<p>I'm not about to run out now and rewrite erl-telehash in another language. It's close enough to complete (for my purposes at least) that I'll just continue with the existing code. For future experiments, however, I want something better.</p>
+
+<p>The top candidate at the moment is clojure. It has the potential to replace my use of erlang and python, saving lots of cross-language pain. Agents look a lot like a (cleaner, saner) implementation of the <a href="http://scattered-thoughts.net/one/1300/292121/72985">mealy machines</a> that I wrote at Smarkets. <a href="https://github.com/ztellman/lamina">Lamina</a> neatly solves the queue pains I described above. <a href="http://code.google.com/p/clojure-contrib/wiki/DatalogOverview">Datalog</a> is the natural way to describe a lot of collections, including <a href="https://github.com/jamii/erl-telehash/blob/master/src/th_bucket.erl">th_bucket</a> which is in its current form is not obviously correct. The clojure community just seems to churn out well-designed libraries (lamina, aleph, slice, incanter, pallet, cascalog, storm, overtone etc).</p>
+
+<p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it's fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Dial-a-stranger]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
+    <updated>2011-07-10T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn't be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
+
+<!--more-->
+
+
+<p>I've built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
+
+<p>This isn't a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
+
+<p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
+
+<p>I'm not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Telehash: router]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-router/"/>
+    <updated>2011-04-19T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-router</id>
+    <content type="html"><![CDATA[<p>Now that we have all the necessary datastructures we can build the router itself. Most of the routing table logic is handled by the bit_tree and bucket modules. The router just ties these together and handles I/O.</p>
+
+<!--more-->
+
+
+<p>Before actually running the routing table the router has to find out its own address, as it is seen from the outside world. It does this by sending +end signals to a list of known telehash nodes (eg telehash.org:42424).</p>
+
+<p>``` erlang
+record(bootstrap, { % the state of the router when bootstrapping</p>
+
+<pre><code>  timeout, % give up if no address received before this time
+  addresses % list of addresses contacted to find out our address
+ }).
+</code></pre>
+
+<p>bootstrap(Addresses, Timeout) -></p>
+
+<pre><code>?INFO([bootstrapping]),
+State = #bootstrap{timeout=Timeout, addresses=Addresses},    
+{ok, _Pid} = gen_server:start_link(?MODULE, State, []).
+</code></pre>
+
+<p>init(State) -></p>
+
+<pre><code>switch:listen(),
+case State of
+#bootstrap{timeout=Timeout, addresses=Addresses} -&gt;
+    Telex = telex:end_signal(util:random_end()),
+    lists:foreach(fun (Address) -&gt; switch:send(Address, Telex) end, Addresses),
+    erlang:send_after(Timeout, self(), giveup);
+#state{} -&gt;
+    ok
+end,
+{ok, State}.
+</code></pre>
+
+<p>```</p>
+
+<p>Then we listen until we either get a reply with a _to field or run out of time.</p>
+
+<p>``` erlang
+handle_info({switch, {recv, From, Telex}}, #bootstrap{addresses=Addresses}=Bootstrap) -></p>
+
+<pre><code>% bootstrapping, waiting to receive a message telling us our own address
+case {lists:member(From, Addresses), telex:get(Telex, '_to')} of
+{true, {ok, Binary}} -&gt;
+    try util:to_end(util:binary_to_address(Binary)) of
+    End -&gt;
+        Self = util:to_bits(End),
+        Table = touched(From, Self, empty_table(Self)),
+        dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT), 
+        refresh(Self, Table),
+        ?INFO([bootstrap, finished, {self, Binary}, {from, From}]),
+        {noreply, #state{self=Self, pinged=sets:new(), table=Table}}
+    catch 
+    _ -&gt;
+        ?WARN([bootstrap, bad_self, {self, Binary}, {from, From}]),
+        {noreply, Bootstrap}
+    end;
+_ -&gt;
+    {noreply, Bootstrap}
+end;
+</code></pre>
+
+<p>handle_info(giveup, #bootstrap{}=Bootstrap) -></p>
+
+<pre><code>% failed to bootstrap, die
+?INFO([giveup, {state, Bootstrap}]),
+{stop, {shutdown, gaveup}, Bootstrap};
+</code></pre>
+
+<p>```</p>
+
+<p>Once we know our own address we can fill in the state record and start managing the routing table.</p>
+
+<p>``` erlang
+-record(state, { % the state of the router in normal operation</p>
+
+<pre><code>  self, % the bits of the routers own end
+  pinged, % set of addresses which have been pinged and not yet replied/timedout
+  table % the routing table, a bit_tree containing buckets of nodes
+ }).
+</code></pre>
+
+<p>```</p>
+
+<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won't actually be dropped from the table until a replacement is found - this prevents the table from getting flushed if our network connection goes down.</p>
+
+<p>``` erlang
+ping(To) -></p>
+
+<pre><code>Telex = telex:end_signal(util:random_end()),
+% do this in a message to self to avoid some awkward control flow
+self() ! {pinging, To},
+switch:send(To, Telex),
+erlang:send_after(?ROUTER_PING_TIMEOUT, self(), {timeout, Address}).
+</code></pre>
+
+<p>timedout(Address, Self, Table) -></p>
+
+<pre><code>bit_tree:update(
+  fun (_Suffix, _Depth, _Gap, Bucket) -&gt;
+      case bucket:timedout(Address, Bucket) of
+      {node, Node, Update} -&gt;
+          % try to touch this node, might be suitable replacement
+          ping(Node),
+          Update;
+      Update -&gt;
+          Update
+      end
+  end,
+  util:to_bits(Address),
+  Self,
+  Table
+ ).
+</code></pre>
+
+<p>handle_info({pinging, Address}, #state{pinged=Pinged}=State) -></p>
+
+<pre><code>% do this in a message to self to avoid some awkward control flow
+?INFO([recording_ping, {address, Address}]),
+Pinged2 = sets:add_element(Address, Pinged),
+{noreply, State#state{pinged=Pinged2}};
+</code></pre>
+
+<p>handle_info({timeout, Address}, #state{self=Self, pinged=Pinged, table=Table}=State) -></p>
+
+<pre><code>case lists:member(Address, Pinged) of
+true -&gt;
+    % ping timedout
+    ?INFO([timeout, {address, Address}]),
+    Table2 = timedout(Address, Self, Table),
+    {ok, State#state{table=Table2}};
+false -&gt;
+    % address already replied
+    {ok, State}
+end;
+</code></pre>
+
+<p>```</p>
+
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn't personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
+
+<p>``` erlang
+touched(Address, Self, Table) -></p>
+
+<pre><code>bit_tree:update(
+  fun (Suffix, _Depth, Gap, Bucket) -&gt;
+      May_split = (Gap &lt; ?K), % !!! or (Depth &lt; ?ROUTER_TABLE_EXPANSION)
+      bucket:touched(Address, Suffix, now(), Bucket, May_split)
+  end,
+  util:to_bits(Address),
+  Self,
+  Table
+ ).
+</code></pre>
+
+<p>```</p>
+
+<p>On receiving a .see command we record all the contained addresses as potential nodes and ping them to try to confirm their existence.</p>
+
+<p>``` erlang
+seen(Address, Self, Table) -></p>
+
+<pre><code>bit_tree:update(
+  fun (Suffix, _Depth, _Gap, Bucket) -&gt;
+      case bucket:seen(Address, Suffix, now(), Bucket) of
+      {node, Node, Update} -&gt;
+          % check if this node is stale
+          ping(Node),
+          Update;
+      Update -&gt;
+          Update
+      end
+  end,
+  util:to_bits(Address),
+  Self,
+  Table
+ ).
+</code></pre>
+
+<p>```</p>
+
+<p>On receiving a +end signal we reply with a .see command containing the nearest K addresses which we have confirmed to exist.</p>
+
+<p>``` erlang
+see(To, End, Table) -></p>
+
+<pre><code>Telex = telex:see_command(nearest(?K, End, Table)),
+switch:send(To, Telex).
+</code></pre>
+
+<p>nearest(N, End, Table) when N>=0 -></p>
+
+<pre><code>Bits = util:to_bits(End),
+iter:take(
+  N, 
+  iter:flatten(
+iter:map(
+  fun ({_Prefix, Bucket}) -&gt; bucket:by_dist(End, Bucket) end, 
+  bit_tree:iter(Bits, Table)))).
+</code></pre>
+
+<p>```</p>
+
+<p>On receiving a message we have handle the above three cases, which gets a little ugly.</p>
+
+<p>``` erlang
+handle_info({switch, {recv, From, Telex}}, #state{self=Self, pinged=Pinged, table=Table}=State) -></p>
+
+<pre><code>% this counts as a reply
+Pinged2 = sets:del_element(From, Pinged),
+% touched the sender
+% !!! eventually will check _line here
+?INFO([touched, {node, From}]),
+Table2 = touched(From, Self, Table),
+% maybe seen some nodes
+Table3 =
+case telex:get(Telex, '.see') of
+    {ok, Binaries} -&gt;
+    try [util:binary_to_address(Bin) || Bin &lt;- Binaries] of
+        Addresses -&gt;
+        ?INFO([seen, {nodes, Addresses}, {from, From}]),
+        lists:foldl(fun (Address, Table_acc) -&gt; seen(Address, Self, Table_acc) end, Table2, Addresses)
+    catch
+        _ -&gt;
+        ?INFO([bad_seen, {nodes, Binaries}, {from, From}]),
+        Table2
+    end;
+    _ -&gt;
+    Table2
+end,
+% maybe send some nodes back
+case telex:get(Telex, '+end') of
+{ok, Hex} -&gt;
+    try util:hex_to_end(Hex) of
+    End -&gt;
+        ?INFO([see, {'end', End}, {from, From}]),
+        see(From, End, Table3)
+    catch
+    _ -&gt;
+        ?WARN([bad_see, {'end', Hex}, {from, From}])
+    end;
+_ -&gt; 
+    ok
+end,
+{noreply, State#state{pinged=Pinged2, table=Table2}};
+</code></pre>
+
+<p>```</p>
+
+<p>The last responsibility of the router is to periodically refresh buckets which haven't recently seen any activity.</p>
+
+<p>``` erlang
+handle_info(refresh, #state{self=Self, table=Table}=State) -></p>
+
+<pre><code>?INFO([refreshing_table]),
+refresh(Self, Table),
+{noreply, State};
+</code></pre>
+
+<p>handle_info({dialed, <em>, </em>}, State) -></p>
+
+<pre><code>% response from a bucket refresh, we don't care
+{noreply, State};
+</code></pre>
+
+<p>dialed(Address, Self, Table) -></p>
+
+<pre><code>bit_tree:update(
+  fun (_Suffix, _Depth, _Gap, Bucket) -&gt;
+      bucket:dialed(now(), Bucket)
+  end,
+  util:to_bits(Address),
+  Self,
+  Table
+ ).
+</code></pre>
+
+<p>needs_refresh(Bucket, Now) -></p>
+
+<pre><code>case bucket:last_dialed(Bucket) of
+never -&gt; 
+    true;
+Last -&gt; 
+    (timer:now_diff(Now, Last) div 1000) &lt; ?ROUTER_REFRESH_TIME
+end.
+</code></pre>
+
+<p>refresh(Self, Table) -></p>
+
+<pre><code>Now = now(),
+iter:foreach(
+  fun ({Prefix, Bucket}) -&gt;
+      case needs_refresh(Bucket, Now) of
+      true -&gt;
+          ?INFO([refreshing_bucket, {prefix, Prefix}, {bucket, Bucket}]),
+          To = util:random_end(Prefix),
+          From = nearest(?K, To, Table),
+          dialer:dial(To, From, ?ROUTER_DIAL_TIMEOUT);
+      false -&gt;
+          ok
+      end
+  end,
+  bit_tree:iter(Self, Table)
+ ),
+erlang:send_after(?ROUTER_REFRESH_TIME, self(), refresh),
+ok.
+</code></pre>
+
+<p>```</p>
+
+<p>That's it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Telehash: gen_event woes]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes/"/>
+    <updated>2011-04-19T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes</id>
+    <content type="html"><![CDATA[<p>I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I will say it here: gen_event does NOT spawn individual processes for each handler. Each handler is run sequentially in the event manager process.</p>
+
+<!--more-->
+
+
+<p>Now obviously the documentation is not at fault here. I assumed that each handler got its own process solely because the callbacks resembled gen_server. However, a little googling reveals that several other people made the same mistake so I thought it was worth mentioning.</p>
+
+<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn't find the dialer process (because it doesn't exist, it's an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
+
+<p>Eventually I noticed that the switch_event process was blocking inside a receive and the whole thing unravelled. The dialer is an event handler so when started it calls:</p>
+
+<p><code>erlang
+  gen_event:add_handler(switch_event, dialer, State)
+</code></p>
+
+<p>which is a synchronous call to the switch_event process. The router event handler is running inside the switch_event process so when the router tries to dial it deadlocks.</p>
+
+<p>The moral of this story is <em>RTFM</em>.</p>
+
+<p>This is easily fixed by changing</p>
+
+<p><code>erlang
+  dialer:dial(End, [Address])
+</code></p>
+
+<p>to</p>
+
+<p><code>erlang
+  spawn(fun () -&gt; dialer:dial(End, [Address]) end)
+</code></p>
+
+<p>but there were more problems. Most of the event handlers used erlang:send_after to handle timeouts but since they all run in the same process they all receive each others timeouts. Also, every event handler is run sequentially so the switch_event process becomes a huge bottleneck.</p>
+
+<p>The solution I settled on was to change each event handler into a gen_server and write a simple event handler that just forwards events to its owner. By using gen_event:add_sup_handler and listening for event handler exits we can keep the two in sync.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Telehash: buckets]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets/"/>
+    <updated>2011-03-30T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets</id>
+    <content type="html"><![CDATA[<p>The other half of the routing table is the buckets which store node addresses.</p>
+
+<!--more-->
+
+
+<p>Usual disclaimer: none of this is properly tested yet.</p>
+
+<p>The Kademlia paper has much to say on the issue of routing, most of it contradictory. My takeaway from many readings and from browsing the source code of various different implementations is that the following points are the most important:</p>
+
+<ul>
+<li>each bucket should contain at most <em>K</em> nodes</li>
+<li>we should only ever report node addresses which we have personally confirmed exist</li>
+<li>responsive nodes should never be removed from buckets</li>
+<li>nodes should never be removed from buckets unless a suitable replacement exists</li>
+</ul>
+
+
+<p>The first three points make the routing table very resistant to flooding and spoofing. In particular, they prevent a common attack for p2p networks where some bad guy floods the routing tables of all the other nodes so that all traffic is routed through nodes controlled by the bad guy. The last point prevents nodes from flushing their routing tables if their own network connection goes down.</p>
+
+<p>I think the implementation I have come up with is fairly clean, if a little lengthy. Like the bit_tree I want the bucket to be completely pure. All side effects will be handled by the router itself. The main data structures are explained pretty well by the comments:</p>
+
+<p>``` erlang
+-define(K, ?DIAL_DEPTH).</p>
+
+<p>-record(node, {</p>
+
+<pre><code>  address, % node #address{} record
+  'end', % node end
+  suffix, % the remaining bits of the nodes end left over from the bit_tree
+  status, % one of [live, stale, cache]
+  last_seen % for live/stale nodes, the time of the last received message. for cache nodes the time of the last .see reference to the node
+ }).
+</code></pre>
+
+<p>-record(bucket, {</p>
+
+<pre><code>  nodes, % gb_tree mapping addresses to {Status, Last_seen}
+  % remaining fields are pq's of nodes sorted by their last_seen field
+  live, % nodes currently expected to be alive
+  stale, % nodes which have not replied recently
+  cache % potential nodes which we have not yet verified 
+ }). % invariant: pq_maps:size(live) + pq_maps:size(stale) &lt;= ?K
+</code></pre>
+
+<p>```</p>
+
+<p>The bucket is a two-stage data structure. This allows us the keep nodes of different statuses sorted by the last_seen time but still be able to get/delete nodes just knowing the address. The <em>get_node</em> function should make it clear how this works:</p>
+
+<p>``` erlang
+get_node(Address,</p>
+
+<pre><code> #bucket{nodes=Nodes, live=Live, stale=Stale, cache=Cache}) -&gt;
+case gb_trees:lookup(Address, Nodes) of
+{value, {Status, Last_seen}} -&gt;
+    case Status of 
+    live -&gt;
+        {ok, pq_maps:get({Last_seen, Address}, Live)};
+    stale -&gt;
+        {ok, pq_maps:get({Last_seen, Address}, Stale)};
+    cache -&gt;
+        {ok, pq_maps:get({Last_seen, Address}, Cache)}
+    end;
+none -&gt; 
+    none
+end.
+</code></pre>
+
+<p>```</p>
+
+<p>This is only long because records are purely a compile time structure ie we can't write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
+
+<p>The router is going to react to various events by calling the appropriate bucket functions and possibly sending out messages based on the result. The first event it has to handle is a node becoming unresponsive. The bucket will mark this node as stale and return a cache node which the router can attempt to verify.</p>
+
+<p>``` erlang
+% this address failed to reply in a timely manner
+timedout(Address, Bucket) -></p>
+
+<pre><code>log:info([?MODULE, timing_out, Address, Bucket]),
+case get_node(Address, Bucket) of
+{ok, Node} -&gt;
+    case Node#node.status of
+    live -&gt;
+        % mark as stale, return a cache node that might be a suitable replacement
+        Bucket2 = update_node(Node#node{status=stale}, Bucket),
+        pop_cache_hi(Bucket2);
+    _ -&gt; 
+        % if cache or stale already we don't care 
+        ok(Bucket)
+    end;
+none -&gt;
+    % wtf? we don't even know this node?
+    % one way this could happen: 
+    % send N1, sendN1, timedout N1, add N2 (pushing N1 out of stale), timedout N1 
+    log:warning([?MODULE, unknown_node_timedout, Address, Bucket]),
+    ok(Bucket)
+end.
+</code></pre>
+
+<p>% return most recently seen cache node, if any exist
+pop_cache_hi(#bucket{cache=Cache}=Bucket) -></p>
+
+<pre><code>case pq_maps:pop_hi(Cache) of
+{_Key, Node, Cache2} -&gt;
+    {node, Node, ok(Bucket#bucket{cache=Cache2})};
+false -&gt;
+    ok(Bucket)
+end.
+</code></pre>
+
+<p>```</p>
+
+<p>The next event is receiving a <em>.see</em> command. This may be as a result of a <em>+end</em> sent by the router but is more likely to be part of a dialing process happening elsewhere. The beauty of Kademlia is that the router can populate the routing table just by listening in on dialing attempts.</p>
+
+<p>For each node listed in the <em>.see</em> command the router will call <em>seen</em>. This adds the node to the cache and returns the least recently seen live node so the router can check that it is still responsive.</p>
+
+<p>``` erlang
+% this address has been reported to exist by another node
+seen(Address, Time, Suffix, Bucket) -></p>
+
+<pre><code>log:info([?MODULE, seeing, Address, Bucket]),
+case get_node(Address, Bucket) of
+{ok, Node} -&gt;
+    case Node#node.status of
+    cache -&gt;
+        % for cache nodes being in a .see is good enough
+        ok(update_node(Node#node{last_seen=Time}, Bucket));
+    _ -&gt;
+        % for live/stale nodes we require direct contact so ignore this
+        ok(Bucket)
+    end;
+none -&gt;
+    % put node in cache, return a live node to ping
+    Node = #node{
+      address = Address,
+      'end' = util:to_end(Address),
+      suffix = Suffix,
+      status = cache,
+      last_seen = Time
+     },
+    Bucket2 = add_node(Node, Bucket),
+    case peek_live_lo(Bucket) of
+    none -&gt; ok(Bucket2);
+    {ok, Live_node} -&gt; {node, Live_node, ok(Bucket2)}
+    end
+end.
+</code></pre>
+
+<p>% return the oldest live node
+peek_live_lo(#bucket{live=Live}) -></p>
+
+<pre><code>case pq_maps:peek_lo(Live) of
+none -&gt; none;
+{_, Node} -&gt; {ok, Node}
+end.
+</code></pre>
+
+<p>```</p>
+
+<p>Any time we receive a message we learn that the node sending it exists (or not - we'll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
+
+<p>``` erlang
+% this address has been verified as actually existing
+touched(Address, Suffix, Time, Bucket, May_split) -></p>
+
+<pre><code>log:info([?MODULE, touching, Address, Bucket]),
+case get_node(Address, Bucket) of
+{ok, Node} -&gt;
+    case Node#node.status of
+    live -&gt; 
+        % update last_seen time
+        ok(update_node(Node#node{last_seen=Time}, Bucket));
+    stale -&gt;
+        % update last_seen time and promote to live
+        ok(update_node(Node#node{last_seen=Time, status=live}, Bucket));
+    cache -&gt;
+        % potentially promote the node to live
+        Bucket2 = del_node(Node, Bucket),
+        new_node(Address, Suffix, Time, Bucket2, May_split)
+    end;
+none -&gt;
+    % potentially add the node to live
+    new_node(Address, Suffix, Time, Bucket, May_split)
+end.
+</code></pre>
+
+<p>```</p>
+
+<p>If the node needs to be added then <em>touched</em> calls <em>new_node</em> which decides if there is space in the bucket and, if so, adds the new node. If the bucket is full and <em>May_split</em> is true then <em>new_node</em> will split the bucket before adding the new node. Deciding whether or not splitting is allowed is the routers job.</p>
+
+<p>``` erlang
+% assumes Address is not already in Bucket, otherwise crashes
+new_node(Address, Suffix, Time, Bucket, May_split) -></p>
+
+<pre><code>Node = #node{
+  address = Address,
+  'end' = util:to_end(Address),
+  suffix = Suffix,
+  status = undefined,
+  last_seen = Time
+ },
+{Lives, Stales, _} = sizes(Bucket),
+if
+Lives + Stales &lt; ?K -&gt;
+    % space left in live
+    log:info([?MODULE, adding, Node, Bucket]),
+    ok(add_node(Node#node{status=live}, Bucket));
+(Lives &lt; ?K) and (Stales &gt; 0) -&gt;
+    % space left in live if we push something out of stale
+    log:info([?MODULE, adding, Node, Bucket]),
+    Bucket2 = drop_stale(Bucket),
+    ok(add_node(Node#node{status=live}, Bucket2));
+May_split and (Suffix /= []) -&gt;
+    % allowed to split the bucket to make space
+    log:info([?MODULE, splitting, Node, Bucket]),
+    {split, BucketF, BucketT} = split(Bucket),
+    [Bit | Suffix2] = Suffix,
+    case Bit of
+    false -&gt;
+        BucketF2 = new_node(Address, Suffix2, Time, BucketF, May_split),
+        {split, BucketF2, BucketT};
+    true -&gt;
+        BucketT2 = new_node(Address, Suffix2, Time, BucketT, May_split),
+        {split, BucketF, BucketT2}
+    end;
+true -&gt;
+    % not allowed to split, will have to go in the cache
+    log:info([?MODULE, caching, Node, Bucket]),
+    ok(add_node(Node#node{status=cache}, bucket))
+end.
+</code></pre>
+
+<p>% drop the oldest stale node, crashes if none exist
+drop_stale(#bucket{stale=Stale}=Bucket) -></p>
+
+<pre><code>{_Key, _Node, Stale2} = pq_maps:pop_one_hi(Stale),
+Bucket#bucket{stale=Stale2}.
+</code></pre>
+
+<p>split(Bucket) -></p>
+
+<pre><code>Nodes = to_list(Bucket),
+NodesF = [Node#node{suffix=Suffix2} || #node{suffix=[false|Suffix2]}=Node &lt;- Nodes],
+NodesT = [Node#node{suffix=Suffix2} || #node{suffix=[true|Suffix2]}=Node &lt;- Nodes],
+{split, from_list(NodesF), from_list(NodesT)}.
+</code></pre>
+
+<p>```</p>
+
+<p>Finally, upon receiving a <em>+end</em> signal the router needs to reply with a <em>.see</em> command listing the <em>K</em> nearest nodes to the specified end. This will be done using a combination of <em>bit_tree:iter</em> and <em>bucket:nearest</em>.</p>
+
+<p>``` erlang
+nearest(N, End, #bucket{live=Live, stale=Stale}) -></p>
+
+<pre><code>Nodes = pq_maps:to_list(Live) ++ pq_maps:to_list(Stale),
+Num_nodes = pq_maps:size(Live) + pq_maps:size(Stale),
+if 
+Num_nodes =&lt; N -&gt;
+    [Node#node.address || {_Key, Node} &lt;- Nodes];
+true -&gt;    
+    % !!! maybe should prefer to return live nodes even if further away
+    Nodes_by_dist = [{util:distance(End, Node#node.'end'), Node} || {_Key, Node} &lt;- pq_maps:to_list(Live)],
+    {Closest, _} = lists:split(N, lists:sort(Nodes_by_dist)),
+    [Node#node.address || {_Dist, Node} &lt;- Closest]
+end.
+</code></pre>
+
+<p>```</p>
+
+<p>As usual all the code is sitting in the <a href="https://github.com/jamii/erl-telehash">repo</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

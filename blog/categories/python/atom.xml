@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: python | Scattered Thoughts]]></title>
+  <link href="http://scattered-thoughts.net/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://scattered-thoughts.net/"/>
+  <updated>2013-05-21T21:14:51+01:00</updated>
+  <id>http://scattered-thoughts.net/</id>
+  <author>
+    <name><![CDATA[Jamie Brandon]]></name>
+    <email><![CDATA[jamie@scattered-thoughts.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Smarkets API documentation]]></title>
+    <link href="http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation/"/>
+    <updated>2010-07-30T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation</id>
+    <content type="html"><![CDATA[<p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn't really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
+
+<!--more-->
+
+
+<p>We have our own home-grown and slightly crappy web framework which powers the public API. A typical resource declaration looks like this:</p>
+
+<p>``` erlang
+   #a{m=[fun rest_aux:user_id/1, emails,</p>
+
+<pre><code>     fun rest_aux:email/1, fun rest_aux:hash/1],
+  f=[{'PUT', fun rest_users:user_or_admin/3}],
+  scope=[{'PUT', private}],
+  pu=fun(UserId, Email, Hash, _Auth, Ctx) -&gt;
+         case users:verify_email(UserId, Email, Hash) of
+           ok -&gt;
+             smarkets_rest:nc(Ctx);
+           {error, conflict} -&gt;
+             smarkets_rest:cfl(Ctx);
+           {error, not_found} -&gt;
+             smarkets_rest:nf(Ctx)
+         end
+     end}
+</code></pre>
+
+<p>```</p>
+
+<p>To this I added a documentation field for each method:</p>
+
+<p>``` erlang
+   #a{m=[fun rest_aux:user_id/1, emails,</p>
+
+<pre><code>     fun rest_aux:email/1, fun rest_aux:hash/1],
+  f=[{'PUT', fun rest_users:user_or_admin/3}],
+  scope=[{'PUT', private}],
+  pu_doc = #'doc.method'{
+    doc = "Verify the specified email using the hash code sent to the user",
+    responses =
+      [{200, "Successful"}
+      ,{404, "Specified user or email does not exist"}
+      ,{409, "Incorrect hash code"}]},
+  pu=fun(UserId, Email, Hash, _Auth, Ctx) -&gt;
+         case users:verify_email(UserId, Email, Hash) of
+           ok -&gt;
+             smarkets_rest:nc(Ctx);
+           {error, conflict} -&gt;
+             smarkets_rest:cfl(Ctx);
+           {error, not_found} -&gt;
+             smarkets_rest:nf(Ctx)
+         end
+     end}
+</code></pre>
+
+<p>```</p>
+
+<p>From this the documentation system generates a json object which is stored in couchdb:</p>
+
+<p>``` json
+{
+   "<em>id": "users/{user_id}/emails/{email}/{hash}",
+   "</em>rev": "1-0c4c3aad1227a62429ffb0c05a7059f1",
+   "type": "doc.action",
+   "term": {</p>
+
+<pre><code>   "methods": {
+       "PUT": {
+           "type": "doc.method",
+           "term": {
+               "headers": {
+               },
+               "opt_params": {
+               },
+               "req_params": {
+               },
+               "scope": "private",
+               "role": "rest_users.user_or_admin",
+               "auth": "needs_user",
+               "responses": {
+                   "200": "Successful",
+                   "404": "Specified user or email does not exist",
+                   "409": "Incorrect hash code"
+               },
+               "doc": "Verify the specified email using the hash code sent to the user"
+           }
+       }
+   },
+   "path": "users/{user_id}/emails/{email}/{hash}"
+</code></pre>
+
+<p>   }
+}
+```</p>
+
+<p>This json object is used by a couple of different scripts. Both the <a href="http://smarkets.com/api/documentation/">public api reference</a> and our own internal api reference are produced from these json objects. I also added a fuzzer which can read the json documentation and generate calls with both random data and records pulled from the development database. The fuzzer logs the results of these calls like this:</p>
+
+<p>``` json
+{
+   "<em>id": "320f2a4bc956334c66c84a4d9f6160a0",
+   "</em>rev": "1-a109f7aa2906e2452e45a49d649674cb",
+   "body": "{}",
+   "code": 403,
+   "path_spec": "users/{user_id}/emails/{email}/{hash}",
+   "method": "PUT",
+   "headers": {</p>
+
+<pre><code>   "Content-type": "application/json",
+   "Authorization": "UserLogin token=\"O3bHthtJ6wumlt0yjf0q8OrYURMBKiRbfNRmhfGLJNCXhcXkSrzyPVzm47MoWD_lt6UdOJlA8wf1AWY~\""
+</code></pre>
+
+<p>   },
+   "path": "users/54ad2cc2a1dd2871518c528a11a40f00/emails/jMt%40XPqKYLNx/50584d82c756b2e4a53c8695553ae34a",
+   "response": null,
+   "port": 9000
+}
+```</p>
+
+<p>Another set of scripts then combs through these tables looking for errors. Anything that returns '500 internal server error' is flagged. Calls which return '400 bad request' and are not tagged as being deliberately malformed are also flagged. Same goes for any response code which isn't documented for that call and any documented response code which isn't observed in the fuzzer table. One particularly useful script lists methods which are accessible via the public port.</p>
+
+<p>This system has worked out quite well so far. The documentation is embedded directly next to the related code so its hard to forget to update it when changing the code. The fuzzer is worth its weight in gold and has uncovered countless bugs and weird corner cases. For such a crude fuzzer it generates suprisingly good code coverage. The next step is to combine the fuzzer with a smallcheck-style test system in order to better narrow down errors in long sequences of calls.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Examining scampy]]></title>
+    <link href="http://scattered-thoughts.net/blog/2010/05/19/examining-scampy/"/>
+    <updated>2010-05-19T06:16:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2010/05/19/examining-scampy</id>
+    <content type="html"><![CDATA[<p><a href="http://github.com/jamii/scampy">Scampy</a> is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl's for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.</p>
+
+<!--more-->
+
+
+<p>It appears that the average scammer is about as gullible as their targets.  A typical conversation runs like this:</p>
+
+<p>```
+Good Day,</p>
+
+<p>I am staff. Sgt. Ronnie Reeve, I found your contact particulars in an E-mail address guide they provide us here, as I desperately need an urgent help to do this deal. I am seeking your kind assistance to move the sum of $12m {Twelve Million U.S Dollars only} to you
+in  your destination, as far as I can be assured that my share will be safe in your
+care until I complete my service here ... etc
+```</p>
+
+<p><code>
+I am very excited to be partnered with you in this business dealing. Please be quick in supplying further details so that we can progress this more faster.
+</code></p>
+
+<p>```
+Dear Sir,</p>
+
+<p>Thanks for your kind mail sir. We have suffered so much here in Iraq so I believe nothing can compensate us enough except for the love of God.</p>
+
+<p>Saddam Hussein was a very wicked man so God is compensating his children  for what we suffered because of him.</p>
+
+<p>... etc</p>
+
+<p>Now, I will need the following information below so as to present you as the beneficiary to the security company where I kept the consigment for safety.
+Below are the information needed:</p>
+
+<ol>
+<li>Your full names</li>
+<li>Your phone/fax numbers</li>
+<li>Your current contact address</li>
+<li>Your age</li>
+<li>Your occupation.</li>
+</ol>
+
+
+<p>... etc
+```</p>
+
+<p><code>
+Sir, this does not appear to be a reputable transaction and I cannot risk getting involved with things that are illegal.
+</code></p>
+
+<p>```
+There is nothing to be afraid of here, I have worked out every modalities on how to get this done. I am an American who has his reputation at stake here, so for that reason I will not put myself in anything that will bring me trouble.</p>
+
+<p>Just follow my instruction and you will see that we shall be happy together.</p>
+
+<p>Please once again I promise you there is nothing to put us trouble here.  I am not stupid to have myself in trouble with all the American strict laws.</p>
+
+<p>I hope to hear from you as I have instructed.
+```</p>
+
+<p><code>
+Can you tell me whether I should be expecting further contact from you on this matter?
+</code></p>
+
+<p>```
+Dear Sir,</p>
+
+<p>I am still waiting for your kind response.</p>
+
+<p>Thanks,</p>
+
+<p>Ronnie
+```</p>
+
+<p><code>
+Dear
+</code></p>
+
+<p>This was an early bug. Ronnie doesn't seem to twig though.</p>
+
+<p>```
+Dear Sir,</p>
+
+<p>I am worried why I have not heard from you? I hope there is no problem, pls free to share your opinion with me on this matter.</p>
+
+<p>I hope to hear from you.</p>
+
+<p>Ronnie.
+```</p>
+
+<p><code>
+Are you needing my address? Should I send it to you?
+</code></p>
+
+<p>```
+Dear Friend,</p>
+
+<p>As I said earlier there nothing to fear here. Please I will need following information from you so that we continue from there.</p>
+
+<ol>
+<li>Full names</li>
+<li>contact address</li>
+<li>phone/fax numbers</li>
+<li>Maritus status</li>
+<li>occupation.</li>
+</ol>
+
+
+<p>I wait for your honest response.
+Ronnie.
+```</p>
+
+<p><code>
+Dear
+</code></p>
+
+<p>And again.</p>
+
+<p>```
+Please if you are not interested just let me know and stop playing me. I have told you what to do and you keep asking me irrelivant questions. Pls dont play with me this is not a joke.</p>
+
+<p>Ronnie.
+```</p>
+
+<p><code>
+I am thinking that you have the wrong person as this doesnt seem to be intended for me.
+</code></p>
+
+<p>```
+Hello,</p>
+
+<p>I must confess that its amazing the way you treated this opportunity i made available for our mutual benefits just because you are not serious with it.</p>
+
+<p>Do you actaually think this is a kind of joke? I am really baffled at your attitude towards this once in a life time opportunity.</p>
+
+<p>Just thought I should let you know that I still feel we do business together.</p>
+
+<p>Ronnie.
+```</p>
+
+<p><code>
+Can you please explain this more clearly because I am not understanding you. Especially on the first point that you mentioned, I think that you may have written wrongly because it does not seem correct.
+</code></p>
+
+<p><code>
+PLEASE JUST SEND ADDRESS OK?
+</code></p>
+
+<p><code>
+Are you needing my address? Should I send it to you?
+</code></p>
+
+<p>I never heard from him again.</p>
+]]></content>
+  </entry>
+  
+</feed>

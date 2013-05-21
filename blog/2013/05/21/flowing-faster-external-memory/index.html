@@ -1,0 +1,193 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Flowing faster: External memory - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Flowing faster: External memory</h1>
+	<div class="entry-content"><p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&#8217;m on my own with the first option, but a better development environment can help with the latter two.</p>
+
+<!--more-->
+
+
+<p>The first thing that I want to fix in this series is offloading memory. There are basically two kinds of questions I regularly deal with:</p>
+
+<ul>
+<li><p>How did I solve this problem / build this software / configure this program X months ago?</p></li>
+<li><p>What was I trying to remember to change X seconds ago?</p></li>
+</ul>
+
+
+<p>I&#8217;ve started using <a href="http://jblevins.org/projects/deft/">deft</a> to answer both of these. Deft stores notes in a folder full of flat files and adds a simple incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.</p>
+
+<p>For long-term memory I create a new note every time I solve a problem or learn something useful. Within emacs M-&#8217; brings up the deft window, typing triggers the incremental search and hiting Enter opens the first matching note.</p>
+
+<p>For short-term memory I have a single note called stack. Hitting C-&#8217; opens the stack note with the cursor on a new blank line for adding items to the stack. Hitting C-DEL deletes the previous line and C-q closes the stack. Hopefully this is sufficiently low-friction that the extra memory makes up for the context switch.</p>
+
+<p>My config is <a href="https://github.com/jamii/emacs-live-packs/blob/master/deft-pack/init.el">here</a>. I&#8217;m considering writing a gnome-shell extension which displays the last line of the stack in the status bar to remind me what I&#8217;m supposed to be doing when my mental stack gets rudely dumped. I also want to add the global key bindings to gnome-shell so I don&#8217;t have to navigate to emacs first.</p>
+
+<p>This is a very simple tool, which is kind of the point. The more stucture and options added to a note-taking tool the more effort it takes to actually use it and the more likely it is that I lose my entire mental stack whilst doing so.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T20:43:00+01:00" pubdate data-updated="true">21 May 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/flow/'>flow</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Search trees and core.logic - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="I mentioned in an earlier post that I had spent some time working on shackles, an extensible constraint solver based on gecode with extensions for &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Search trees and core.logic</h1>
+	<div class="entry-content"><p>I mentioned in an <a href="http://scattered-thoughts.net/blog/2012/12/02/hacker-school/">earlier post</a> that I had spent some time working on <a href="https://github.com/jamii/shackles">shackles</a>, an extensible <a href="http://en.wikipedia.org/wiki/Constraint_programming">constraint solver</a> based on <a href="http://www.gecode.org/">gecode</a> with extensions for <a href="http://en.wikipedia.org/wiki/Logic_programming">logic programming</a>. I eventually gave up working on shackles in favor of using <a href="https://github.com/clojure/core.logic">core.logic</a> which is much more mature and has actual maintainers. Last week David Nolen (the author of core.logic) was visiting Hacker School so I decided to poke around inside core.logic and see what could be brought over from shackles. The <a href="https://github.com/clojure/core.logic/pull/13">first chunk of work</a> adds fair conjunction, user-configurable search and a parallel solver.</p>
+
+<!--more-->
+
+
+<p>First, a little background. From a high-level point of view, a constraint solver does three things:</p>
+
+<ul>
+<li><p>specifies a search space in the form of a set of constraints</p></li>
+<li><p>turns that search space into a search tree</p></li>
+<li><p>searches the resulting tree for non-failed leaves</p></li>
+</ul>
+
+
+<p>Currently core.logic (and cKanren before it) complects all three of these. My patch partly decomplects the latter from the first two, allowing different search algorithms to be specified independently of the problem specification.</p>
+
+<p>Let&#8217;s look at how core.logic works. I&#8217;m going to gloss over a lot of implementation details in order to make the core ideas clearer.</p>
+
+<p>The search tree in core.logic is representated as a lazy stream of the non-failed leaves of the tree. This stream can be:</p>
+
+<ul>
+<li><p><code>nil</code> - the empty stream</p></li>
+<li><p><code>(Choice. head tail)</code> - a cons cell</p></li>
+</ul>
+
+
+<p>Disjunction of two goals produces a new goal which contains the search trees of the two goals as adjacent branches. In core.logic, this is implemented by combining their streams with <code>mplus</code>. A naive implementation might look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">mplus</span> <span class="p">[</span><span class="nv">stream1</span> <span class="nv">stream2</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">cond</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">nil? </span><span class="nv">stream1</span><span class="p">)</span> <span class="nv">stream2</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">choice?</span> <span class="nv">stream1</span><span class="p">)</span> <span class="p">(</span><span class="nf">Choice.</span> <span class="p">(</span><span class="nf">.head</span> <span class="nv">stream1</span><span class="p">)</span> <span class="p">(</span><span class="nf">mplus</span> <span class="p">(</span><span class="nf">.tail</span> <span class="nv">stream1</span><span class="p">)</span> <span class="nv">stream2</span><span class="p">))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This amounts to a depth-first search of the leaves of the tree. Unfortunately, search trees in core.logic can be infinitely deep so a depth-first search can get stuck. If the first branch has an infinite subtree we will never see results from the second branch.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="c1">;; simple non-terminating goal</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">forevero</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">fresh</span> <span class="p">[]</span>
+</span><span class='line'>    <span class="nv">forevero</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run*</span> <span class="p">[</span><span class="nv">q</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">conde</span>
+</span><span class='line'>    <span class="p">[</span><span class="nv">forvero</span><span class="p">]</span>
+</span><span class='line'>    <span class="p">[(</span><span class="nb">== </span><span class="nv">q</span> <span class="mi">1</span><span class="p">)]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; with depth-first search blocks immediately, returning (...)</span>
+</span><span class='line'><span class="c1">;; with breadth-first search blocks after the first result, returning (1 ...)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can perform breadth-first search by adding a new stream type:</p>
+
+<ul>
+<li><code>(fn [] stream)</code> - a thunk representing a branch in the search tree</li>
+</ul>
+
+
+<p>And then interleaving results from each branch:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">mplus</span> <span class="p">[</span><span class="nv">stream1</span> <span class="nv">stream2</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">cond</span>
+</span><span class='line'>    <span class="nv">...</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">fn?</span> <span class="nv">stream1</span><span class="p">)</span> <span class="p">(</span><span class="k">fn </span><span class="p">[]</span> <span class="p">(</span><span class="nf">mplus</span> <span class="nv">stream2</span> <span class="p">(</span><span class="nf">stream1</span><span class="p">)))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is how core.logic implements fair disjunction (fair in the sense that all branches of <code>conde</code> will be explored equally). However, we still have a problem with fair conjunction. Conjunction is performed in core.logic by running the second goal starting at each of the leaves of the tree of the first goal. In terms of the stream representation, this looks like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">bind</span> <span class="p">[</span><span class="nv">stream</span> <span class="nv">goal</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">cond</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">nil? </span><span class="nv">stream</span><span class="p">)</span> <span class="nv">nil</span> <span class="c1">;; failure</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">choice?</span> <span class="nv">stream</span><span class="p">)</span> <span class="p">(</span><span class="nf">Choice.</span> <span class="p">(</span><span class="nf">bind</span> <span class="p">(</span><span class="nf">.head</span> <span class="nv">stream</span><span class="p">)</span> <span class="nv">goal</span><span class="p">)</span> <span class="p">(</span><span class="nf">bind</span> <span class="p">(</span><span class="nf">.tail</span> <span class="nv">stream</span><span class="p">)</span> <span class="nv">goal</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">fn?</span> <span class="nv">stream</span><span class="p">)</span> <span class="p">(</span><span class="k">fn </span><span class="p">[]</span> <span class="p">(</span><span class="nf">bind</span> <span class="p">(</span><span class="nf">stream</span><span class="p">)</span> <span class="nv">goal</span><span class="p">))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This gives rise to similar behaviour as the naive version of <code>mplus</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="p">(</span><span class="nf">run*</span> <span class="p">[</span><span class="nv">q</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">all</span>
+</span><span class='line'>    <span class="nv">forevero</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">!=</span> <span class="nv">q</span> <span class="nv">q</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; with unfair conjunction blocks immediately, returning (...)</span>
+</span><span class='line'><span class="c1">;; with fair conjunction the second branch causes failure, returning ()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I suspect the reason that core.logic didn&#8217;t yet have fair conjunction is entirely due to this stream representation, which complects all three stages of constraint solving and hides the underlying search tree. Since shackles is based on gecode it has the advantage of a much clearer theoretical framework (I strongly recommend <a href="http://www.gecode.org/paper.html?id=Tack:PhD:2009">this paper</a>, not just for the insight into gecode but as a shining example of how mathematical intuition can be used to guide software design).</p>
+
+<p>The first step in introducing fair conjunction to core.logic is to explicitly represent the search tree. The types are similar:</p>
+
+<ul>
+<li><code>nil</code> - the empty tree</li>
+<li><code>(Result. state)</code> - a leaf</li>
+<li><code>(Choice. left right)</code> - a branch</li>
+<li><code>(Thunk. state goal)</code> - a thunk containing the current state and a sub-goal</li>
+</ul>
+
+
+<p>Defining <code>mplus</code> is now trivial since it is no longer responsible for interleaving results:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">mplus</span> <span class="p">[</span><span class="nv">tree1</span> <span class="nv">tree2</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">Choice.</span> <span class="nv">tree1</span> <span class="nv">tree2</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And we now have two variants of bind:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='clojure'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">bind-unfair</span> <span class="p">[</span><span class="nv">tree</span> <span class="nv">goal</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">cond</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">nil? </span><span class="nv">goal</span><span class="p">)</span> <span class="nv">nil</span> <span class="c1">;; failure</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">result?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">goal</span> <span class="p">(</span><span class="nf">.state</span> <span class="nv">tree</span><span class="p">))</span> <span class="c1">;; success, start the second tree here</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">choice?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">Choice.</span> <span class="p">(</span><span class="nf">bind-unfair</span> <span class="p">(</span><span class="nf">.left</span> <span class="nv">tree</span><span class="p">)</span> <span class="nv">goal</span><span class="p">)</span> <span class="p">(</span><span class="nf">bind-unfair</span> <span class="p">(</span><span class="nf">.right</span> <span class="nv">tree</span><span class="p">)</span> <span class="nv">goal</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">thunk?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">Thunk.</span> <span class="p">(</span><span class="nf">.state</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">bind-unfair</span> <span class="p">((</span><span class="nf">.goal</span> <span class="nv">tree</span><span class="p">)</span> <span class="nv">state</span><span class="p">)</span> <span class="nv">goal</span><span class="p">))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">bind-fair</span> <span class="p">[</span><span class="nv">tree</span> <span class="nv">goal</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">cond</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">nil? </span><span class="nv">goal</span><span class="p">)</span> <span class="nv">nil</span> <span class="c1">;; failure</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">result?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">goal</span> <span class="p">(</span><span class="nf">.state</span> <span class="nv">tree</span><span class="p">))</span> <span class="c1">;; success, start the second tree here</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">choice?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">Choice.</span> <span class="p">(</span><span class="nf">bind-fair</span> <span class="p">(</span><span class="nf">.left</span> <span class="nv">tree</span><span class="p">)</span> <span class="nv">goal</span><span class="p">)</span> <span class="p">(</span><span class="nf">bind-fair</span> <span class="p">(</span><span class="nf">.right</span> <span class="nv">tree</span><span class="p">)</span> <span class="nv">goal</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">thunk?</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">Thunk.</span> <span class="p">(</span><span class="nf">.state</span> <span class="nv">tree</span><span class="p">)</span> <span class="p">(</span><span class="nf">bind-fair</span> <span class="p">(</span><span class="nf">goal</span> <span class="nv">state</span><span class="p">)</span> <span class="p">(</span><span class="nf">.goal</span> <span class="nv">tree</span><span class="p">)))))</span> <span class="c1">;; interleave!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The crucial difference here is that bind-fair takes advantage of the continuation-like thunk to interleave both goals, allowing each to do one thunk&#8217;s worth of work before switching to the next.</p>
+
+<p>(We keep bind-unfair around because it tends to be faster in practice - when you know what order your goals will be run in you can use domain knowledge to specify the most optimal order. However, making program evaluation dependent on goal ordering is less declarative and there are also some problems that cannot be specified without fair conjunction. It&#8217;s nice to have both.)</p>
+
+<p>Now that we explicity represent the tree we can use different search algorithms. My patch defaults to lazy, breadth-first search (to maintain the previous semantics) but it also supplies a variety of others including a <a href="https://github.com/jamii/core.logic/blob/flexible-search/src/main/clojure/clojure/core/logic/par.clj#L49">parallel depth-first search</a> using <a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html">fork-join</a>.</p>
+
+<p>I still need to write a few more tests and sign the clojure contributor agreement before this can be considered for merging. I also have a pesky performance regression in lazy searches - this branch sometimes does more work than the original when only finding the first solution. I&#8217;m not sure yet whether this is down to a lack of laziness somewhere or maybe just a result of a slightly different search order. Either way, it needs to be fixed.</p>
+
+<p>After this change, core.logic still complects the specification of the search space and the generation of the search tree (eg we have to choose between bind-unfair and bind-fair in the problem specification). At some point I would like to either fix that in core.logic or finish work on shackles. For now though, I&#8217;m going back to working on <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-19T20:32:00+00:00" pubdate data-updated="true">19 Dec 2012</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

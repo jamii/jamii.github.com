@@ -1,0 +1,260 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Causal ordering - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler. We&#8217;ll &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Causal ordering</h1>
+	<div class="entry-content"><p>Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler.</p>
+
+<!--more-->
+
+
+<p>We&#8217;ll start with the fundamental property of distributed systems:</p>
+
+<pre><code>Messages sent between machines may arrive zero or more times at any point after they are sent
+</code></pre>
+
+<p>This is the sole reason that building distributed systems is hard.</p>
+
+<p>For example, because of this property it is impossible for two computers communicating over a network to agree on the exact time. You can send me a message saying &#8220;it is now 10:00:00&#8221; but I don&#8217;t know how long it took for that message to arrive. We can send messages back and forth all day but we will never know for sure that we are synchronised.</p>
+
+<p>If we can&#8217;t agree on the time then we can&#8217;t always agree on what order things happen in. Suppose I say &#8220;my user logged on at 10:00:00&#8221; and you say &#8220;my user logged on at 10:00:01&#8221;. Maybe mine was first or maybe my clock is just fast relative to yours. The only way to know for sure is if something connects those two events. For example, if my user logged on and then sent your user an email and if you received that email before your user logged on then we know for sure that mine was first.</p>
+
+<p>This concept is called causal ordering and is written like this:</p>
+
+<pre><code>A-&gt;B (event A is causally ordered before event B)
+</code></pre>
+
+<p>Let&#8217;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
+
+<pre><code>If A and B happen on the same machine and A happens before B then A-&gt;B
+
+If I send you some message M and you receive it then (send M)-&gt;(recv M)
+
+If A-&gt;B and B-&gt;C then A-&gt;C
+</code></pre>
+
+<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> - every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> - sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
+
+<p><a href="http://upload.wikimedia.org/wikipedia/commons/5/55/Vector_Clock.svg">This image</a> shows a nice way to picture these relationships.</p>
+
+<p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&#8217;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
+
+<pre><code>If not(A-&gt;B) then A cannot possibly have caused B
+</code></pre>
+
+<p>Since we don&#8217;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&#8217;s say it again:</p>
+
+<pre><code>Communication bounds causality
+</code></pre>
+
+<p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&#8217;s skim over some examples.</p>
+
+<h2>Vector Clocks</h2>
+
+<p><a href="http://en.wikipedia.org/wiki/Lamport_timestamps">Lamport clocks</a> and <a href="http://en.wikipedia.org/wiki/Vector_clock">Vector clocks</a> are data-structures which efficiently approximate the causal ordering and so can be used by programs to reason about causality.</p>
+
+<pre><code>If A-&gt;B then LC_A &lt; LC_B
+
+If VC_A &lt; VC_B then A-&gt;B
+</code></pre>
+
+<p>Different types of vector clock trade-off compression vs accuracy by storing smaller or larger portions of the causal history of an event.</p>
+
+<h2>Consistency</h2>
+
+<p>When mutable state is distributed over multiple machines each machine can receive update events at different times and in different orders. If the final state is dependent on the order of updates then the system must choose a single serialisation of the events, imposing a global total order. A distributed system is consistent exactly when the outside world can never observe two different serialisations.</p>
+
+<h2>CAP Theorem</h2>
+
+<p>The CAP (Consistency-Availability-Partition) theorem also boils down to causality. When a machine in a distributed system is asked to perform an action that depends on its current state it must decide that state by choosing a serialisation of the events it has seen. It has two options:</p>
+
+<ol>
+<li>Choose a serialisation of its current events immediately</li>
+<li>Wait until it is sure it has seen all concurrent events before choosing a serialisation</li>
+</ol>
+
+
+<p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen - the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
+
+<pre><code>Ordering requires waiting
+</code></pre>
+
+<p>Even your hardware <a href="http://en.wikipedia.org/wiki/Memory_barrier">cannot escape</a> this law. It provides the illusion of synchronous access to memory at the cost of availabilty. If you want to write fast parallel programs then you need to understand the messaging model used by the underlying hardware.</p>
+
+<h2>Eventual Consistency</h2>
+
+<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice availability without having the state of different machines diverge irreparably. It doesn&#8217;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
+
+<h2>Further reading</h2>
+
+<p><a href="http://hal.inria.fr/inria-00397981/en/">CRDTs</a> provide guidance on constructing eventually consistent data-structures.</p>
+
+<p><a href="http://www.bloom-lang.net/">Bloom</a> is a logic-based DSL for writing distributed systems. The core observation is that there is a natural connection between monotonic logic programs (logic programs which do not have to retract output when given additional inputs) and available distributed systems (where individual machines do not have to wait until all possible inputs have been received before producing output). <a href="http://db.cs.berkeley.edu/papers/UCB-lattice-tr.pdf">Recent work</a> from the Bloom group shows how to merge their approach with the CRDT approach to get the best of both worlds.</p>
+
+<p>Nathan Marz suggests <a href="http://nathanmarz.com/blog/how-to-beat-the-cap-theorem.html">an architecture for data processing systems</a> which avoids much of the pain caused by the CAP theorem. In short, combine a consistent batch-processing layer with an available, eventually consistent real-time layer so that the system as a whole is available but any errors in the (complicated, difficult to program) eventually consistent layer are transient and cannot corrupt the consistent data store.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-08-16T05:16:00+01:00" pubdate data-updated="true">16 Aug 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/theory/'>theory</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2012/08/16/causal-ordering/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2012/08/16/causal-ordering/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

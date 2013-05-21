@@ -1,0 +1,786 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Telehash: dialing - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="The next step in building a telehash switch is being able to dial. First a disclaimer: this post reflects my current understanding of TeleHash and &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Telehash: dialing</h1>
+	<div class="entry-content"><p>The next step in building a telehash switch is being able to dial.</p>
+
+<!--more-->
+
+
+<p>First a disclaimer: this post reflects my current understanding of TeleHash and Kademlia and is highly likely to be wrong. This code has only received minimal testing. Properly testing a p2p network is not something I&#8217;m entirely sure how to do yet. Expect to see more on that in later posts.</p>
+
+<p>Each TeleHash node and each key in the DHT is identified by a 160 bit sha1 hash (aka end). In the original Kademlia paper the node ids are selected at random but in TeleHash they are the hashed address (IP:port) of the node. This means that malicious nodes don&#8217;t get to choose where they are inserted in the DHT.</p>
+
+<p>Kademlia routing is based on the XOR distance between ends. This forms a metric space over the set of ends.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">distance</span><span class="p">(</span><span class="nv">A</span><span class="p">,</span> <span class="nv">B</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="nv">EndA</span><span class="p">}</span> <span class="o">=</span> <span class="n">to_end</span><span class="p">(</span><span class="nv">A</span><span class="p">),</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="nv">EndB</span><span class="p">}</span> <span class="o">=</span> <span class="n">to_end</span><span class="p">(</span><span class="nv">B</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Bytes</span> <span class="o">=</span> <span class="nn">lists</span><span class="p">:</span><span class="n">zip</span><span class="p">(</span><span class="nb">binary_to_list</span><span class="p">(</span><span class="nv">EndA</span><span class="p">),</span> <span class="nb">binary_to_list</span><span class="p">(</span><span class="nv">EndB</span><span class="p">)),</span>
+</span><span class='line'>    <span class="nv">Xor</span> <span class="o">=</span> <span class="nb">list_to_binary</span><span class="p">([</span><span class="nv">ByteA</span> <span class="ow">bxor</span> <span class="nv">ByteB</span> <span class="p">||</span> <span class="p">{</span><span class="nv">ByteA</span><span class="p">,</span> <span class="nv">ByteB</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nv">Bytes</span><span class="p">]),</span>
+</span><span class='line'>    <span class="o">&lt;&lt;</span><span class="nv">Dist</span><span class="p">:</span><span class="o">?</span><span class="nv">END_BITS</span><span class="o">&gt;&gt;</span> <span class="o">=</span> <span class="nv">Xor</span><span class="p">,</span>
+</span><span class='line'>    <span class="nv">Dist</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The Kademlia paper defines two constants, K and A. K controls the amount of redundant storage in the DHT and A controls the number of parallel requests issued by each node. To insert a key into the DHT a node must be able to locate the K nodes whose IDs are closest to the key. This process is called dialing.</p>
+
+<p>Dialing works roughly as follows. Each node keeps track of all the other nodes it has seen. Upon receiving a +end signal a node will reply with a .see command containing the K nodes it is aware of which are closest to the specified end. To dial an end we send a +end signal to each of the K closest nodes we are aware of. Then to each node contained in the .see replies we send +end signals, and so on until we run out of nodes to contact.</p>
+
+<p>Now this is nice and simple and will work but it generates a huge amount of load on the network. To reduce this Kademlia introduces two additional rules. First, we only send up to A signals at a time and don&#8217;t send any new signals until previous signals have either generated a reply or timed out. Second, we finish early if at any point we have received replies from K nodes which are closer to the end than all the nodes we are waiting to contact. The Kademlia paper proves that under reasonable assumptions about the knowledge of each node this still has a very high chance to return the correct results.</p>
+
+<p>The dialer process is an event handler which has two important data structures. The first stores the dialer configuration:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">conf</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">target</span><span class="p">,</span> <span class="c">% the end to dial</span>
+</span><span class='line'>          <span class="n">timeout</span><span class="p">,</span> <span class="c">% the timeout for the entire dialing process</span>
+</span><span class='line'>          <span class="n">ref</span><span class="p">,</span> <span class="n">caller</span> <span class="c">% reply details</span>
+</span><span class='line'>         <span class="p">}).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The second record stores the state of the dialing process. The principle around which the dialer is designed is that the state record is a reflection of the outside world and the sole job of the dialer is to keep this record up to date while maintaining the invariants in the comments. This is often the way that I write code and I feel that it needs it&#8217;s own post once I can articulate it properly. It&#8217;s certainly heavily informed both by the designs in <a href="http://books.google.co.uk/books?id=SxPzSTcTalAC&amp;printsec=frontcover&amp;dq=okasaki+purely+functional&amp;hl=en&amp;ei=6GiHTdTcKY_RcfjR_ZkD&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CC4Q6AEwAA#v=onepage&amp;q&amp;f=false">Okasaki&#8217;s Purely Functional Data Structures</a> and by Conal Elliott&#8217;s ideas about <a href="http://conal.net/blog/posts/denotational-design-with-type-class-morphisms/">denotational semantics and type class morphisms</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">state</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>          <span class="n">fresh</span><span class="p">,</span> <span class="c">% nodes which have not yet been contacted</span>
+</span><span class='line'>          <span class="n">pinged</span><span class="p">,</span> <span class="c">% nodes which have been contacted and have not replied</span>
+</span><span class='line'>          <span class="n">waiting</span><span class="p">,</span> <span class="c">% nodes in pinged which were contacted less than ?DIAL_TIMEOUT ago</span>
+</span><span class='line'>          <span class="n">ponged</span><span class="p">,</span> <span class="c">% nodes which have been contacted and have replied</span>
+</span><span class='line'>          <span class="n">seen</span> <span class="c">% all nodes which have been seen</span>
+</span><span class='line'>         <span class="p">}).</span> <span class="c">% invariant: pq:length(waiting) = ?A or pq:empty(fresh)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The dialer module exports the dial function which creates the records and starts the event handler.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">dial</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">Timeout</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">dialing</span><span class="p">,</span> <span class="nv">To</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">Timeout</span><span class="p">]),</span>
+</span><span class='line'>    <span class="nv">Ref</span> <span class="o">=</span> <span class="nn">erlang</span><span class="p">:</span><span class="n">make_ref</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nv">Target</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="n">to_end</span><span class="p">(</span><span class="nv">To</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Conf</span> <span class="o">=</span> <span class="nl">#conf</span><span class="p">{</span>
+</span><span class='line'>      <span class="n">target</span> <span class="o">=</span> <span class="nv">Target</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">timeout</span> <span class="o">=</span> <span class="nv">Timeout</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">ref</span> <span class="o">=</span> <span class="nv">Ref</span><span class="p">,</span>
+</span><span class='line'>      <span class="n">caller</span> <span class="o">=</span> <span class="n">self</span><span class="p">()</span>
+</span><span class='line'>     <span class="p">},</span>
+</span><span class='line'>    <span class="nv">Nodes</span> <span class="o">=</span> <span class="p">[{</span><span class="nn">util</span><span class="p">:</span><span class="n">distance</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Target</span><span class="p">),</span> <span class="nv">Address</span><span class="p">}</span>
+</span><span class='line'>             <span class="p">||</span> <span class="nv">Address</span> <span class="o">&lt;-</span> <span class="nv">From</span><span class="p">],</span>
+</span><span class='line'>    <span class="nv">State</span> <span class="o">=</span> <span class="nl">#state</span><span class="p">{</span>
+</span><span class='line'>      <span class="n">fresh</span><span class="o">=</span><span class="nn">pq</span><span class="p">:</span><span class="n">from_list</span><span class="p">(</span><span class="nv">Nodes</span><span class="p">),</span>
+</span><span class='line'>      <span class="n">pinged</span><span class="o">=</span><span class="nn">sets</span><span class="p">:</span><span class="n">new</span><span class="p">(),</span>
+</span><span class='line'>      <span class="n">waiting</span><span class="o">=</span><span class="nn">pq</span><span class="p">:</span><span class="n">empty</span><span class="p">(),</span>
+</span><span class='line'>      <span class="n">ponged</span><span class="o">=</span><span class="nn">pq</span><span class="p">:</span><span class="n">empty</span><span class="p">(),</span>
+</span><span class='line'>      <span class="n">seen</span><span class="o">=</span><span class="nn">sets</span><span class="p">:</span><span class="n">new</span><span class="p">()</span>
+</span><span class='line'>     <span class="p">},</span>
+</span><span class='line'>    <span class="n">ok</span> <span class="o">=</span> <span class="nn">switch</span><span class="p">:</span><span class="n">add_handler</span><span class="p">(</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">}),</span>
+</span><span class='line'>    <span class="nv">Ref</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The aim is to handle events and maintain the state invariants until we are finished. How do we define finished?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% is the dialing finished yet?</span>
+</span><span class='line'><span class="nf">finished</span><span class="p">(</span><span class="nl">#state</span><span class="p">{</span><span class="n">fresh</span><span class="o">=</span><span class="nv">Fresh</span><span class="p">,</span> <span class="n">waiting</span><span class="o">=</span><span class="nv">Waiting</span><span class="p">,</span> <span class="n">ponged</span><span class="o">=</span><span class="nv">Ponged</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="p">(</span><span class="nn">pq</span><span class="p">:</span><span class="n">is_empty</span><span class="p">(</span><span class="nv">Fresh</span><span class="p">)</span> <span class="ow">and</span> <span class="nn">pq</span><span class="p">:</span><span class="n">is_empty</span><span class="p">(</span><span class="nv">Waiting</span><span class="p">))</span> <span class="c">% no way to continue</span>
+</span><span class='line'>    <span class="ow">or</span>
+</span><span class='line'>    <span class="p">(</span><span class="k">case</span> <span class="nn">pq</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="nv">Ponged</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="o">?</span><span class="nv">K</span> <span class="k">of</span>
+</span><span class='line'>         <span class="n">false</span> <span class="o">-&gt;</span>
+</span><span class='line'>             <span class="n">false</span><span class="p">;</span> <span class="c">% dont yet have K nodes</span>
+</span><span class='line'>         <span class="n">true</span> <span class="o">-&gt;</span>
+</span><span class='line'>             <span class="c">% finish if the K closest nodes we know are closer than all the nodes we haven&#39;t checked yet</span>
+</span><span class='line'>             <span class="p">{</span><span class="nv">Dist_fresh</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">peek</span><span class="p">(</span><span class="nv">Fresh</span><span class="p">),</span>
+</span><span class='line'>             <span class="p">{</span><span class="nv">Dist_waiting</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">peek</span><span class="p">(</span><span class="nv">Waiting</span><span class="p">),</span>
+</span><span class='line'>             <span class="p">{</span><span class="nv">Nodes</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">pop</span><span class="p">(</span><span class="nv">Ponged</span><span class="p">,</span> <span class="o">?</span><span class="nv">K</span><span class="p">),</span>
+</span><span class='line'>             <span class="p">{</span><span class="nv">Dist_ponged</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nn">lists</span><span class="p">:</span><span class="n">last</span><span class="p">(</span><span class="nv">Nodes</span><span class="p">),</span>
+</span><span class='line'>             <span class="p">(</span><span class="nv">Dist_ponged</span> <span class="o">&lt;</span> <span class="nv">Dist_fresh</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nv">Dist_ponged</span> <span class="o">&lt;</span> <span class="nv">Dist_waiting</span><span class="p">)</span>
+</span><span class='line'>     <span class="k">end</span><span class="p">).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One of the invariants we aim to maintain is that either the fresh queue is empty or the length of the waiting queue is A. This ensures that we send out +end signals whenever possible. This invariant is maintained by calling the ping_nodes function after every event.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% contact nodes from fresh until the waiting list is full</span>
+</span><span class='line'><span class="nf">ping_nodes</span><span class="p">(</span><span class="nl">#conf</span><span class="p">{</span><span class="n">target</span><span class="o">=</span><span class="nv">Target</span><span class="p">},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">fresh</span><span class="o">=</span><span class="nv">Fresh</span><span class="p">,</span> <span class="n">waiting</span><span class="o">=</span><span class="nv">Waiting</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nv">Num</span> <span class="o">=</span> <span class="o">?</span><span class="nv">A</span> <span class="o">-</span> <span class="nn">pq</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="nv">Waiting</span><span class="p">),</span>
+</span><span class='line'>    <span class="p">{</span><span class="nv">Nodes</span><span class="p">,</span> <span class="nv">Fresh2</span><span class="p">}</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">pop</span><span class="p">(</span><span class="nv">Fresh</span><span class="p">,</span> <span class="nv">Num</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Telex</span> <span class="o">=</span> <span class="p">{</span><span class="n">struct</span><span class="p">,</span> <span class="p">[{</span><span class="n">&#39;+end&#39;</span><span class="p">,</span> <span class="nn">util</span><span class="p">:</span><span class="n">end_to_hex</span><span class="p">(</span><span class="nv">Target</span><span class="p">)}]},</span>
+</span><span class='line'>    <span class="nn">lists</span><span class="p">:</span><span class="n">foreach</span><span class="p">(</span>
+</span><span class='line'>      <span class="k">fun</span> <span class="p">({</span><span class="nv">Dist</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}</span><span class="o">=</span><span class="nv">Node</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>              <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">ping</span><span class="p">,</span> <span class="nv">Dist</span><span class="p">,</span> <span class="nv">Address</span><span class="p">]),</span>
+</span><span class='line'>              <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">),</span>
+</span><span class='line'>              <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="o">?</span><span class="nv">DIAL_TIMEOUT</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="p">{</span><span class="n">timeout</span><span class="p">,</span> <span class="nv">Node</span><span class="p">})</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>      <span class="nv">Nodes</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Waiting2</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">push</span><span class="p">(</span><span class="nv">Nodes</span><span class="p">,</span> <span class="nv">Waiting</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Pinged2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="n">union</span><span class="p">(</span><span class="nv">Pinged</span><span class="p">,</span> <span class="nn">sets</span><span class="p">:</span><span class="n">from_list</span><span class="p">(</span><span class="nv">Nodes</span><span class="p">)),</span>
+</span><span class='line'>    <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">fresh</span><span class="o">=</span><span class="nv">Fresh2</span><span class="p">,</span> <span class="n">waiting</span><span class="o">=</span><span class="nv">Waiting2</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged2</span><span class="p">}.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We handle replies by moving the replying node from the waiting queue to the ponged queue and inserting the .see nodes into the fresh list. We cannot allow duplicate nodes so the seen set is kept up to date. The pinged set will be used later to ensure that we only accept replies from nodes we have already contacted and only accept one reply per node.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% handle a reply from a node</span>
+</span><span class='line'><span class="nf">ponged</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">See</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">fresh</span><span class="o">=</span><span class="nv">Fresh</span><span class="p">,</span> <span class="n">waiting</span><span class="o">=</span><span class="nv">Waiting</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">,</span> <span class="n">ponged</span><span class="o">=</span><span class="nv">Ponged</span><span class="p">,</span> <span class="n">seen</span><span class="o">=</span><span class="nv">Seen</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nv">Waiting2</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">delete</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Waiting</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Pinged2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="n">del_element</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Ponged2</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">push_one</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Ponged</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">New_nodes</span> <span class="o">=</span> <span class="nn">lists</span><span class="p">:</span><span class="n">filter</span><span class="p">(</span><span class="k">fun</span> <span class="p">(</span><span class="nv">See_node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="ow">not</span><span class="p">(</span><span class="nn">sets</span><span class="p">:</span><span class="n">is_element</span><span class="p">(</span><span class="nv">See_node</span><span class="p">,</span> <span class="nv">Seen</span><span class="p">))</span> <span class="k">end</span><span class="p">,</span> <span class="nv">See</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Fresh2</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">push</span><span class="p">(</span><span class="nv">New_nodes</span><span class="p">,</span> <span class="nv">Fresh</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">Seen2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="n">union</span><span class="p">(</span><span class="nv">Seen</span><span class="p">,</span> <span class="nn">sets</span><span class="p">:</span><span class="n">from_list</span><span class="p">(</span><span class="nv">See</span><span class="p">)),</span>
+</span><span class='line'>    <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">fresh</span><span class="o">=</span><span class="nv">Fresh2</span><span class="p">,</span> <span class="n">waiting</span><span class="o">=</span><span class="nv">Waiting2</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged2</span><span class="p">,</span> <span class="n">ponged</span><span class="o">=</span><span class="nv">Ponged2</span><span class="p">,</span> <span class="n">seen</span><span class="o">=</span><span class="nv">Seen2</span><span class="p">}.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once we are finished we need to return the results to the caller.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% return results to the caller</span>
+</span><span class='line'><span class="nf">return</span><span class="p">(</span><span class="nl">#conf</span><span class="p">{</span><span class="n">ref</span><span class="o">=</span><span class="nv">Ref</span><span class="p">,</span> <span class="n">caller</span><span class="o">=</span><span class="nv">Caller</span><span class="p">},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">ponged</span><span class="o">=</span><span class="nv">Ponged</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="p">{</span><span class="nv">Nodes</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nn">pq</span><span class="p">:</span><span class="n">pop</span><span class="p">(</span><span class="nv">Ponged</span><span class="p">,</span> <span class="o">?</span><span class="nv">K</span><span class="p">),</span>
+</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">returning</span><span class="p">,</span> <span class="nv">Nodes</span><span class="p">]),</span>
+</span><span class='line'>    <span class="nv">Result</span> <span class="o">=</span> <span class="p">[</span><span class="nv">Address</span> <span class="p">||</span> <span class="p">{_</span><span class="nv">Dist</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nv">Nodes</span><span class="p">],</span>
+</span><span class='line'>    <span class="nv">Caller</span> <span class="o">!</span> <span class="p">{</span><span class="n">dialed</span><span class="p">,</span> <span class="nv">Ref</span><span class="p">,</span> <span class="nv">Result</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, after each event we call continue to decide whether to finish and return results or to carry on sending signals.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% either continue to dial or return results</span>
+</span><span class='line'><span class="c">% meant for use at the end of a gen_event callback</span>
+</span><span class='line'><span class="nf">continue</span><span class="p">(</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="n">finished</span><span class="p">(</span><span class="nv">State</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>        <span class="n">true</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="n">return</span><span class="p">(</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">),</span>
+</span><span class='line'>            <span class="n">remove_handler</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">false</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="nv">State2</span> <span class="o">=</span> <span class="n">ping_nodes</span><span class="p">(</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">),</span>
+</span><span class='line'>            <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State2</span><span class="p">}}</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The functions above are glued together by a gen_event handler. The handler is attached to the switch gen_event manager and receives an event for each telex arriving at the switch.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="p">-</span><span class="ni">behaviour</span><span class="p">(</span><span class="n">gen_event</span><span class="p">).</span>
+</span><span class='line'><span class="p">-</span><span class="ni">export</span><span class="p">([</span><span class="n">init</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span> <span class="n">handle_event</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">handle_call</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">handle_info</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">terminate</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">code_change</span><span class="o">/</span><span class="mi">3</span><span class="p">]).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The init function is called when the handler is started. It sends out the first +end signals and sets a timer that tells the handler when to give up dialling.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">init</span><span class="p">({</span><span class="nl">#conf</span><span class="p">{</span><span class="n">timeout</span><span class="o">=</span><span class="nv">Timeout</span><span class="p">}</span><span class="o">=</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="n">giveup</span><span class="p">),</span>
+</span><span class='line'>    <span class="nv">State2</span> <span class="o">=</span> <span class="n">ping_nodes</span><span class="p">(</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">),</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State2</span><span class="p">}}.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The giveup timeout is simple to deal with.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">(</span><span class="n">giveup</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">giveup</span><span class="p">,</span> <span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">]),</span>
+</span><span class='line'>    <span class="n">remove_handler</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As are the timeouts from individual signals.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">timeout</span><span class="p">,</span> <span class="nv">Node</span><span class="p">},</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">waiting</span><span class="o">=</span><span class="nv">Waiting</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="nv">Node</span><span class="p">]),</span>
+</span><span class='line'>    <span class="nv">State2</span> <span class="o">=</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">waiting</span><span class="o">=</span><span class="nn">pq</span><span class="p">:</span><span class="n">delete</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Waiting</span><span class="p">)},</span>
+</span><span class='line'>    <span class="n">continue</span><span class="p">(</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State2</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The last callback is the messiest. This essentially just calls ponged and continue, but first has to sanity check the incoming message.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_event</span><span class="p">({</span><span class="n">recv</span><span class="p">,</span> <span class="nv">Address</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">},</span> <span class="p">{</span><span class="nl">#conf</span><span class="p">{</span><span class="n">target</span><span class="o">=</span><span class="nv">Target</span><span class="p">}</span><span class="o">=</span><span class="nv">Conf</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;.see&#39;</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>        <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="n">not_found</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">}};</span>
+</span><span class='line'>        <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Address_binaries</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="nv">Dist</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="n">distance</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Target</span><span class="p">),</span>
+</span><span class='line'>            <span class="nv">Node</span> <span class="o">=</span> <span class="p">{</span><span class="nv">Dist</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span>
+</span><span class='line'>            <span class="k">case</span> <span class="nn">sets</span><span class="p">:</span><span class="n">is_element</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">)</span> <span class="k">of</span> <span class="c">% !!! command ids would make a better check</span>
+</span><span class='line'>                <span class="n">false</span> <span class="o">-&gt;</span>
+</span><span class='line'>                    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">}};</span>
+</span><span class='line'>                <span class="n">true</span> <span class="o">-&gt;</span>
+</span><span class='line'>                    <span class="k">try</span> <span class="p">[{</span><span class="nn">util</span><span class="p">:</span><span class="n">distance</span><span class="p">(</span><span class="nv">Target</span><span class="p">,</span> <span class="nv">Bin</span><span class="p">),</span> <span class="nn">util</span><span class="p">:</span><span class="n">binary_to_address</span><span class="p">(</span><span class="nv">Bin</span><span class="p">)}</span> <span class="p">||</span> <span class="nv">Bin</span> <span class="o">&lt;-</span> <span class="nv">Address_binaries</span><span class="p">]</span> <span class="k">of</span>
+</span><span class='line'>                        <span class="nv">Nodes</span> <span class="o">-&gt;</span>
+</span><span class='line'>                            <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">pong</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Nodes</span><span class="p">]),</span>
+</span><span class='line'>                            <span class="nv">State2</span> <span class="o">=</span> <span class="n">ponged</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Nodes</span><span class="p">,</span> <span class="nv">State</span><span class="p">),</span>
+</span><span class='line'>                            <span class="n">continue</span><span class="p">(</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State2</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">catch</span>
+</span><span class='line'>                        <span class="p">_:</span><span class="nv">Error</span> <span class="o">-&gt;</span>
+</span><span class='line'>                            <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">bad_see</span><span class="p">,</span> <span class="nv">Address</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">,</span> <span class="nv">Error</span><span class="p">,</span> <span class="nn">erlang</span><span class="p">:</span><span class="n">get_stacktrace</span><span class="p">()]),</span>
+</span><span class='line'>                            <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">{</span><span class="nv">Conf</span><span class="p">,</span> <span class="nv">State</span><span class="p">}}</span>
+</span><span class='line'>                    <span class="k">end</span>
+</span><span class='line'>            <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s pretty much it - we now (probably) have a working dialer. I spent a fair few hours teasing this apart but hopefully the end result is fairly simple to understand. The full code is in the <a href="http://github.com/jamii/erl-telehash">repo</a> as always.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="mi">4</span><span class="o">&gt;</span> <span class="nn">switch</span><span class="p">:</span><span class="n">start_link</span><span class="p">().</span>
+</span><span class='line'><span class="p">{</span><span class="n">ok</span><span class="p">,</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">,</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">}</span>
+</span><span class='line'><span class="mi">5</span><span class="o">&gt;</span> <span class="nv">Root</span> <span class="o">=</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span> <span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span> <span class="mi">42424</span><span class="p">}.</span>
+</span><span class='line'><span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'><span class="mi">6</span><span class="o">&gt;</span> <span class="nn">dialer</span><span class="p">:</span><span class="n">dial_sync</span><span class="p">(</span><span class="nv">Root</span><span class="p">,</span> <span class="p">[</span><span class="nv">Root</span><span class="p">],</span> <span class="mi">10000</span><span class="p">).</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">06</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">35</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">dialing</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">[{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}]</span>
+</span><span class='line'>    <span class="mi">10000</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">06</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">ping</span>
+</span><span class='line'>    <span class="mi">0</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">06</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">switch_event</span>
+</span><span class='line'>    <span class="nb">send</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="nn">struct</span><span class="p">:</span> <span class="p">[{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_to&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;208.68.163.247:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="n">&#39;+end&#39;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;38666817e1b38470644e004b9356c1622368fa57&quot;</span><span class="o">&gt;&gt;</span><span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">switch_event</span>
+</span><span class='line'>    <span class="n">recv</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="nn">struct</span><span class="p">:</span> <span class="p">[{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_ring&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="mi">18115</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;.see&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">[</span><span class="o">&lt;&lt;</span><span class="s">&quot;204.232.205.180:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;208.68.163.247:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">]},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_br&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="mi">240</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_to&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;203.218.138.245:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">pong</span>
+</span><span class='line'>    <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">[{</span><span class="mi">535375931004298447338698443374311161987273280591</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}},</span>
+</span><span class='line'>     <span class="p">{</span><span class="mi">0</span><span class="p">,{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">ping</span>
+</span><span class='line'>    <span class="mi">0</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">ping</span>
+</span><span class='line'>    <span class="mi">535375931004298447338698443374311161987273280591</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">switch_event</span>
+</span><span class='line'>    <span class="nb">send</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="nn">struct</span><span class="p">:</span> <span class="p">[{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_to&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;208.68.163.247:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="n">&#39;+end&#39;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;38666817e1b38470644e004b9356c1622368fa57&quot;</span><span class="o">&gt;&gt;</span><span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">switch_event</span>
+</span><span class='line'>    <span class="nb">send</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="nn">struct</span><span class="p">:</span> <span class="p">[{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_to&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;204.232.205.180:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="n">&#39;+end&#39;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;38666817e1b38470644e004b9356c1622368fa57&quot;</span><span class="o">&gt;&gt;</span><span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">switch_event</span>
+</span><span class='line'>    <span class="n">recv</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="nn">struct</span><span class="p">:</span> <span class="p">[{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_ring&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="mi">16506</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;.see&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">[</span><span class="o">&lt;&lt;</span><span class="s">&quot;204.232.205.180:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;208.68.163.247:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">]},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_br&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="mi">162</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_to&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;203.218.138.245:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">pong</span>
+</span><span class='line'>    <span class="mi">535375931004298447338698443374311161987273280591</span><span class="p">:</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span>
+</span><span class='line'>                                                       <span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span>
+</span><span class='line'>                                                       <span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">[{</span><span class="mi">535375931004298447338698443374311161987273280591</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}},</span>
+</span><span class='line'>     <span class="p">{</span><span class="mi">0</span><span class="p">,{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">80</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">switch_event</span>
+</span><span class='line'>    <span class="n">recv</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="nn">struct</span><span class="p">:</span> <span class="p">[{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_ring&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="mi">18115</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;.see&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span>
+</span><span class='line'>              <span class="p">[</span><span class="o">&lt;&lt;</span><span class="s">&quot;204.232.205.180:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;208.68.163.247:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">]},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_br&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="mi">320</span><span class="p">},</span>
+</span><span class='line'>             <span class="p">{</span><span class="o">&lt;&lt;</span><span class="s">&quot;_to&quot;</span><span class="o">&gt;&gt;</span><span class="p">,</span><span class="o">&lt;&lt;</span><span class="s">&quot;203.218.138.245:42424&quot;</span><span class="o">&gt;&gt;</span><span class="p">}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">pong</span>
+</span><span class='line'>    <span class="mi">0</span><span class="p">:</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}</span>
+</span><span class='line'>    <span class="p">[{</span><span class="mi">535375931004298447338698443374311161987273280591</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}},</span>
+</span><span class='line'>     <span class="p">{</span><span class="mi">0</span><span class="p">,{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}}]</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">=</span><span class="nv">INFO</span> <span class="nv">REPORT</span><span class="o">====</span> <span class="mi">21</span><span class="o">-</span><span class="nv">Mar</span><span class="o">-</span><span class="mi">2011</span><span class="p">::</span><span class="mi">14</span><span class="p">:</span><span class="mi">48</span><span class="p">:</span><span class="mi">07</span> <span class="o">===</span>
+</span><span class='line'>    <span class="nn">pid</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="p">.</span><span class="mi">79</span><span class="p">.</span><span class="mi">0</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="n">dialer</span>
+</span><span class='line'>    <span class="n">returning</span>
+</span><span class='line'>    <span class="p">[{</span><span class="mi">0</span><span class="p">,{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}},</span>
+</span><span class='line'>     <span class="p">{</span><span class="mi">535375931004298447338698443374311161987273280591</span><span class="p">,</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}}]</span>
+</span><span class='line'><span class="p">{</span><span class="n">ok</span><span class="p">,[{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;208.68.163.247&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">},</span>
+</span><span class='line'>     <span class="p">{</span><span class="n">address</span><span class="p">,</span><span class="s">&quot;204.232.205.180&quot;</span><span class="p">,</span><span class="mi">42424</span><span class="p">}]}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One last note: after I finished writing this I started thinking about what would happen if I run more than one dialer in parallel. Unlike Kademlia, TeleHash does not currently use command IDs so the dialer cannot tell if the response came in reply to its own command or in reply to the command of another dialer on the same node. It&#8217;s the kind of bug that would be very rare in actual use but might be carefully exploited by a malicious node. Finding these kinds of bugs is going to be really hard.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T06:16:00+00:00" pubdate data-updated="true">21 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2011/03/21/telehash-dialing/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2011/03/21/telehash-dialing/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

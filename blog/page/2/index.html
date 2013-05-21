@@ -1,0 +1,488 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/04/19/telehash-gen-event-woes/">Telehash: gen_event woes</a></h1>
+	<div class="entry-content">
+		<p>I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I will say it here: gen_event does NOT spawn individual processes for each handler. Each handler is run sequentially in the event manager process.</p>
+
+
+		
+		<a href="/blog/2011/04/19/telehash-gen-event-woes/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-04-19T06:16:00+01:00" pubdate data-updated="true">19 Apr 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/03/30/telehash-buckets/">Telehash: buckets</a></h1>
+	<div class="entry-content">
+		<p>The other half of the routing table is the buckets which store node addresses.</p>
+
+
+		
+		<a href="/blog/2011/03/30/telehash-buckets/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-30T06:16:00+01:00" pubdate data-updated="true">30 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/03/24/telehash-bittrees-revisited/">Telehash: bit_trees revisited</a></h1>
+	<div class="entry-content">
+		<p>It has been suggested that the bit_trees presented in my last post are overly complicated. Indeed, in the cold light of the morning there is absolutely no need for that zipper. Without further ado, here is the much simpler version.</p>
+
+
+		
+		<a href="/blog/2011/03/24/telehash-bittrees-revisited/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-24T06:16:00+00:00" pubdate data-updated="true">24 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/03/23/telehash-bittrees/">Telehash: bit_trees</a></h1>
+	<div class="entry-content">
+		<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&#8217;m still mulling over the protocol so we&#8217;ll skip to the routing table.</p>
+
+
+		
+		<a href="/blog/2011/03/23/telehash-bittrees/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-23T06:16:00+00:00" pubdate data-updated="true">23 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/03/21/telehash-dialing/">Telehash: dialing</a></h1>
+	<div class="entry-content">
+		<p>The next step in building a telehash switch is being able to dial.</p>
+
+
+		
+		<a href="/blog/2011/03/21/telehash-dialing/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-21T06:16:00+00:00" pubdate data-updated="true">21 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/03/17/telehash-basics/">Telehash: basics</a></h1>
+	<div class="entry-content">
+		<p><a href="http://telehash.org">TeleHash</a> is a p2p network based on the <a href="http://en.wikipedia.org/wiki/Kademlia">Kademlia DHT</a> that provides addressing and NAT traversal. These are problems that every p2p app has to deal with, including my <a href="https://github.com/jamii/dissertation">poppi</a>. Unfortunately there is no erlang implementation yet so I have to roll my own. The code so far lives <a href="http://github.com/jamii/erl-telehash">here</a> In this first post I&#8217;ll just cover the absolute basics - sending, receiving, encoding and decoding messages.</p>
+
+
+		
+		<a href="/blog/2011/03/17/telehash-basics/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-17T06:16:00+00:00" pubdate data-updated="true">17 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/telehash/'>telehash</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/03/16/transactional-mealy-machines/">Transactional mealy machines</a></h1>
+	<div class="entry-content">
+		<p>This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at <a href="http://smarkets.com">Smarkets</a> and never got around to writing about. Unfortunately I don&#8217;t have the code in front of me but the overall idea is simple enough to explain without examples.</p>
+
+
+		
+		<a href="/blog/2011/03/16/transactional-mealy-machines/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-16T06:16:00+00:00" pubdate data-updated="true">16 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/mealy/'>mealy</a>, <a class='category' href='/blog/categories/smarkets/'>smarkets</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2011/02/07/tunneling-in-china/">Tunneling in china</a></h1>
+	<div class="entry-content">
+		<p>In Shanghai I found that ssh was blocked at the protocol level so even running sshd on port 80 doesn&#8217;t work. I don&#8217;t whether this is widespread or whether it was our hotel in particular that was blocking it. Regardless, I found a workaround using httptunnel.</p>
+
+
+		
+		<a href="/blog/2011/02/07/tunneling-in-china/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-02-07T06:16:00+00:00" pubdate data-updated="true">07 Feb 2011</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2010/12/19/optimising-texsearch-memory-usage/">Optimising texsearch: memory usage</a></h1>
+	<div class="entry-content">
+		<p>In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
+
+
+		
+		<a href="/blog/2010/12/19/optimising-texsearch-memory-usage/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-19T06:16:00+00:00" pubdate data-updated="true">19 Dec 2010</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/latex/'>latex</a>, <a class='category' href='/blog/categories/ocaml/'>ocaml</a>, <a class='category' href='/blog/categories/texsearch/'>texsearch</a>
+
+
+</div>
+	
+</div></article>
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2010/12/08/optimising-texsearch/">Optimising texsearch</a></h1>
+	<div class="entry-content">
+		<p><a href="https://github.com/jamii/texsearch">Texsearch</a> is a search engine for LaTeX formulae. It forms part of the backend for <a href="http://latexsearch.com">latexsearch.com</a> which indexes the entire Springer corpus. It is also crazy slow, until today.</p>
+
+
+		
+		<a href="/blog/2010/12/08/optimising-texsearch/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-08T06:16:00+00:00" pubdate data-updated="true">08 Dec 2010</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/latex/'>latex</a>, <a class='category' href='/blog/categories/ocaml/'>ocaml</a>, <a class='category' href='/blog/categories/texsearch/'>texsearch</a>
+
+
+</div>
+	
+</div></article>
+
+<nav id="pagenavi">
+    
+        <a href="/" class="prev">Prev</a>
+    
+    
+        <a href="/blog/page/3/" class="next">Next</a>
+    
+    <div class="center"><a href="/blog/archives">Blog Archives</a></div>
+</nav></div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

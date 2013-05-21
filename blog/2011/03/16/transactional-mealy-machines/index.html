@@ -1,0 +1,187 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Transactional mealy machines - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at Smarkets and never got around to writing about. &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Transactional mealy machines</h1>
+	<div class="entry-content"><p>This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at <a href="http://smarkets.com">Smarkets</a> and never got around to writing about. Unfortunately I don&#8217;t have the code in front of me but the overall idea is simple enough to explain without examples.</p>
+
+<!--more-->
+
+
+<p>Smarkets is a betting exchange (effectively a small stock exchange for buying and selling bets). The exchange system which handles all the money and manages the markets has quite stringent requirements. We want events to be serializable (because ordering is very important in a fast moving market), low latency and ideally distributed across more than one machine. However the exchange also has to handle a large number of bursty updates focused on a small number of records (popular markets, power users). I&#8217;m told that the early prototypes using postgres simply couldn&#8217;t handle the high contention so a move to a more loosely coupled system was necessary.</p>
+
+<p>The architecture in place when I arrived at Smarkets was based on <a href="http://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf">this paper</a> which I highly recommend reading. The main idea is that serializability across machines is difficult verging on impossible and that systems which try to paper over this (eg fully ACID distributed transactions) tend to be fragile at scale. The proposed solution is to identify specific sets of actions which must be serializable and handle each set with a single actor on a single machine. These actors then communicate with each other via asynchronous messages. In Smarkets&#8217; case the actors are individual markets, users, accounts and orders. These can be modeled nicely as <a href="http://en.wikipedia.org/wiki/Mealy_machine">mealy machines</a> where the output value is a list of messages, hence the title.</p>
+
+<p>This idea was very effective but the implementation at Smarkets was some of the scariest code in the repository (thanks mostly to being the oldest code). Each actor was implemented as a single erlang process which archived messages (using couchdb) after reading them. There was a lot of repetitive boilerplate code, it was hard to test (because the actors message each other directly) and worst of all there were ways to lose messages before they were archived (eg process inbox is lost if the process dies, messages between machines can be dropped silently).</p>
+
+<p>I wrote a new system to handle the actor implementation whilst keeping the domain-specific logic of each actor mostly unchanged. Each actor is defined by a pair of callback functions (a behaviour, in erlang-speak). The <em>init</em> function sets the initial state of the actor. The <em>transition</em> function takes the current state and an incoming message and returns the new state and possibly some outgoing messages. Everything else is handled by a generic module which takes this behaviour and turns it into a running actor. Each actor consists of an inbox, outbox and a current state, all of which are persisted using mnesia. Each actor also has a unique id used for addressing messages. The transition process - pop a message off the inbox queue, run the transition function, store the new state, push outgoing messages to the outbox - is implemented as a single ACID transaction using mnesia. For actors on the same machine messages are moved directly from one actor’s outbox to another&#8217;s inbox directly using mnesia transactions. For actors on different machines the outbox using erlang messages and sends repeatedly (with exponential backoff) until the receiver confirms receipt. The outbox attaches auto-incrementing message ids to each message which, together with the actor id of the sender, allows the receiver to ignore duplicate messages.</p>
+
+<p>In this way the domain-specific logic is separated from message handling and storage. This led to much less repetition and a more maintainable system. It also made it easy to setup tests or replay past events without recreating the whole system. Last, but certainly not least, it can only lose messages if the database or disk fails and even then is easier to restore from backup than the previous system.</p>
+
+<p>Note that this explanation is somewhat simplified. I have glossed over some fiddly implementation details like error handling (if an actor fails to handle a message the sender needs to be notified in many cases) and also left out extra features like subscribing to state changes (eg notify me when this order is filled). There is also a knack to designing actors which must cooperate without <a href="http://en.wikipedia.org/wiki/Common_knowledge_%28logic%29">common knowledge</a>. Hopefully the <a href="https://smarkets.com/about/contact/">Smarkets team</a> will find some time to open-source the actual code.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2011-03-16T06:16:00+00:00" pubdate data-updated="true">16 Mar 2011</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>, <a class='category' href='/blog/categories/mealy/'>mealy</a>, <a class='category' href='/blog/categories/smarkets/'>smarkets</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

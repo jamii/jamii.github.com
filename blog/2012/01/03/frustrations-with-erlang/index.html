@@ -1,0 +1,194 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Frustrations with erlang - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="With my work on erl-telehash and at Smarkets I find myself fighting erlang more and more. The biggest pains are the dearth of libraries, the lack of &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Frustrations with erlang</h1>
+	<div class="entry-content"><p>With my work on erl-telehash and at Smarkets I find myself fighting erlang more and more. The biggest pains are the dearth of libraries, the lack of polymorphism and being forced into a single model of concurrency.</p>
+
+<!--more-->
+
+
+<p>The first is self-explanatory and pretty well-known. I frequently have to fire up a python process through a port to do something simple like send an email. Even the standard library is incomplete and inconsistent.</p>
+
+<p>The second doesn&#8217;t start to hurt until your codebase gets a bit bigger. For example, Smarkets makes a lot of use of fixed-precision decimal arithmetic which leads to code like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nn">decimal</span><span class="p">:</span><span class="n">mult</span><span class="p">(</span><span class="nv">Qty</span><span class="p">,</span>  <span class="nn">decimal</span><span class="p">:</span><span class="n">sub</span><span class="p">(</span><span class="nn">decimal</span><span class="p">:</span><span class="n">to_decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nv">Price</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It also means any time you want to change a data-structure for one with an equivalent interface you have to rewrite whole swathes of code.</p>
+
+<p>The third point is a bit more contentious. I&#8217;m fairly convinced that the erlang philosophy of fail-early, crash-only, restartable tasks is the right solution for most problems. What bugs me is that erlang conflates addresses, queues and actors by giving each process a single mailbox. This leads to problems like requiring the recipient of a message to have a global name if it is to be independently restartable, which means you can&#8217;t run more than one copy of that message topology on the same node. It also encourages processes to send messages directly to other processes which makes it difficult to create flexible, rewirable topologies or to isolate pieces of a topology for testing. I would prefer a model in which processes send and receive messages through queues which are wired together outside of the process. This would also allow restarting a process (and clearing but not deleting its queues) without giving it a global name.</p>
+
+<p>I&#8217;m not about to run out now and rewrite erl-telehash in another language. It&#8217;s close enough to complete (for my purposes at least) that I&#8217;ll just continue with the existing code. For future experiments, however, I want something better.</p>
+
+<p>The top candidate at the moment is clojure. It has the potential to replace my use of erlang and python, saving lots of cross-language pain. Agents look a lot like a (cleaner, saner) implementation of the <a href="http://scattered-thoughts.net/one/1300/292121/72985">mealy machines</a> that I wrote at Smarkets. <a href="https://github.com/ztellman/lamina">Lamina</a> neatly solves the queue pains I described above. <a href="http://code.google.com/p/clojure-contrib/wiki/DatalogOverview">Datalog</a> is the natural way to describe a lot of collections, including <a href="https://github.com/jamii/erl-telehash/blob/master/src/th_bucket.erl">th_bucket</a> which is in its current form is not obviously correct. The clojure community just seems to churn out well-designed libraries (lamina, aleph, slice, incanter, pallet, cascalog, storm, overtone etc).</p>
+
+<p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it&#8217;s fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-03T06:16:00+00:00" pubdate data-updated="true">03 Jan 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/erlang/'>erlang</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

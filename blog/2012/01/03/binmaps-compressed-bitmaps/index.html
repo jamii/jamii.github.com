@@ -1,0 +1,433 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Binmaps: compressed bitmaps - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="Lately I&#8217;ve been porting some code from c++. The code in question is a compressed bitmap used in swift to track which parts of a download have &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Binmaps: compressed bitmaps</h1>
+	<div class="entry-content"><p>Lately I&#8217;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
+
+<!--more-->
+
+
+<p>Here is the basic idea. Conceptually a binmap is a tree of bitmaps. In a leaf at the bottom of the tree each bit in the bitmap represents one bit. In a leaf one layer above the bottom each bit in the bitmap represents two bits. In a leaf two layers above the bottom each bit in the bitmap represents four bits etc.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">{</span> <span class="n">layers</span> <span class="o">:</span> <span class="kt">int</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">tree</span> <span class="o">:</span> <span class="n">tree</span> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="n">tree</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="k">of</span> <span class="kt">int</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Branch</span> <span class="k">of</span> <span class="n">tree</span> <span class="o">*</span> <span class="n">tree</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&#8217;s pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">;</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Bitmap</span> <span class="mi">0</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the string 00001100 would be:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">;</span> <span class="n">tree</span> <span class="o">=</span>
+</span><span class='line'>    <span class="nc">Branch</span>
+</span><span class='line'>      <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">(</span><span class="nc">Branch</span>
+</span><span class='line'>        <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">1</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">0</span><span class="o">))</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The worst case for this data structure is the string 0101010101&#8230; In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
+
+<p>Our data structure looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">module</span> <span class="nc">Array</span> <span class="o">=</span>
+</span><span class='line'><span class="k">struct</span>
+</span><span class='line'>  <span class="k">include</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="nc">Array1</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">geti</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">=</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">to_int</span> <span class="o">(</span><span class="nn">Bigarray</span><span class="p">.</span><span class="nn">Array1</span><span class="p">.</span><span class="n">get</span> <span class="kt">array</span> <span class="n">i</span><span class="o">)</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">seti</span> <span class="kt">array</span> <span class="n">i</span> <span class="n">v</span> <span class="o">=</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="nn">Array1</span><span class="p">.</span><span class="n">set</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">(</span><span class="nn">Bitmap</span><span class="p">.</span><span class="n">of_int</span> <span class="n">v</span><span class="o">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>    <span class="o">{</span> <span class="n">length</span> <span class="o">:</span> <span class="kt">int</span>
+</span><span class='line'>    <span class="o">;</span> <span class="n">layers</span> <span class="o">:</span> <span class="kt">int</span>
+</span><span class='line'>    <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="nn">Bitmap</span><span class="p">.</span><span class="n">t</span><span class="o">,</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">bigarray_elt</span><span class="o">,</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="n">c_layout</span><span class="o">)</span> <span class="nn">Array</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>    <span class="o">;</span> <span class="n">pointers</span> <span class="o">:</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>    <span class="o">;</span> <span class="k">mutable</span> <span class="n">free</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="n">node</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="k">of</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Pointer</span> <span class="k">of</span> <span class="kt">int</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">get_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="n">is_left</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">index</span> <span class="o">=</span> <span class="n">node_addr</span> <span class="o">+</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_left</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">match</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">get</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="bp">false</span> <span class="o">-&gt;</span> <span class="nc">Bitmap</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">get</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">|</span> <span class="bp">true</span> <span class="o">-&gt;</span> <span class="nc">Pointer</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">geti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="n">is_left</span> <span class="n">node</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">index</span> <span class="o">=</span> <span class="n">node_addr</span> <span class="o">+</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_left</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">match</span> <span class="n">node</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="n">bitmap</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nn">Widemap</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="bp">false</span><span class="o">;</span>
+</span><span class='line'>      <span class="nn">Array</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span> <span class="n">bitmap</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Pointer</span> <span class="kt">int</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nn">Widemap</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="bp">true</span><span class="o">;</span>
+</span><span class='line'>      <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span> <span class="kt">int</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Each pair of cells in the array represents a branch. Leaves are hoisted into their parent branch, replacing the pointer. Widemap.t is an extensible bitmap which we use here to track whether a given cell in the array is a pointer or a bitmap. The length field is the number of bits represented by bitmap. The free field will be explained later.</p>
+
+<p>Our previous example string 00001100 would now be represented like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(*</span>
+</span><span class='line'><span class="c">  0 -&gt; Bitmap 0</span>
+</span><span class='line'><span class="c">  1 -&gt; Pointer 2</span>
+</span><span class='line'><span class="c">  2 -&gt; Bitmap 1</span>
+</span><span class='line'><span class="c">  3 -&gt; Bitmap 0</span>
+</span><span class='line'><span class="c">*)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="o">[|</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span> <span class="o">|]</span>
+</span><span class='line'><span class="o">;</span> <span class="n">pointers</span> <span class="o">=</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">of_string</span> <span class="s2">&quot;0100&quot;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">free</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the bitmap is changed we may have to add or delete pairs eg if the above example changed to 00001111 it would be represented as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(*</span>
+</span><span class='line'><span class="c">  0 -&gt; Bitmap 0</span>
+</span><span class='line'><span class="c">  1 -&gt; Bitmap 1</span>
+</span><span class='line'><span class="c">  2 -&gt; ?</span>
+</span><span class='line'><span class="c">  3 -&gt; ?</span>
+</span><span class='line'><span class="c">*)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can grow and shrink the array as necessary, but since deleted pairs won&#8217;t necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">del_pair</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="o">=</span>
+</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">node_addr</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">node_addr</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">(* double the size of a full array and then initialise the freelist *)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">grow_array</span> <span class="n">binmap</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">old_len</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">dim</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">old_len</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">old_len</span> <span class="o">&lt;=</span> <span class="n">max_int</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">new_len</span> <span class="o">=</span> <span class="n">min</span> <span class="n">max_int</span> <span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">old_len</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">new_len</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="kt">array</span> <span class="o">=</span> <span class="n">create_array</span> <span class="n">new_len</span> <span class="k">in</span>
+</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">blit</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">sub</span> <span class="kt">array</span> <span class="mi">0</span> <span class="n">old_len</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="kt">array</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">old_len</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">old_len</span> <span class="k">to</span> <span class="n">new_len</span><span class="o">-</span><span class="mi">4</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span>  <span class="k">then</span> <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
+</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="kt">array</span> <span class="o">(</span><span class="n">new_len</span><span class="o">-</span><span class="mi">2</span><span class="o">)</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">add_pair</span> <span class="n">binmap</span> <span class="n">node_left</span> <span class="n">node_right</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">(</span><span class="k">if</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">grow_array</span> <span class="n">binmap</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">node_addr</span> <span class="o">=</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">free_next</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">geti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="k">in</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">free_next</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="bp">true</span> <span class="n">node_left</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="bp">false</span> <span class="n">node_right</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">node_addr</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I haven&#8217;t yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
+
+<p>With the freelist our modified example now looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="o">[|</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">|]</span>
+</span><span class='line'><span class="o">;</span> <span class="n">pointers</span> <span class="o">=</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">of_string</span> <span class="s2">&quot;0100&quot;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">free</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With the representation sorted the rest of the code more or less writes itself.</p>
+
+<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I&#8217;ve written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
+
+<p>The paper linked below suggests using a layered address scheme to expand the effective pointer size, where the first bit of the pointer is a flag indicating which layer the address is in. I would suggest rather than putting the flag in the pointer it would be simper to use information implicit in the structure of the tree eg is the current layer mod 8 = 0. Either way, this hugely increases the size of the address space at a the cost of a little extra complexity.</p>
+
+<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&#8217;t suggest using it without some serious testing.</p>
+
+<p>Overall I&#8217;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-01-03T06:16:00+00:00" pubdate data-updated="true">03 Jan 2012</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/binmap/'>binmap</a>, <a class='category' href='/blog/categories/data-structures/'>data structures</a>, <a class='category' href='/blog/categories/ocaml/'>ocaml</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
