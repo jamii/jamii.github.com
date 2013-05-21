@@ -16,7 +16,7 @@ The first thing that I want to fix in this series is offloading memory. There ar
 
 * What was I trying to remember to change X seconds ago?
 
-I've started using [deft](http://jblevins.org/projects/deft/) to answer both of these. Deft stores notes in a folder full of flat files and adds a simple incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.
+I've started using [deft](http://jblevins.org/projects/deft/) to answer both of these. Deft stores notes in a folder full of flat files and adds an incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.
 
 For long-term memory I create a new note every time I solve a problem or learn something useful. Within emacs M-' brings up the deft window, typing triggers the incremental search and hiting Enter opens the first matching note.
 
