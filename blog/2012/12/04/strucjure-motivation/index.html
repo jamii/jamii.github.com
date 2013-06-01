@@ -79,14 +79,14 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h1 class="title">Strucjure: motivation</h1>
-	<div class="entry-content"><p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&#8217;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
+	<div class="entry-content"><p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&rsquo;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
 
 <!--more-->
 
 
 <p>The core idea is that strucjure (and the <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;cad=rja&amp;ved=0CFIQFjAD&amp;url=http%3A%2F%2Flambda-the-ultimate.org%2Fnode%2F2477&amp;ei=lQ69UJqrLK-WyAHC1IGIBg&amp;usg=AFQjCNEJAMQULpZ62ASYefNHadlUWTlgKA&amp;sig2=E1ePKzLJJNaFw5BfEG9rrA">OMeta</a> library on which it is based) is not just yet-another-parser, but is instead a concise language for describing, manipulating and transforming data structures. The <a href="http://www.vpri.org/">VPRI</a> folks have done some amazing things with OMeta. My goal with strucjure is to see how much further this idea can be taken.</p>
 
-<p>(Note: For the purposes of this post I&#8217;ll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
+<p>(Note: For the purposes of this post I&rsquo;ll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
 
 <h1>Pattern matching</h1>
 
@@ -113,7 +113,7 @@
 
 <p>This is a concise, readable description of the various cases and replaces a chain of if-statements.</p>
 
-<p>If we stopped there, you could be forgiven for not caring. Simple examples don&#8217;t really demonstrate the power of pattern matching. Let&#8217;s instead look at a more complicated example - <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
+<p>If we stopped there, you could be forgiven for not caring. Simple examples don&rsquo;t really demonstrate the power of pattern matching. Let&rsquo;s instead look at a more complicated example &ndash; <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -214,7 +214,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is &#8216;if the tree looks like foo, replace it with bar&#8217;. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
+<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is &lsquo;if the tree looks like foo, replace it with bar&rsquo;. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -253,7 +253,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>(Note that this isn&#8217;t exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
+<p>(Note that this isn&rsquo;t exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
 
 <p>Strucjure is not very optimized yet, but if you use a more mature pattern-matching library then this code would be as fast as what you would write by hand. For complex patterns <a href="https://github.com/clojure/core.match">core.match</a> often does a better job of optimizing the decision tree than I can manage by hand, in much the same way that GCC does a better job of writing assembly code than I ever could.</p>
 
@@ -298,9 +298,9 @@
 
 <p>Strucjure supports patterns which only consume part of the input and can chain these patterns together. Combine that with pattern matching and you can very easily write back-tracking recursive-descent parsers.</p>
 
-<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can&#8217;t directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
+<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can&rsquo;t directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
 
-<p>Parsing doesn&#8217;t have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
+<p>Parsing doesn&rsquo;t have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -388,9 +388,9 @@
 
 <p>No more death-by-polish-notation!</p>
 
-<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn&#8217;t yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I&#8217;m too lazy to manually transform the grammar. It&#8217;s a temporary limitation.)</p>
+<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn&rsquo;t yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I&rsquo;m too lazy to manually transform the grammar. It&rsquo;s a temporary limitation.)</p>
 
-<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it&#8217;s was very easy to write, read and modify the parser.</p>
+<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it&rsquo;s was very easy to write, read and modify the parser.</p>
 
 <h1>Generic programming</h1>
 
@@ -468,7 +468,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven&#8217;t yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player&#8217;s plants for sunlight and nutrients. The plant language can be defined like this:</p>
+<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven&rsquo;t yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player&rsquo;s plants for sunlight and nutrients. The plant language can be defined like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -598,7 +598,7 @@
 
 <p>Writing code like this allows us to separate the shape of the data from the computation we perform over it.</p>
 
-<p>We&#8217;re also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
+<p>We&rsquo;re also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -641,7 +641,7 @@
 
 <p>I originally learned to code in haskell. One of the things I miss about strong static typing is it that it automatically provides documentation about the data structures used in your program. Strucjure patterns can fulfill the same role. In l-seed, if you are confused about what a rule should look like you can just go look at the +rule+ pattern.</p>
 
-<p>We can&#8217;t quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
+<p>We can&rsquo;t quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -654,7 +654,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven&#8217;t yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
+<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven&rsquo;t yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
 
 <h1>State machines</h1>
 
@@ -672,7 +672,7 @@ be used to make a very compact TCP/IP. Our first attempt was about 160 lines of 
 enough to run a website. We think this can be done even more compactly and clearly, and we plan to
 take another pass at this next year.</p></blockquote>
 
-<p>I haven&#8217;t yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+<p>I haven&rsquo;t yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
 
 <h1>Moving forward</h1>
 
@@ -737,13 +737,13 @@ take another pass at this next year.</p></blockquote>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is gross. I don&#8217;t have any ideas on how to overcome this.</p>
+<p>This is gross. I don&rsquo;t have any ideas on how to overcome this.</p>
 
-<p>I&#8217;ve already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
+<p>I&rsquo;ve already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
 
-<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don&#8217;t expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
+<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don&rsquo;t expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
 
-<p>For now, I&#8217;m going to dogfood strucjure in various projects while ruminating on improvements. I&#8217;m already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
+<p>For now, I&rsquo;m going to dogfood strucjure in various projects while ruminating on improvements. I&rsquo;m already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
 </div>
 
 

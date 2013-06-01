@@ -7,7 +7,7 @@
 	<meta name="author" content="Jamie Brandon">
 
 	
-	<meta name="description" content="Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler. We&#8217;ll &hellip;">
+	<meta name="description" content="Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler. We&rsquo;ll &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -84,23 +84,23 @@
 <!--more-->
 
 
-<p>We&#8217;ll start with the fundamental property of distributed systems:</p>
+<p>We&rsquo;ll start with the fundamental property of distributed systems:</p>
 
 <pre><code>Messages sent between machines may arrive zero or more times at any point after they are sent
 </code></pre>
 
 <p>This is the sole reason that building distributed systems is hard.</p>
 
-<p>For example, because of this property it is impossible for two computers communicating over a network to agree on the exact time. You can send me a message saying &#8220;it is now 10:00:00&#8221; but I don&#8217;t know how long it took for that message to arrive. We can send messages back and forth all day but we will never know for sure that we are synchronised.</p>
+<p>For example, because of this property it is impossible for two computers communicating over a network to agree on the exact time. You can send me a message saying &ldquo;it is now 10:00:00&rdquo; but I don&rsquo;t know how long it took for that message to arrive. We can send messages back and forth all day but we will never know for sure that we are synchronised.</p>
 
-<p>If we can&#8217;t agree on the time then we can&#8217;t always agree on what order things happen in. Suppose I say &#8220;my user logged on at 10:00:00&#8221; and you say &#8220;my user logged on at 10:00:01&#8221;. Maybe mine was first or maybe my clock is just fast relative to yours. The only way to know for sure is if something connects those two events. For example, if my user logged on and then sent your user an email and if you received that email before your user logged on then we know for sure that mine was first.</p>
+<p>If we can&rsquo;t agree on the time then we can&rsquo;t always agree on what order things happen in. Suppose I say &ldquo;my user logged on at 10:00:00&rdquo; and you say &ldquo;my user logged on at 10:00:01&rdquo;. Maybe mine was first or maybe my clock is just fast relative to yours. The only way to know for sure is if something connects those two events. For example, if my user logged on and then sent your user an email and if you received that email before your user logged on then we know for sure that mine was first.</p>
 
 <p>This concept is called causal ordering and is written like this:</p>
 
 <pre><code>A-&gt;B (event A is causally ordered before event B)
 </code></pre>
 
-<p>Let&#8217;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
+<p>Let&rsquo;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
 
 <pre><code>If A and B happen on the same machine and A happens before B then A-&gt;B
 
@@ -109,21 +109,21 @@ If I send you some message M and you receive it then (send M)-&gt;(recv M)
 If A-&gt;B and B-&gt;C then A-&gt;C
 </code></pre>
 
-<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> - every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> - sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
+<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> &ndash; every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> &ndash; sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
 
 <p><a href="http://upload.wikimedia.org/wikipedia/commons/5/55/Vector_Clock.svg">This image</a> shows a nice way to picture these relationships.</p>
 
-<p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&#8217;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
+<p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&rsquo;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
 
 <pre><code>If not(A-&gt;B) then A cannot possibly have caused B
 </code></pre>
 
-<p>Since we don&#8217;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&#8217;s say it again:</p>
+<p>Since we don&rsquo;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&rsquo;s say it again:</p>
 
 <pre><code>Communication bounds causality
 </code></pre>
 
-<p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&#8217;s skim over some examples.</p>
+<p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&rsquo;s skim over some examples.</p>
 
 <h2>Vector Clocks</h2>
 
@@ -150,7 +150,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </ol>
 
 
-<p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen - the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
+<p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen &ndash; the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
 
 <pre><code>Ordering requires waiting
 </code></pre>
@@ -159,7 +159,7 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <h2>Eventual Consistency</h2>
 
-<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice availability without having the state of different machines diverge irreparably. It doesn&#8217;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
+<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice availability without having the state of different machines diverge irreparably. It doesn&rsquo;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
 
 <h2>Further reading</h2>
 

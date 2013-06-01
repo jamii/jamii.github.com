@@ -79,7 +79,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h1 class="title">Telehash: basics</h1>
-	<div class="entry-content"><p><a href="http://telehash.org">TeleHash</a> is a p2p network based on the <a href="http://en.wikipedia.org/wiki/Kademlia">Kademlia DHT</a> that provides addressing and NAT traversal. These are problems that every p2p app has to deal with, including my <a href="https://github.com/jamii/dissertation">poppi</a>. Unfortunately there is no erlang implementation yet so I have to roll my own. The code so far lives <a href="http://github.com/jamii/erl-telehash">here</a> In this first post I&#8217;ll just cover the absolute basics - sending, receiving, encoding and decoding messages.</p>
+	<div class="entry-content"><p><a href="http://telehash.org">TeleHash</a> is a p2p network based on the <a href="http://en.wikipedia.org/wiki/Kademlia">Kademlia DHT</a> that provides addressing and NAT traversal. These are problems that every p2p app has to deal with, including my <a href="https://github.com/jamii/dissertation">poppi</a>. Unfortunately there is no erlang implementation yet so I have to roll my own. The code so far lives <a href="http://github.com/jamii/erl-telehash">here</a> In this first post I&rsquo;ll just cover the absolute basics &ndash; sending, receiving, encoding and decoding messages.</p>
 
 <!--more-->
 
@@ -99,7 +99,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The <em>telex</em> module also defines some convenience methods for working with json - <em>get/2</em>, <em>set/3</em>, <em>update/4</em> - which are used like this:</p>
+<p>The <em>telex</em> module also defines some convenience methods for working with json &ndash; <em>get/2</em>, <em>set/3</em>, <em>update/4</em> &ndash; which are used like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -257,7 +257,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>To demonstrate this, let&#8217;s write the simplest possible event handler:</p>
+<p>To demonstrate this, let&rsquo;s write the simplest possible event handler:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -393,7 +393,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here we ask localhost:55555 for the nearest nodes it knows to the end &#8216;a99&#8230;89d&#8217;. The reply is contained in the <em>.see</em> field (which is empty because localhost:55555 hasn&#8217;t seeded itself yet and so doesn&#8217;t know any nodes at all).</p>
+<p>Here we ask localhost:55555 for the nearest nodes it knows to the end &lsquo;a99&hellip;89d&rsquo;. The reply is contained in the <em>.see</em> field (which is empty because localhost:55555 hasn&rsquo;t seeded itself yet and so doesn&rsquo;t know any nodes at all).</p>
 
 <p>The next post will deal with dialing, at which point we will have a working announcer.</p>
 </div>

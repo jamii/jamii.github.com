@@ -84,9 +84,9 @@
 <!--more-->
 
 
-<p>First a disclaimer: this post reflects my current understanding of TeleHash and Kademlia and is highly likely to be wrong. This code has only received minimal testing. Properly testing a p2p network is not something I&#8217;m entirely sure how to do yet. Expect to see more on that in later posts.</p>
+<p>First a disclaimer: this post reflects my current understanding of TeleHash and Kademlia and is highly likely to be wrong. This code has only received minimal testing. Properly testing a p2p network is not something I&rsquo;m entirely sure how to do yet. Expect to see more on that in later posts.</p>
 
-<p>Each TeleHash node and each key in the DHT is identified by a 160 bit sha1 hash (aka end). In the original Kademlia paper the node ids are selected at random but in TeleHash they are the hashed address (IP:port) of the node. This means that malicious nodes don&#8217;t get to choose where they are inserted in the DHT.</p>
+<p>Each TeleHash node and each key in the DHT is identified by a 160 bit sha1 hash (aka end). In the original Kademlia paper the node ids are selected at random but in TeleHash they are the hashed address (IP:port) of the node. This means that malicious nodes don&rsquo;t get to choose where they are inserted in the DHT.</p>
 
 <p>Kademlia routing is based on the XOR distance between ends. This forms a metric space over the set of ends.</p>
 
@@ -111,7 +111,7 @@
 
 <p>Dialing works roughly as follows. Each node keeps track of all the other nodes it has seen. Upon receiving a +end signal a node will reply with a .see command containing the K nodes it is aware of which are closest to the specified end. To dial an end we send a +end signal to each of the K closest nodes we are aware of. Then to each node contained in the .see replies we send +end signals, and so on until we run out of nodes to contact.</p>
 
-<p>Now this is nice and simple and will work but it generates a huge amount of load on the network. To reduce this Kademlia introduces two additional rules. First, we only send up to A signals at a time and don&#8217;t send any new signals until previous signals have either generated a reply or timed out. Second, we finish early if at any point we have received replies from K nodes which are closer to the end than all the nodes we are waiting to contact. The Kademlia paper proves that under reasonable assumptions about the knowledge of each node this still has a very high chance to return the correct results.</p>
+<p>Now this is nice and simple and will work but it generates a huge amount of load on the network. To reduce this Kademlia introduces two additional rules. First, we only send up to A signals at a time and don&rsquo;t send any new signals until previous signals have either generated a reply or timed out. Second, we finish early if at any point we have received replies from K nodes which are closer to the end than all the nodes we are waiting to contact. The Kademlia paper proves that under reasonable assumptions about the knowledge of each node this still has a very high chance to return the correct results.</p>
 
 <p>The dialer process is an event handler which has two important data structures. The first stores the dialer configuration:</p>
 
@@ -128,7 +128,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The second record stores the state of the dialing process. The principle around which the dialer is designed is that the state record is a reflection of the outside world and the sole job of the dialer is to keep this record up to date while maintaining the invariants in the comments. This is often the way that I write code and I feel that it needs it&#8217;s own post once I can articulate it properly. It&#8217;s certainly heavily informed both by the designs in <a href="http://books.google.co.uk/books?id=SxPzSTcTalAC&amp;printsec=frontcover&amp;dq=okasaki+purely+functional&amp;hl=en&amp;ei=6GiHTdTcKY_RcfjR_ZkD&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CC4Q6AEwAA#v=onepage&amp;q&amp;f=false">Okasaki&#8217;s Purely Functional Data Structures</a> and by Conal Elliott&#8217;s ideas about <a href="http://conal.net/blog/posts/denotational-design-with-type-class-morphisms/">denotational semantics and type class morphisms</a>.</p>
+<p>The second record stores the state of the dialing process. The principle around which the dialer is designed is that the state record is a reflection of the outside world and the sole job of the dialer is to keep this record up to date while maintaining the invariants in the comments. This is often the way that I write code and I feel that it needs it&rsquo;s own post once I can articulate it properly. It&rsquo;s certainly heavily informed both by the designs in <a href="http://books.google.co.uk/books?id=SxPzSTcTalAC&amp;printsec=frontcover&amp;dq=okasaki+purely+functional&amp;hl=en&amp;ei=6GiHTdTcKY_RcfjR_ZkD&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CC4Q6AEwAA#v=onepage&amp;q&amp;f=false">Okasaki&rsquo;s Purely Functional Data Structures</a> and by Conal Elliott&rsquo;s ideas about <a href="http://conal.net/blog/posts/denotational-design-with-type-class-morphisms/">denotational semantics and type class morphisms</a>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -428,7 +428,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>That&#8217;s pretty much it - we now (probably) have a working dialer. I spent a fair few hours teasing this apart but hopefully the end result is fairly simple to understand. The full code is in the <a href="http://github.com/jamii/erl-telehash">repo</a> as always.</p>
+<p>That&rsquo;s pretty much it &ndash; we now (probably) have a working dialer. I spent a fair few hours teasing this apart but hopefully the end result is fairly simple to understand. The full code is in the <a href="http://github.com/jamii/erl-telehash">repo</a> as always.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -693,7 +693,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One last note: after I finished writing this I started thinking about what would happen if I run more than one dialer in parallel. Unlike Kademlia, TeleHash does not currently use command IDs so the dialer cannot tell if the response came in reply to its own command or in reply to the command of another dialer on the same node. It&#8217;s the kind of bug that would be very rare in actual use but might be carefully exploited by a malicious node. Finding these kinds of bugs is going to be really hard.</p>
+<p>One last note: after I finished writing this I started thinking about what would happen if I run more than one dialer in parallel. Unlike Kademlia, TeleHash does not currently use command IDs so the dialer cannot tell if the response came in reply to its own command or in reply to the command of another dialer on the same node. It&rsquo;s the kind of bug that would be very rare in actual use but might be carefully exploited by a malicious node. Finding these kinds of bugs is going to be really hard.</p>
 </div>
 
 

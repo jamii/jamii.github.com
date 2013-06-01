@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Tunneling in china - Scattered Thoughts</title>
+	<title>Flowing faster: backing up - Scattered Thoughts</title>
 	<meta name="author" content="Jamie Brandon">
 
 	
-	<meta name="description" content="In Shanghai I found that ssh was blocked at the protocol level so even running sshd on port 80 doesn&rsquo;t work. I don&rsquo;t whether this is &hellip;">
+	<meta name="description" content="A lot of the work in this series is going to be about improving my working environment. Let&rsquo;s start with backups so I don&rsquo;t lose all this &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,40 +78,52 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h1 class="title">Tunneling in china</h1>
-	<div class="entry-content"><p>In Shanghai I found that ssh was blocked at the protocol level so even running sshd on port 80 doesn&rsquo;t work. I don&rsquo;t whether this is widespread or whether it was our hotel in particular that was blocking it. Regardless, I found a workaround using httptunnel.</p>
+	<h1 class="title">Flowing faster: backing up</h1>
+	<div class="entry-content"><p>A lot of the work in this series is going to be about improving my working environment. Let&rsquo;s start with backups so I don&rsquo;t lose all this hard work.</p>
 
 <!--more-->
 
 
-<p>On a server outside China:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install httptunnel
-</span><span class='line'>sudo hts -F localhost:22 80
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>On your client machine:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo apt-get install httptunnel
-</span><span class='line'>sudo htc -F 22 my.server.com:80
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now you can use ssh to your hearts content:</p>
+<p>I backup my entire filesystem to <a href="http://www.tarsnap.com/">tarsnap</a> every week. I paid around $70 for the last year of usage which is cheap for the peace of mind it brings. The tarsnap documentation is excellent so I won&rsquo;t go through the setup here, just my usage:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh user@localhost
-</span><span class='line'>scp /some/file user@localhost:/some/file
-</span><span class='line'>darcs push user@localhost:/some/repo
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">set</span> -e
+</span><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>pacman -Qeq &gt; /home/jamie/packages
+</span><span class='line'><span class="nv">DATE</span><span class="o">=</span><span class="sb">`</span>date +%Y.%m.%d-%H.%m.%S<span class="sb">`</span>
+</span><span class='line'>tarsnap -v -c -f <span class="s2">&quot;alien@$DATE&quot;</span> <span class="se">\</span>
+</span><span class='line'>    --cachedir /usr/local/tarsnap-cache --keyfile /home/jamie/tarsnap.key <span class="se">\</span>
+</span><span class='line'>    --exclude /dev --exclude /proc --exclude /sys --exclude /tmp --exclude /run --exclude /mnt --exclude /media --exclude /lost+found --exclude /swapfile <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/.thumbnails --exclude /home/jamie/.mozilla/firefox/*.default/Cache --exclude /home/jamie/.cache/chromium <span class="se">\</span>
+</span><span class='line'>    --exclude /var/lib/pacman <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/Downloads <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/.cache <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/music <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/.local/share/Trash <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/VirtualBox* <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/old-home <span class="se">\</span>
+</span><span class='line'>    /
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>The first two lines of excludes are fairly standard. The rest come from looking through the output of <code>sudo du -h -t 100000000 /</code> for unnecessary folders.</p>
+
+<p>The restore process is pretty simple even for a different machine: install the os, restore /home/jamie, reinstall all packages in /home/jamie/packages, diff the rest of the backup and copy over anything that&rsquo;s not machine-specific.</p>
 </div>
 
 
@@ -128,8 +140,12 @@
   
 
 
-<time datetime="2011-02-07T06:16:00+00:00" pubdate data-updated="true">07 Feb 2011</time></div>
+<time datetime="2013-06-01T02:12:00+01:00" pubdate data-updated="true">01 Jun 2013</time></div>
 	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/flow/'>flow</a>
+
 
 </div>
 	
@@ -169,8 +185,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://scattered-thoughts.net/blog/2011/02/07/tunneling-in-china/';
-        var disqus_url = 'http://scattered-thoughts.net/blog/2011/02/07/tunneling-in-china/';
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/';
         var disqus_script = 'embed.js';
       
     (function () {

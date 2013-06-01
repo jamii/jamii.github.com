@@ -4,7 +4,7 @@
   <title><![CDATA[Category: texsearch | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/texsearch/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -43,7 +43,7 @@ type pos = int</p>
 
 <p>type t = int</p>
 
-<p>let pack_size = (Sys.word_size / 2) - 1
+<p>let pack_size = (Sys.word_size / 2) &ndash; 1
 let max_size = 1 lsl pack_size</p>
 
 <p>exception Invalid_suffix of id * pos</p>
@@ -56,7 +56,7 @@ let max_size = 1 lsl pack_size</p>
 
 <p>let unpack suffix =
   let id = suffix lsr pack_size in
-  let pos = suffix land (max_size - 1) in
+  let pos = suffix land (max_size &ndash; 1) in
   (id, pos)
 ```</p>
 
@@ -111,17 +111,17 @@ let distance latexL latexR =
   let maxl, maxr = Array.length latexL, Array.length latexR in
   if maxl = 0 then 0 else
   if maxr = 0 then maxl else
-  (<em> cache.(l).(r) is the distance between latexL[l to maxl] and latexR[r to maxr] </em>)
+  (<em> cache.(l).&reg; is the distance between latexL[l to maxl] and latexR[r to maxr] </em>)
   let cache = Array.make_matrix (maxl + 1) (maxr + 1) 0 in
   (<em> Must match everything on the left </em>)
-  for l = maxl - 1 downto 0 do</p>
+  for l = maxl &ndash; 1 downto 0 do</p>
 
 <pre><code>cache.(l).(maxr) &lt;- 1 + cache.(l+1).(maxr)
 </code></pre>
 
 <p>  done;
   (<em> General matching </em>)
-  for l = maxl - 1 downto 1 do</p>
+  for l = maxl &ndash; 1 downto 1 do</p>
 
 <pre><code>for r = maxr - 1 downto 0 do
   cache.(l).(r) &lt;-
@@ -133,7 +133,7 @@ let distance latexL latexR =
 
 <p>  done done;
   (<em> Non-matches on the right dont count until left starts matching </em>)
-  for r = maxr - 1 downto 0 do</p>
+  for r = maxr &ndash; 1 downto 0 do</p>
 
 <pre><code>cache.(0).(r) &lt;-
     minimum
@@ -149,26 +149,26 @@ let distance latexL latexR =
 <p>The search algorithm is built around a <a href="http://en.wikipedia.org/wiki/Suffix_array">suffix array</a> presenting the following interface:</p>
 
 <p>``` ocaml
-type 'a t</p>
+type &lsquo;a t</p>
 
-<p>val create : unit -> 'a t
-val add : 'a t -> ('a * Latex.t) list -> unit
-val prepare : 'a t -> unit</p>
+<p>val create : unit &ndash;> &lsquo;a t
+val add : 'a t &ndash;> ('a * Latex.t) list &ndash;> unit
+val prepare : 'a t &ndash;> unit</p>
 
-<p>val delete : 'a t -> ('a -> bool) -> unit</p>
+<p>val delete : &lsquo;a t &ndash;> ('a &ndash;> bool) &ndash;> unit</p>
 
-<p>val find_exact : 'a t -> Latex.t -> (int * 'a) list
-val find_approx : 'a t -> float -> Latex.t -> (int * 'a) list
-val find_query : 'a t -> float -> Query.t -> (int * 'a) list
+<p>val find_exact : &lsquo;a t &ndash;> Latex.t &ndash;> (int * 'a) list
+val find_approx : 'a t &ndash;> float &ndash;> Latex.t &ndash;> (int * 'a) list
+val find_query : 'a t &ndash;> float &ndash;> Query.t &ndash;> (int * 'a) list
 ```</p>
 
-<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers - the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
+<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers &ndash; the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
 
 <p>``` ocaml
 type id = int
 type pos = int</p>
 
-<p>type 'a t =
+<p>type &lsquo;a t =
   { latexs : Latex.t DynArray.t
   ; opaques : 'a DynArray.t
   ; mutable next_id : id
@@ -187,11 +187,11 @@ type pos = int</p>
 
 <p>``` ocaml
 let add sa latexs =
-  sa.unsorted &lt;- latexs @ sa.unsorted</p>
+  sa.unsorted &lt;&ndash; latexs @ sa.unsorted</p>
 
 <p>let insert sa (opaque, latex) =
   let id = sa.next_id in
-  sa.next_id &lt;- id + 1;
+  sa.next_id &lt;&ndash; id + 1;
   DynArray.add sa.opaques opaque;
   DynArray.add sa.latexs latex;
   id</p>
@@ -201,8 +201,8 @@ let add sa latexs =
   let new_suffixes = Util.concat_map (suffixes sa) ids in
   let cmp = compare_suffix sa in
   let array = Array.of_list (List.merge cmp (List.fast_sort cmp new_suffixes) (Array.to_list sa.array)) in
-  sa.unsorted &lt;- [];
-  sa.array &lt;- array
+  sa.unsorted &lt;&ndash; [];
+  sa.array &lt;&ndash; array
 ```</p>
 
 <p>So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in gather_exact (better name, anyone?), where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then find_exact runs through the HashSet and looks up the matching opaques.</p>
@@ -247,7 +247,7 @@ else () in
   List.map (exact_match sa) (Hashset.to_list ids)
 ```</p>
 
-<p>Now for the clever part - approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
+<p>Now for the clever part &ndash; approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
 
 <p>``` ocaml
 let gather_approx sa precision latex =
@@ -259,13 +259,13 @@ let gather_approx sa precision latex =
 <p>let approx_match sa precision latexL id =
   let latexR = DynArray.get sa.latexs id in
   match Latex.similar precision latexL latexR with
-  | Some dist -></p>
+  | Some dist &ndash;></p>
 
 <pre><code>  let opaque = DynArray.get sa.opaques id in
   Some (dist, opaque) 
 </code></pre>
 
-<p>  | None -></p>
+<p>  | None &ndash;></p>
 
 <pre><code>  None
 </code></pre>
@@ -280,20 +280,20 @@ let gather_approx sa precision latex =
 <p>``` ocaml
 let rec gather_query sa precision query =
   match query with
-  | Query.Latex (latex, _) -> gather_approx sa precision latex
-  | Query.And (query1, query2) -> Hashset.inter (gather_query sa precision query1) (gather_query sa precision query2)
-  | Query.Or (query1, query2) -> Hashset.union (gather_query sa precision query1) (gather_query sa precision query2)</p>
+  | Query.Latex (latex, _) &ndash;> gather_approx sa precision latex
+  | Query.And (query1, query2) &ndash;> Hashset.inter (gather_query sa precision query1) (gather_query sa precision query2)
+  | Query.Or (query1, query2) &ndash;> Hashset.union (gather_query sa precision query1) (gather_query sa precision query2)</p>
 
 <p>let query_match sa precision query id =
   let latexR = DynArray.get sa.latexs id in
   match Query.similar precision query latexR with
-  | Some dist -></p>
+  | Some dist &ndash;></p>
 
 <pre><code>  let opaque = DynArray.get sa.opaques id in
   Some (dist, opaque)
 </code></pre>
 
-<p>  | None -></p>
+<p>  | None &ndash;></p>
 
 <pre><code>  None
 </code></pre>

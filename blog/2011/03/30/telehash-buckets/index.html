@@ -172,7 +172,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is only long because records are purely a compile time structure ie we can&#8217;t write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
+<p>This is only long because records are purely a compile time structure ie we can&rsquo;t write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
 
 <p>The router is going to react to various events by calling the appropriate bucket functions and possibly sending out messages based on the result. The first event it has to handle is a node becoming unresponsive. The bucket will mark this node as stale and return a cache node which the router can attempt to verify.</p>
 
@@ -316,7 +316,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Any time we receive a message we learn that the node sending it exists (or not - we&#8217;ll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
+<p>Any time we receive a message we learn that the node sending it exists (or not &ndash; we&rsquo;ll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

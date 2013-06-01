@@ -4,7 +4,7 @@
   <title><![CDATA[Category: binmap | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/binmap/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -18,7 +18,7 @@
     <link href="http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/"/>
     <updated>2012-01-03T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps</id>
-    <content type="html"><![CDATA[<p>Lately I've been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
+    <content type="html"><![CDATA[<p>Lately I&rsquo;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
 
 <!--more-->
 
@@ -35,7 +35,7 @@ type t =
   | Branch of tree * tree
 ```</p>
 
-<p>Let's pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
+<p>Let&rsquo;s pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
 
 <p><code>ocaml
 { layers = 3
@@ -57,7 +57,7 @@ type t =
 
 <p>```</p>
 
-<p>The worst case for this data structure is the string 0101010101... In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
+<p>The worst case for this data structure is the string 0101010101&hellip; In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
 
 <p>Our data structure looks like this:</p>
 
@@ -85,19 +85,19 @@ end</p>
 <p>let get_node binmap node_addr is_left =
   let index = node_addr + (if is_left then 0 else 1) in
   match Widemap.get binmap.pointers index with
-  | false -> Bitmap (Array.get binmap.array index)
-  | true -> Pointer (Array.geti binmap.array index)</p>
+  | false &ndash;> Bitmap (Array.get binmap.array index)
+  | true &ndash;> Pointer (Array.geti binmap.array index)</p>
 
 <p>let set_node binmap node_addr is_left node =
   let index = node_addr + (if is_left then 0 else 1) in
   match node with
-  | Bitmap bitmap -></p>
+  | Bitmap bitmap &ndash;></p>
 
 <pre><code>  Widemap.set binmap.pointers index false;
   Array.set binmap.array index bitmap
 </code></pre>
 
-<p>  | Pointer int -></p>
+<p>  | Pointer int &ndash;></p>
 
 <pre><code>  Widemap.set binmap.pointers index true;
   Array.seti binmap.array index int
@@ -111,16 +111,16 @@ end</p>
 
 <p>``` ocaml
 (<em>
-  0 -> Bitmap 0
-  1 -> Pointer 2
-  2 -> Bitmap 1
-  3 -> Bitmap 0
+  0 &ndash;> Bitmap 0
+  1 &ndash;> Pointer 2
+  2 &ndash;> Bitmap 1
+  3 &ndash;> Bitmap 0
 </em>)</p>
 
 <p>{ length = 8;
 ; layers = 3;
 ; array = [| 0, 2, 1, 0 |]
-; pointers = Widemap.of_string "0100"
+; pointers = Widemap.of_string &ldquo;0100&rdquo;
 ; free = 0 }
 ```</p>
 
@@ -135,12 +135,12 @@ end</p>
 *)
 </code></p>
 
-<p>We can grow and shrink the array as necessary, but since deleted pairs won't necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
+<p>We can grow and shrink the array as necessary, but since deleted pairs won&rsquo;t necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
 
 <p>``` ocaml
 let del_pair binmap node_addr =
   Array.seti binmap.array node_addr binmap.free;
-  binmap.free &lt;- node_addr</p>
+  binmap.free &lt;&ndash; node_addr</p>
 
 <p>(<em> double the size of a full array and then initialise the freelist </em>)
 let grow_array binmap =
@@ -152,8 +152,8 @@ let grow_array binmap =
   assert (new_len mod 2 = 0);
   let array = create_array new_len in
   Array.blit binmap.array (Array.sub array 0 old_len);
-  binmap.array &lt;- array;
-  binmap.free &lt;- old_len;
+  binmap.array &lt;&ndash; array;
+  binmap.free &lt;&ndash; old_len;
   for i = old_len to new_len-4 do</p>
 
 <pre><code>if i mod 2 = 0  then Array.seti array i (i+2)
@@ -166,13 +166,13 @@ let grow_array binmap =
   (if binmap.free = 0 then grow_array binmap);
   let node_addr = binmap.free in
   let free_next = Array.geti binmap.array binmap.free in
-  binmap.free &lt;- free_next;
+  binmap.free &lt;&ndash; free_next;
   set_node binmap node_addr true node_left;
   set_node binmap node_addr false node_right;
   node_addr
 ```</p>
 
-<p>I haven't yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
+<p>I haven&rsquo;t yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
 
 <p>With the freelist our modified example now looks like this:</p>
 
@@ -186,13 +186,13 @@ let grow_array binmap =
 
 <p>With the representation sorted the rest of the code more or less writes itself.</p>
 
-<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I've written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
+<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I&rsquo;ve written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
 
 <p>The paper linked below suggests using a layered address scheme to expand the effective pointer size, where the first bit of the pointer is a flag indicating which layer the address is in. I would suggest rather than putting the flag in the pointer it would be simper to use information implicit in the structure of the tree eg is the current layer mod 8 = 0. Either way, this hugely increases the size of the address space at a the cost of a little extra complexity.</p>
 
-<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn't suggest using it without some serious testing.</p>
+<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&rsquo;t suggest using it without some serious testing.</p>
 
-<p>Overall I'm not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
+<p>Overall I&rsquo;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: telehash | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/telehash/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -33,14 +33,14 @@ record(bootstrap, { % the state of the router when bootstrapping</p>
  }).
 </code></pre>
 
-<p>bootstrap(Addresses, Timeout) -></p>
+<p>bootstrap(Addresses, Timeout) &ndash;></p>
 
 <pre><code>?INFO([bootstrapping]),
 State = #bootstrap{timeout=Timeout, addresses=Addresses},    
 {ok, _Pid} = gen_server:start_link(?MODULE, State, []).
 </code></pre>
 
-<p>init(State) -></p>
+<p>init(State) &ndash;></p>
 
 <pre><code>switch:listen(),
 case State of
@@ -59,7 +59,7 @@ end,
 <p>Then we listen until we either get a reply with a _to field or run out of time.</p>
 
 <p>``` erlang
-handle_info({switch, {recv, From, Telex}}, #bootstrap{addresses=Addresses}=Bootstrap) -></p>
+handle_info({switch, {recv, From, Telex}}, #bootstrap{addresses=Addresses}=Bootstrap) &ndash;></p>
 
 <pre><code>% bootstrapping, waiting to receive a message telling us our own address
 case {lists:member(From, Addresses), telex:get(Telex, '_to')} of
@@ -82,7 +82,7 @@ _ -&gt;
 end;
 </code></pre>
 
-<p>handle_info(giveup, #bootstrap{}=Bootstrap) -></p>
+<p>handle_info(giveup, #bootstrap{}=Bootstrap) &ndash;></p>
 
 <pre><code>% failed to bootstrap, die
 ?INFO([giveup, {state, Bootstrap}]),
@@ -104,10 +104,10 @@ end;
 
 <p>```</p>
 
-<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won't actually be dropped from the table until a replacement is found - this prevents the table from getting flushed if our network connection goes down.</p>
+<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&rsquo;t actually be dropped from the table until a replacement is found &ndash; this prevents the table from getting flushed if our network connection goes down.</p>
 
 <p>``` erlang
-ping(To) -></p>
+ping(To) &ndash;></p>
 
 <pre><code>Telex = telex:end_signal(util:random_end()),
 % do this in a message to self to avoid some awkward control flow
@@ -116,7 +116,7 @@ switch:send(To, Telex),
 erlang:send_after(?ROUTER_PING_TIMEOUT, self(), {timeout, Address}).
 </code></pre>
 
-<p>timedout(Address, Self, Table) -></p>
+<p>timedout(Address, Self, Table) &ndash;></p>
 
 <pre><code>bit_tree:update(
   fun (_Suffix, _Depth, _Gap, Bucket) -&gt;
@@ -135,7 +135,7 @@ erlang:send_after(?ROUTER_PING_TIMEOUT, self(), {timeout, Address}).
  ).
 </code></pre>
 
-<p>handle_info({pinging, Address}, #state{pinged=Pinged}=State) -></p>
+<p>handle_info({pinging, Address}, #state{pinged=Pinged}=State) &ndash;></p>
 
 <pre><code>% do this in a message to self to avoid some awkward control flow
 ?INFO([recording_ping, {address, Address}]),
@@ -143,7 +143,7 @@ Pinged2 = sets:add_element(Address, Pinged),
 {noreply, State#state{pinged=Pinged2}};
 </code></pre>
 
-<p>handle_info({timeout, Address}, #state{self=Self, pinged=Pinged, table=Table}=State) -></p>
+<p>handle_info({timeout, Address}, #state{self=Self, pinged=Pinged, table=Table}=State) &ndash;></p>
 
 <pre><code>case lists:member(Address, Pinged) of
 true -&gt;
@@ -159,10 +159,10 @@ end;
 
 <p>```</p>
 
-<p>One of the rules of the router is that it should never pass on information about a node that it hasn't personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
 
 <p>``` erlang
-touched(Address, Self, Table) -></p>
+touched(Address, Self, Table) &ndash;></p>
 
 <pre><code>bit_tree:update(
   fun (Suffix, _Depth, Gap, Bucket) -&gt;
@@ -180,7 +180,7 @@ touched(Address, Self, Table) -></p>
 <p>On receiving a .see command we record all the contained addresses as potential nodes and ping them to try to confirm their existence.</p>
 
 <p>``` erlang
-seen(Address, Self, Table) -></p>
+seen(Address, Self, Table) &ndash;></p>
 
 <pre><code>bit_tree:update(
   fun (Suffix, _Depth, _Gap, Bucket) -&gt;
@@ -204,13 +204,13 @@ seen(Address, Self, Table) -></p>
 <p>On receiving a +end signal we reply with a .see command containing the nearest K addresses which we have confirmed to exist.</p>
 
 <p>``` erlang
-see(To, End, Table) -></p>
+see(To, End, Table) &ndash;></p>
 
 <pre><code>Telex = telex:see_command(nearest(?K, End, Table)),
 switch:send(To, Telex).
 </code></pre>
 
-<p>nearest(N, End, Table) when N>=0 -></p>
+<p>nearest(N, End, Table) when N>=0 &ndash;></p>
 
 <pre><code>Bits = util:to_bits(End),
 iter:take(
@@ -226,7 +226,7 @@ iter:map(
 <p>On receiving a message we have handle the above three cases, which gets a little ugly.</p>
 
 <p>``` erlang
-handle_info({switch, {recv, From, Telex}}, #state{self=Self, pinged=Pinged, table=Table}=State) -></p>
+handle_info({switch, {recv, From, Telex}}, #state{self=Self, pinged=Pinged, table=Table}=State) &ndash;></p>
 
 <pre><code>% this counts as a reply
 Pinged2 = sets:del_element(From, Pinged),
@@ -269,23 +269,23 @@ end,
 
 <p>```</p>
 
-<p>The last responsibility of the router is to periodically refresh buckets which haven't recently seen any activity.</p>
+<p>The last responsibility of the router is to periodically refresh buckets which haven&rsquo;t recently seen any activity.</p>
 
 <p>``` erlang
-handle_info(refresh, #state{self=Self, table=Table}=State) -></p>
+handle_info(refresh, #state{self=Self, table=Table}=State) &ndash;></p>
 
 <pre><code>?INFO([refreshing_table]),
 refresh(Self, Table),
 {noreply, State};
 </code></pre>
 
-<p>handle_info({dialed, <em>, </em>}, State) -></p>
+<p>handle_info({dialed, <em>, </em>}, State) &ndash;></p>
 
 <pre><code>% response from a bucket refresh, we don't care
 {noreply, State};
 </code></pre>
 
-<p>dialed(Address, Self, Table) -></p>
+<p>dialed(Address, Self, Table) &ndash;></p>
 
 <pre><code>bit_tree:update(
   fun (_Suffix, _Depth, _Gap, Bucket) -&gt;
@@ -297,7 +297,7 @@ refresh(Self, Table),
  ).
 </code></pre>
 
-<p>needs_refresh(Bucket, Now) -></p>
+<p>needs_refresh(Bucket, Now) &ndash;></p>
 
 <pre><code>case bucket:last_dialed(Bucket) of
 never -&gt; 
@@ -307,7 +307,7 @@ Last -&gt;
 end.
 </code></pre>
 
-<p>refresh(Self, Table) -></p>
+<p>refresh(Self, Table) &ndash;></p>
 
 <pre><code>Now = now(),
 iter:foreach(
@@ -330,7 +330,7 @@ ok.
 
 <p>```</p>
 
-<p>That's it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
+<p>That&rsquo;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
 ]]></content>
   </entry>
   
@@ -346,7 +346,7 @@ ok.
 
 <p>Now obviously the documentation is not at fault here. I assumed that each handler got its own process solely because the callbacks resembled gen_server. However, a little googling reveals that several other people made the same mistake so I thought it was worth mentioning.</p>
 
-<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn't find the dialer process (because it doesn't exist, it's an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
+<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn&rsquo;t find the dialer process (because it doesn&rsquo;t exist, it&rsquo;s an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
 
 <p>Eventually I noticed that the switch_event process was blocking inside a receive and the whole thing unravelled. The dialer is an event handler so when started it calls:</p>
 
@@ -450,13 +450,13 @@ end.
 
 <p>```</p>
 
-<p>This is only long because records are purely a compile time structure ie we can't write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
+<p>This is only long because records are purely a compile time structure ie we can&rsquo;t write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
 
 <p>The router is going to react to various events by calling the appropriate bucket functions and possibly sending out messages based on the result. The first event it has to handle is a node becoming unresponsive. The bucket will mark this node as stale and return a cache node which the router can attempt to verify.</p>
 
 <p>``` erlang
 % this address failed to reply in a timely manner
-timedout(Address, Bucket) -></p>
+timedout(Address, Bucket) &ndash;></p>
 
 <pre><code>log:info([?MODULE, timing_out, Address, Bucket]),
 case get_node(Address, Bucket) of
@@ -480,7 +480,7 @@ end.
 </code></pre>
 
 <p>% return most recently seen cache node, if any exist
-pop_cache_hi(#bucket{cache=Cache}=Bucket) -></p>
+pop_cache_hi(#bucket{cache=Cache}=Bucket) &ndash;></p>
 
 <pre><code>case pq_maps:pop_hi(Cache) of
 {_Key, Node, Cache2} -&gt;
@@ -498,7 +498,7 @@ end.
 
 <p>``` erlang
 % this address has been reported to exist by another node
-seen(Address, Time, Suffix, Bucket) -></p>
+seen(Address, Time, Suffix, Bucket) &ndash;></p>
 
 <pre><code>log:info([?MODULE, seeing, Address, Bucket]),
 case get_node(Address, Bucket) of
@@ -529,7 +529,7 @@ end.
 </code></pre>
 
 <p>% return the oldest live node
-peek_live_lo(#bucket{live=Live}) -></p>
+peek_live_lo(#bucket{live=Live}) &ndash;></p>
 
 <pre><code>case pq_maps:peek_lo(Live) of
 none -&gt; none;
@@ -539,11 +539,11 @@ end.
 
 <p>```</p>
 
-<p>Any time we receive a message we learn that the node sending it exists (or not - we'll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
+<p>Any time we receive a message we learn that the node sending it exists (or not &ndash; we&rsquo;ll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
 
 <p>``` erlang
 % this address has been verified as actually existing
-touched(Address, Suffix, Time, Bucket, May_split) -></p>
+touched(Address, Suffix, Time, Bucket, May_split) &ndash;></p>
 
 <pre><code>log:info([?MODULE, touching, Address, Bucket]),
 case get_node(Address, Bucket) of
@@ -572,7 +572,7 @@ end.
 
 <p>``` erlang
 % assumes Address is not already in Bucket, otherwise crashes
-new_node(Address, Suffix, Time, Bucket, May_split) -></p>
+new_node(Address, Suffix, Time, Bucket, May_split) &ndash;></p>
 
 <pre><code>Node = #node{
   address = Address,
@@ -613,13 +613,13 @@ end.
 </code></pre>
 
 <p>% drop the oldest stale node, crashes if none exist
-drop_stale(#bucket{stale=Stale}=Bucket) -></p>
+drop_stale(#bucket{stale=Stale}=Bucket) &ndash;></p>
 
 <pre><code>{_Key, _Node, Stale2} = pq_maps:pop_one_hi(Stale),
 Bucket#bucket{stale=Stale2}.
 </code></pre>
 
-<p>split(Bucket) -></p>
+<p>split(Bucket) &ndash;></p>
 
 <pre><code>Nodes = to_list(Bucket),
 NodesF = [Node#node{suffix=Suffix2} || #node{suffix=[false|Suffix2]}=Node &lt;- Nodes],
@@ -632,7 +632,7 @@ NodesT = [Node#node{suffix=Suffix2} || #node{suffix=[true|Suffix2]}=Node &lt;- N
 <p>Finally, upon receiving a <em>+end</em> signal the router needs to reply with a <em>.see</em> command listing the <em>K</em> nearest nodes to the specified end. This will be done using a combination of <em>bit_tree:iter</em> and <em>bucket:nearest</em>.</p>
 
 <p>``` erlang
-nearest(N, End, #bucket{live=Live, stale=Stale}) -></p>
+nearest(N, End, #bucket{live=Live, stale=Stale}) &ndash;></p>
 
 <pre><code>Nodes = pq_maps:to_list(Live) ++ pq_maps:to_list(Stale),
 Num_nodes = pq_maps:size(Live) + pq_maps:size(Stale),
@@ -671,7 +671,7 @@ end.
 
 <p>-module(bit_tree).</p>
 
-<p>-include("conf.hrl").</p>
+<p>-include(&ldquo;conf.hrl&rdquo;).</p>
 
 <p>-export([empty/2, update/4, iter/2]).</p>
 
@@ -691,19 +691,19 @@ end.
  }).
 </code></pre>
 
-<p>% --- api ---</p>
+<p>% &mdash;&ndash; api &mdash;&ndash;</p>
 
-<p>empty(Size, Bucket) -></p>
+<p>empty(Size, Bucket) &ndash;></p>
 
 <pre><code>#leaf{size=Size, bucket=Bucket}.
 </code></pre>
 
-<p>update(Fun, Bits, Self, Tree) when is_function(Fun), is_list(Bits), is_list(Self) -></p>
+<p>update(Fun, Bits, Self, Tree) when is_function(Fun), is_list(Bits), is_list(Self) &ndash;></p>
 
 <pre><code>update(Fun, Bits, {self, Self}, 0, Tree).
 </code></pre>
 
-<p>update(Fun, Bits, Gap, Depth, #leaf{bucket=Bucket}) -></p>
+<p>update(Fun, Bits, Gap, Depth, #leaf{bucket=Bucket}) &ndash;></p>
 
 <pre><code>Gap_size =
 case Gap of
@@ -713,7 +713,7 @@ end,
 bucket_update_to_tree(Fun(Bits, Depth, Gap_size, Bucket));
 </code></pre>
 
-<p>update(Fun, Bits, Self, Depth, #branch{childF=ChildF, childT=ChildT}) -></p>
+<p>update(Fun, Bits, Self, Depth, #branch{childF=ChildF, childT=ChildT}) &ndash;></p>
 
 <pre><code>[Next|Bits2] = Bits,
 Self2 =
@@ -737,19 +737,19 @@ end.
 </code></pre>
 
 <p>% iterate through buckets in ascending order of xor distance to Bits
-iter(Bits, Tree) -></p>
+iter(Bits, Tree) &ndash;></p>
 
 <pre><code>iter(Bits, Tree, fun() -&gt; done end).
 </code></pre>
 
-<p>iter(_Bits, #leaf{bucket=Bucket}, Iter) -></p>
+<p>iter(_Bits, #leaf{bucket=Bucket}, Iter) &ndash;></p>
 
 <pre><code>fun () -&gt;
     {Bucket, Iter}
 end;
 </code></pre>
 
-<p>iter([Bit|Bits], #branch{childF=ChildF, childT=ChildT}, Iter) -></p>
+<p>iter([Bit|Bits], #branch{childF=ChildF, childT=ChildT}, Iter) &ndash;></p>
 
 <pre><code>case Bit of 
 true -&gt;
@@ -759,31 +759,31 @@ false -&gt;
 end.
 </code></pre>
 
-<p>% --- internal functions ---</p>
+<p>% &mdash;&ndash; internal functions &mdash;&ndash;</p>
 
-<p>tree_size(#leaf{size=Size}) -></p>
+<p>tree_size(#leaf{size=Size}) &ndash;></p>
 
 <pre><code>Size;
 </code></pre>
 
-<p>tree_size(#branch{size=Size}) -></p>
+<p>tree_size(#branch{size=Size}) &ndash;></p>
 
 <pre><code>Size.
 </code></pre>
 
-<p>bucket_update_to_tree({ok, Size, Bucket}) -></p>
+<p>bucket_update_to_tree({ok, Size, Bucket}) &ndash;></p>
 
 <pre><code>#leaf{size=Size, bucket=Bucket};
 </code></pre>
 
-<p>bucket_update_to_tree({split, SplitF, SplitT}) -></p>
+<p>bucket_update_to_tree({split, SplitF, SplitT}) &ndash;></p>
 
 <pre><code>ChildF = bucket_update_to_tree(SplitF),
 ChildT = bucket_update_to_tree(SplitT),
 #branch{size=tree_size(ChildF)+tree_size(ChildT), childF=ChildF, childT=ChildT}.
 </code></pre>
 
-<p>% --- end ---
+<p>% &mdash;&ndash; end &mdash;&ndash;
 ```</p>
 
 <p>And the corresponding test code.</p>
@@ -793,24 +793,24 @@ ChildT = bucket_update_to_tree(SplitT),
 
 <p>-module(test_bucket).</p>
 
-<p>-include("conf.hrl").</p>
+<p>-include(&ldquo;conf.hrl&rdquo;).</p>
 
 <p>-export([bits/1, add/3, split/1, add_to_tree/2, make_tree/1, distance/2, list_from/2]).</p>
 
 <p>-define(MAX_SIZE, 3).
 -define(BITS, ?END_BITS).</p>
 
-<p>bits(Int) -></p>
+<p>bits(Int) &ndash;></p>
 
 <pre><code>util:to_bits(&lt;&lt;Int:?BITS&gt;&gt;).
 </code></pre>
 
-<p>add(Suffix, Int, Bucket) -></p>
+<p>add(Suffix, Int, Bucket) &ndash;></p>
 
 <pre><code>split([{Suffix, Int} | Bucket]).
 </code></pre>
 
-<p>split(Bucket) -></p>
+<p>split(Bucket) &ndash;></p>
 
 <pre><code>if 
 length(Bucket) &gt; ?MAX_SIZE -&gt; 
@@ -822,7 +822,7 @@ true -&gt;
 end.
 </code></pre>
 
-<p>add_to_tree(Int, Tree) -></p>
+<p>add_to_tree(Int, Tree) &ndash;></p>
 
 <pre><code>bit_tree:update(
   fun (Suffix, _Depth, _Gap_size, Bucket) -&gt; 
@@ -833,19 +833,19 @@ end.
   Tree).
 </code></pre>
 
-<p>make_tree(Ints) -></p>
+<p>make_tree(Ints) &ndash;></p>
 
 <pre><code>Tree = bit_tree:empty(0, []),
 lists:foldl(fun add_to_tree/2, Tree, Ints).
 </code></pre>
 
-<p>distance(IntA, IntB) -></p>
+<p>distance(IntA, IntB) &ndash;></p>
 
 <pre><code>util:distance({'end', &lt;&lt;IntA:?BITS&gt;&gt;}, {'end', &lt;&lt;IntB:?BITS&gt;&gt;}).
 </code></pre>
 
 <p>% output <em>should</em> be in ascending order
-list_from(Int, Tree) -></p>
+list_from(Int, Tree) &ndash;></p>
 
 <pre><code>List = util:iter_to_list(bit_tree:iter(bits(Int), Tree)),
 lists:map(
@@ -864,16 +864,16 @@ lists:map(
     <link href="http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees/"/>
     <updated>2011-03-23T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees</id>
-    <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I'm still mulling over the protocol so we'll skip to the routing table.</p>
+    <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&rsquo;m still mulling over the protocol so we&rsquo;ll skip to the routing table.</p>
 
 <!--more-->
 
 
-<p>I'll add the usual 'I don't understand Kademlia and I didn't test my code' disclaimer in here.</p>
+<p>I&rsquo;ll add the usual &lsquo;I don&rsquo;t understand Kademlia and I didn&rsquo;t test my code&rsquo; disclaimer in here.</p>
 
-<p>Routing in the Kademlia paper is described using what can best be called the 'mash everything together and be vague about the details' pattern. I want my switch to be a bit cleaner than that so I've split it into three modules. The first of these is the bit_tree.</p>
+<p>Routing in the Kademlia paper is described using what can best be called the &lsquo;mash everything together and be vague about the details&rsquo; pattern. I want my switch to be a bit cleaner than that so I&rsquo;ve split it into three modules. The first of these is the bit_tree.</p>
 
-<p>The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don't either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234... then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a <em>.see</em> command.</p>
+<p>The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don&rsquo;t either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234&hellip; then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a <em>.see</em> command.</p>
 
 <p>So here is a bog-standard binary suffix tree:</p>
 
@@ -896,7 +896,7 @@ lists:map(
 
 <p>```</p>
 
-<p>When adding nodes to a bucket we need to keep track of certain numbers which will be used by the router to decide when to split buckets. Some of these are quite complicated so to make this easier we will work with a zipper-like structure instead of using <em>leaf</em> and <em>branch</em> directly. If you know what a zipper is the code in this post will make sense. If you don't know what a zipper is, go find out. When you come back the code in this post will make sense.</p>
+<p>When adding nodes to a bucket we need to keep track of certain numbers which will be used by the router to decide when to split buckets. Some of these are quite complicated so to make this easier we will work with a zipper-like structure instead of using <em>leaf</em> and <em>branch</em> directly. If you know what a zipper is the code in this post will make sense. If you don&rsquo;t know what a zipper is, go find out. When you come back the code in this post will make sense.</p>
 
 <p>``` erlang
 % zipper-esque structure marking a position in a bit_tree
@@ -913,12 +913,12 @@ lists:map(
 
 <p>```</p>
 
-<p>The finger keeps track of where the nodes own end is located in the tree in order to calculate something I have termed the gap - the size of the largest sub-tree containing the nodes own end but not touching the finger.</p>
+<p>The finger keeps track of where the nodes own end is located in the tree in order to calculate something I have termed the gap &ndash; the size of the largest sub-tree containing the nodes own end but not touching the finger.</p>
 
 <p>The empty bit_tree is easy to define:</p>
 
 <p>``` erlang
-empty(Self, Bucket, Sizer) -></p>
+empty(Self, Bucket, Sizer) &ndash;></p>
 
 <pre><code>#finger{
    sizer = Sizer,
@@ -934,7 +934,7 @@ empty(Self, Bucket, Sizer) -></p>
 <p>Moving around within the tree is a little more complicated but if you already went away and read about zippers it should feel familiar. Most of the work is in keeping track of the gap.</p>
 
 <p>``` erlang
-extend(Bits, #finger{tree=#leaf{}}=Finger) -> % must always end on a leaf</p>
+extend(Bits, #finger{tree=#leaf{}}=Finger) &ndash;> % must always end on a leaf</p>
 
 <pre><code>{Bits, Finger};
 </code></pre>
@@ -975,7 +975,7 @@ Finger2 = Finger#finger{
 extend(Bits, Finger2).
 </code></pre>
 
-<p>retract(0, Finger) -></p>
+<p>retract(0, Finger) &ndash;></p>
 
 <pre><code>Finger;
 </code></pre>
@@ -1023,7 +1023,7 @@ retract(N-1, Finger2).
 <p>The <em>extend</em> and <em>retract</em> functions are only used internally. We export a much simpler function, <em>move_to</em>, which moves the finger to point at the bucket corresponding to the specified end.</p>
 
 <p>``` erlang
-move_to(Bits, #finger{depth=Depth}=Finger) when length(Bits) == ?END_BITS -></p>
+move_to(Bits, #finger{depth=Depth}=Finger) when length(Bits) == ?END_BITS &ndash;></p>
 
 <pre><code>% !!! naive version
 extend(Bits, retract(Depth, Finger)).
@@ -1031,7 +1031,7 @@ extend(Bits, retract(Depth, Finger)).
 
 <p>```</p>
 
-<p>We could make this more efficient by only retracting until the finger meets <em>Bits</em> partway up. For now I don't expect performance of the bit_tree to be an issue.</p>
+<p>We could make this more efficient by only retracting until the finger meets <em>Bits</em> partway up. For now I don&rsquo;t expect performance of the bit_tree to be an issue.</p>
 
 <p>Now that we can find buckets we can modify them. Deciding when to split buckets is not the concern of the bit_tree so we delegate it to the caller.</p>
 
@@ -1046,12 +1046,12 @@ Tree = bucket_update_to_tree(Sizer, Fun(Bucket)),
 Finger#finger{tree=Tree}.
 </code></pre>
 
-<p>bucket_update_to_tree(Sizer, {ok, Bucket}) -></p>
+<p>bucket_update_to_tree(Sizer, {ok, Bucket}) &ndash;></p>
 
 <pre><code>#leaf{size=Sizer(Bucket), bucket=Bucket};
 </code></pre>
 
-<p>bucket_update_to_tree(Sizer, {split, SplitF, SplitT}) -></p>
+<p>bucket_update_to_tree(Sizer, {split, SplitF, SplitT}) &ndash;></p>
 
 <pre><code>ChildF = bucket_update_to_tree(Sizer, SplitF),
 ChildT = bucket_update_to_tree(Sizer, SplitT),
@@ -1064,33 +1064,33 @@ ChildT = bucket_update_to_tree(Sizer, SplitT),
 
 <p>``` erlang
 % iterate through buckets in ascending order of xor distance to (current position ++ Suffix)
-iter(Suffix, #finger{tree=Tree, zipper=Zipper}) -></p>
+iter(Suffix, #finger{tree=Tree, zipper=Zipper}) &ndash;></p>
 
 <pre><code>iter_buckets(Tree, Suffix, iter_zipper(Zipper, Suffix)).
 </code></pre>
 
 <p>% iterate through buckets in ascending order of xor distance to (current position ++ Suffix)
-iter_zipper([], _Suffix) -></p>
+iter_zipper([], _Suffix) &ndash;></p>
 
 <pre><code>fun () -&gt; 
     done
 end;
 </code></pre>
 
-<p>iter_zipper([{Bit, Tree} | Zipper], Suffix) -></p>
+<p>iter_zipper([{Bit, Tree} | Zipper], Suffix) &ndash;></p>
 
 <pre><code>iter_buckets(Tree, Suffix, iter_zipper(Zipper, [not(Bit)|Suffix])).
 </code></pre>
 
 <p>% iterate through buckets in ascending order of xor distance to Bits, then hand over to Iter
-iter_buckets(#leaf{bucket=Bucket}, _Bits, Iter) -></p>
+iter_buckets(#leaf{bucket=Bucket}, _Bits, Iter) &ndash;></p>
 
 <pre><code>fun () -&gt;
     {Bucket, Iter}
 end;
 </code></pre>
 
-<p>iter_buckets(#branch{childF=ChildF, childT=ChildT}, [Bit|Bits], Iter) -></p>
+<p>iter_buckets(#branch{childF=ChildF, childT=ChildT}, [Bit|Bits], Iter) &ndash;></p>
 
 <pre><code>case Bit of 
 true -&gt;
@@ -1116,24 +1116,24 @@ bit_tree:iter(Suffix, Tree2)
 
 <p>-module(test_bucket).</p>
 
-<p>-include("conf.hrl").</p>
+<p>-include(&ldquo;conf.hrl&rdquo;).</p>
 
 <p>-export([bits/1, add/3, split/1, move_to/2, add_to_tree/2, make_tree/2, distance/2, move_list_from/2, list_from/3]).</p>
 
 <p>-define(MAX_SIZE, 3).
 -define(BITS, ?END_BITS).</p>
 
-<p>bits(Int) -></p>
+<p>bits(Int) &ndash;></p>
 
 <pre><code>util:to_bits(&lt;&lt;Int:?BITS&gt;&gt;).
 </code></pre>
 
-<p>add(Suffix, Int, Bucket) -></p>
+<p>add(Suffix, Int, Bucket) &ndash;></p>
 
 <pre><code>split([{Suffix, Int} | Bucket]).
 </code></pre>
 
-<p>split(Bucket) -></p>
+<p>split(Bucket) &ndash;></p>
 
 <pre><code>if 
 length(Bucket) &gt; ?MAX_SIZE -&gt; 
@@ -1145,36 +1145,36 @@ true -&gt;
 end.
 </code></pre>
 
-<p>move_to(Int, Tree) -></p>
+<p>move_to(Int, Tree) &ndash;></p>
 
 <pre><code>bit_tree:move_to(bits(Int), Tree).
 </code></pre>
 
-<p>add_to_tree(Int, Tree) -></p>
+<p>add_to_tree(Int, Tree) &ndash;></p>
 
 <pre><code>{Suffix, Tree2} = move_to(Int, Tree),
 bit_tree:update(fun (Bucket) -&gt; add(Suffix, Int, Bucket) end, Tree2).
 </code></pre>
 
-<p>make_tree(Int, Ints) -></p>
+<p>make_tree(Int, Ints) &ndash;></p>
 
 <pre><code>Tree = bit_tree:empty(bits(Int), [], fun (Bucket) -&gt; length(Bucket) end),
 lists:foldl(fun add_to_tree/2, Tree, Ints).
 </code></pre>
 
-<p>distance(IntA, IntB) -></p>
+<p>distance(IntA, IntB) &ndash;></p>
 
 <pre><code>util:distance({'end', &lt;&lt;IntA:?BITS&gt;&gt;}, {'end', &lt;&lt;IntB:?BITS&gt;&gt;}).
 </code></pre>
 
 <p>% output <em>should</em> be in ascending order
-move_list_from(Int, Tree) -></p>
+move_list_from(Int, Tree) &ndash;></p>
 
 <pre><code>{Suffix, Tree2} = bit_tree:move_to(bits(Int), Tree),
 list_from(Int, Suffix, Tree2).
 </code></pre>
 
-<p>list_from(Int, Suffix, Tree) -></p>
+<p>list_from(Int, Suffix, Tree) &ndash;></p>
 
 <pre><code>List = util:iter_to_list(bit_tree:iter(Suffix, Tree)),
 lists:map(
@@ -1236,10 +1236,10 @@ lists:map(
  [{44,701},{45,700}],
  [{46,703},{47,702}],
  [{48,673},{49,672}],
- [{50,675},{51,...}],
- [{52,...},{...}],
- [{...}|...],
- [...]|...]
+ [{50,675},{51,&hellip;}],
+ [{52,&hellip;},{&hellip;}],
+ [{&hellip;}|&hellip;],
+ [&hellip;]|&hellip;]
 27> lists:flatten(List) == lists:sort(lists:flatten(List)).
 true
 ```</p>

@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -14,11 +14,64 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Flowing faster: backing up]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/"/>
+    <updated>2013-06-01T02:12:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up</id>
+    <content type="html"><![CDATA[<p>A lot of the work in this series is going to be about improving my working environment. Let&rsquo;s start with backups so I don&rsquo;t lose all this hard work.</p>
+
+<!--more-->
+
+
+<p>I backup my entire filesystem to <a href="http://www.tarsnap.com/">tarsnap</a> every week. I paid around $70 for the last year of usage which is cheap for the peace of mind it brings. The tarsnap documentation is excellent so I won&rsquo;t go through the setup here, just my usage:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">set</span> -e
+</span><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>pacman -Qeq &gt; /home/jamie/packages
+</span><span class='line'><span class="nv">DATE</span><span class="o">=</span><span class="sb">`</span>date +%Y.%m.%d-%H.%m.%S<span class="sb">`</span>
+</span><span class='line'>tarsnap -v -c -f <span class="s2">&quot;alien@$DATE&quot;</span> <span class="se">\</span>
+</span><span class='line'>    --cachedir /usr/local/tarsnap-cache --keyfile /home/jamie/tarsnap.key <span class="se">\</span>
+</span><span class='line'>    --exclude /dev --exclude /proc --exclude /sys --exclude /tmp --exclude /run --exclude /mnt --exclude /media --exclude /lost+found --exclude /swapfile <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/.thumbnails --exclude /home/jamie/.mozilla/firefox/*.default/Cache --exclude /home/jamie/.cache/chromium <span class="se">\</span>
+</span><span class='line'>    --exclude /var/lib/pacman <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/Downloads <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/.cache <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/music <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/.local/share/Trash <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/VirtualBox* <span class="se">\</span>
+</span><span class='line'>    --exclude /home/jamie/old-home <span class="se">\</span>
+</span><span class='line'>    /
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first two lines of excludes are fairly standard. The rest come from looking through the output of <code>sudo du -h -t 100000000 /</code> for unnecessary folders.</p>
+
+<p>The restore process is pretty simple even for a different machine: install the os, restore /home/jamie, reinstall all packages in /home/jamie/packages, diff the rest of the backup and copy over anything that&rsquo;s not machine-specific.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Flowing faster: External memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
     <updated>2013-05-21T20:43:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
-    <content type="html"><![CDATA[<p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&#8217;m on my own with the first option, but a better development environment can help with the latter two.</p>
+    <content type="html"><![CDATA[<p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
 
 <!--more-->
 
@@ -31,13 +84,13 @@
 </ul>
 
 
-<p>I&#8217;ve started using <a href="http://jblevins.org/projects/deft/">deft</a> to answer both of these. Deft stores notes in a folder full of flat files and adds an incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.</p>
+<p>I&rsquo;ve started using <a href="http://jblevins.org/projects/deft/">deft</a> to answer both of these. Deft stores notes in a folder full of flat files and adds an incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.</p>
 
-<p>For long-term memory I create a new note every time I solve a problem or learn something useful. Within emacs M-&#8217; brings up the deft window, typing triggers the incremental search and hiting Enter opens the first matching note.</p>
+<p>For long-term memory I create a new note every time I solve a problem or learn something useful. Within emacs M-&lsquo; brings up the deft window, typing triggers the incremental search and hiting Enter opens the first matching note.</p>
 
-<p>For short-term memory I have a single note called stack. Hitting C-&#8217; opens the stack note with the cursor on a new blank line for adding items to the stack. Hitting C-DEL deletes the previous line and C-q closes the stack. Hopefully this is sufficiently low-friction that the extra memory makes up for the context switch.</p>
+<p>For short-term memory I have a single note called stack. Hitting C-&lsquo; opens the stack note with the cursor on a new blank line for adding items to the stack. Hitting C-DEL deletes the previous line and C-q closes the stack. Hopefully this is sufficiently low-friction that the extra memory makes up for the context switch.</p>
 
-<p>My config is <a href="https://github.com/jamii/emacs-live-packs/blob/master/deft-pack/init.el">here</a>. I&#8217;m considering writing a gnome-shell extension which displays the last line of the stack in the status bar to remind me what I&#8217;m supposed to be doing when my mental stack gets rudely dumped. I also want to add the global key bindings to gnome-shell so I don&#8217;t have to navigate to emacs first.</p>
+<p>My config is <a href="https://github.com/jamii/emacs-live-packs/blob/master/deft-pack/init.el">here</a>. I&rsquo;m considering writing a gnome-shell extension which displays the last line of the stack in the status bar to remind me what I&rsquo;m supposed to be doing when my mental stack gets rudely dumped. I also want to add the global key bindings to gnome-shell so I don&rsquo;t have to navigate to emacs first.</p>
 
 <p>This is a very simple tool, which is kind of the point. The more stucture and options added to a note-taking tool the more effort it takes to actually use it and the more likely it is that I lose my entire mental stack whilst doing so.</p>
 ]]></content>
@@ -64,13 +117,13 @@
 
 <p>Currently core.logic (and cKanren before it) complects all three of these. My patch partly decomplects the latter from the first two, allowing different search algorithms to be specified independently of the problem specification.</p>
 
-<p>Let&#8217;s look at how core.logic works. I&#8217;m going to gloss over a lot of implementation details in order to make the core ideas clearer.</p>
+<p>Let&rsquo;s look at how core.logic works. I&rsquo;m going to gloss over a lot of implementation details in order to make the core ideas clearer.</p>
 
 <p>The search tree in core.logic is representated as a lazy stream of the non-failed leaves of the tree. This stream can be:</p>
 
 <ul>
-<li><p><code>nil</code> - the empty stream</p></li>
-<li><p><code>(Choice. head tail)</code> - a cons cell</p></li>
+<li><p><code>nil</code> &ndash; the empty stream</p></li>
+<li><p><code>(Choice. head tail)</code> &ndash; a cons cell</p></li>
 </ul>
 
 
@@ -119,7 +172,7 @@
 <p>We can perform breadth-first search by adding a new stream type:</p>
 
 <ul>
-<li><code>(fn [] stream)</code> - a thunk representing a branch in the search tree</li>
+<li><code>(fn [] stream)</code> &ndash; a thunk representing a branch in the search tree</li>
 </ul>
 
 
@@ -170,15 +223,15 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I suspect the reason that core.logic didn&#8217;t yet have fair conjunction is entirely due to this stream representation, which complects all three stages of constraint solving and hides the underlying search tree. Since shackles is based on gecode it has the advantage of a much clearer theoretical framework (I strongly recommend <a href="http://www.gecode.org/paper.html?id=Tack:PhD:2009">this paper</a>, not just for the insight into gecode but as a shining example of how mathematical intuition can be used to guide software design).</p>
+<p>I suspect the reason that core.logic didn&rsquo;t yet have fair conjunction is entirely due to this stream representation, which complects all three stages of constraint solving and hides the underlying search tree. Since shackles is based on gecode it has the advantage of a much clearer theoretical framework (I strongly recommend <a href="http://www.gecode.org/paper.html?id=Tack:PhD:2009">this paper</a>, not just for the insight into gecode but as a shining example of how mathematical intuition can be used to guide software design).</p>
 
 <p>The first step in introducing fair conjunction to core.logic is to explicitly represent the search tree. The types are similar:</p>
 
 <ul>
-<li><code>nil</code> - the empty tree</li>
-<li><code>(Result. state)</code> - a leaf</li>
-<li><code>(Choice. left right)</code> - a branch</li>
-<li><code>(Thunk. state goal)</code> - a thunk containing the current state and a sub-goal</li>
+<li><code>nil</code> &ndash; the empty tree</li>
+<li><code>(Result. state)</code> &ndash; a leaf</li>
+<li><code>(Choice. left right)</code> &ndash; a branch</li>
+<li><code>(Thunk. state goal)</code> &ndash; a thunk containing the current state and a sub-goal</li>
 </ul>
 
 
@@ -222,15 +275,15 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The crucial difference here is that bind-fair takes advantage of the continuation-like thunk to interleave both goals, allowing each to do one thunk&#8217;s worth of work before switching to the next.</p>
+<p>The crucial difference here is that bind-fair takes advantage of the continuation-like thunk to interleave both goals, allowing each to do one thunk&rsquo;s worth of work before switching to the next.</p>
 
-<p>(We keep bind-unfair around because it tends to be faster in practice - when you know what order your goals will be run in you can use domain knowledge to specify the most optimal order. However, making program evaluation dependent on goal ordering is less declarative and there are also some problems that cannot be specified without fair conjunction. It&#8217;s nice to have both.)</p>
+<p>(We keep bind-unfair around because it tends to be faster in practice &ndash; when you know what order your goals will be run in you can use domain knowledge to specify the most optimal order. However, making program evaluation dependent on goal ordering is less declarative and there are also some problems that cannot be specified without fair conjunction. It&rsquo;s nice to have both.)</p>
 
 <p>Now that we explicity represent the tree we can use different search algorithms. My patch defaults to lazy, breadth-first search (to maintain the previous semantics) but it also supplies a variety of others including a <a href="https://github.com/jamii/core.logic/blob/flexible-search/src/main/clojure/clojure/core/logic/par.clj#L49">parallel depth-first search</a> using <a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html">fork-join</a>.</p>
 
-<p>I still need to write a few more tests and sign the clojure contributor agreement before this can be considered for merging. I also have a pesky performance regression in lazy searches - this branch sometimes does more work than the original when only finding the first solution. I&#8217;m not sure yet whether this is down to a lack of laziness somewhere or maybe just a result of a slightly different search order. Either way, it needs to be fixed.</p>
+<p>I still need to write a few more tests and sign the clojure contributor agreement before this can be considered for merging. I also have a pesky performance regression in lazy searches &ndash; this branch sometimes does more work than the original when only finding the first solution. I&rsquo;m not sure yet whether this is down to a lack of laziness somewhere or maybe just a result of a slightly different search order. Either way, it needs to be fixed.</p>
 
-<p>After this change, core.logic still complects the specification of the search space and the generation of the search tree (eg we have to choose between bind-unfair and bind-fair in the problem specification). At some point I would like to either fix that in core.logic or finish work on shackles. For now though, I&#8217;m going back to working on <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+<p>After this change, core.logic still complects the specification of the search space and the generation of the search tree (eg we have to choose between bind-unfair and bind-fair in the problem specification). At some point I would like to either fix that in core.logic or finish work on shackles. For now though, I&rsquo;m going back to working on <a href="https://github.com/jamii/droplet">droplet</a>.</p>
 ]]></content>
   </entry>
   
@@ -239,14 +292,14 @@
     <link href="http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/"/>
     <updated>2012-12-04T02:31:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation</id>
-    <content type="html"><![CDATA[<p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&#8217;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
+    <content type="html"><![CDATA[<p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&rsquo;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
 
 <!--more-->
 
 
 <p>The core idea is that strucjure (and the <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;cad=rja&amp;ved=0CFIQFjAD&amp;url=http%3A%2F%2Flambda-the-ultimate.org%2Fnode%2F2477&amp;ei=lQ69UJqrLK-WyAHC1IGIBg&amp;usg=AFQjCNEJAMQULpZ62ASYefNHadlUWTlgKA&amp;sig2=E1ePKzLJJNaFw5BfEG9rrA">OMeta</a> library on which it is based) is not just yet-another-parser, but is instead a concise language for describing, manipulating and transforming data structures. The <a href="http://www.vpri.org/">VPRI</a> folks have done some amazing things with OMeta. My goal with strucjure is to see how much further this idea can be taken.</p>
 
-<p>(Note: For the purposes of this post I&#8217;ll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
+<p>(Note: For the purposes of this post I&rsquo;ll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
 
 <h1>Pattern matching</h1>
 
@@ -273,7 +326,7 @@
 
 <p>This is a concise, readable description of the various cases and replaces a chain of if-statements.</p>
 
-<p>If we stopped there, you could be forgiven for not caring. Simple examples don&#8217;t really demonstrate the power of pattern matching. Let&#8217;s instead look at a more complicated example - <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
+<p>If we stopped there, you could be forgiven for not caring. Simple examples don&rsquo;t really demonstrate the power of pattern matching. Let&rsquo;s instead look at a more complicated example &ndash; <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -374,7 +427,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is &#8216;if the tree looks like foo, replace it with bar&#8217;. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
+<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is &lsquo;if the tree looks like foo, replace it with bar&rsquo;. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -413,7 +466,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>(Note that this isn&#8217;t exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
+<p>(Note that this isn&rsquo;t exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
 
 <p>Strucjure is not very optimized yet, but if you use a more mature pattern-matching library then this code would be as fast as what you would write by hand. For complex patterns <a href="https://github.com/clojure/core.match">core.match</a> often does a better job of optimizing the decision tree than I can manage by hand, in much the same way that GCC does a better job of writing assembly code than I ever could.</p>
 
@@ -458,9 +511,9 @@
 
 <p>Strucjure supports patterns which only consume part of the input and can chain these patterns together. Combine that with pattern matching and you can very easily write back-tracking recursive-descent parsers.</p>
 
-<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can&#8217;t directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
+<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can&rsquo;t directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
 
-<p>Parsing doesn&#8217;t have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
+<p>Parsing doesn&rsquo;t have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -548,9 +601,9 @@
 
 <p>No more death-by-polish-notation!</p>
 
-<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn&#8217;t yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I&#8217;m too lazy to manually transform the grammar. It&#8217;s a temporary limitation.)</p>
+<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn&rsquo;t yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I&rsquo;m too lazy to manually transform the grammar. It&rsquo;s a temporary limitation.)</p>
 
-<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it&#8217;s was very easy to write, read and modify the parser.</p>
+<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it&rsquo;s was very easy to write, read and modify the parser.</p>
 
 <h1>Generic programming</h1>
 
@@ -628,7 +681,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven&#8217;t yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player&#8217;s plants for sunlight and nutrients. The plant language can be defined like this:</p>
+<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven&rsquo;t yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player&rsquo;s plants for sunlight and nutrients. The plant language can be defined like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -758,7 +811,7 @@
 
 <p>Writing code like this allows us to separate the shape of the data from the computation we perform over it.</p>
 
-<p>We&#8217;re also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
+<p>We&rsquo;re also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -801,7 +854,7 @@
 
 <p>I originally learned to code in haskell. One of the things I miss about strong static typing is it that it automatically provides documentation about the data structures used in your program. Strucjure patterns can fulfill the same role. In l-seed, if you are confused about what a rule should look like you can just go look at the +rule+ pattern.</p>
 
-<p>We can&#8217;t quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
+<p>We can&rsquo;t quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -814,7 +867,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven&#8217;t yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
+<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven&rsquo;t yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
 
 <h1>State machines</h1>
 
@@ -832,7 +885,7 @@ be used to make a very compact TCP/IP. Our first attempt was about 160 lines of 
 enough to run a website. We think this can be done even more compactly and clearly, and we plan to
 take another pass at this next year.</p></blockquote>
 
-<p>I haven&#8217;t yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+<p>I haven&rsquo;t yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
 
 <h1>Moving forward</h1>
 
@@ -897,13 +950,13 @@ take another pass at this next year.</p></blockquote>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is gross. I don&#8217;t have any ideas on how to overcome this.</p>
+<p>This is gross. I don&rsquo;t have any ideas on how to overcome this.</p>
 
-<p>I&#8217;ve already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
+<p>I&rsquo;ve already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
 
-<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don&#8217;t expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
+<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don&rsquo;t expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
 
-<p>For now, I&#8217;m going to dogfood strucjure in various projects while ruminating on improvements. I&#8217;m already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
+<p>For now, I&rsquo;m going to dogfood strucjure in various projects while ruminating on improvements. I&rsquo;m already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
 ]]></content>
   </entry>
   
@@ -912,16 +965,16 @@ take another pass at this next year.</p></blockquote>
     <link href="http://scattered-thoughts.net/blog/2012/12/02/hacker-school/"/>
     <updated>2012-12-02T01:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/02/hacker-school</id>
-    <content type="html"><![CDATA[<p>I&#8217;ve spent the last ten weeks or so at <a href="https://www.hackerschool.com/">Hacker School</a>. It&#8217;s something like a writer&#8217;s retreat for programmers. Unlike a traditional school there is very little structure and the focus is on project-based learning. In order to make the most of this environment, it&#8217;s important to be clear exactly what your goals are.</p>
+    <content type="html"><![CDATA[<p>I&rsquo;ve spent the last ten weeks or so at <a href="https://www.hackerschool.com/">Hacker School</a>. It&rsquo;s something like a writer&rsquo;s retreat for programmers. Unlike a traditional school there is very little structure and the focus is on project-based learning. In order to make the most of this environment, it&rsquo;s important to be clear exactly what your goals are.</p>
 
 <!--more-->
 
 
-<p>So here is my goal - to create better tools for the problems I regularly encounter. My focus is on building distributed systems and p2p networks but I suspect that these tools will be generally useful. When working as a freelancer I am necessarily constrained to using proven ideas and techniques because the risk assumed is not mine. Hacker School is a chance for me to explore some more far-out ideas. These ideas are drawn primarily from two places: the <a href="http://vpri.org/">Viewpoint Research Institute</a> and the <a href="boom.cs.berkeley.edu/">Berkeley Order Of Magnitude</a> project.</p>
+<p>So here is my goal &ndash; to create better tools for the problems I regularly encounter. My focus is on building distributed systems and p2p networks but I suspect that these tools will be generally useful. When working as a freelancer I am necessarily constrained to using proven ideas and techniques because the risk assumed is not mine. Hacker School is a chance for me to explore some more far-out ideas. These ideas are drawn primarily from two places: the <a href="http://vpri.org/">Viewpoint Research Institute</a> and the <a href="boom.cs.berkeley.edu/">Berkeley Order Of Magnitude</a> project.</p>
 
 <h1>Viewpoint Research Institute</h1>
 
-<p>Specifically, I&#8217;m interested in the <a href="http://www.vpri.org/pdf/tr2011004_steps11.pdf">Steps Towards Expressive Programming</a> project. Their goal is no less than the reinvention of programming. By way of proof of concept they aim to develop an entire computing system, from OS to compilers to applications, in less than 20k LOC. Such a system would be compact enough to be understood in its entirety by a single person, something that is unthinkable in todays world of multi-million LOC systems. Amazingly, their initial prototypes of various subsystems actually approach this goal.</p>
+<p>Specifically, I&rsquo;m interested in the <a href="http://www.vpri.org/pdf/tr2011004_steps11.pdf">Steps Towards Expressive Programming</a> project. Their goal is no less than the reinvention of programming. By way of proof of concept they aim to develop an entire computing system, from OS to compilers to applications, in less than 20k LOC. Such a system would be compact enough to be understood in its entirety by a single person, something that is unthinkable in todays world of multi-million LOC systems. Amazingly, their initial prototypes of various subsystems actually approach this goal.</p>
 
 <p>Their approach relies heavily on the use of <a href="http://en.wikipedia.org/wiki/Domain-specific_language">DSLs</a> to capture high-level, domain-specific expressions of intent which are then compiled into efficient code. By way of example, they describe their TCP-IP stack:</p>
 
@@ -937,7 +990,7 @@ be used to make a very compact TCP/IP. Our first attempt was about 160 lines of 
 enough to run a website. We think this can be done even more compactly and clearly, and we plan to
 take another pass at this next year.</p></blockquote>
 
-<p>The &#8216;language transformation techniques&#8217; they refer to are embodied in <a href="http://lambda-the-ultimate.org/node/2477">OMeta</a>, a <a href="http://en.wikipedia.org/wiki/PEG">PEG</a>-based language for parsing and pattern-matching. OMeta provides an incredible amount of leverage for such a simple abstraction. For starters, it leads to very concise and readable descriptions of tokenisers, parsers and tree transformers which are all crucial for developing DSLs.</p>
+<p>The &lsquo;language transformation techniques&rsquo; they refer to are embodied in <a href="http://lambda-the-ultimate.org/node/2477">OMeta</a>, a <a href="http://en.wikipedia.org/wiki/PEG">PEG</a>-based language for parsing and pattern-matching. OMeta provides an incredible amount of leverage for such a simple abstraction. For starters, it leads to very concise and readable descriptions of tokenisers, parsers and tree transformers which are all crucial for developing DSLs.</p>
 
 <h1>Berkeley Order Of Magnitude</h1>
 
@@ -959,29 +1012,29 @@ take another pass at this next year.</p></blockquote>
 
 <h2>Higher-level reasoning</h2>
 
-<p>The STEPS notes talk about &#8216;separating meaning from tactics&#8217;. It&#8217;s often easier to specify what a correct solution to a problem looks like than it is to actually find it. In many domains, finding a solution is then just a matter of applying a suitable search algorithm. For example, constraint solvers such as <a href="http://www.gecode.org/">gecode</a> or <a href="https://github.com/clojure/core.logic">core.logic</a> express a problem as a set of logical constraints on the possible solutions and then search through the space of variable assignments to find a solution. By automatically pruning parts of the search space which break one or more constraints and applying user-specified search heuristics, constraint solvers can often be faster than hand-coded solvers for complex problems whilst at the same time allowing a clear, concise, declarative specification of the problem.</p>
+<p>The STEPS notes talk about &lsquo;separating meaning from tactics&rsquo;. It&rsquo;s often easier to specify what a correct solution to a problem looks like than it is to actually find it. In many domains, finding a solution is then just a matter of applying a suitable search algorithm. For example, constraint solvers such as <a href="http://www.gecode.org/">gecode</a> or <a href="https://github.com/clojure/core.logic">core.logic</a> express a problem as a set of logical constraints on the possible solutions and then search through the space of variable assignments to find a solution. By automatically pruning parts of the search space which break one or more constraints and applying user-specified search heuristics, constraint solvers can often be faster than hand-coded solvers for complex problems whilst at the same time allowing a clear, concise, declarative specification of the problem.</p>
 
 <h2>Everything is data</h2>
 
 <p>Constraint solving is enabled by treating both the problem specification and the solution space as data, reducing the problem to search. In lisps, treating code as data enables macros and code rewriting. In Overlog, everything from persistent data to scheduler state to the language runtime is available as data and can be queried and manipulated using the same powerful abstractions. Tracing in Overlog is as simple as adding a rule that fires whenever a new fact is derived, because the derivation itself is stored alongside the fact.</p>
 
-<p>Whatever you are working on, making it accessible as plain data enables turning the full power and expressivity of your language directly onto the problem. This is where OO falls down, in trying to hide data behind custom interfaces. Rob Pike recently put it: &#8220;It has become clear that OO zealots are afraid of data&#8221;.</p>
+<p>Whatever you are working on, making it accessible as plain data enables turning the full power and expressivity of your language directly onto the problem. This is where OO falls down, in trying to hide data behind custom interfaces. Rob Pike recently put it: &ldquo;It has become clear that OO zealots are afraid of data&rdquo;.</p>
 
 <h2>Reflection</h2>
 
-<p>When you expose the internals of a system as data to that same system, amazing (and, yes, sometimes terrifying) things happen. The STEPS folks manage to stay withing their code budget by building highly dynamic, self-hosting, meta-circular, introspective languages. Many of the amazing results of the Overlog project, from the optimising compiler to declarative distributed tracing, resulted from exposing the language runtime and program source code to the same logic engine that it implements. Turning a system in on itself and allowing it to reason about its own behaviour is an incredibly powerful idea. Certainly it can be dangerous, and it&#8217;s all too easy to tangle oneself in knots, but the results speak for themselves. This is an idea that has been <a href="http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html">expounded</a> <a href="http://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach">many</a> <a href="http://www.paulgraham.com/diff.html">times</a> before but I think there is still so much more to explore here.</p>
+<p>When you expose the internals of a system as data to that same system, amazing (and, yes, sometimes terrifying) things happen. The STEPS folks manage to stay withing their code budget by building highly dynamic, self-hosting, meta-circular, introspective languages. Many of the amazing results of the Overlog project, from the optimising compiler to declarative distributed tracing, resulted from exposing the language runtime and program source code to the same logic engine that it implements. Turning a system in on itself and allowing it to reason about its own behaviour is an incredibly powerful idea. Certainly it can be dangerous, and it&rsquo;s all too easy to tangle oneself in knots, but the results speak for themselves. This is an idea that has been <a href="http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html">expounded</a> <a href="http://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach">many</a> <a href="http://www.paulgraham.com/diff.html">times</a> before but I think there is still so much more to explore here.</p>
 
 <h1>Progress</h1>
 
 <p>My attempts to keep up with this have been focused on three projects.</p>
 
-<p><a href="https://github.com/jamii/shackles">Shackles</a> is a constraint solver supporting both finite-domain and logical constraints. It was originally an experiment to see what, if any, extra power could be gained from implementing a gecode-style solver using persistent data-structures (constraint solvers in traditional languages spend much of their time cloning program state to enable back-tracking). Fortunately, <a href="https://github.com/clojure/core.logic">core.logic</a> now supports finite domain variables with constraint propagation and there has been noise about implementing user-specified search heuristcs, so that&#8217;s one less piece of code I need to write :D</p>
+<p><a href="https://github.com/jamii/shackles">Shackles</a> is a constraint solver supporting both finite-domain and logical constraints. It was originally an experiment to see what, if any, extra power could be gained from implementing a gecode-style solver using persistent data-structures (constraint solvers in traditional languages spend much of their time cloning program state to enable back-tracking). Fortunately, <a href="https://github.com/clojure/core.logic">core.logic</a> now supports finite domain variables with constraint propagation and there has been noise about implementing user-specified search heuristcs, so that&rsquo;s one less piece of code I need to write :D</p>
 
 <p><a href="https://github.com/jamii/strucjure">Strucjure</a> is similar to OMeta but aims to be a good clojure citizen rather than a totally separate tool. As such, all of its core components are <a href="http://clojure.org/protocols">protocols</a>, semantic actions are plain clojure code and the resulting patterns and views are just nested <a href="http://clojure.org/datatypes">records</a> which can be manipulated by regular clojure code. Following the principles above, the syntax of strucjure patterns/views is <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L94">self-defined using views</a> and the test suite <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/test.clj#L1">parses the documentation</a> to verify the correctness of the examples.</p>
 
-<p><a href="https://github.com/jamii/droplet">Droplet</a> is based on the Bloom<sup>L</sup> language (an extension of the Bloom language that operates over arbitrary semi-lattices). Droplet is so far less developed than the other projects but the core interpreter is working as well as basic datalog-like rules. Again, droplet attempts to be a good clojure citizen. Rules are just clojure functions. The datalog syntax is implemented via a simple macro which produces a rule function. Individual droplets are held in <a href="http://clojure.org/agents">agents</a> and communicate either via agent sends or over <a href="https://github.com/ztellman/lamina">lamina</a> queues. I&#8217;m currently working out a composable, extensible query language that is able to operate over arbitrary semi-lattices, rather than just sets. In its current (and largely imaginary) form, it looks something like <a href="https://gist.github.com/4171094">this</a>.</p>
+<p><a href="https://github.com/jamii/droplet">Droplet</a> is based on the Bloom<sup>L</sup> language (an extension of the Bloom language that operates over arbitrary semi-lattices). Droplet is so far less developed than the other projects but the core interpreter is working as well as basic datalog-like rules. Again, droplet attempts to be a good clojure citizen. Rules are just clojure functions. The datalog syntax is implemented via a simple macro which produces a rule function. Individual droplets are held in <a href="http://clojure.org/agents">agents</a> and communicate either via agent sends or over <a href="https://github.com/ztellman/lamina">lamina</a> queues. I&rsquo;m currently working out a composable, extensible query language that is able to operate over arbitrary semi-lattices, rather than just sets. In its current (and largely imaginary) form, it looks something like <a href="https://gist.github.com/4171094">this</a>.</p>
 
-<p>I&#8217;ll go into more detail on the latter two projects soon but for now I&#8217;m content to just throw these ideas out into the world, without justification, and see what bounces back.</p>
+<p>I&rsquo;ll go into more detail on the latter two projects soon but for now I&rsquo;m content to just throw these ideas out into the world, without justification, and see what bounces back.</p>
 ]]></content>
   </entry>
   
@@ -992,7 +1045,7 @@ take another pass at this next year.</p></blockquote>
     <id>http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme</id>
     <content type="html"><![CDATA[<p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
 
-<p>The readme on github has detailed descriptions of the syntax etc which I won&#8217;t repeat here. What I do want to do is run through a realistic example.</p>
+<p>The readme on github has detailed descriptions of the syntax etc which I won&rsquo;t repeat here. What I do want to do is run through a realistic example.</p>
 
 <!--more-->
 
@@ -1016,7 +1069,7 @@ take another pass at this next year.</p></blockquote>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn&#8217;t need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
+<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn&rsquo;t need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1135,7 +1188,7 @@ take another pass at this next year.</p></blockquote>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>A few of the code blocks don&#8217;t contain examples - we can detect these because they don&#8217;t start with a &#8220;user> &#8221; prompt. All the other blocks contain a list of examples separated by prompts.</p>
+<p>A few of the code blocks don&rsquo;t contain examples &ndash; we can detect these because they don&rsquo;t start with a &ldquo;user> &rdquo; prompt. All the other blocks contain a list of examples separated by prompts.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1218,7 +1271,7 @@ take another pass at this next year.</p></blockquote>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>That&#8217;s it - parsing done.</p>
+<p>That&rsquo;s it &ndash; parsing done.</p>
 
 <p>Now we just have to turn the results into unit tests. We have to be careful about comparing the results of the examples because they might contain closures, which look different every time.</p>
 
@@ -1296,7 +1349,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>This is fun. Not only does strucjure parse its own syntax, it reads its own documentation!</p>
 
-<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I&#8217;m also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I&#8217;m going to be moving on to using strucjure to build other useful DSLs.</p>
+<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I&rsquo;m also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I&rsquo;m going to be moving on to using strucjure to build other useful DSLs.</p>
 ]]></content>
   </entry>
   
@@ -1310,23 +1363,23 @@ take another pass at this next year.</p></blockquote>
 <!--more-->
 
 
-<p>We&#8217;ll start with the fundamental property of distributed systems:</p>
+<p>We&rsquo;ll start with the fundamental property of distributed systems:</p>
 
 <pre><code>Messages sent between machines may arrive zero or more times at any point after they are sent
 </code></pre>
 
 <p>This is the sole reason that building distributed systems is hard.</p>
 
-<p>For example, because of this property it is impossible for two computers communicating over a network to agree on the exact time. You can send me a message saying &#8220;it is now 10:00:00&#8221; but I don&#8217;t know how long it took for that message to arrive. We can send messages back and forth all day but we will never know for sure that we are synchronised.</p>
+<p>For example, because of this property it is impossible for two computers communicating over a network to agree on the exact time. You can send me a message saying &ldquo;it is now 10:00:00&rdquo; but I don&rsquo;t know how long it took for that message to arrive. We can send messages back and forth all day but we will never know for sure that we are synchronised.</p>
 
-<p>If we can&#8217;t agree on the time then we can&#8217;t always agree on what order things happen in. Suppose I say &#8220;my user logged on at 10:00:00&#8221; and you say &#8220;my user logged on at 10:00:01&#8221;. Maybe mine was first or maybe my clock is just fast relative to yours. The only way to know for sure is if something connects those two events. For example, if my user logged on and then sent your user an email and if you received that email before your user logged on then we know for sure that mine was first.</p>
+<p>If we can&rsquo;t agree on the time then we can&rsquo;t always agree on what order things happen in. Suppose I say &ldquo;my user logged on at 10:00:00&rdquo; and you say &ldquo;my user logged on at 10:00:01&rdquo;. Maybe mine was first or maybe my clock is just fast relative to yours. The only way to know for sure is if something connects those two events. For example, if my user logged on and then sent your user an email and if you received that email before your user logged on then we know for sure that mine was first.</p>
 
 <p>This concept is called causal ordering and is written like this:</p>
 
 <pre><code>A-&gt;B (event A is causally ordered before event B)
 </code></pre>
 
-<p>Let&#8217;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
+<p>Let&rsquo;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
 
 <pre><code>If A and B happen on the same machine and A happens before B then A-&gt;B
 
@@ -1335,21 +1388,21 @@ If I send you some message M and you receive it then (send M)-&gt;(recv M)
 If A-&gt;B and B-&gt;C then A-&gt;C
 </code></pre>
 
-<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> - every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> - sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
+<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> &ndash; every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> &ndash; sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
 
 <p><a href="http://upload.wikimedia.org/wikipedia/commons/5/55/Vector_Clock.svg">This image</a> shows a nice way to picture these relationships.</p>
 
-<p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&#8217;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
+<p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&rsquo;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
 
 <pre><code>If not(A-&gt;B) then A cannot possibly have caused B
 </code></pre>
 
-<p>Since we don&#8217;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&#8217;s say it again:</p>
+<p>Since we don&rsquo;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&rsquo;s say it again:</p>
 
 <pre><code>Communication bounds causality
 </code></pre>
 
-<p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&#8217;s skim over some examples.</p>
+<p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&rsquo;s skim over some examples.</p>
 
 <h2>Vector Clocks</h2>
 
@@ -1376,7 +1429,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </ol>
 
 
-<p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen - the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
+<p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen &ndash; the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
 
 <pre><code>Ordering requires waiting
 </code></pre>
@@ -1385,7 +1438,7 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <h2>Eventual Consistency</h2>
 
-<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice availability without having the state of different machines diverge irreparably. It doesn&#8217;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
+<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice availability without having the state of different machines diverge irreparably. It doesn&rsquo;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
 
 <h2>Further reading</h2>
 
@@ -1409,7 +1462,7 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>The first is self-explanatory and pretty well-known. I frequently have to fire up a python process through a port to do something simple like send an email. Even the standard library is incomplete and inconsistent.</p>
 
-<p>The second doesn&#8217;t start to hurt until your codebase gets a bit bigger. For example, Smarkets makes a lot of use of fixed-precision decimal arithmetic which leads to code like this:</p>
+<p>The second doesn&rsquo;t start to hurt until your codebase gets a bit bigger. For example, Smarkets makes a lot of use of fixed-precision decimal arithmetic which leads to code like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nn">decimal</span><span class="p">:</span><span class="n">mult</span><span class="p">(</span><span class="nv">Qty</span><span class="p">,</span>  <span class="nn">decimal</span><span class="p">:</span><span class="n">sub</span><span class="p">(</span><span class="nn">decimal</span><span class="p">:</span><span class="n">to_decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nv">Price</span><span class="p">))</span>
@@ -1418,13 +1471,13 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>It also means any time you want to change a data-structure for one with an equivalent interface you have to rewrite whole swathes of code.</p>
 
-<p>The third point is a bit more contentious. I&#8217;m fairly convinced that the erlang philosophy of fail-early, crash-only, restartable tasks is the right solution for most problems. What bugs me is that erlang conflates addresses, queues and actors by giving each process a single mailbox. This leads to problems like requiring the recipient of a message to have a global name if it is to be independently restartable, which means you can&#8217;t run more than one copy of that message topology on the same node. It also encourages processes to send messages directly to other processes which makes it difficult to create flexible, rewirable topologies or to isolate pieces of a topology for testing. I would prefer a model in which processes send and receive messages through queues which are wired together outside of the process. This would also allow restarting a process (and clearing but not deleting its queues) without giving it a global name.</p>
+<p>The third point is a bit more contentious. I&rsquo;m fairly convinced that the erlang philosophy of fail-early, crash-only, restartable tasks is the right solution for most problems. What bugs me is that erlang conflates addresses, queues and actors by giving each process a single mailbox. This leads to problems like requiring the recipient of a message to have a global name if it is to be independently restartable, which means you can&rsquo;t run more than one copy of that message topology on the same node. It also encourages processes to send messages directly to other processes which makes it difficult to create flexible, rewirable topologies or to isolate pieces of a topology for testing. I would prefer a model in which processes send and receive messages through queues which are wired together outside of the process. This would also allow restarting a process (and clearing but not deleting its queues) without giving it a global name.</p>
 
-<p>I&#8217;m not about to run out now and rewrite erl-telehash in another language. It&#8217;s close enough to complete (for my purposes at least) that I&#8217;ll just continue with the existing code. For future experiments, however, I want something better.</p>
+<p>I&rsquo;m not about to run out now and rewrite erl-telehash in another language. It&rsquo;s close enough to complete (for my purposes at least) that I&rsquo;ll just continue with the existing code. For future experiments, however, I want something better.</p>
 
 <p>The top candidate at the moment is clojure. It has the potential to replace my use of erlang and python, saving lots of cross-language pain. Agents look a lot like a (cleaner, saner) implementation of the <a href="http://scattered-thoughts.net/one/1300/292121/72985">mealy machines</a> that I wrote at Smarkets. <a href="https://github.com/ztellman/lamina">Lamina</a> neatly solves the queue pains I described above. <a href="http://code.google.com/p/clojure-contrib/wiki/DatalogOverview">Datalog</a> is the natural way to describe a lot of collections, including <a href="https://github.com/jamii/erl-telehash/blob/master/src/th_bucket.erl">th_bucket</a> which is in its current form is not obviously correct. The clojure community just seems to churn out well-designed libraries (lamina, aleph, slice, incanter, pallet, cascalog, storm, overtone etc).</p>
 
-<p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it&#8217;s fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
+<p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it&rsquo;s fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
 ]]></content>
   </entry>
   
@@ -1433,7 +1486,7 @@ If VC_A &lt; VC_B then A-&gt;B
     <link href="http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/"/>
     <updated>2012-01-03T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps</id>
-    <content type="html"><![CDATA[<p>Lately I&#8217;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
+    <content type="html"><![CDATA[<p>Lately I&rsquo;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
 
 <!--more-->
 
@@ -1457,7 +1510,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Let&#8217;s pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
+<p>Let&rsquo;s pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1485,7 +1538,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The worst case for this data structure is the string 0101010101&#8230; In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
+<p>The worst case for this data structure is the string 0101010101&hellip; In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
 
 <p>Our data structure looks like this:</p>
 
@@ -1606,7 +1659,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We can grow and shrink the array as necessary, but since deleted pairs won&#8217;t necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
+<p>We can grow and shrink the array as necessary, but since deleted pairs won&rsquo;t necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1669,7 +1722,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I haven&#8217;t yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
+<p>I haven&rsquo;t yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
 
 <p>With the freelist our modified example now looks like this:</p>
 
@@ -1688,13 +1741,13 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>With the representation sorted the rest of the code more or less writes itself.</p>
 
-<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I&#8217;ve written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
+<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I&rsquo;ve written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
 
 <p>The paper linked below suggests using a layered address scheme to expand the effective pointer size, where the first bit of the pointer is a flag indicating which layer the address is in. I would suggest rather than putting the flag in the pointer it would be simper to use information implicit in the structure of the tree eg is the current layer mod 8 = 0. Either way, this hugely increases the size of the address space at a the cost of a little extra complexity.</p>
 
-<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&#8217;t suggest using it without some serious testing.</p>
+<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&rsquo;t suggest using it without some serious testing.</p>
 
-<p>Overall I&#8217;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
+<p>Overall I&rsquo;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
 ]]></content>
   </entry>
   
@@ -1703,18 +1756,18 @@ If VC_A &lt; VC_B then A-&gt;B
     <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
     <updated>2011-07-10T06:16:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&#8217;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
+    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&rsquo;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
 
 <!--more-->
 
 
-<p>I&#8217;ve built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
+<p>I&rsquo;ve built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
 
-<p>This isn&#8217;t a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
+<p>This isn&rsquo;t a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
 
 <p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
 
-<p>I&#8217;m not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
+<p>I&rsquo;m not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
 ]]></content>
   </entry>
   
@@ -1845,7 +1898,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&#8217;t actually be dropped from the table until a replacement is found - this prevents the table from getting flushed if our network connection goes down.</p>
+<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&rsquo;t actually be dropped from the table until a replacement is found &ndash; this prevents the table from getting flushed if our network connection goes down.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -1930,7 +1983,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One of the rules of the router is that it should never pass on information about a node that it hasn&#8217;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2102,7 +2155,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The last responsibility of the router is to periodically refresh buckets which haven&#8217;t recently seen any activity.</p>
+<p>The last responsibility of the router is to periodically refresh buckets which haven&rsquo;t recently seen any activity.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2195,7 +2248,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>That&#8217;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
+<p>That&rsquo;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
 ]]></content>
   </entry>
   
@@ -2211,7 +2264,7 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>Now obviously the documentation is not at fault here. I assumed that each handler got its own process solely because the callbacks resembled gen_server. However, a little googling reveals that several other people made the same mistake so I thought it was worth mentioning.</p>
 
-<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn&#8217;t find the dialer process (because it doesn&#8217;t exist, it&#8217;s an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
+<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn&rsquo;t find the dialer process (because it doesn&rsquo;t exist, it&rsquo;s an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
 
 <p>Eventually I noticed that the switch_event process was blocking inside a receive and the whole thing unravelled. The dialer is an event handler so when started it calls:</p>
 
@@ -2342,7 +2395,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>This is only long because records are purely a compile time structure ie we can&#8217;t write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
+<p>This is only long because records are purely a compile time structure ie we can&rsquo;t write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
 
 <p>The router is going to react to various events by calling the appropriate bucket functions and possibly sending out messages based on the result. The first event it has to handle is a node becoming unresponsive. The bucket will mark this node as stale and return a cache node which the router can attempt to verify.</p>
 
@@ -2486,7 +2539,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Any time we receive a message we learn that the node sending it exists (or not - we&#8217;ll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
+<p>Any time we receive a message we learn that the node sending it exists (or not &ndash; we&rsquo;ll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2976,16 +3029,16 @@ If VC_A &lt; VC_B then A-&gt;B
     <link href="http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees/"/>
     <updated>2011-03-23T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees</id>
-    <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&#8217;m still mulling over the protocol so we&#8217;ll skip to the routing table.</p>
+    <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&rsquo;m still mulling over the protocol so we&rsquo;ll skip to the routing table.</p>
 
 <!--more-->
 
 
-<p>I&#8217;ll add the usual &#8216;I don&#8217;t understand Kademlia and I didn&#8217;t test my code&#8217; disclaimer in here.</p>
+<p>I&rsquo;ll add the usual &lsquo;I don&rsquo;t understand Kademlia and I didn&rsquo;t test my code&rsquo; disclaimer in here.</p>
 
-<p>Routing in the Kademlia paper is described using what can best be called the &#8216;mash everything together and be vague about the details&#8217; pattern. I want my switch to be a bit cleaner than that so I&#8217;ve split it into three modules. The first of these is the bit_tree.</p>
+<p>Routing in the Kademlia paper is described using what can best be called the &lsquo;mash everything together and be vague about the details&rsquo; pattern. I want my switch to be a bit cleaner than that so I&rsquo;ve split it into three modules. The first of these is the bit_tree.</p>
 
-<p>The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don&#8217;t either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234&#8230; then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a <em>.see</em> command.</p>
+<p>The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don&rsquo;t either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234&hellip; then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a <em>.see</em> command.</p>
 
 <p>So here is a bog-standard binary suffix tree:</p>
 
@@ -3012,7 +3065,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>When adding nodes to a bucket we need to keep track of certain numbers which will be used by the router to decide when to split buckets. Some of these are quite complicated so to make this easier we will work with a zipper-like structure instead of using <em>leaf</em> and <em>branch</em> directly. If you know what a zipper is the code in this post will make sense. If you don&#8217;t know what a zipper is, go find out. When you come back the code in this post will make sense.</p>
+<p>When adding nodes to a bucket we need to keep track of certain numbers which will be used by the router to decide when to split buckets. Some of these are quite complicated so to make this easier we will work with a zipper-like structure instead of using <em>leaf</em> and <em>branch</em> directly. If you know what a zipper is the code in this post will make sense. If you don&rsquo;t know what a zipper is, go find out. When you come back the code in this post will make sense.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3035,7 +3088,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The finger keeps track of where the nodes own end is located in the tree in order to calculate something I have termed the gap - the size of the largest sub-tree containing the nodes own end but not touching the finger.</p>
+<p>The finger keeps track of where the nodes own end is located in the tree in order to calculate something I have termed the gap &ndash; the size of the largest sub-tree containing the nodes own end but not touching the finger.</p>
 
 <p>The empty bit_tree is easy to define:</p>
 
@@ -3220,7 +3273,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We could make this more efficient by only retracting until the finger meets <em>Bits</em> partway up. For now I don&#8217;t expect performance of the bit_tree to be an issue.</p>
+<p>We could make this more efficient by only retracting until the finger meets <em>Bits</em> partway up. For now I don&rsquo;t expect performance of the bit_tree to be an issue.</p>
 
 <p>Now that we can find buckets we can modify them. Deciding when to split buckets is not the concern of the bit_tree so we delegate it to the caller.</p>
 
@@ -3547,9 +3600,9 @@ If VC_A &lt; VC_B then A-&gt;B
 <!--more-->
 
 
-<p>First a disclaimer: this post reflects my current understanding of TeleHash and Kademlia and is highly likely to be wrong. This code has only received minimal testing. Properly testing a p2p network is not something I&#8217;m entirely sure how to do yet. Expect to see more on that in later posts.</p>
+<p>First a disclaimer: this post reflects my current understanding of TeleHash and Kademlia and is highly likely to be wrong. This code has only received minimal testing. Properly testing a p2p network is not something I&rsquo;m entirely sure how to do yet. Expect to see more on that in later posts.</p>
 
-<p>Each TeleHash node and each key in the DHT is identified by a 160 bit sha1 hash (aka end). In the original Kademlia paper the node ids are selected at random but in TeleHash they are the hashed address (IP:port) of the node. This means that malicious nodes don&#8217;t get to choose where they are inserted in the DHT.</p>
+<p>Each TeleHash node and each key in the DHT is identified by a 160 bit sha1 hash (aka end). In the original Kademlia paper the node ids are selected at random but in TeleHash they are the hashed address (IP:port) of the node. This means that malicious nodes don&rsquo;t get to choose where they are inserted in the DHT.</p>
 
 <p>Kademlia routing is based on the XOR distance between ends. This forms a metric space over the set of ends.</p>
 
@@ -3574,7 +3627,7 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>Dialing works roughly as follows. Each node keeps track of all the other nodes it has seen. Upon receiving a +end signal a node will reply with a .see command containing the K nodes it is aware of which are closest to the specified end. To dial an end we send a +end signal to each of the K closest nodes we are aware of. Then to each node contained in the .see replies we send +end signals, and so on until we run out of nodes to contact.</p>
 
-<p>Now this is nice and simple and will work but it generates a huge amount of load on the network. To reduce this Kademlia introduces two additional rules. First, we only send up to A signals at a time and don&#8217;t send any new signals until previous signals have either generated a reply or timed out. Second, we finish early if at any point we have received replies from K nodes which are closer to the end than all the nodes we are waiting to contact. The Kademlia paper proves that under reasonable assumptions about the knowledge of each node this still has a very high chance to return the correct results.</p>
+<p>Now this is nice and simple and will work but it generates a huge amount of load on the network. To reduce this Kademlia introduces two additional rules. First, we only send up to A signals at a time and don&rsquo;t send any new signals until previous signals have either generated a reply or timed out. Second, we finish early if at any point we have received replies from K nodes which are closer to the end than all the nodes we are waiting to contact. The Kademlia paper proves that under reasonable assumptions about the knowledge of each node this still has a very high chance to return the correct results.</p>
 
 <p>The dialer process is an event handler which has two important data structures. The first stores the dialer configuration:</p>
 
@@ -3591,7 +3644,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The second record stores the state of the dialing process. The principle around which the dialer is designed is that the state record is a reflection of the outside world and the sole job of the dialer is to keep this record up to date while maintaining the invariants in the comments. This is often the way that I write code and I feel that it needs it&#8217;s own post once I can articulate it properly. It&#8217;s certainly heavily informed both by the designs in <a href="http://books.google.co.uk/books?id=SxPzSTcTalAC&amp;printsec=frontcover&amp;dq=okasaki+purely+functional&amp;hl=en&amp;ei=6GiHTdTcKY_RcfjR_ZkD&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CC4Q6AEwAA#v=onepage&amp;q&amp;f=false">Okasaki&#8217;s Purely Functional Data Structures</a> and by Conal Elliott&#8217;s ideas about <a href="http://conal.net/blog/posts/denotational-design-with-type-class-morphisms/">denotational semantics and type class morphisms</a>.</p>
+<p>The second record stores the state of the dialing process. The principle around which the dialer is designed is that the state record is a reflection of the outside world and the sole job of the dialer is to keep this record up to date while maintaining the invariants in the comments. This is often the way that I write code and I feel that it needs it&rsquo;s own post once I can articulate it properly. It&rsquo;s certainly heavily informed both by the designs in <a href="http://books.google.co.uk/books?id=SxPzSTcTalAC&amp;printsec=frontcover&amp;dq=okasaki+purely+functional&amp;hl=en&amp;ei=6GiHTdTcKY_RcfjR_ZkD&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CC4Q6AEwAA#v=onepage&amp;q&amp;f=false">Okasaki&rsquo;s Purely Functional Data Structures</a> and by Conal Elliott&rsquo;s ideas about <a href="http://conal.net/blog/posts/denotational-design-with-type-class-morphisms/">denotational semantics and type class morphisms</a>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3891,7 +3944,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>That&#8217;s pretty much it - we now (probably) have a working dialer. I spent a fair few hours teasing this apart but hopefully the end result is fairly simple to understand. The full code is in the <a href="http://github.com/jamii/erl-telehash">repo</a> as always.</p>
+<p>That&rsquo;s pretty much it &ndash; we now (probably) have a working dialer. I spent a fair few hours teasing this apart but hopefully the end result is fairly simple to understand. The full code is in the <a href="http://github.com/jamii/erl-telehash">repo</a> as always.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -4156,7 +4209,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One last note: after I finished writing this I started thinking about what would happen if I run more than one dialer in parallel. Unlike Kademlia, TeleHash does not currently use command IDs so the dialer cannot tell if the response came in reply to its own command or in reply to the command of another dialer on the same node. It&#8217;s the kind of bug that would be very rare in actual use but might be carefully exploited by a malicious node. Finding these kinds of bugs is going to be really hard.</p>
+<p>One last note: after I finished writing this I started thinking about what would happen if I run more than one dialer in parallel. Unlike Kademlia, TeleHash does not currently use command IDs so the dialer cannot tell if the response came in reply to its own command or in reply to the command of another dialer on the same node. It&rsquo;s the kind of bug that would be very rare in actual use but might be carefully exploited by a malicious node. Finding these kinds of bugs is going to be really hard.</p>
 ]]></content>
   </entry>
   
@@ -4165,7 +4218,7 @@ If VC_A &lt; VC_B then A-&gt;B
     <link href="http://scattered-thoughts.net/blog/2011/03/17/telehash-basics/"/>
     <updated>2011-03-17T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/17/telehash-basics</id>
-    <content type="html"><![CDATA[<p><a href="http://telehash.org">TeleHash</a> is a p2p network based on the <a href="http://en.wikipedia.org/wiki/Kademlia">Kademlia DHT</a> that provides addressing and NAT traversal. These are problems that every p2p app has to deal with, including my <a href="https://github.com/jamii/dissertation">poppi</a>. Unfortunately there is no erlang implementation yet so I have to roll my own. The code so far lives <a href="http://github.com/jamii/erl-telehash">here</a> In this first post I&#8217;ll just cover the absolute basics - sending, receiving, encoding and decoding messages.</p>
+    <content type="html"><![CDATA[<p><a href="http://telehash.org">TeleHash</a> is a p2p network based on the <a href="http://en.wikipedia.org/wiki/Kademlia">Kademlia DHT</a> that provides addressing and NAT traversal. These are problems that every p2p app has to deal with, including my <a href="https://github.com/jamii/dissertation">poppi</a>. Unfortunately there is no erlang implementation yet so I have to roll my own. The code so far lives <a href="http://github.com/jamii/erl-telehash">here</a> In this first post I&rsquo;ll just cover the absolute basics &ndash; sending, receiving, encoding and decoding messages.</p>
 
 <!--more-->
 
@@ -4185,7 +4238,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The <em>telex</em> module also defines some convenience methods for working with json - <em>get/2</em>, <em>set/3</em>, <em>update/4</em> - which are used like this:</p>
+<p>The <em>telex</em> module also defines some convenience methods for working with json &ndash; <em>get/2</em>, <em>set/3</em>, <em>update/4</em> &ndash; which are used like this:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -4343,7 +4396,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>To demonstrate this, let&#8217;s write the simplest possible event handler:</p>
+<p>To demonstrate this, let&rsquo;s write the simplest possible event handler:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -4479,7 +4532,7 @@ If VC_A &lt; VC_B then A-&gt;B
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here we ask localhost:55555 for the nearest nodes it knows to the end &#8216;a99&#8230;89d&#8217;. The reply is contained in the <em>.see</em> field (which is empty because localhost:55555 hasn&#8217;t seeded itself yet and so doesn&#8217;t know any nodes at all).</p>
+<p>Here we ask localhost:55555 for the nearest nodes it knows to the end &lsquo;a99&hellip;89d&rsquo;. The reply is contained in the <em>.see</em> field (which is empty because localhost:55555 hasn&rsquo;t seeded itself yet and so doesn&rsquo;t know any nodes at all).</p>
 
 <p>The next post will deal with dialing, at which point we will have a working announcer.</p>
 ]]></content>
@@ -4490,18 +4543,18 @@ If VC_A &lt; VC_B then A-&gt;B
     <link href="http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines/"/>
     <updated>2011-03-16T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines</id>
-    <content type="html"><![CDATA[<p>This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at <a href="http://smarkets.com">Smarkets</a> and never got around to writing about. Unfortunately I don&#8217;t have the code in front of me but the overall idea is simple enough to explain without examples.</p>
+    <content type="html"><![CDATA[<p>This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at <a href="http://smarkets.com">Smarkets</a> and never got around to writing about. Unfortunately I don&rsquo;t have the code in front of me but the overall idea is simple enough to explain without examples.</p>
 
 <!--more-->
 
 
-<p>Smarkets is a betting exchange (effectively a small stock exchange for buying and selling bets). The exchange system which handles all the money and manages the markets has quite stringent requirements. We want events to be serializable (because ordering is very important in a fast moving market), low latency and ideally distributed across more than one machine. However the exchange also has to handle a large number of bursty updates focused on a small number of records (popular markets, power users). I&#8217;m told that the early prototypes using postgres simply couldn&#8217;t handle the high contention so a move to a more loosely coupled system was necessary.</p>
+<p>Smarkets is a betting exchange (effectively a small stock exchange for buying and selling bets). The exchange system which handles all the money and manages the markets has quite stringent requirements. We want events to be serializable (because ordering is very important in a fast moving market), low latency and ideally distributed across more than one machine. However the exchange also has to handle a large number of bursty updates focused on a small number of records (popular markets, power users). I&rsquo;m told that the early prototypes using postgres simply couldn&rsquo;t handle the high contention so a move to a more loosely coupled system was necessary.</p>
 
 <p>The architecture in place when I arrived at Smarkets was based on <a href="http://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf">this paper</a> which I highly recommend reading. The main idea is that serializability across machines is difficult verging on impossible and that systems which try to paper over this (eg fully ACID distributed transactions) tend to be fragile at scale. The proposed solution is to identify specific sets of actions which must be serializable and handle each set with a single actor on a single machine. These actors then communicate with each other via asynchronous messages. In Smarkets&#8217; case the actors are individual markets, users, accounts and orders. These can be modeled nicely as <a href="http://en.wikipedia.org/wiki/Mealy_machine">mealy machines</a> where the output value is a list of messages, hence the title.</p>
 
 <p>This idea was very effective but the implementation at Smarkets was some of the scariest code in the repository (thanks mostly to being the oldest code). Each actor was implemented as a single erlang process which archived messages (using couchdb) after reading them. There was a lot of repetitive boilerplate code, it was hard to test (because the actors message each other directly) and worst of all there were ways to lose messages before they were archived (eg process inbox is lost if the process dies, messages between machines can be dropped silently).</p>
 
-<p>I wrote a new system to handle the actor implementation whilst keeping the domain-specific logic of each actor mostly unchanged. Each actor is defined by a pair of callback functions (a behaviour, in erlang-speak). The <em>init</em> function sets the initial state of the actor. The <em>transition</em> function takes the current state and an incoming message and returns the new state and possibly some outgoing messages. Everything else is handled by a generic module which takes this behaviour and turns it into a running actor. Each actor consists of an inbox, outbox and a current state, all of which are persisted using mnesia. Each actor also has a unique id used for addressing messages. The transition process - pop a message off the inbox queue, run the transition function, store the new state, push outgoing messages to the outbox - is implemented as a single ACID transaction using mnesia. For actors on the same machine messages are moved directly from one actor’s outbox to another&#8217;s inbox directly using mnesia transactions. For actors on different machines the outbox using erlang messages and sends repeatedly (with exponential backoff) until the receiver confirms receipt. The outbox attaches auto-incrementing message ids to each message which, together with the actor id of the sender, allows the receiver to ignore duplicate messages.</p>
+<p>I wrote a new system to handle the actor implementation whilst keeping the domain-specific logic of each actor mostly unchanged. Each actor is defined by a pair of callback functions (a behaviour, in erlang-speak). The <em>init</em> function sets the initial state of the actor. The <em>transition</em> function takes the current state and an incoming message and returns the new state and possibly some outgoing messages. Everything else is handled by a generic module which takes this behaviour and turns it into a running actor. Each actor consists of an inbox, outbox and a current state, all of which are persisted using mnesia. Each actor also has a unique id used for addressing messages. The transition process &ndash; pop a message off the inbox queue, run the transition function, store the new state, push outgoing messages to the outbox &ndash; is implemented as a single ACID transaction using mnesia. For actors on the same machine messages are moved directly from one actor’s outbox to another&rsquo;s inbox directly using mnesia transactions. For actors on different machines the outbox using erlang messages and sends repeatedly (with exponential backoff) until the receiver confirms receipt. The outbox attaches auto-incrementing message ids to each message which, together with the actor id of the sender, allows the receiver to ignore duplicate messages.</p>
 
 <p>In this way the domain-specific logic is separated from message handling and storage. This led to much less repetition and a more maintainable system. It also made it easy to setup tests or replay past events without recreating the whole system. Last, but certainly not least, it can only lose messages if the database or disk fails and even then is easier to restore from backup than the previous system.</p>
 
@@ -4514,7 +4567,7 @@ If VC_A &lt; VC_B then A-&gt;B
     <link href="http://scattered-thoughts.net/blog/2011/02/07/tunneling-in-china/"/>
     <updated>2011-02-07T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/02/07/tunneling-in-china</id>
-    <content type="html"><![CDATA[<p>In Shanghai I found that ssh was blocked at the protocol level so even running sshd on port 80 doesn&#8217;t work. I don&#8217;t whether this is widespread or whether it was our hotel in particular that was blocking it. Regardless, I found a workaround using httptunnel.</p>
+    <content type="html"><![CDATA[<p>In Shanghai I found that ssh was blocked at the protocol level so even running sshd on port 80 doesn&rsquo;t work. I don&rsquo;t whether this is widespread or whether it was our hotel in particular that was blocking it. Regardless, I found a workaround using httptunnel.</p>
 
 <!--more-->
 
@@ -4659,343 +4712,6 @@ If VC_A &lt; VC_B then A-&gt;B
 
 
 <p>This eliminates the annoyingly noticeable gc pauses.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Optimising texsearch]]></title>
-    <link href="http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/"/>
-    <updated>2010-12-08T06:16:00+00:00</updated>
-    <id>http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/texsearch">Texsearch</a> is a search engine for LaTeX formulae. It forms part of the backend for <a href="http://latexsearch.com">latexsearch.com</a> which indexes the entire Springer corpus. It is also crazy slow, until today.</p>
-
-<!--more-->
-
-
-<p>Intuitively, when searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.</p>
-
-<p>Texsearch uses <a href="http://plastex.sourceforge.net/">PlasTeX</a> to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2<sup>63</sup> possible elements.</p>
-
-<p>At the core of texsearch is a search algorithm which performs approximate searches over the search corpus. Specifically, given a search term S and a search radius R we want to return all corpus terms T such that the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> between S and some substring of T is less than R. This is a common problem in bioinformatics and NLP and there is a <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.7225&amp;rep=rep1&amp;type=pdf">substantial amount of research</a> on how to solve this efficiently. I have been through a range of different algorithms in previous iterations of texsearch and have only recently achieved reasonable performance (mean search time is now ~300ms for a corpus of 1.5m documents). The code is available <a href="https://github.com/jamii/texsearch">here</a>.</p>
-
-<p>We define the distance from latexL to latexR as the minimum Levenshtein distance between latexL and any substring of latexR. With this definition we can specify the results of the search algorithm more simply as returning all corpus terms with distance R of S.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">distance</span> <span class="n">latexL</span> <span class="n">latexR</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">maxl</span><span class="o">,</span> <span class="n">maxr</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">latexL</span><span class="o">,</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">latexR</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">maxl</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">maxr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">maxl</span> <span class="k">else</span>
-</span><span class='line'>  <span class="c">(* cache.(l).(r) is the distance between latexL[l to maxl] and latexR[r to maxr] *)</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">cache</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make_matrix</span> <span class="o">(</span><span class="n">maxl</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">(</span><span class="n">maxr</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="mi">0</span> <span class="k">in</span>
-</span><span class='line'>  <span class="c">(* Must match everything on the left *)</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="o">=</span> <span class="n">maxl</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">maxr</span><span class="o">)</span> <span class="o">&lt;-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">maxr</span><span class="o">)</span>
-</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="c">(* General matching *)</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="o">=</span> <span class="n">maxl</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">1</span> <span class="k">do</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">r</span> <span class="o">=</span> <span class="n">maxr</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">r</span><span class="o">)</span> <span class="o">&lt;-</span>
-</span><span class='line'>          <span class="n">minimum</span>
-</span><span class='line'>            <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>            <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">))</span>
-</span><span class='line'>            <span class="o">((</span><span class="n">abs</span> <span class="o">(</span><span class="n">compare</span> <span class="n">latexL</span><span class="o">.(</span><span class="n">l</span><span class="o">)</span> <span class="n">latexR</span><span class="o">.(</span><span class="n">r</span><span class="o">)))</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>  <span class="k">done</span> <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="c">(* Non-matches on the right dont count until left starts matching *)</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">r</span> <span class="o">=</span> <span class="n">maxr</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="n">r</span><span class="o">)</span> <span class="o">&lt;-</span>
-</span><span class='line'>        <span class="n">minimum</span>
-</span><span class='line'>          <span class="o">(</span><span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>          <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">))</span>
-</span><span class='line'>          <span class="o">((</span><span class="n">abs</span> <span class="o">(</span><span class="n">compare</span> <span class="n">latexL</span><span class="o">.(</span><span class="mi">0</span><span class="o">)</span> <span class="n">latexR</span><span class="o">.(</span><span class="n">r</span><span class="o">)))</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="mi">0</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The search algorithm is built around a <a href="http://en.wikipedia.org/wiki/Suffix_array">suffix array</a> presenting the following interface:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">val</span> <span class="n">create</span> <span class="o">:</span> <span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span>
-</span><span class='line'><span class="k">val</span> <span class="n">add</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
-</span><span class='line'><span class="k">val</span> <span class="n">prepare</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">val</span> <span class="n">delete</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">val</span> <span class="n">find_exact</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
-</span><span class='line'><span class="k">val</span> <span class="n">find_approx</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">float</span> <span class="o">-&gt;</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
-</span><span class='line'><span class="k">val</span> <span class="n">find_query</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">float</span> <span class="o">-&gt;</span> <span class="nn">Query</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers - the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">id</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'><span class="k">type</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="n">id</span> <span class="o">*</span> <span class="n">pos</span><span class="o">)</span> <span class="kt">array</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">create</span> <span class="bp">()</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">next_id</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make</span> <span class="mi">0</span> <span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">unsorted</span> <span class="o">=</span> <span class="bp">[]</span><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The suffix array is built in a completely naive way. We just throw all the suffixes into a list and sort it. There are much more efficient methods known but this is fast enough, especially since we do updates offline. The building is separated into two functions to make incremental updates easier.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">add</span> <span class="n">sa</span> <span class="n">latexs</span> <span class="o">=</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="o">&lt;-</span> <span class="n">latexs</span> <span class="o">@</span> <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">insert</span> <span class="n">sa</span> <span class="o">(</span><span class="n">opaque</span><span class="o">,</span> <span class="n">latex</span><span class="o">)</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">id</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">next_id</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">next_id</span> <span class="o">&lt;-</span> <span class="n">id</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">DynArray</span><span class="p">.</span><span class="n">add</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">opaque</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">DynArray</span><span class="p">.</span><span class="n">add</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">latex</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">id</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">prepare</span> <span class="n">sa</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="n">insert</span> <span class="n">sa</span><span class="o">)</span> <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">new_suffixes</span> <span class="o">=</span> <span class="nn">Util</span><span class="p">.</span><span class="n">concat_map</span> <span class="o">(</span><span class="n">suffixes</span> <span class="n">sa</span><span class="o">)</span> <span class="n">ids</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">cmp</span> <span class="o">=</span> <span class="n">compare_suffix</span> <span class="n">sa</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="kt">array</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">of_list</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">merge</span> <span class="n">cmp</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">fast_sort</span> <span class="n">cmp</span> <span class="n">new_suffixes</span><span class="o">)</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">to_list</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">))</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="o">&lt;-</span> <span class="bp">[]</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="kt">array</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in gather_exact (better name, anyone?), where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then find_exact runs through the HashSet and looks up the matching opaques.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(* binary search *)</span>
-</span><span class='line'><span class="k">let</span> <span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="c">(* find beginning of region *)</span>
-</span><span class='line'>  <span class="c">(* lo &lt; latex *)</span>
-</span><span class='line'>  <span class="c">(* hi &gt;= latex *)</span>
-</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">narrow</span> <span class="n">lo</span> <span class="n">hi</span> <span class="o">=</span>
-</span><span class='line'>    <span class="k">let</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">+</span> <span class="o">((</span><span class="n">hi</span><span class="o">-</span><span class="n">lo</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span> <span class="k">then</span> <span class="n">hi</span> <span class="k">else</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">leq</span> <span class="n">sa</span> <span class="n">latex</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">.(</span><span class="n">mid</span><span class="o">)</span>
-</span><span class='line'>    <span class="k">then</span> <span class="n">narrow</span> <span class="n">lo</span> <span class="n">mid</span>
-</span><span class='line'>    <span class="k">else</span> <span class="n">narrow</span> <span class="n">mid</span> <span class="n">hi</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">n</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">traverse</span> <span class="n">index</span> <span class="o">=</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">n</span> <span class="k">then</span> <span class="bp">()</span> <span class="k">else</span>
-</span><span class='line'>    <span class="k">let</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">.(</span><span class="n">index</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">is_prefix</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span>
-</span><span class='line'>    <span class="k">then</span>
-</span><span class='line'>      <span class="k">begin</span>
-</span><span class='line'>  <span class="nn">Hashset</span><span class="p">.</span><span class="n">add</span> <span class="n">ids</span> <span class="n">id</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">traverse</span> <span class="o">(</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">else</span> <span class="bp">()</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">traverse</span> <span class="o">(</span><span class="n">narrow</span> <span class="o">(-</span><span class="mi">1</span><span class="o">)</span> <span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">exact_match</span> <span class="n">sa</span> <span class="n">id</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">find_exact</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">create</span> <span class="mi">0</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span> <span class="n">latex</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="n">exact_match</span> <span class="n">sa</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now for the clever part - approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">k</span> <span class="o">=</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">cutoff</span> <span class="n">precision</span> <span class="n">latex</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">create</span> <span class="mi">0</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">List</span><span class="p">.</span><span class="n">iter</span> <span class="o">(</span><span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span><span class="o">)</span> <span class="o">(</span><span class="nn">Latex</span><span class="p">.</span><span class="n">fragments</span> <span class="n">latex</span> <span class="n">k</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">ids</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">approx_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latexL</span> <span class="n">id</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">latexR</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">match</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">similar</span> <span class="n">precision</span> <span class="n">latexL</span> <span class="n">latexR</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Some</span> <span class="n">dist</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">let</span> <span class="n">opaque</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>      <span class="nc">Some</span> <span class="o">(</span><span class="n">dist</span><span class="o">,</span> <span class="n">opaque</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nc">None</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">find_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">Util</span><span class="p">.</span><span class="n">filter_map</span> <span class="o">(</span><span class="n">approx_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We can also extend this to allow boolean queries.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="k">rec</span> <span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">match</span> <span class="n">query</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">Latex</span> <span class="o">(</span><span class="n">latex</span><span class="o">,</span> <span class="o">_)</span> <span class="o">-&gt;</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">And</span> <span class="o">(</span><span class="n">query1</span><span class="o">,</span> <span class="n">query2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">inter</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query1</span><span class="o">)</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query2</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">Or</span> <span class="o">(</span><span class="n">query1</span><span class="o">,</span> <span class="n">query2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">union</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query1</span><span class="o">)</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query2</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">query_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="n">id</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">latexR</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">match</span> <span class="nn">Query</span><span class="p">.</span><span class="n">similar</span> <span class="n">precision</span> <span class="n">query</span> <span class="n">latexR</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Some</span> <span class="n">dist</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">let</span> <span class="n">opaque</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>      <span class="nc">Some</span> <span class="o">(</span><span class="n">dist</span><span class="o">,</span> <span class="n">opaque</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nc">None</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">find_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">Util</span><span class="p">.</span><span class="n">filter_map</span> <span class="o">(</span><span class="n">query_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is a lot simpler than my previous approach, which required some uncomfortable reasoning about overlapping regions in quasi-metric spaces.</p>
-
-<p>It is instructive to compare texsearch with other math search engines. Texsearch is effectively a brute force solution that gave us an ok search engine search engine with minimal risk. It has minimal understanding of LaTeX and no understanding of the structure of the formulae it searches in. <a href="http://uniquation.com/en/">Uniquation</a> accepts only a small (but widely used) subset of LaTeX but understands the structure of the equation itself and so can infer scope and perform variable substitution when searching. I am not sure yet how much content they are indexing or how well they handle searching within full LaTeX content but hopefully this approach can scale up to big corpuses. <a href="http://haskell.org/hoogle/">Hoogle</a> is a search engine for haskell types which can handle even more sophisticated equivalences than uniquation thanks to its specialised domain. <a href="https://trac.kwarc.info/arXMLiv/">ArXMLiv</a> is developing tools for inferring semantic information from LaTeX content in order to convert it to Semantic MathML, which is much easier for search engines to handle.</p>
-
-<p>So, in summary, LaTeX is a pain in the ass.</p>
 ]]></content>
   </entry>
   

@@ -7,7 +7,7 @@
 	<meta name="author" content="Jamie Brandon">
 
 	
-	<meta name="description" content="The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via ring/line but I&#8217;m still &hellip;">
+	<meta name="description" content="The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via ring/line but I&rsquo;m still &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -79,16 +79,16 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h1 class="title">Telehash: bit_trees</h1>
-	<div class="entry-content"><p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&#8217;m still mulling over the protocol so we&#8217;ll skip to the routing table.</p>
+	<div class="entry-content"><p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&rsquo;m still mulling over the protocol so we&rsquo;ll skip to the routing table.</p>
 
 <!--more-->
 
 
-<p>I&#8217;ll add the usual &#8216;I don&#8217;t understand Kademlia and I didn&#8217;t test my code&#8217; disclaimer in here.</p>
+<p>I&rsquo;ll add the usual &lsquo;I don&rsquo;t understand Kademlia and I didn&rsquo;t test my code&rsquo; disclaimer in here.</p>
 
-<p>Routing in the Kademlia paper is described using what can best be called the &#8216;mash everything together and be vague about the details&#8217; pattern. I want my switch to be a bit cleaner than that so I&#8217;ve split it into three modules. The first of these is the bit_tree.</p>
+<p>Routing in the Kademlia paper is described using what can best be called the &lsquo;mash everything together and be vague about the details&rsquo; pattern. I want my switch to be a bit cleaner than that so I&rsquo;ve split it into three modules. The first of these is the bit_tree.</p>
 
-<p>The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don&#8217;t either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234&#8230; then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a <em>.see</em> command.</p>
+<p>The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don&rsquo;t either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234&hellip; then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a <em>.see</em> command.</p>
 
 <p>So here is a bog-standard binary suffix tree:</p>
 
@@ -115,7 +115,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>When adding nodes to a bucket we need to keep track of certain numbers which will be used by the router to decide when to split buckets. Some of these are quite complicated so to make this easier we will work with a zipper-like structure instead of using <em>leaf</em> and <em>branch</em> directly. If you know what a zipper is the code in this post will make sense. If you don&#8217;t know what a zipper is, go find out. When you come back the code in this post will make sense.</p>
+<p>When adding nodes to a bucket we need to keep track of certain numbers which will be used by the router to decide when to split buckets. Some of these are quite complicated so to make this easier we will work with a zipper-like structure instead of using <em>leaf</em> and <em>branch</em> directly. If you know what a zipper is the code in this post will make sense. If you don&rsquo;t know what a zipper is, go find out. When you come back the code in this post will make sense.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -138,7 +138,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The finger keeps track of where the nodes own end is located in the tree in order to calculate something I have termed the gap - the size of the largest sub-tree containing the nodes own end but not touching the finger.</p>
+<p>The finger keeps track of where the nodes own end is located in the tree in order to calculate something I have termed the gap &ndash; the size of the largest sub-tree containing the nodes own end but not touching the finger.</p>
 
 <p>The empty bit_tree is easy to define:</p>
 
@@ -323,7 +323,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We could make this more efficient by only retracting until the finger meets <em>Bits</em> partway up. For now I don&#8217;t expect performance of the bit_tree to be an issue.</p>
+<p>We could make this more efficient by only retracting until the finger meets <em>Bits</em> partway up. For now I don&rsquo;t expect performance of the bit_tree to be an issue.</p>
 
 <p>Now that we can find buckets we can modify them. Deciding when to split buckets is not the concern of the bit_tree so we delegate it to the caller.</p>
 

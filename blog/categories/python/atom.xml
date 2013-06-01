@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -18,7 +18,7 @@
     <link href="http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation/"/>
     <updated>2010-07-30T06:16:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation</id>
-    <content type="html"><![CDATA[<p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn't really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
+    <content type="html"><![CDATA[<p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn&rsquo;t really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
 
 <!--more-->
 
@@ -77,10 +77,10 @@
 
 <p>``` json
 {
-   "<em>id": "users/{user_id}/emails/{email}/{hash}",
-   "</em>rev": "1-0c4c3aad1227a62429ffb0c05a7059f1",
-   "type": "doc.action",
-   "term": {</p>
+   &ldquo;<em>id&rdquo;: &ldquo;users/{user_id}/emails/{email}/{hash}&rdquo;,
+   &ldquo;</em>rev&rdquo;: &ldquo;1-0c4c3aad1227a62429ffb0c05a7059f1&rdquo;,
+   &ldquo;type&rdquo;: &ldquo;doc.action&rdquo;,
+   &ldquo;term&rdquo;: {</p>
 
 <pre><code>   "methods": {
        "PUT": {
@@ -115,26 +115,26 @@
 
 <p>``` json
 {
-   "<em>id": "320f2a4bc956334c66c84a4d9f6160a0",
-   "</em>rev": "1-a109f7aa2906e2452e45a49d649674cb",
-   "body": "{}",
-   "code": 403,
-   "path_spec": "users/{user_id}/emails/{email}/{hash}",
-   "method": "PUT",
-   "headers": {</p>
+   &ldquo;<em>id&rdquo;: &ldquo;320f2a4bc956334c66c84a4d9f6160a0&rdquo;,
+   &ldquo;</em>rev&rdquo;: &ldquo;1-a109f7aa2906e2452e45a49d649674cb&rdquo;,
+   &ldquo;body&rdquo;: &ldquo;{}&rdquo;,
+   &ldquo;code&rdquo;: 403,
+   &ldquo;path_spec&rdquo;: &ldquo;users/{user_id}/emails/{email}/{hash}&rdquo;,
+   &ldquo;method&rdquo;: &ldquo;PUT&rdquo;,
+   &ldquo;headers&rdquo;: {</p>
 
 <pre><code>   "Content-type": "application/json",
    "Authorization": "UserLogin token=\"O3bHthtJ6wumlt0yjf0q8OrYURMBKiRbfNRmhfGLJNCXhcXkSrzyPVzm47MoWD_lt6UdOJlA8wf1AWY~\""
 </code></pre>
 
 <p>   },
-   "path": "users/54ad2cc2a1dd2871518c528a11a40f00/emails/jMt%40XPqKYLNx/50584d82c756b2e4a53c8695553ae34a",
-   "response": null,
-   "port": 9000
+   &ldquo;path&rdquo;: &ldquo;users/54ad2cc2a1dd2871518c528a11a40f00/emails/jMt%40XPqKYLNx/50584d82c756b2e4a53c8695553ae34a&rdquo;,
+   &ldquo;response&rdquo;: null,
+   &ldquo;port&rdquo;: 9000
 }
 ```</p>
 
-<p>Another set of scripts then combs through these tables looking for errors. Anything that returns '500 internal server error' is flagged. Calls which return '400 bad request' and are not tagged as being deliberately malformed are also flagged. Same goes for any response code which isn't documented for that call and any documented response code which isn't observed in the fuzzer table. One particularly useful script lists methods which are accessible via the public port.</p>
+<p>Another set of scripts then combs through these tables looking for errors. Anything that returns &lsquo;500 internal server error&rsquo; is flagged. Calls which return &lsquo;400 bad request&rsquo; and are not tagged as being deliberately malformed are also flagged. Same goes for any response code which isn&rsquo;t documented for that call and any documented response code which isn&rsquo;t observed in the fuzzer table. One particularly useful script lists methods which are accessible via the public port.</p>
 
 <p>This system has worked out quite well so far. The documentation is embedded directly next to the related code so its hard to forget to update it when changing the code. The fuzzer is worth its weight in gold and has uncovered countless bugs and weird corner cases. For such a crude fuzzer it generates suprisingly good code coverage. The next step is to combine the fuzzer with a smallcheck-style test system in order to better narrow down errors in long sequences of calls.</p>
 ]]></content>
@@ -145,7 +145,7 @@
     <link href="http://scattered-thoughts.net/blog/2010/05/19/examining-scampy/"/>
     <updated>2010-05-19T06:16:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/05/19/examining-scampy</id>
-    <content type="html"><![CDATA[<p><a href="http://github.com/jamii/scampy">Scampy</a> is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl's for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.</p>
+    <content type="html"><![CDATA[<p><a href="http://github.com/jamii/scampy">Scampy</a> is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl&rsquo;s for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.</p>
 
 <!--more-->
 
@@ -157,7 +157,7 @@ Good Day,</p>
 
 <p>I am staff. Sgt. Ronnie Reeve, I found your contact particulars in an E-mail address guide they provide us here, as I desperately need an urgent help to do this deal. I am seeking your kind assistance to move the sum of $12m {Twelve Million U.S Dollars only} to you
 in  your destination, as far as I can be assured that my share will be safe in your
-care until I complete my service here ... etc
+care until I complete my service here &hellip; etc
 ```</p>
 
 <p><code>
@@ -171,7 +171,7 @@ Dear Sir,</p>
 
 <p>Saddam Hussein was a very wicked man so God is compensating his children  for what we suffered because of him.</p>
 
-<p>... etc</p>
+<p>&hellip; etc</p>
 
 <p>Now, I will need the following information below so as to present you as the beneficiary to the security company where I kept the consigment for safety.
 Below are the information needed:</p>
@@ -185,7 +185,7 @@ Below are the information needed:</p>
 </ol>
 
 
-<p>... etc
+<p>&hellip; etc
 ```</p>
 
 <p><code>
@@ -220,7 +220,7 @@ Dear Sir,</p>
 Dear
 </code></p>
 
-<p>This was an early bug. Ronnie doesn't seem to twig though.</p>
+<p>This was an early bug. Ronnie doesn&rsquo;t seem to twig though.</p>
 
 <p>```
 Dear Sir,</p>

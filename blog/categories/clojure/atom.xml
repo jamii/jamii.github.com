@@ -4,7 +4,7 @@
   <title><![CDATA[Category: clojure | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/clojure/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -18,14 +18,14 @@
     <link href="http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/"/>
     <updated>2012-12-04T02:31:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation</id>
-    <content type="html"><![CDATA[<p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I'm going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
+    <content type="html"><![CDATA[<p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&rsquo;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
 
 <!--more-->
 
 
 <p>The core idea is that strucjure (and the <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;cad=rja&amp;ved=0CFIQFjAD&amp;url=http%3A%2F%2Flambda-the-ultimate.org%2Fnode%2F2477&amp;ei=lQ69UJqrLK-WyAHC1IGIBg&amp;usg=AFQjCNEJAMQULpZ62ASYefNHadlUWTlgKA&amp;sig2=E1ePKzLJJNaFw5BfEG9rrA">OMeta</a> library on which it is based) is not just yet-another-parser, but is instead a concise language for describing, manipulating and transforming data structures. The <a href="http://www.vpri.org/">VPRI</a> folks have done some amazing things with OMeta. My goal with strucjure is to see how much further this idea can be taken.</p>
 
-<p>(Note: For the purposes of this post I'll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
+<p>(Note: For the purposes of this post I&rsquo;ll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
 
 <h1>Pattern matching</h1>
 
@@ -48,7 +48,7 @@
 
 <p>This is a concise, readable description of the various cases and replaces a chain of if-statements.</p>
 
-<p>If we stopped there, you could be forgiven for not caring. Simple examples don't really demonstrate the power of pattern matching. Let's instead look at a more complicated example - <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
+<p>If we stopped there, you could be forgiven for not caring. Simple examples don&rsquo;t really demonstrate the power of pattern matching. Let&rsquo;s instead look at a more complicated example &ndash; <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
 
 <p>``` java</p>
 
@@ -104,7 +104,7 @@ private Node balance(Node h) {
 
 <p>```</p>
 
-<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is 'if the tree looks like foo, replace it with bar'. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
+<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is &lsquo;if the tree looks like foo, replace it with bar&rsquo;. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
 
 <p>``` clojure
 (defrecord Leaf [])
@@ -112,13 +112,13 @@ private Node balance(Node h) {
 (defrecord Black [left value right])</p>
 
 <p>(defview balance
-  ;; if it looks like one of these...
+  ;; if it looks like one of these&hellip;
   (or
    (Black. (Red. (Red. ?a ?x ?b) ?y ?c) ?z ?d)
    (Black. (Red. ?a ?x (Red. ?b ?y ?c)) ?z ?d)
    (Black. ?a ?x (Red. (Red. ?b ?y ?c) ?z ?d))
    (Black. ?a ?x (Red. ?b ?y (Red. ?c ?z ?d))))
-  ;; replace it with this...
+  ;; replace it with this&hellip;
   (Red. (Black. a x b) y (Black. c z d))</p>
 
 <p>  ;; otherwise, leave it alone
@@ -126,7 +126,7 @@ private Node balance(Node h) {
   other)
 ```</p>
 
-<p>(Note that this isn't exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
+<p>(Note that this isn&rsquo;t exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
 
 <p>Strucjure is not very optimized yet, but if you use a more mature pattern-matching library then this code would be as fast as what you would write by hand. For complex patterns <a href="https://github.com/clojure/core.match">core.match</a> often does a better job of optimizing the decision tree than I can manage by hand, in much the same way that GCC does a better job of writing assembly code than I ever could.</p>
 
@@ -162,9 +162,9 @@ private Node balance(Node h) {
 
 <p>Strucjure supports patterns which only consume part of the input and can chain these patterns together. Combine that with pattern matching and you can very easily write back-tracking recursive-descent parsers.</p>
 
-<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can't directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
+<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can&rsquo;t directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
 
-<p>Parsing doesn't have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
+<p>Parsing doesn&rsquo;t have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
 
 <p>``` clojure
 user> (defnview zero-or-more-prefix [elem]</p>
@@ -173,7 +173,7 @@ user> (defnview zero-or-more-prefix [elem]</p>
     (prefix ) nil)
 </code></pre>
 
-<h1>'user/zero-or-more-prefix</h1>
+<h1>&lsquo;user/zero-or-more-prefix</h1>
 
 <p>user> (defview self-counting</p>
 
@@ -182,7 +182,7 @@ user> (defnview zero-or-more-prefix [elem]</p>
     (prefix 3 3 3) 'three)
 </code></pre>
 
-<h1>'user/self-counting</h1>
+<h1>&lsquo;user/self-counting</h1>
 
 <p>user> (run (zero-or-more-prefix self-counting) [1 3 3 3 2 2 1 2 2])
 (one three two one two)
@@ -210,23 +210,23 @@ user> (defnview zero-or-more-prefix [elem]</p>
 <p>(defn bind [binding-levels]
   (bind* binding-levels binding-levels))</p>
 
-<p>;; run 'bind with basic arithmetic precedences
+<p>;; run &lsquo;bind with basic arithmetic precedences
 (defmacro math [&amp; args]
-  (run (bind [#{'+ '-} #{'* '/}]) args))</p>
+  (run (bind [#{&rsquo;+ &lsquo;&ndash;} #{&rsquo;* &lsquo;/}]) args))</p>
 
-<p>(macroexpand '(math 1 - 2 + 3 - 4))
-;; (- 1 (+ 2 (- 3 4)))
-(macroexpand '(math 1 + 2 * 7 + 1 / 2))
+<p>(macroexpand &lsquo;(math 1 &ndash; 2 + 3 &ndash; 4))
+;; (&ndash; 1 (+ 2 (&ndash; 3 4)))
+(macroexpand &rsquo;(math 1 + 2 * 7 + 1 / 2))
 ;; (+ 1 (+ (<em> 2 7) (/ 1 2)))
-(macroexpand '(math 1 + 2 * (7 + 1) / 2))
+(macroexpand &lsquo;(math 1 + 2 * (7 + 1) / 2))
 ;; (+ 1 (</em> 2 (/ (7 + 1) 2)))
 ```</p>
 
 <p>No more death-by-polish-notation!</p>
 
-<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn't yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I'm too lazy to manually transform the grammar. It's a temporary limitation.)</p>
+<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn&rsquo;t yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I&rsquo;m too lazy to manually transform the grammar. It&rsquo;s a temporary limitation.)</p>
 
-<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it's was very easy to write, read and modify the parser.</p>
+<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it&rsquo;s was very easy to write, read and modify the parser.</p>
 
 <h1>Generic programming</h1>
 
@@ -234,12 +234,12 @@ user> (defnview zero-or-more-prefix [elem]</p>
 
 <p>``` clojure
 (defn walk
-  "Traverses form, an arbitrary data structure.  inner and outer are
+  &ldquo;Traverses form, an arbitrary data structure.  inner and outer are
   functions.  Applies inner to each element of form, building up a
   data structure of the same type, then applies outer to the result.
-  Recognizes all Clojure data structures. Consumes seqs as with doall."</p>
+  Recognizes all Clojure data structures. Consumes seqs as with doall.&rdquo;</p>
 
-<p>  {:added "1.1"}
+<p>  {:added &ldquo;1.1&rdquo;}
   [inner outer form]
   (cond
    (list? form) (outer (apply list (map inner form)))
@@ -249,11 +249,11 @@ user> (defnview zero-or-more-prefix [elem]</p>
    :else (outer form)))</p>
 
 <p>(defn postwalk
-  "Performs a depth-first, post-order traversal of form. Calls f on
-each sub-form, uses f's return value in place of the original.
+  &ldquo;Performs a depth-first, post-order traversal of form. Calls f on
+each sub-form, uses f&rsquo;s return value in place of the original.
 Recognizes all Clojure data structures except sorted-map-by.
-Consumes seqs as with doall."
-  {:added "1.1"}
+Consumes seqs as with doall.&rdquo;
+  {:added &ldquo;1.1&rdquo;}
   [f form]
   (walk (partial postwalk f) f form))
 ```</p>
@@ -272,7 +272,7 @@ Consumes seqs as with doall."
   (run clojure form {:post-view (fn [_ sub-form] (f sub-form)}))
 ```</p>
 
-<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven't yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player's plants for sunlight and nutrients. The plant language can be defined like this:</p>
+<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven&rsquo;t yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player&rsquo;s plants for sunlight and nutrients. The plant language can be defined like this:</p>
 
 <p>``` clojure
 (defview +name+
@@ -288,23 +288,23 @@ Consumes seqs as with doall."
   (and number? #(&lt;= -360 % 360)) %)</p>
 
 <p>(defview +relation+
-  (or '= '> '>= '&lt; '&lt;=) %)</p>
+  (or &lsquo;= &rsquo;> &lsquo;>= &rsquo;&lt; &lsquo;&lt;=) %)</p>
 
 <p>(defview +property+
-  (or 'tag 'length 'direction) %)</p>
+  (or &lsquo;tag 'length 'direction) %)</p>
 
 <p>(defview +condition+
-  ['and &amp; ((zero-or-more +condition+) ?conditions)] (cons 'and conditions)
+  [&lsquo;and &amp; ((zero-or-more +condition+) ?conditions)] (cons 'and conditions)
   ['or &amp; ((zero-or-more +condition+) ?conditions)] (cons 'or conditions)
   ['not (+condition+ ?condition)] (list 'not condition)
   [(+relation+ ?relation) (+property+ ?property) ?value] (list relation property value))</p>
 
 <p>(defview +condition-head+
-  ['when (+condition+ ?condition)] (list 'when condition)
+  [&lsquo;when (+condition+ ?condition)] (list 'when condition)
   'whenever 'whenever)</p>
 
 <p>(defview +action+
-  ['grow-by (+length+ ?length)] (list 'grow-by length)
+  [&lsquo;grow-by (+length+ ?length)] (list 'grow-by length)
   ['turn-by (+direction+ ?direction)] (list 'turn-by direction)
   ['turn-to (+direction+ ?direction)] (list 'turn-to direction)
   ['tag (+tag+ ?tag)] (list 'tag tag)
@@ -312,7 +312,7 @@ Consumes seqs as with doall."
   ['branch &amp; ((zero-or-more (zero-or-more +action+)) ?action-lists)] (cons 'branch action-lists))</p>
 
 <p>(defview +rule+
-  ['rule (+name+ ?name) (+condition-head+ ?condition-head) &amp; ((zero-or-more +action+) ?actions)] (apply list 'rule name condition-head actions))</p>
+  [&lsquo;rule (+name+ ?name) (+condition-head+ ?condition-head) &amp; ((zero-or-more +action+) ?actions)] (apply list 'rule name condition-head actions))</p>
 
 <p>(defview +rules+
   [&amp; ((zero-or-more +rule+) ?rules)] rules)
@@ -340,17 +340,17 @@ Consumes seqs as with doall."
 </code></pre>
 
 <p>(defn select [rules properties]
-  "Pick a valid rule and return its list of actions (or nil if no rules are valid)"
+  &ldquo;Pick a valid rule and return its list of actions (or nil if no rules are valid)&rdquo;
   (utilpostwalk +rules+ rules (select* properties)))
 ```</p>
 
 <p>Writing code like this allows us to separate the shape of the data from the computation we perform over it.</p>
 
-<p>We're also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
+<p>We&rsquo;re also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
 
 <p>``` clojure
 (defn map-reduce [strucjure form map-op reduce-op]
-  "Call map-op on every sub-form and reduce results with reduce-op"
+  &ldquo;Call map-op on every sub-form and reduce results with reduce-op&rdquo;
   (let [acc (atom (reduce-op))]</p>
 
 <pre><code>(run strucjure form
@@ -361,7 +361,7 @@ Consumes seqs as with doall."
 </code></pre>
 
 <p>(defn collect [strucjure form filter-op]
-  "Return all sub-forms satisfying filter-op"
+  &ldquo;Return all sub-forms satisfying filter-op&rdquo;
   (let [acc (atom nil)]</p>
 
 <pre><code>(run strucjure form
@@ -377,7 +377,7 @@ Consumes seqs as with doall."
 
 <p>I originally learned to code in haskell. One of the things I miss about strong static typing is it that it automatically provides documentation about the data structures used in your program. Strucjure patterns can fulfill the same role. In l-seed, if you are confused about what a rule should look like you can just go look at the +rule+ pattern.</p>
 
-<p>We can't quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
+<p>We can&rsquo;t quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
 
 <p><code>clojure
 (defmacro defgenotype [name &amp; rules]
@@ -386,7 +386,7 @@ Consumes seqs as with doall."
   `(def ~name '~(vec rules)))
 </code></p>
 
-<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven't yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
+<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven&rsquo;t yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
 
 <h1>State machines</h1>
 
@@ -404,7 +404,7 @@ be used to make a very compact TCP/IP. Our first attempt was about 160 lines of 
 enough to run a website. We think this can be done even more compactly and clearly, and we plan to
 take another pass at this next year.</p></blockquote>
 
-<p>I haven't yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+<p>I haven&rsquo;t yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
 
 <h1>Moving forward</h1>
 
@@ -447,16 +447,16 @@ clojure.lang.ExceptionInfo: throw+: #strucjure.view.PartialMatch{:view #strucjur
       [nil (reverse outputs)])))))
 </code></pre>
 
-<p>(def zero-or-more ->ZeroOrMore)
+<p>(def zero-or-more &ndash;>ZeroOrMore)
 ```</p>
 
-<p>This is gross. I don't have any ideas on how to overcome this.</p>
+<p>This is gross. I don&rsquo;t have any ideas on how to overcome this.</p>
 
-<p>I've already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
+<p>I&rsquo;ve already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
 
-<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don't expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
+<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don&rsquo;t expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
 
-<p>For now, I'm going to dogfood strucjure in various projects while ruminating on improvements. I'm already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
+<p>For now, I&rsquo;m going to dogfood strucjure in various projects while ruminating on improvements. I&rsquo;m already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
 ]]></content>
   </entry>
   
@@ -467,7 +467,7 @@ clojure.lang.ExceptionInfo: throw+: #strucjure.view.PartialMatch{:view #strucjur
     <id>http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme</id>
     <content type="html"><![CDATA[<p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
 
-<p>The readme on github has detailed descriptions of the syntax etc which I won't repeat here. What I do want to do is run through a realistic example.</p>
+<p>The readme on github has detailed descriptions of the syntax etc which I won&rsquo;t repeat here. What I do want to do is run through a realistic example.</p>
 
 <!--more-->
 
@@ -476,7 +476,7 @@ clojure.lang.ExceptionInfo: throw+: #strucjure.view.PartialMatch{:view #strucjur
 
 <p>```bash
 jamie@alien:~/strucjure$ lein test strucjure.test
-WARNING: newline already refers to: #'clojure.core/newline in namespace: strucjure.test, being replaced by: #'strucjure.test/newline</p>
+WARNING: newline already refers to: #&lsquo;clojure.core/newline in namespace: strucjure.test, being replaced by: #'strucjure.test/newline</p>
 
 <p>lein test strucjure.test</p>
 
@@ -484,7 +484,7 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
 0 failures, 0 errors.
 ```</p>
 
-<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn't need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
+<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn&rsquo;t need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
 
 <p>```clojure
 (defview space
@@ -526,7 +526,7 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
 
 <p>```clojure
 (defn tokenise [sep]
-  (view/->Raw
+  (view/&ndash;>Raw
    (fn [input opts]</p>
 
 <pre><code> (when-let [elems (seq input)]
@@ -562,7 +562,7 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
   result)
 </code></p>
 
-<p>A few of the code blocks don't contain examples - we can detect these because they don't start with a "user> " prompt. All the other blocks contain a list of examples separated by prompts.</p>
+<p>A few of the code blocks don&rsquo;t contain examples &ndash; we can detect these because they don&rsquo;t start with a &ldquo;user> &rdquo; prompt. All the other blocks contain a list of examples separated by prompts.</p>
 
 <p>```clojure
 (defview prompt
@@ -596,7 +596,7 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
 <p>The result is either a return value or an exception.</p>
 
 <p>```clojure
-;; #"[a-zA-Z.]"
+;; #&ldquo;[a-zA-Z.]&rdquo;
 (defview exception-chars
   (or .</p>
 
@@ -617,13 +617,13 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
   [:returns (apply str data)])
 ```</p>
 
-<p>That's it - parsing done.</p>
+<p>That&rsquo;s it &ndash; parsing done.</p>
 
 <p>Now we just have to turn the results into unit tests. We have to be careful about comparing the results of the examples because they might contain closures, which look different every time.</p>
 
 <p>```clojure
 (defn replace-fun [unread-form]
-  (.replaceAll unread-form "#&lt;[<sup>>]*>"</sup> "#<fun>"))</p>
+  (.replaceAll unread-form &ldquo;#&lt;[^>]*>&rdquo; &ldquo;#<fun>&rdquo;))</p>
 
 <p>(defn prints-as [string form]
   (= (replace-fun string) (replace-fun (with-out-str (pr form)))))
@@ -652,7 +652,7 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
 </code></pre>
 
 <p>(defmacro insert-example-test [{:keys [input prints result]}]
-  `(example-test (fn [] (eval '(do (use '~'strucjure) ~(read-string input)))) ~prints '~result))</p>
+  `(example-test (fn [] (eval &lsquo;(do (use &rsquo;~&lsquo;strucjure) ~(read-string input)))) ~prints &rsquo;~result))</p>
 
 <p>(defmacro insert-readme-test [file]
   `(do</p>
@@ -662,12 +662,12 @@ WARNING: newline already refers to: #'clojure.core/newline in namespace: strucju
 </code></pre>
 
 <p>(deftest readme-test
-  (insert-readme-test "README.md"))
+  (insert-readme-test &ldquo;README.md&rdquo;))
 ```</p>
 
 <p>This is fun. Not only does strucjure parse its own syntax, it reads its own documentation!</p>
 
-<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I'm also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I'm going to be moving on to using strucjure to build other useful DSLs.</p>
+<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I&rsquo;m also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I&rsquo;m going to be moving on to using strucjure to build other useful DSLs.</p>
 ]]></content>
   </entry>
   

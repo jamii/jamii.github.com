@@ -81,7 +81,7 @@
 	<h1 class="title">Strucjure: reading the readme</h1>
 	<div class="entry-content"><p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
 
-<p>The readme on github has detailed descriptions of the syntax etc which I won&#8217;t repeat here. What I do want to do is run through a realistic example.</p>
+<p>The readme on github has detailed descriptions of the syntax etc which I won&rsquo;t repeat here. What I do want to do is run through a realistic example.</p>
 
 <!--more-->
 
@@ -105,7 +105,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn&#8217;t need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
+<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn&rsquo;t need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -224,7 +224,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>A few of the code blocks don&#8217;t contain examples - we can detect these because they don&#8217;t start with a &#8220;user> &#8221; prompt. All the other blocks contain a list of examples separated by prompts.</p>
+<p>A few of the code blocks don&rsquo;t contain examples &ndash; we can detect these because they don&rsquo;t start with a &ldquo;user> &rdquo; prompt. All the other blocks contain a list of examples separated by prompts.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -307,7 +307,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>That&#8217;s it - parsing done.</p>
+<p>That&rsquo;s it &ndash; parsing done.</p>
 
 <p>Now we just have to turn the results into unit tests. We have to be careful about comparing the results of the examples because they might contain closures, which look different every time.</p>
 
@@ -385,7 +385,7 @@
 
 <p>This is fun. Not only does strucjure parse its own syntax, it reads its own documentation!</p>
 
-<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I&#8217;m also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I&#8217;m going to be moving on to using strucjure to build other useful DSLs.</p>
+<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I&rsquo;m also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I&rsquo;m going to be moving on to using strucjure to build other useful DSLs.</p>
 </div>
 
 

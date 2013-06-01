@@ -79,7 +79,7 @@
 	
 	<div id="content" class="inner"><article class="post">
 	<h1 class="title">Smarkets API documentation</h1>
-	<div class="entry-content"><p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn&#8217;t really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
+	<div class="entry-content"><p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn&rsquo;t really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
 
 <!--more-->
 
@@ -262,7 +262,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Another set of scripts then combs through these tables looking for errors. Anything that returns &#8216;500 internal server error&#8217; is flagged. Calls which return &#8216;400 bad request&#8217; and are not tagged as being deliberately malformed are also flagged. Same goes for any response code which isn&#8217;t documented for that call and any documented response code which isn&#8217;t observed in the fuzzer table. One particularly useful script lists methods which are accessible via the public port.</p>
+<p>Another set of scripts then combs through these tables looking for errors. Anything that returns &lsquo;500 internal server error&rsquo; is flagged. Calls which return &lsquo;400 bad request&rsquo; and are not tagged as being deliberately malformed are also flagged. Same goes for any response code which isn&rsquo;t documented for that call and any documented response code which isn&rsquo;t observed in the fuzzer table. One particularly useful script lists methods which are accessible via the public port.</p>
 
 <p>This system has worked out quite well so far. The documentation is embedded directly next to the related code so its hard to forget to update it when changing the code. The fuzzer is worth its weight in gold and has uncovered countless bugs and weird corner cases. For such a crude fuzzer it generates suprisingly good code coverage. The next step is to combine the fuzzer with a smallcheck-style test system in order to better narrow down errors in long sequences of calls.</p>
 </div>

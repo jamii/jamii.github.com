@@ -4,7 +4,7 @@
   <title><![CDATA[Category: scampy | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/scampy/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-05-21T21:17:54+01:00</updated>
+  <updated>2013-06-01T03:48:20+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -18,7 +18,7 @@
     <link href="http://scattered-thoughts.net/blog/2010/05/19/examining-scampy/"/>
     <updated>2010-05-19T06:16:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/05/19/examining-scampy</id>
-    <content type="html"><![CDATA[<p><a href="http://github.com/jamii/scampy">Scampy</a> is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl's for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.</p>
+    <content type="html"><![CDATA[<p><a href="http://github.com/jamii/scampy">Scampy</a> is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl&rsquo;s for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.</p>
 
 <!--more-->
 
@@ -30,7 +30,7 @@ Good Day,</p>
 
 <p>I am staff. Sgt. Ronnie Reeve, I found your contact particulars in an E-mail address guide they provide us here, as I desperately need an urgent help to do this deal. I am seeking your kind assistance to move the sum of $12m {Twelve Million U.S Dollars only} to you
 in  your destination, as far as I can be assured that my share will be safe in your
-care until I complete my service here ... etc
+care until I complete my service here &hellip; etc
 ```</p>
 
 <p><code>
@@ -44,7 +44,7 @@ Dear Sir,</p>
 
 <p>Saddam Hussein was a very wicked man so God is compensating his children  for what we suffered because of him.</p>
 
-<p>... etc</p>
+<p>&hellip; etc</p>
 
 <p>Now, I will need the following information below so as to present you as the beneficiary to the security company where I kept the consigment for safety.
 Below are the information needed:</p>
@@ -58,7 +58,7 @@ Below are the information needed:</p>
 </ol>
 
 
-<p>... etc
+<p>&hellip; etc
 ```</p>
 
 <p><code>
@@ -93,7 +93,7 @@ Dear Sir,</p>
 Dear
 </code></p>
 
-<p>This was an early bug. Ronnie doesn't seem to twig though.</p>
+<p>This was an early bug. Ronnie doesn&rsquo;t seem to twig though.</p>
 
 <p>```
 Dear Sir,</p>

@@ -178,7 +178,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers - the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
+<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers &ndash; the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -321,7 +321,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Now for the clever part - approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
+<p>Now for the clever part &ndash; approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

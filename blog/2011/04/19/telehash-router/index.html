@@ -201,7 +201,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&#8217;t actually be dropped from the table until a replacement is found - this prevents the table from getting flushed if our network connection goes down.</p>
+<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&rsquo;t actually be dropped from the table until a replacement is found &ndash; this prevents the table from getting flushed if our network connection goes down.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -286,7 +286,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One of the rules of the router is that it should never pass on information about a node that it hasn&#8217;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -458,7 +458,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The last responsibility of the router is to periodically refresh buckets which haven&#8217;t recently seen any activity.</p>
+<p>The last responsibility of the router is to periodically refresh buckets which haven&rsquo;t recently seen any activity.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -551,7 +551,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>That&#8217;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
+<p>That&rsquo;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
 </div>
 
 
