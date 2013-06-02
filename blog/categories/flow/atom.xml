@@ -4,7 +4,7 @@
   <title><![CDATA[Category: flow | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/flow/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-06-01T03:48:20+01:00</updated>
+  <updated>2013-06-02T03:41:45+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Flowing faster: saving the cloud]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/"/>
+    <updated>2013-06-02T03:36:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud</id>
+    <content type="html"><![CDATA[<p>While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m generally trying to move towards using cloud services as dumb servers so I can easily replace them. The first step is to be able to export and backup all my data.</p>
+
+<!--more-->
+
+
+<p>I considered using The Locker Project for backing up cloud services, but it appears that Singly have pivoted from <a href="http://lockerproject.org/">&lsquo;control your own data&rsquo;</a> to <a href="https://singly.com/product/">&lsquo;give all your data to us&rsquo;</a>. Back to the drawing board&hellip;</p>
+
+<p>I use <a href="https://addons.mozilla.org/en-US/firefox/addon/opml-support/">OPML Support</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/brief/">Brief</a> to replace google reader and <a href="http://projects.gnome.org/evolution/">Evolution</a> to back up google mail, calendar and contacts. My address is on my own domain and managed by google apps. I don&rsquo;t yet use a local mail reader but Evolution looks like a reasonable fallback if I have to drop gmail.</p>
+
+<p>For music I use <a href="http://www.tomahawk-player.org/">Tomahawk</a> with a <a href="https://www.spotify.com/">Spotify Premium</a> account as the main resolver. I create playlists in Tomahawk using both the chart apis and the <a href="http://echonest.com/">Echo Nest</a> api and sync them to Spotify to download to my phone. There&rsquo;s still a little too much manual button pressing in that process but it&rsquo;s much easier than managing my own collection. Both Tomahawk and Spotify mobile scrobble to my last.fm account which I backup with <a href="https://gitorious.org/fmthings/lasttolibre/blobs/master/lastexport.py">lastexport</a>.</p>
+
+<p>Facebook is really the only service I couldn&rsquo;t replace, due to a combination of network effects and poor export tools. I use the builtin export service but unfortunately it seems to be pretty hard to automate. The only non-proprietary solution I could find was <a href="https://addons.mozilla.org/en-us/firefox/addon/archivefacebook/">ArchiveFacebook</a> which I suppose could be run from the command line somehow. For now I just set a monthly reminder in my calendar.</p>
+
+<p>So now I have all my cloud data synced on my machine where the backup tools from my last post can take care of it.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Flowing faster: backing up]]></title>
@@ -56,7 +78,7 @@ tarsnap -v -c -f &ldquo;alien@$DATE&rdquo; \</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Flowing faster: External memory]]></title>
+    <title type="html"><![CDATA[Flowing faster: external memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
     <updated>2013-05-21T20:43:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>

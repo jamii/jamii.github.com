@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Flowing faster: external memory - Scattered Thoughts</title>
+	<title>Flowing faster: saving the cloud - Scattered Thoughts</title>
 	<meta name="author" content="Jamie Brandon">
 
 	
-	<meta name="description" content="I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. &hellip;">
+	<meta name="description" content="While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,29 +78,21 @@
 		
 	
 	<div id="content" class="inner"><article class="post">
-	<h1 class="title">Flowing faster: external memory</h1>
-	<div class="entry-content"><p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
+	<h1 class="title">Flowing faster: saving the cloud</h1>
+	<div class="entry-content"><p>While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m generally trying to move towards using cloud services as dumb servers so I can easily replace them. The first step is to be able to export and backup all my data.</p>
 
 <!--more-->
 
 
-<p>The first thing that I want to fix in this series is offloading memory. There are basically two kinds of questions I regularly deal with:</p>
+<p>I considered using The Locker Project for backing up cloud services, but it appears that Singly have pivoted from <a href="http://lockerproject.org/">&lsquo;control your own data&rsquo;</a> to <a href="https://singly.com/product/">&lsquo;give all your data to us&rsquo;</a>. Back to the drawing board&hellip;</p>
 
-<ul>
-<li><p>How did I solve this problem / build this software / configure this program X months ago?</p></li>
-<li><p>What was I trying to remember to change X seconds ago?</p></li>
-</ul>
+<p>I use <a href="https://addons.mozilla.org/en-US/firefox/addon/opml-support/">OPML Support</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/brief/">Brief</a> to replace google reader and <a href="http://projects.gnome.org/evolution/">Evolution</a> to back up google mail, calendar and contacts. My address is on my own domain and managed by google apps. I don&rsquo;t yet use a local mail reader but Evolution looks like a reasonable fallback if I have to drop gmail.</p>
 
+<p>For music I use <a href="http://www.tomahawk-player.org/">Tomahawk</a> with a <a href="https://www.spotify.com/">Spotify Premium</a> account as the main resolver. I create playlists in Tomahawk using both the chart apis and the <a href="http://echonest.com/">Echo Nest</a> api and sync them to Spotify to download to my phone. There&rsquo;s still a little too much manual button pressing in that process but it&rsquo;s much easier than managing my own collection. Both Tomahawk and Spotify mobile scrobble to my last.fm account which I backup with <a href="https://gitorious.org/fmthings/lasttolibre/blobs/master/lastexport.py">lastexport</a>.</p>
 
-<p>I&rsquo;ve started using <a href="http://jblevins.org/projects/deft/">deft</a> to answer both of these. Deft stores notes in a folder full of flat files and adds an incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.</p>
+<p>Facebook is really the only service I couldn&rsquo;t replace, due to a combination of network effects and poor export tools. I use the builtin export service but unfortunately it seems to be pretty hard to automate. The only non-proprietary solution I could find was <a href="https://addons.mozilla.org/en-us/firefox/addon/archivefacebook/">ArchiveFacebook</a> which I suppose could be run from the command line somehow. For now I just set a monthly reminder in my calendar.</p>
 
-<p>For long-term memory I create a new note every time I solve a problem or learn something useful. Within emacs M-&lsquo; brings up the deft window, typing triggers the incremental search and hiting Enter opens the first matching note.</p>
-
-<p>For short-term memory I have a single note called stack. Hitting C-&lsquo; opens the stack note with the cursor on a new blank line for adding items to the stack. Hitting C-DEL deletes the previous line and C-q closes the stack. Hopefully this is sufficiently low-friction that the extra memory makes up for the context switch.</p>
-
-<p>My config is <a href="https://github.com/jamii/emacs-live-packs/blob/master/deft-pack/init.el">here</a>. I&rsquo;m considering writing a gnome-shell extension which displays the last line of the stack in the status bar to remind me what I&rsquo;m supposed to be doing when my mental stack gets rudely dumped. I also want to add the global key bindings to gnome-shell so I don&rsquo;t have to navigate to emacs first.</p>
-
-<p>This is a very simple tool, which is kind of the point. The more stucture and options added to a note-taking tool the more effort it takes to actually use it and the more likely it is that I lose my entire mental stack whilst doing so.</p>
+<p>So now I have all my cloud data synced on my machine where the backup tools from my last post can take care of it.</p>
 </div>
 
 
@@ -117,7 +109,7 @@
   
 
 
-<time datetime="2013-05-21T20:43:00+01:00" pubdate data-updated="true">21 May 2013</time></div>
+<time datetime="2013-06-02T03:36:00+01:00" pubdate data-updated="true">02 Jun 2013</time></div>
 	<div class="tags">
 
 
@@ -162,8 +154,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/';
-        var disqus_url = 'http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/';
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/';
         var disqus_script = 'embed.js';
       
     (function () {

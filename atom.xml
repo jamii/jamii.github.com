@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-06-01T03:48:20+01:00</updated>
+  <updated>2013-06-02T03:41:45+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Flowing faster: saving the cloud]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/"/>
+    <updated>2013-06-02T03:36:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud</id>
+    <content type="html"><![CDATA[<p>While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m generally trying to move towards using cloud services as dumb servers so I can easily replace them. The first step is to be able to export and backup all my data.</p>
+
+<!--more-->
+
+
+<p>I considered using The Locker Project for backing up cloud services, but it appears that Singly have pivoted from <a href="http://lockerproject.org/">&lsquo;control your own data&rsquo;</a> to <a href="https://singly.com/product/">&lsquo;give all your data to us&rsquo;</a>. Back to the drawing board&hellip;</p>
+
+<p>I use <a href="https://addons.mozilla.org/en-US/firefox/addon/opml-support/">OPML Support</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/brief/">Brief</a> to replace google reader and <a href="http://projects.gnome.org/evolution/">Evolution</a> to back up google mail, calendar and contacts. My address is on my own domain and managed by google apps. I don&rsquo;t yet use a local mail reader but Evolution looks like a reasonable fallback if I have to drop gmail.</p>
+
+<p>For music I use <a href="http://www.tomahawk-player.org/">Tomahawk</a> with a <a href="https://www.spotify.com/">Spotify Premium</a> account as the main resolver. I create playlists in Tomahawk using both the chart apis and the <a href="http://echonest.com/">Echo Nest</a> api and sync them to Spotify to download to my phone. There&rsquo;s still a little too much manual button pressing in that process but it&rsquo;s much easier than managing my own collection. Both Tomahawk and Spotify mobile scrobble to my last.fm account which I backup with <a href="https://gitorious.org/fmthings/lasttolibre/blobs/master/lastexport.py">lastexport</a>.</p>
+
+<p>Facebook is really the only service I couldn&rsquo;t replace, due to a combination of network effects and poor export tools. I use the builtin export service but unfortunately it seems to be pretty hard to automate. The only non-proprietary solution I could find was <a href="https://addons.mozilla.org/en-us/firefox/addon/archivefacebook/">ArchiveFacebook</a> which I suppose could be run from the command line somehow. For now I just set a monthly reminder in my calendar.</p>
+
+<p>So now I have all my cloud data synced on my machine where the backup tools from my last post can take care of it.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Flowing faster: backing up]]></title>
@@ -67,7 +89,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Flowing faster: External memory]]></title>
+    <title type="html"><![CDATA[Flowing faster: external memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
     <updated>2013-05-21T20:43:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
@@ -4600,118 +4622,6 @@ If VC_A &lt; VC_B then A-&gt;B
 </span><span class='line'>darcs push user@localhost:/some/repo
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Optimising texsearch: memory usage]]></title>
-    <link href="http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage/"/>
-    <updated>2010-12-19T06:16:00+00:00</updated>
-    <id>http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage</id>
-    <content type="html"><![CDATA[<p>In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
-
-<!--more-->
-
-
-<p>he main data structure looks like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">deleted</span> <span class="o">:</span> <span class="kt">bool</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="n">id</span> <span class="o">*</span> <span class="n">pos</span><span class="o">)</span> <span class="kt">array</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The array field is responsible for the vast majority of the memory usage. Each cell in the array contains a pointer to a tuple containing two integers for a total of 4 words per suffix. The types id and pos are both small integers so if we pack them into a single unboxed integer we can reduce this to 1 word per suffix. We have a new module suffix.ml with some simple bit-munging:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">id</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'><span class="k">type</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">pack_size</span> <span class="o">=</span> <span class="o">(</span><span class="nn">Sys</span><span class="p">.</span><span class="n">word_size</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span class='line'><span class="k">let</span> <span class="n">max_size</span> <span class="o">=</span> <span class="mi">1</span> <span class="ow">lsl</span> <span class="n">pack_size</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">exception</span> <span class="nc">Invalid_suffix</span> <span class="k">of</span> <span class="n">id</span> <span class="o">*</span> <span class="n">pos</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">pack</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">id</span> <span class="o">&gt;=</span> <span class="n">max_size</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">||</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="n">max_size</span><span class="o">)</span>
-</span><span class='line'>  <span class="k">then</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">Invalid_suffix</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">))</span>
-</span><span class='line'>  <span class="k">else</span> <span class="n">pos</span> <span class="ow">lor</span> <span class="o">(</span><span class="n">id</span> <span class="ow">lsl</span> <span class="n">pack_size</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">unpack</span> <span class="n">suffix</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">id</span> <span class="o">=</span> <span class="n">suffix</span> <span class="n">lsr</span> <span class="n">pack_size</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">suffix</span> <span class="ow">land</span> <span class="o">(</span><span class="n">max_size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>  <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Notice how confusing infix functions are in ocaml.</p>
-
-<p>The suffix array type becomes:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">deleted</span> <span class="o">:</span> <span class="kt">bool</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="nn">Suffix</span><span class="p">.</span><span class="n">t</span> <span class="kt">array</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>With this change the memory usage drops down to 1.4 gb. The mean search time also improves. It seems that having fewer cache misses makes up for the extra computation involved in unpacking the suffixes.</p>
-
-<p>Now that the array field is a single block it is easy to move it out of the heap entirely so the gc never has to scan it.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">ancientify</span> <span class="n">sa</span> <span class="o">=</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="nn">Ancient</span><span class="p">.</span><span class="n">follow</span> <span class="o">(</span><span class="nn">Ancient</span><span class="p">.</span><span class="n">mark</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">);</span>
-</span><span class='line'>  <span class="nn">Gc</span><span class="p">.</span><span class="n">full_major</span> <span class="bp">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This eliminates the annoyingly noticeable gc pauses.</p>
 ]]></content>
   </entry>
   
