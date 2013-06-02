@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Flowing faster: External memory"
+title: "Flowing faster: external memory"
 date: 2013-05-21 20:43
 comments: true
 categories: flow

@@ -6,11 +6,11 @@ comments: true
 categories: flow
 ---
 
-A lot of the work in this series is going to be about improving my working environment. Let's start with backups, so I don't lose all this hard work.
+A lot of the work in this series is going to be about improving my working environment. Let's start with backups so I don't lose all this hard work.
 
 <!--more-->
 
-I backup my entire filesystem to [tarsnap](http://www.tarsnap.com/) every week. I paid around $70 for the last year of usage. The tarsnap documentation is excellent so I won't go through the setup here, just my usage:
+I backup my entire filesystem to [tarsnap](http://www.tarsnap.com/) every week. I paid around $70 for the last year of usage which is cheap for the peace of mind it brings. The tarsnap documentation is excellent so I won't go through the setup here, just my usage:
 
 ``` bash
 set -e
