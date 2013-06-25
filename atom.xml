@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-06-04T18:15:42+01:00</updated>
+  <updated>2013-06-25T20:44:35+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Flowing faster: lein-gnome]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/"/>
+    <updated>2013-06-25T20:27:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome</id>
+    <content type="html"><![CDATA[<p>After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy&rsquo;s <a href="https://github.com/jamii/lein-gnome">lein-gnome</a>. It can build, package, deploy and reload gnome-shell extensions and includes a hello-world template. I&rsquo;ve also added a unified log watcher that hunts down all the various places gnome-shell might choose to put your stack-traces and a cljs repl server that runs inside your extension so you can trial-and-error your way to victory.</p>
+
+<!--more-->
+
+
+<p>Future plans for a rainy day include:</p>
+
+<ul>
+<li><p>Writing a proper nrepl server for cljs so you can <code>C-x e</code> directly from emacs (this is non-trivial for projects with crossover code).</p></li>
+<li><p>Figure out how dynamic loading of bindings works in gjs so I can support tab-completion</p></li>
+<li><p>Clone the Looking Glass picker tool</p></li>
+</ul>
+
+
+<p>In the meantime I&rsquo;m going to start work on <a href="https://github.com/jamii/golem">golem</a>. Until cljs has true nrepl support my hack for live interaction in emacs is the following:</p>
+
+<ul>
+<li><p>Save all extension state to disk on <code>disable</code></p></li>
+<li><p>Load all extension state from disk on <code>enable</code></p></li>
+<li><p>Hook <code>lein gnome install</code> into <code>lein cljsbuild auto</code></p></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Flowing faster: foundations]]></title>
@@ -4605,30 +4635,6 @@ If VC_A &lt; VC_B then A-&gt;B
 <p>Here we ask localhost:55555 for the nearest nodes it knows to the end &lsquo;a99&hellip;89d&rsquo;. The reply is contained in the <em>.see</em> field (which is empty because localhost:55555 hasn&rsquo;t seeded itself yet and so doesn&rsquo;t know any nodes at all).</p>
 
 <p>The next post will deal with dialing, at which point we will have a working announcer.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Transactional mealy machines]]></title>
-    <link href="http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines/"/>
-    <updated>2011-03-16T06:16:00+00:00</updated>
-    <id>http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines</id>
-    <content type="html"><![CDATA[<p>This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at <a href="http://smarkets.com">Smarkets</a> and never got around to writing about. Unfortunately I don&rsquo;t have the code in front of me but the overall idea is simple enough to explain without examples.</p>
-
-<!--more-->
-
-
-<p>Smarkets is a betting exchange (effectively a small stock exchange for buying and selling bets). The exchange system which handles all the money and manages the markets has quite stringent requirements. We want events to be serializable (because ordering is very important in a fast moving market), low latency and ideally distributed across more than one machine. However the exchange also has to handle a large number of bursty updates focused on a small number of records (popular markets, power users). I&rsquo;m told that the early prototypes using postgres simply couldn&rsquo;t handle the high contention so a move to a more loosely coupled system was necessary.</p>
-
-<p>The architecture in place when I arrived at Smarkets was based on <a href="http://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf">this paper</a> which I highly recommend reading. The main idea is that serializability across machines is difficult verging on impossible and that systems which try to paper over this (eg fully ACID distributed transactions) tend to be fragile at scale. The proposed solution is to identify specific sets of actions which must be serializable and handle each set with a single actor on a single machine. These actors then communicate with each other via asynchronous messages. In Smarkets&#8217; case the actors are individual markets, users, accounts and orders. These can be modeled nicely as <a href="http://en.wikipedia.org/wiki/Mealy_machine">mealy machines</a> where the output value is a list of messages, hence the title.</p>
-
-<p>This idea was very effective but the implementation at Smarkets was some of the scariest code in the repository (thanks mostly to being the oldest code). Each actor was implemented as a single erlang process which archived messages (using couchdb) after reading them. There was a lot of repetitive boilerplate code, it was hard to test (because the actors message each other directly) and worst of all there were ways to lose messages before they were archived (eg process inbox is lost if the process dies, messages between machines can be dropped silently).</p>
-
-<p>I wrote a new system to handle the actor implementation whilst keeping the domain-specific logic of each actor mostly unchanged. Each actor is defined by a pair of callback functions (a behaviour, in erlang-speak). The <em>init</em> function sets the initial state of the actor. The <em>transition</em> function takes the current state and an incoming message and returns the new state and possibly some outgoing messages. Everything else is handled by a generic module which takes this behaviour and turns it into a running actor. Each actor consists of an inbox, outbox and a current state, all of which are persisted using mnesia. Each actor also has a unique id used for addressing messages. The transition process &ndash; pop a message off the inbox queue, run the transition function, store the new state, push outgoing messages to the outbox &ndash; is implemented as a single ACID transaction using mnesia. For actors on the same machine messages are moved directly from one actor’s outbox to another&rsquo;s inbox directly using mnesia transactions. For actors on different machines the outbox using erlang messages and sends repeatedly (with exponential backoff) until the receiver confirms receipt. The outbox attaches auto-incrementing message ids to each message which, together with the actor id of the sender, allows the receiver to ignore duplicate messages.</p>
-
-<p>In this way the domain-specific logic is separated from message handling and storage. This led to much less repetition and a more maintainable system. It also made it easy to setup tests or replay past events without recreating the whole system. Last, but certainly not least, it can only lose messages if the database or disk fails and even then is easier to restore from backup than the previous system.</p>
-
-<p>Note that this explanation is somewhat simplified. I have glossed over some fiddly implementation details like error handling (if an actor fails to handle a message the sender needs to be notified in many cases) and also left out extra features like subscribing to state changes (eg notify me when this order is filled). There is also a knack to designing actors which must cooperate without <a href="http://en.wikipedia.org/wiki/Common_knowledge_%28logic%29">common knowledge</a>. Hopefully the <a href="https://smarkets.com/about/contact/">Smarkets team</a> will find some time to open-source the actual code.</p>
 ]]></content>
   </entry>
   

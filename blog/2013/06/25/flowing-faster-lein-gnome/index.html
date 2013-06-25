@@ -3,11 +3,11 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Category: flow - Scattered Thoughts</title>
+	<title>Flowing faster: lein-gnome - Scattered Thoughts</title>
 	<meta name="author" content="Jamie Brandon">
 
 	
-	<meta name="description" content="Category: flow">
+	<meta name="description" content="After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy& &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -77,101 +77,74 @@
 	
 		
 	
-	<div id="content" class="inner">
-	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Flowing faster: lein-gnome</h1>
+	<div class="entry-content"><p>After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy&rsquo;s <a href="https://github.com/jamii/lein-gnome">lein-gnome</a>. It can build, package, deploy and reload gnome-shell extensions and includes a hello-world template. I&rsquo;ve also added a unified log watcher that hunts down all the various places gnome-shell might choose to put your stack-traces and a cljs repl server that runs inside your extension so you can trial-and-error your way to victory.</p>
+
+<!--more-->
 
 
-	
-	
-	<section class="archives"><h1 class="year">2013</h1>
+<p>Future plans for a rainy day include:</p>
 
-<article>
-	<h1 class="title"><a href="/blog/2013/06/25/flowing-faster-lein-gnome/">Flowing faster: lein-gnome</a></h1>
-	<div class="meta">
-		<span class="date">Jun 25</span>
-		<span class="tags">
+<ul>
+<li><p>Writing a proper nrepl server for cljs so you can <code>C-x e</code> directly from emacs (this is non-trivial for projects with crossover code).</p></li>
+<li><p>Figure out how dynamic loading of bindings works in gjs so I can support tab-completion</p></li>
+<li><p>Clone the Looking Glass picker tool</p></li>
+</ul>
 
 
-	<a class='category' href='/blog/categories/flow/'>flow</a>
+<p>In the meantime I&rsquo;m going to start work on <a href="https://github.com/jamii/golem">golem</a>. Until cljs has true nrepl support my hack for live interaction in emacs is the following:</p>
+
+<ul>
+<li><p>Save all extension state to disk on <code>disable</code></p></li>
+<li><p>Load all extension state from disk on <code>enable</code></p></li>
+<li><p>Hook <code>lein gnome install</code> into <code>lein cljsbuild auto</code></p></li>
+</ul>
+
+</div>
 
 
-</span>
-	    
-	</div>
-</article>
-
-	
+<div class="meta">
+	<div class="date">
 
 
-<article>
-	<h1 class="title"><a href="/blog/2013/06/04/flowing-faster-foundations/">Flowing faster: foundations</a></h1>
-	<div class="meta">
-		<span class="date">Jun  4</span>
-		<span class="tags">
 
 
-	<a class='category' href='/blog/categories/flow/'>flow</a>
 
 
-</span>
-	    
-	</div>
-</article>
-
-	
 
 
-<article>
-	<h1 class="title"><a href="/blog/2013/06/02/flowing-faster-saving-the-cloud/">Flowing faster: saving the cloud</a></h1>
-	<div class="meta">
-		<span class="date">Jun  2</span>
-		<span class="tags">
+  
+
+
+<time datetime="2013-06-25T20:27:00+01:00" pubdate data-updated="true">25 Jun 2013</time></div>
+	<div class="tags">
 
 
 	<a class='category' href='/blog/categories/flow/'>flow</a>
 
 
-</span>
-	    
-	</div>
-</article>
-
+</div>
 	
+</div></article>
 
-
-<article>
-	<h1 class="title"><a href="/blog/2013/06/01/flowing-faster-backing-up/">Flowing faster: backing up</a></h1>
-	<div class="meta">
-		<span class="date">Jun  1</span>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/flow/'>flow</a>
-
-
-</span>
-	    
-	</div>
-</article>
-
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
 	
-
-
-<article>
-	<h1 class="title"><a href="/blog/2013/05/21/flowing-faster-external-memory/">Flowing faster: external memory</a></h1>
-	<div class="meta">
-		<span class="date">May 21</span>
-		<span class="tags">
-
-
-	<a class='category' href='/blog/categories/flow/'>flow</a>
-
-
-</span>
-	    
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
 	</div>
-</article>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
 
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
 </div>
 	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
 </footer>
@@ -188,7 +161,10 @@
       var disqus_shortname = 'scattered-thoughts';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

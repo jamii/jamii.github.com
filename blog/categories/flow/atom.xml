@@ -4,7 +4,7 @@
   <title><![CDATA[Category: flow | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/flow/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-06-04T18:15:42+01:00</updated>
+  <updated>2013-06-25T20:44:35+01:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Flowing faster: lein-gnome]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/"/>
+    <updated>2013-06-25T20:27:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome</id>
+    <content type="html"><![CDATA[<p>After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy&rsquo;s <a href="https://github.com/jamii/lein-gnome">lein-gnome</a>. It can build, package, deploy and reload gnome-shell extensions and includes a hello-world template. I&rsquo;ve also added a unified log watcher that hunts down all the various places gnome-shell might choose to put your stack-traces and a cljs repl server that runs inside your extension so you can trial-and-error your way to victory.</p>
+
+<!--more-->
+
+
+<p>Future plans for a rainy day include:</p>
+
+<ul>
+<li><p>Writing a proper nrepl server for cljs so you can <code>C-x e</code> directly from emacs (this is non-trivial for projects with crossover code).</p></li>
+<li><p>Figure out how dynamic loading of bindings works in gjs so I can support tab-completion</p></li>
+<li><p>Clone the Looking Glass picker tool</p></li>
+</ul>
+
+
+<p>In the meantime I&rsquo;m going to start work on <a href="https://github.com/jamii/golem">golem</a>. Until cljs has true nrepl support my hack for live interaction in emacs is the following:</p>
+
+<ul>
+<li><p>Save all extension state to disk on <code>disable</code></p></li>
+<li><p>Load all extension state from disk on <code>enable</code></p></li>
+<li><p>Hook <code>lein gnome install</code> into <code>lein cljsbuild auto</code></p></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Flowing faster: foundations]]></title>
