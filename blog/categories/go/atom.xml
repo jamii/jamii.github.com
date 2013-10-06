@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: go | Scattered Thoughts]]></title>
+  <link href="http://scattered-thoughts.net/blog/categories/go/atom.xml" rel="self"/>
+  <link href="http://scattered-thoughts.net/"/>
+  <updated>2013-10-06T21:03:09+01:00</updated>
+  <id>http://scattered-thoughts.net/</id>
+  <author>
+    <name><![CDATA[Jamie Brandon]]></name>
+    <email><![CDATA[jamie@scattered-thoughts.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hugo-a-go-go]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go/"/>
+    <updated>2013-10-06T13:22:00+01:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go</id>
+    <content type="html"><![CDATA[<p>For the <a href="http://clojurecup.com/">2013 Clojure Cup</a> myself and <a href="http://www.thattommyhall.com/">Tom Hall</a> wrote a <a href="http://en.wikipedia.org/wiki/Go_%28game%29">go</a> AI in clojurescript, inspired by <a href="https://github.com/ztellman/pushkin">pushkin</a>. The source is <a href="https://github.com/jamii/hugo-a-go-go/">here</a> and it can currently be played on the <a href="http://hugoagogo.clojurecup.com/">clojure cup site</a> (only tested in chrome).</p>
+
+<!--more-->
+
+
+<p>Before reading this post it would help to understand the rules of go. Hugo-a-go-go follows (an approximation of) the <a href="http://en.wikipedia.org/wiki/Rules_of_Go#Chinese_rules">chinese rules</a>. Due to the limited time we don&rsquo;t yet check for <a href="http://en.wikipedia.org/wiki/Rules_of_Go#Ko">ko</a> and don&rsquo;t even attempt to detect the end of the game. The code at the moment is incredibly messy and probably very buggy (the version we submitted seems to actually <em>try</em> to lose) so treat it with suspicion.</p>
+
+<h2>Board</h2>
+
+<p>The best place to start is with the board representation. The most expensive operation for the AI is detecting suicide and death. To make this fast we track connected strings of pieces.</p>
+
+<p><code>clojure
+(defrecord String [colour liberties])
+</code></p>
+
+<p><code>colour</code> is one of <code>:black</code>, <code>:white</code>, <code>:grey</code> (for the border) or <code>:empty</code>. <code>liberties</code> tracks the number of <a href="https://groups.google.com/forum/#!msg/computer-go-archive/hs259RQQ5hI/TOLFX2d5Y6UJ">pseudo-liberties</a> the string has (for black or white strings; for empty or grey strings the <code>liberties</code> value is never read and exists just to avoid having to branch on the colour).</p>
+
+<p>The board is represented by a 1d array of pointers to strings (this representation is inspired by <a href="http://www.gnu.org/software/gnugo/">gnugo</a> rather than pushkin) and a pointer to the empty string (which we use for fast <code>empty?</code> checks).</p>
+
+<p>``` clojure
+(defrecord Board [strings empty-string])</p>
+
+<p>(def size 9)
+(def array-size (+ 2 size))
+(def max-pos (* array-size array-size))</p>
+
+<p>(defn &ndash;>pos [x y]
+  (+ 1 x (* array-size (+ 1 y))))
+```</p>
+
+<p>To create a board we just have to setup the empty-string and border-string.</p>
+
+<p>``` clojure
+(defn new []
+  (let [empty-string (&ndash;>String :empty 0)</p>
+
+<pre><code>    border-string (-&gt;String :grey 0)
+    strings (object-array max-pos)]
+(dotimes [i max-pos]
+  (aset strings i empty-string))
+(dotimes [i array-size]
+  (aset strings (-&gt;pos (dec i) -1) border-string)
+  (aset strings (-&gt;pos (dec i) size) border-string)
+  (aset strings (-&gt;pos -1 (dec i)) border-string)
+  (aset strings (-&gt;pos size (dec i)) border-string))
+(-&gt;Board strings empty-string)))
+</code></pre>
+
+<p>```</p>
+
+<p>A given move is <em>not</em> suicide if, after the move is made, there is at least one neighbour which is either:</p>
+
+<ul>
+<li><p>the same colour and has more than zero liberties</p></li>
+<li><p>the opposite colour and has zero liberties (ie would die if the move was carried through)</p></li>
+<li><p>empty</p></li>
+</ul>
+
+
+<p>``` clojure
+(defn suicide? [^Board board colour pos]
+  (let [suicide (atom true)</p>
+
+<pre><code>    opposite-colour (condp keyword-identical? colour :black :white :white :black)]
+;; decrement all the neighbours liberties
+(foreach-neighbour neighbour-pos pos
+  (let [string (aget (.-strings board) neighbour-pos)]
+    (set! (.-liberties string) (dec (.-liberties string)))))
+;; check for suicide
+(foreach-neighbour neighbour-pos pos
+  (let [string (aget (.-strings board) neighbour-pos)]
+    (condp keyword-identical? (.-colour string)
+      colour (when (&gt; (.-liberties string) 0)
+               (reset! suicide false))
+      opposite-colour (when (= (.-liberties string) 0)
+                        (reset! suicide false))
+      :empty (reset! suicide false)
+      :grey nil)))
+;; undo the decrement
+(foreach-neighbour neighbour-pos pos
+  (let [string (aget (.-strings board) neighbour-pos)]
+    (set! (.-liberties string) (inc (.-liberties string)))))
+@suicide))
+</code></pre>
+
+<p>```</p>
+
+<p>Actually making a move is similar but we have to clear out dead strings and join adjacent strings together. Proving that it&rsquo;s safe to do all this in a single pass is straightforward, if tedious.</p>
+
+<p>``` clojure
+defn set-colour [^Board board pos colour]
+  (let [string (&ndash;>String colour 0)]</p>
+
+<pre><code>(aset (.-strings board) pos string)
+(foreach-neighbour neighbour-pos pos
+                   (let [neighbour-string (aget (.-strings board) neighbour-pos)
+                         neighbour-colour (.-colour neighbour-string)]
+                     (condp keyword-identical? neighbour-colour
+                       :empty
+                       (set! (.-liberties (aget (.-strings board) pos)) (inc (.-liberties (aget (.-strings board) pos))))
+
+                       :grey
+                       nil
+
+                       colour
+                       (do
+                         (set! (.-liberties neighbour-string) (dec (.-liberties neighbour-string)))
+                         (join-strings board (aget (.-strings board) pos) neighbour-string pos neighbour-pos))
+
+                       ;; opposite colour
+                       (do
+                         (set! (.-liberties neighbour-string) (dec (.-liberties neighbour-string)))
+                         (when (= 0 (.-liberties neighbour-string))
+                           (clear-string board neighbour-string neighbour-pos))))))))
+</code></pre>
+
+<p>```</p>
+
+<h2>Monte Carlo</h2>
+
+<p>Go branches far too much to exhaustively check all possible futures. Instead we use a heuristic measure of the value of a move &ndash; the Monte Carlo estimate of the expected score when both players choose from the set of valid moves uniformly at random. To put it simply, we run large numbers of random games from this board position and take the mean score as our measure of how strong this board position is. Since we don&rsquo;t have a test for the end of the game we just run until either 100 moves have been made or until both sides have no valid moves remaining.</p>
+
+<p>``` clojure
+(defn flood-fill [board colour]
+  (let [filled (object-array max-pos)]</p>
+
+<pre><code>(letfn [(flood-fill-around [pos]
+          (foreach-neighbour pos pos
+              (when (and (not (aget filled pos))
+                         (keyword-identical? :empty (get-colour board pos)))
+                (aset filled pos true)
+                (flood-fill-around pos))))]
+  (dotimes [x size]
+    (dotimes [y size]
+      (let [pos (-&gt;pos x y)]
+        (when (keyword-identical? colour (get-colour board pos))
+          (aset filled pos true)
+          (flood-fill-around pos))))))
+(count (filter identity filled))))
+</code></pre>
+
+<p>(defn score [board]
+  (let [white-flood (flood-fill board :white)</p>
+
+<pre><code>    black-flood (flood-fill board :black)
+    total (* size size)
+    overlap (- (+ white-flood black-flood) total)
+    white-score (- white-flood overlap)
+    black-score (- black-flood overlap)]
+{:white white-score :black black-score}))
+</code></pre>
+
+<p>(defn random-move [board colour]
+  (let [starting-pos (random-int board/max-pos)]</p>
+
+<pre><code>(loop [pos starting-pos]
+  (if (and (board/valid? board colour pos)
+           (not (board/eyelike? board colour pos)))
+    pos
+    (let [new-pos (mod (inc pos) board/max-pos)]
+      (if (= starting-pos new-pos)
+        nil
+        (recur new-pos)))))))
+</code></pre>
+
+<p>(defn with-random-moves [board n starting-colour]
+  (doseq [colour (take n (interleave (repeat starting-colour) (repeat (board/opposite-colour starting-colour))))]</p>
+
+<pre><code>  (when-let [move (random-move board colour)]
+    (board/set-colour board move colour)))
+</code></pre>
+
+<p>  board)
+```</p>
+
+<p>You may notice that the above code actually only runs until one side has no moves &ndash; this is the first of many bugs.</p>
+
+<p>The scoring and random-move code was a huge bottleneck so at the last minute I &lsquo;optimised&rsquo; it by changing it to:</p>
+
+<p>``` clojure
+;; rough approximation of the final score if the board is tightly packed
+(defn score [board colour]
+  (let [score (atom 0)]</p>
+
+<pre><code>(dotimes [pos board/max-pos]
+  (when (keyword-identical? colour (board/get-colour board pos))
+    (swap! score inc)))
+@score))
+</code></pre>
+
+<p>;; massive speedup at the expense of never playing in killed spaces
+(defn with-random-moves-from [board n starting-colour moves]
+  (js/goog.array.shuffle moves)
+  (loop [colour starting-colour]</p>
+
+<pre><code>(if-let [move (.pop moves)]
+  (board/set-colour board move colour)
+  (recur (board/opposite-colour colour))))
+</code></pre>
+
+<p>  board)
+```</p>
+
+<p>I think it is these two changes that are largely responsible for the submitted version playing so poorly &ndash; it doesn&rsquo;t check for eyes in the random playouts, doesn&rsquo;t allow the other player to keep killing strings when the ai player has no moves and doesn&rsquo;t count eyes in the final score. This explains why it likes to tightly pack pieces against the edge of the board.</p>
+
+<h2>UCT</h2>
+
+<p>While the monte-carlo estimate gives us a reasonable heuristic for move strength it doesn&rsquo;t re-use any information between passes. With such a large move space we need to explore more intelligently. The <a href="http://teytaud.over-blog.com/article-35709049.html">UCT</a> algorithm treats move-selection like a <a href="http://en.wikipedia.org/wiki/Multi-armed_bandit">multi-armed bandit problem</a>.</p>
+
+<iframe width="640" height="360" src="http://scattered-thoughts.net//www.youtube.com/embed/dbvoPg51CqQ?feature=player_embedded" frameborder="0" allowfullscreen="allowfullscreen">video</iframe>
+
+
+<p>We build a tree of moves where each node in the tree tracks not just the estimated score for all its child nodes but also the upper bound of a confidence interval on that estimate.</p>
+
+<p><code>clojure
+(defrecord Node [parent colour pos count sum nodes valids])
+</code></p>
+
+<p><code>colour</code> is the colour making the move at this node. <code>pos</code> is the position at which it is moving. <code>nodes</code> is a list of child nodes for which we have estimates. <code>valids</code> is a list of valid moves which have not yet been converted into nodes. <code>count</code> and <code>sum</code> track the mean score for all the children in <code>nodes</code>.</p>
+
+<p>On each iteration we pick a path through the tree, choosing some explore/exploit tradeoff using the upper confidence bounds. Given the limited time we had, I decided to just copy a scoring function from a paper without stopping to understand it, so I don&rsquo;t actually know what explore/exploit tradeoff we are making :S</p>
+
+<p>``` clojure
+(defn best-child [node]
+  (let [best-score (atom (&ndash; (/ 1 0)))</p>
+
+<pre><code>    best-child (atom nil)]
+(doseq [child (.-nodes node)]
+  (let [score (+ (/ (.-sum child) (.-count child))
+                 (js/Math.sqrt
+                  (/ (* 2 (js/Math.log (.-count node)))
+                     (* 5 (.-count child)))))]
+    (when (&gt; score @best-score)
+      (reset! best-score score)
+      (reset! best-child child))))
+@best-child))
+</code></pre>
+
+<p>(defn expand [board node ai-colour]
+  (let [pos (.-pos node)]</p>
+
+<pre><code>(if (not= 0 pos) ;; top node has pos 0 - probably a smell
+  (board/set-colour board pos (.-colour node))))
+</code></pre>
+
+<p>  (if-let [valid-pos (.pop (.-valids node))]</p>
+
+<pre><code>(.push (.-nodes node) (expand-leaf board ai-colour node (board/opposite-colour (.-colour node)) valid-pos))
+(if-let [child (if (= (.-colour node) ai-colour)
+                 (worst-child node)
+                 (best-child node))]
+  (expand board child ai-colour)
+  nil ;; no possible moves - pass
+  )))
+</code></pre>
+
+<p>```</p>
+
+<p>On reaching a leaf we extend it by one more move, estimate the value of that move using monte-carlo simulations and then propagate the value back up the path to the top of tree.</p>
+
+<p>``` clojure
+(defn expand-leaf [board ai-colour parent colour pos]
+  (board/set-colour board pos colour)
+  (let [valids (valids board (board/opposite-colour colour))]</p>
+
+<pre><code>(random/with-random-moves-from board 100 (board/opposite-colour colour) (aclone valids))
+(let [value (value board ai-colour)]
+  (add-value parent value)
+  (-&gt;Node parent colour pos 1 value (object-array 0) valids))))
+</code></pre>
+
+<p>(defn add-value [node value]
+  (set! (.-count node) (+ (.-count node) 1))
+  (set! (.-sum node) (+ (.-sum node) value))
+  (if-let [parent (.-parent node)]</p>
+
+<pre><code>(recur parent value)))
+</code></pre>
+
+<p>```</p>
+
+<p>Finally, the ai chooses its move by running a number of iterations of this algorithm and returning the value of <code>best-child</code> at the root (this is probably wrong &ndash; at this point we should just exploit, not explore).</p>
+
+<p>``` clojure
+(defn move-for [board colour n]
+  (let [node (hugo-a-go-go.tree/new (board/copy board) colour)]</p>
+
+<pre><code>(dotimes [_ n]
+  (expand (board/copy board) node colour))
+(when-let [child (best-child node)]
+  (.-pos child))))
+</code></pre>
+
+<p>```</p>
+
+<h2>Postmortem</h2>
+
+<p>Together we spent around 20 man-hours on the competition. I spent the first two thirds of the competition just getting the board representation to work correctly. Part of the delay was that after moving to a cljs-only implementation the feedback loop was much slower. I wasted an hour or two tring to get brepl working without any success and after that had to rely on print statements and pre-compiled test cases. Finding errors in cljs also leaves a lot to be desired (eg a typo in a field name resulted in an <code>undefined</code> value which, several functions later, became a <code>NaN</code> which then behaves interestingly inside max/min). I only started on the UCT code an hour or two before the deadline. Tom started on the user input around the same time. We played our first game against the ai about five minutes before the deadline and frantically submitted whatever code we had running.</p>
+
+<p>If we were taking it more seriously we certainly could have done a lot more to prepare &ndash; being familiar with the cljs dev tools, actually learning the rules of go, sketching out the board representation and the UCT implementation before the weekend started, not walking a marathon on the same weekend. But winning was not the goal and instead we had a lot of fun and excitement seeing just how much we can hack together in such a short space of time.</p>
+
+<p>Our AI is definitely not correct so it&rsquo;s difficult to evaluate the project yet. The code is relatively short and simple (especially compared to eg <a href="http://git.savannah.gnu.org/cgit/gnugo.git/tree/engine">gnugo</a>) but that doesn&rsquo;t mean much until it actually works. The performance is promising &ndash; the current version can simulate around 5k games per second in chrome. Fixing the monte-carlo step and the scoring will eat into that performance but I&rsquo;ve already spotted plenty of inefficiencies in other places. We haven&rsquo;t even started experimenting with <a href="https://github.com/ztellman/vertigo">vertigo</a> or <a href="http://asmjs.org/">asm.js</a> yet so there is certainly lots of headroom.</p>
+
+<p>I am definitely hoping to come back to this project. To echo <a href="http://www.youtube.com/watch?v=v5dYE0CMmHQ">Zach Tellman&rsquo;s motivation</a>, it will be really interesting to see if it is possible to write a competitive go AI in a high-level language. We&rsquo;ve also thought about distributing the UCT step and have team games pitching the aggregated wisdom of a group of human players voting on their next move against the assembled computing power of their browsing machines.</p>
+]]></content>
+  </entry>
+  
+</feed>
