@@ -11,7 +11,7 @@ Software developer and consultant. I find simple solutions to hard problems.
 
 I focus on systems engineering and infrastructure. I have a strong background in mathematics and computer science.
 
-I'm interested in the use of staged compilation, domain-specific languages and data-centric programming to reduce incidental complexity in software systems, especially distributed systems and p2p networks.
+I'm interested in the use of staged compilation, domain-specific languages and data-centric programming to reduce incidental complexity in software, especially distributed systems and p2p networks.
 
 ## Employment
 
