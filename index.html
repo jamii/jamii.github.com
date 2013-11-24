@@ -7,7 +7,7 @@
 	<meta name="author" content="Jamie Brandon">
 
 	
-	<meta name="description" content="For the 2013 Clojure Cup myself and Tom Hall wrote a go AI in clojurescript, inspired by pushkin. The source is here and it can currently be played &hellip;">
+	<meta name="description" content="After a little optimisation work [hugo] now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -78,6 +78,42 @@
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h1 class="title"><a href="/blog/2013/11/24/hugo-a-go-go-optimisation/">Hugo-a-go-go: optimisation</a></h1>
+	<div class="entry-content">
+		<p>After a little optimisation work [hugo] now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations I made during the last minutes of the competition, the main wins were changing the board representation and carefully inspecting the compiler output to eliminate unneccesary work. A lot of the things I discovered are generally applicable to calculation-heavy, cpu-bound cljs code (with all the usual disclaimers about profiling and premature optimsation).</p>
+
+
+		
+		<a href="/blog/2013/11/24/hugo-a-go-go-optimisation/" class="more-link">Read on &rarr;</a>
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-24T04:43:00+00:00" pubdate data-updated="true">24 Nov 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/clojure/'>clojure</a>, <a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+</div></article>
 
 
     <article class="post">
@@ -393,44 +429,6 @@
 
 
 	<a class='category' href='/blog/categories/droplet/'>droplet</a>, <a class='category' href='/blog/categories/mist/'>mist</a>, <a class='category' href='/blog/categories/strucjure/'>strucjure</a>
-
-
-</div>
-	
-</div></article>
-
-
-    <article class="post">
-	<h1 class="title"><a href="/blog/2012/10/25/strucjure-reading-the-readme/">Strucjure: reading the readme</a></h1>
-	<div class="entry-content">
-		<p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
-
-<p>The readme on github has detailed descriptions of the syntax etc which I won&rsquo;t repeat here. What I do want to do is run through a realistic example.</p>
-
-
-		
-		<a href="/blog/2012/10/25/strucjure-reading-the-readme/" class="more-link">Read on &rarr;</a>
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-25T19:37:00+01:00" pubdate data-updated="true">25 Oct 2012</time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/clojure/'>clojure</a>, <a class='category' href='/blog/categories/strucjure/'>strucjure</a>
 
 
 </div>

@@ -1,0 +1,490 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Hugo-a-go-go: optimisation - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="After a little optimisation work [hugo] now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Hugo-a-go-go: optimisation</h1>
+	<div class="entry-content"><p>After a little optimisation work [hugo] now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations I made during the last minutes of the competition, the main wins were changing the board representation and carefully inspecting the compiler output to eliminate unneccesary work. A lot of the things I discovered are generally applicable to calculation-heavy, cpu-bound cljs code (with all the usual disclaimers about profiling and premature optimsation).</p>
+
+<!--more-->
+
+
+<h2>Layout</h2>
+
+<p>The board is now packed into a Uint8Array. With borders included, the board is an 11x11 grid.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">size</span> <span class="mi">9</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">array-size</span> <span class="p">(</span><span class="nb">+ </span><span class="mi">2</span> <span class="nv">size</span><span class="p">))</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">max-pos</span> <span class="p">(</span><span class="nb">* </span><span class="nv">array-size</span> <span class="nv">array-size</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">-&gt;pos</span> <span class="p">[</span><span class="nv">x</span> <span class="nv">y</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nb">+ </span><span class="mi">1</span> <span class="nv">x</span> <span class="p">(</span><span class="nb">* </span><span class="nv">array-size</span> <span class="p">(</span><span class="nb">+ </span><span class="mi">1</span> <span class="nv">y</span><span class="p">))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first 121 entries in the array represent the colour of each cell on the board.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">empty</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">black</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">white</span> <span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">grey</span> <span class="mi">3</span><span class="p">)</span> <span class="c1">;; for the border</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">get-colour</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="o">~</span><span class="nv">pos</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">set-colour</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span> <span class="nv">colour</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="nb">aset </span><span class="o">~</span><span class="nv">board</span> <span class="o">~</span><span class="nv">pos</span> <span class="o">~</span><span class="nv">colour</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The next 121 entries track which string is present on a cell. Strings are just represented by an integer id. The last entry in the array tracks the next id to be assigned.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">empty-string</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">grey-string</span> <span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">new-string</span> <span class="p">[</span><span class="nv">board</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">next-string#</span> <span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="mi">1023</span><span class="p">)]</span>
+</span><span class='line'>     <span class="p">(</span><span class="nb">aset </span><span class="o">~</span><span class="nv">board</span> <span class="mi">1023</span> <span class="p">(</span><span class="nb">+ </span><span class="nv">next-string#</span> <span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>     <span class="nv">next-string#</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">get-string</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="p">(</span><span class="nb">+ </span><span class="o">~</span><span class="nv">max-pos</span> <span class="o">~</span><span class="nv">pos</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">set-string</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span> <span class="nv">string</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="nb">aset </span><span class="o">~</span><span class="nv">board</span> <span class="p">(</span><span class="nb">+ </span><span class="o">~</span><span class="nv">max-pos</span> <span class="o">~</span><span class="nv">pos</span><span class="p">)</span> <span class="o">~</span><span class="nv">string</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The next 121 entries track the number of non-empty neighbouring cells, which is useful for short-circuiting <code>suicide?</code> and <code>eyelike?</code> tests.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">get-neighbours</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">freedom-ix#</span> <span class="p">(</span><span class="nb">+ </span><span class="o">~</span><span class="p">(</span><span class="nb">* </span><span class="mi">2</span> <span class="nv">max-pos</span><span class="p">)</span> <span class="o">~</span><span class="nv">pos</span><span class="p">)]</span>
+</span><span class='line'>     <span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="nv">freedom-ix#</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">add-neighbours</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span> <span class="nv">amount</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">freedom-ix#</span> <span class="p">(</span><span class="nb">+ </span><span class="o">~</span><span class="p">(</span><span class="nb">* </span><span class="mi">2</span> <span class="nv">max-pos</span><span class="p">)</span> <span class="o">~</span><span class="nv">pos</span><span class="p">)]</span>
+</span><span class='line'>     <span class="p">(</span><span class="nb">aset </span><span class="o">~</span><span class="nv">board</span> <span class="nv">freedom-ix#</span> <span class="p">(</span><span class="nb">+ </span><span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="nv">freedom-ix#</span><span class="p">)</span> <span class="o">~</span><span class="nv">amount</span><span class="p">))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, the remaining cells map string ids to the number of pseudo-liberties belonging to that string.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">get-liberties</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">string-ix#</span> <span class="p">(</span><span class="nb">+ </span><span class="o">~</span><span class="p">(</span><span class="nb">* </span><span class="mi">3</span> <span class="nv">max-pos</span><span class="p">)</span> <span class="p">(</span><span class="nf">get-string</span> <span class="o">~</span><span class="nv">board</span> <span class="o">~</span><span class="nv">pos</span><span class="p">))]</span>
+</span><span class='line'>     <span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="nv">string-ix#</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defmacro </span><span class="nv">add-liberties</span> <span class="p">[</span><span class="nv">board</span> <span class="nv">pos</span> <span class="nv">amount</span><span class="p">]</span>
+</span><span class='line'>  <span class="o">`</span><span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">string-ix#</span> <span class="p">(</span><span class="nb">+ </span><span class="o">~</span><span class="p">(</span><span class="nb">* </span><span class="mi">3</span> <span class="nv">max-pos</span><span class="p">)</span> <span class="p">(</span><span class="nf">get-string</span> <span class="o">~</span><span class="nv">board</span> <span class="o">~</span><span class="nv">pos</span><span class="p">))]</span>
+</span><span class='line'>     <span class="p">(</span><span class="nb">aset </span><span class="o">~</span><span class="nv">board</span> <span class="nv">string-ix#</span> <span class="p">(</span><span class="nb">+ </span><span class="p">(</span><span class="nb">aget </span><span class="o">~</span><span class="nv">board</span> <span class="nv">string-ix#</span><span class="p">)</span> <span class="o">~</span><span class="nv">amount</span><span class="p">))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Packing the board this way gives two benefits. First, every field access is reduced to a few instructions. This isn&rsquo;t as big a win as one might think, given that the structure of the old layout was predictable enough for the jit to replace hash lookups with struct access. More importantly, packing the board means that creating a copy is a single array copy. Cheap copying means we can cache boards all over the place and this leads to a lot of saved work in the UCT stage.</p>
+
+<p>My implementation here is a little clumsy but in the future a cljs port of <a href="https://github.com/ztellman/vertigo">vertigo</a> would make this a lot cleaner. This is the kind of abstraction that would be difficult to implement in plain js.</p>
+
+<h2>Truth</h2>
+
+<p>In cljs, only <code>false</code> and <code>nil</code> are falsey. In generated code, if the cljs compiler cannot infer that the test in a branch is a boolean, it wraps it in <code>cljs.core.truth_</code> to test for cljs truthiness rather than js truthiness.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">foo?</span> <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nb">= </span><span class="s">&quot;foo&quot;</span> <span class="nv">x</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">unfoo</span> <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">foo?</span> <span class="nv">x</span><span class="p">)</span>
+</span><span class='line'>    <span class="nv">nil</span>
+</span><span class='line'>    <span class="nv">x</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo_QMARK_</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">_EQ_</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">unfoo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">truth_</span><span class="p">(</span><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo_QMARK_</span><span class="p">(</span><span class="nx">a</span><span class="p">))</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">a</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Normally this doesn&rsquo;t matter but hugo is optimised enough already that profiling showed it spending ~15% of it&rsquo;s time inside <code>cljs.core.truth_</code>. You can avoid it either by adding type hints&hellip;</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="o">^</span><span class="nb">boolean </span><span class="nv">foo?</span> <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nb">= </span><span class="s">&quot;foo&quot;</span> <span class="nv">x</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">unfoo</span> <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">foo?</span> <span class="nv">x</span><span class="p">)</span>
+</span><span class='line'>    <span class="nv">nil</span>
+</span><span class='line'>    <span class="nv">x</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo_QMARK_</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">_EQ_</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">unfoo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo_QMARK_</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">a</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&hellip; or by wrapping the test in a function that is already hinted.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">foo?</span> <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nb">= </span><span class="s">&quot;foo&quot;</span> <span class="nv">x</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">unfoo</span> <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">true? </span><span class="p">(</span><span class="nf">foo?</span> <span class="nv">x</span><span class="p">))</span>
+</span><span class='line'>    <span class="nv">nil</span>
+</span><span class='line'>    <span class="nv">x</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo_QMARK_</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">_EQ_</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">unfoo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span><span class="o">!</span><span class="mi">0</span> <span class="o">===</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo_QMARK_</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">a</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Equality</h2>
+
+<p>Clojure defaults to structural equality where possible, rather than using javascript&rsquo;s insane notion of equality.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">opposite-colour</span> <span class="p">[</span><span class="nv">colour</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">= </span><span class="nv">colour</span> <span class="nv">black</span><span class="p">)</span> <span class="nv">white</span> <span class="nv">black</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">opposite_colour</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">_EQ_</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">black</span><span class="p">)</span> <span class="o">?</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">white</span> <span class="o">:</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">black</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Again, this is something that normally doesn&rsquo;t matter but hugo was spending ~20% of cpu time in <code>cljs.core.__EQ__</code>. Since we know we are comparing integers we can use <code>==</code> instead, which compiles down to <code>===</code> in js.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">opposite-colour</span> <span class="p">[</span><span class="nv">colour</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">== </span><span class="nv">colour</span> <span class="nv">black</span><span class="p">)</span> <span class="nv">white</span> <span class="nv">black</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">opposite_colour</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">a</span> <span class="o">===</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">black</span> <span class="o">?</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">white</span> <span class="o">:</span> <span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">black</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For other primitive types it seems that <code>identical?</code> will inline to <code>===</code>. For keywords you now have to use <code>keyword-identical?</code> which unfortunately does not inline.</p>
+
+<h2>Polyadic calls</h2>
+
+<p>Clojure functions can dispatch on the number of arguments. Usually the cljs compiler does a good job of compiling away the extra indirection, but it struggles with local functions.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">foo</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">letfn</span> <span class="p">[(</span><span class="nf">bar</span> <span class="p">[</span><span class="nv">x</span> <span class="nv">y</span><span class="p">]</span> <span class="p">(</span><span class="nb">= </span><span class="nv">x</span> <span class="nv">y</span><span class="p">))]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">bar</span> <span class="ss">:foo</span> <span class="ss">:bar</span><span class="p">)))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">hugo_a_go_go</span><span class="p">.</span><span class="nx">board</span><span class="p">.</span><span class="nx">foo</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">_EQ_</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span> <span class="o">?</span> <span class="nx">a</span><span class="p">.</span><span class="nx">cljs$core$IFn$_invoke$arity$2</span><span class="p">(</span><span class="k">new</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">Keyword</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="mi">1014005816</span><span class="p">),</span> <span class="k">new</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">Keyword</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mi">1014001541</span><span class="p">))</span> <span class="o">:</span> <span class="nx">a</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="k">new</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">Keyword</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="mi">1014005816</span><span class="p">),</span> <span class="k">new</span> <span class="nx">cljs</span><span class="p">.</span><span class="nx">core</span><span class="p">.</span><span class="nx">Keyword</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mi">1014001541</span><span class="p">))</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The important part to notice here is that it tests if <code>a.cljs$core$IFn$_invoke$arity$2</code> exists before calling it, despite the fact that that is statically known. We had some small (~5%) performance improvements in a few places (notably board/flood-fill) by lifting all closures up to top-level functions so that the compiler can remove that check.</p>
+
+<h2>Mutable variables</h2>
+
+<p>Sometimes you need a mutable variable. Using atoms incurs overhead for eg checking watches. According to <a href="http://swannodette.github.io/2013/06/10/porting-notchs-minecraft-demo-to-clojurescript/">David Nolen</a>, the best option in cljs is creating a one-element array.</p>
+
+<p>It would be nice to have safe access to mutable vars in the style of <a href="https://github.com/ztellman/proteus">proteus</a> instead.</p>
+
+<h2>Next</h2>
+
+<p>While it meet seem annoying to have to work around the compiler sometimes to get decent performance, I far prefer to have sane semantics by default and just remember a few simple tricks for speeding up inner loops. Having access to macros also opens the door to a world of performant abstractions that would be extremely painful in plain js (eg <a href="https://github.com/clojure/core.match">core.match</a>, <a href="https://github.com/ztellman/vertigo">vertigo</a>). Now that the core of hugo is just bashing on integers and byte arrays there is also the potential to compile sections of it to <a href="http://asmjs.org/">asm.js</a> for even more performance.</p>
+
+<p>Hugo now plays fairly sensibly but is still easy to defeat even for a novice player like me. I suspect that the UCT stage is still not entirely correct so the next step is to build a visualiser for the game tree so I can see the reasoning behind it&rsquo;s moves.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-24T04:43:00+00:00" pubdate data-updated="true">24 Nov 2013</time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/clojure/'>clojure</a>, <a class='category' href='/blog/categories/go/'>go</a>
+
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

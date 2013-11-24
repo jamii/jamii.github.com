@@ -4,7 +4,7 @@
   <title><![CDATA[Category: clojure | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/clojure/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-10-06T21:03:09+01:00</updated>
+  <updated>2013-11-24T07:30:10+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,247 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hugo-a-go-go: optimisation]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/"/>
+    <updated>2013-11-24T04:43:00+00:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation</id>
+    <content type="html"><![CDATA[<p>After a little optimisation work [hugo] now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations I made during the last minutes of the competition, the main wins were changing the board representation and carefully inspecting the compiler output to eliminate unneccesary work. A lot of the things I discovered are generally applicable to calculation-heavy, cpu-bound cljs code (with all the usual disclaimers about profiling and premature optimsation).</p>
+
+<!--more-->
+
+
+<h2>Layout</h2>
+
+<p>The board is now packed into a Uint8Array. With borders included, the board is an 11x11 grid.</p>
+
+<p>``` clj
+(def size 9)
+(def array-size (+ 2 size))
+(def max-pos (* array-size array-size))</p>
+
+<p>(defn &ndash;>pos [x y]
+  (+ 1 x (* array-size (+ 1 y))))
+```</p>
+
+<p>The first 121 entries in the array represent the colour of each cell on the board.</p>
+
+<p>``` clj
+(def empty 0)
+(def black 1)
+(def white 2)
+(def grey 3) ;; for the border</p>
+
+<p>(defmacro get-colour [board pos]
+  `(aget ~board ~pos))</p>
+
+<p>(defmacro set-colour [board pos colour]
+  `(aset ~board ~pos ~colour))
+```</p>
+
+<p>The next 121 entries track which string is present on a cell. Strings are just represented by an integer id. The last entry in the array tracks the next id to be assigned.</p>
+
+<p>``` clj
+(def empty-string 0)
+(def grey-string 1)</p>
+
+<p>(defmacro new-string [board]
+  `(let [next-string# (aget ~board 1023)]</p>
+
+<pre><code> (aset ~board 1023 (+ next-string# 1))
+ next-string#))
+</code></pre>
+
+<p>(defmacro get-string [board pos]
+  `(aget ~board (+ ~max-pos ~pos)))</p>
+
+<p>(defmacro set-string [board pos string]
+  `(aset ~board (+ ~max-pos ~pos) ~string))
+```</p>
+
+<p>The next 121 entries track the number of non-empty neighbouring cells, which is useful for short-circuiting <code>suicide?</code> and <code>eyelike?</code> tests.</p>
+
+<p><code>`` clj
+(defmacro get-neighbours [board pos]
+ </code>(let [freedom-ix# (+ ~(* 2 max-pos) ~pos)]</p>
+
+<pre><code> (aget ~board freedom-ix#)))
+</code></pre>
+
+<p>(defmacro add-neighbours [board pos amount]
+  `(let [freedom-ix# (+ ~(* 2 max-pos) ~pos)]</p>
+
+<pre><code> (aset ~board freedom-ix# (+ (aget ~board freedom-ix#) ~amount))))
+</code></pre>
+
+<p>```</p>
+
+<p>Finally, the remaining cells map string ids to the number of pseudo-liberties belonging to that string.</p>
+
+<p><code>`` clj
+(defmacro get-liberties [board pos]
+ </code>(let [string-ix# (+ ~(* 3 max-pos) (get-string ~board ~pos))]</p>
+
+<pre><code> (aget ~board string-ix#)))
+</code></pre>
+
+<p>(defmacro add-liberties [board pos amount]
+  `(let [string-ix# (+ ~(* 3 max-pos) (get-string ~board ~pos))]</p>
+
+<pre><code> (aset ~board string-ix# (+ (aget ~board string-ix#) ~amount))))
+</code></pre>
+
+<p>```</p>
+
+<p>Packing the board this way gives two benefits. First, every field access is reduced to a few instructions. This isn&rsquo;t as big a win as one might think, given that the structure of the old layout was predictable enough for the jit to replace hash lookups with struct access. More importantly, packing the board means that creating a copy is a single array copy. Cheap copying means we can cache boards all over the place and this leads to a lot of saved work in the UCT stage.</p>
+
+<p>My implementation here is a little clumsy but in the future a cljs port of <a href="https://github.com/ztellman/vertigo">vertigo</a> would make this a lot cleaner. This is the kind of abstraction that would be difficult to implement in plain js.</p>
+
+<h2>Truth</h2>
+
+<p>In cljs, only <code>false</code> and <code>nil</code> are falsey. In generated code, if the cljs compiler cannot infer that the test in a branch is a boolean, it wraps it in <code>cljs.core.truth_</code> to test for cljs truthiness rather than js truthiness.</p>
+
+<p>``` clj
+(defn foo? [x]
+  (= &ldquo;foo&rdquo; x))</p>
+
+<p>(defn unfoo [x]
+  (if (foo? x)</p>
+
+<pre><code>nil
+x))
+</code></pre>
+
+<p>```</p>
+
+<p><code>js
+hugo_a_go_go.board.foo_QMARK_ = function(a) {
+  return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2("foo", a)
+};
+hugo_a_go_go.board.unfoo = function(a) {
+  return cljs.core.truth_(hugo_a_go_go.board.foo_QMARK_(a)) ? null : a
+};
+</code></p>
+
+<p>Normally this doesn&rsquo;t matter but hugo is optimised enough already that profiling showed it spending ~15% of it&rsquo;s time inside <code>cljs.core.truth_</code>. You can avoid it either by adding type hints&hellip;</p>
+
+<p>``` clj
+(defn ^boolean foo? [x]
+  (= &ldquo;foo&rdquo; x))</p>
+
+<p>(defn unfoo [x]
+  (if (foo? x)</p>
+
+<pre><code>nil
+x))
+</code></pre>
+
+<p>```</p>
+
+<p><code>js
+hugo_a_go_go.board.foo_QMARK_ = function(a) {
+  return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2("foo", a)
+};
+hugo_a_go_go.board.unfoo = function(a) {
+  return hugo_a_go_go.board.foo_QMARK_(a) ? null : a
+};
+</code></p>
+
+<p>&hellip; or by wrapping the test in a function that is already hinted.</p>
+
+<p>``` clj
+(defn foo? [x]
+  (= &ldquo;foo&rdquo; x))</p>
+
+<p>(defn unfoo [x]
+  (if (true? (foo? x))</p>
+
+<pre><code>nil
+x))
+</code></pre>
+
+<p>```</p>
+
+<p><code>js
+hugo_a_go_go.board.foo_QMARK_ = function(a) {
+  return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2("foo", a)
+};
+hugo_a_go_go.board.unfoo = function(a) {
+  return!0 === hugo_a_go_go.board.foo_QMARK_(a) ? null : a
+};
+</code></p>
+
+<h2>Equality</h2>
+
+<p>Clojure defaults to structural equality where possible, rather than using javascript&rsquo;s insane notion of equality.</p>
+
+<p><code>clj
+(defn opposite-colour [colour]
+  (if (= colour black) white black))
+</code></p>
+
+<p><code>js
+hugo_a_go_go.board.opposite_colour = function(a) {
+  return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(a, hugo_a_go_go.board.black) ? hugo_a_go_go.board.white : hugo_a_go_go.board.black
+};
+</code></p>
+
+<p>Again, this is something that normally doesn&rsquo;t matter but hugo was spending ~20% of cpu time in <code>cljs.core.__EQ__</code>. Since we know we are comparing integers we can use <code>==</code> instead, which compiles down to <code>===</code> in js.</p>
+
+<p><code>clj
+(defn opposite-colour [colour]
+  (if (== colour black) white black))
+</code></p>
+
+<p><code>js
+hugo_a_go_go.board.opposite_colour = function(a) {
+  return a === hugo_a_go_go.board.black ? hugo_a_go_go.board.white : hugo_a_go_go.board.black
+};
+</code></p>
+
+<p>For other primitive types it seems that <code>identical?</code> will inline to <code>===</code>. For keywords you now have to use <code>keyword-identical?</code> which unfortunately does not inline.</p>
+
+<h2>Polyadic calls</h2>
+
+<p>Clojure functions can dispatch on the number of arguments. Usually the cljs compiler does a good job of compiling away the extra indirection, but it struggles with local functions.</p>
+
+<p>``` clj
+(defn foo []
+  (letfn [(bar [x y] (= x y))]</p>
+
+<pre><code>(bar :foo :bar)))
+</code></pre>
+
+<p>```</p>
+
+<p>``` js
+hugo_a_go_go.board.foo = function() {
+  var a = function(a, c) {</p>
+
+<pre><code>return cljs.core._EQ_.cljs$core$IFn$_invoke$arity$2(a, c)
+</code></pre>
+
+<p>  };
+  return a.cljs$core$IFn$<em>invoke$arity$2 ? a.cljs$core$IFn$</em>invoke$arity$2(new cljs.core.Keyword(null, &ldquo;foo&rdquo;, &ldquo;foo&rdquo;, 1014005816), new cljs.core.Keyword(null, &ldquo;bar&rdquo;, &ldquo;bar&rdquo;, 1014001541)) : a.call(null, new cljs.core.Keyword(null, &ldquo;foo&rdquo;, &ldquo;foo&rdquo;, 1014005816), new cljs.core.Keyword(null, &ldquo;bar&rdquo;, &ldquo;bar&rdquo;, 1014001541))
+};
+```</p>
+
+<p>The important part to notice here is that it tests if <code>a.cljs$core$IFn$_invoke$arity$2</code> exists before calling it, despite the fact that that is statically known. We had some small (~5%) performance improvements in a few places (notably board/flood-fill) by lifting all closures up to top-level functions so that the compiler can remove that check.</p>
+
+<h2>Mutable variables</h2>
+
+<p>Sometimes you need a mutable variable. Using atoms incurs overhead for eg checking watches. According to <a href="http://swannodette.github.io/2013/06/10/porting-notchs-minecraft-demo-to-clojurescript/">David Nolen</a>, the best option in cljs is creating a one-element array.</p>
+
+<p>It would be nice to have safe access to mutable vars in the style of <a href="https://github.com/ztellman/proteus">proteus</a> instead.</p>
+
+<h2>Next</h2>
+
+<p>While it meet seem annoying to have to work around the compiler sometimes to get decent performance, I far prefer to have sane semantics by default and just remember a few simple tricks for speeding up inner loops. Having access to macros also opens the door to a world of performant abstractions that would be extremely painful in plain js (eg <a href="https://github.com/clojure/core.match">core.match</a>, <a href="https://github.com/ztellman/vertigo">vertigo</a>). Now that the core of hugo is just bashing on integers and byte arrays there is also the potential to compile sections of it to <a href="http://asmjs.org/">asm.js</a> for even more performance.</p>
+
+<p>Hugo now plays fairly sensibly but is still easy to defeat even for a novice player like me. I suspect that the UCT stage is still not entirely correct so the next step is to build a visualiser for the game tree so I can see the reasoning behind it&rsquo;s moves.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Hugo-a-go-go]]></title>
