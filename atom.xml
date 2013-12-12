@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2013-12-12T02:14:14+00:00</updated>
+  <updated>2013-12-12T02:23:13+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -18,7 +18,7 @@
     <link href="http://scattered-thoughts.net/blog/2013/12/12/no-more-bullshit/"/>
     <updated>2013-12-12T01:28:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/12/12/no-more-bullshit</id>
-    <content type="html"><![CDATA[<p>We are doing programming wrong. We all know it. Sure, if you sweat and scrub and shine and polish and pray to the gods of TDD you can get stuff done but in the back of your mind you will always hear Zed Shaw&rsquo;s voice whispering <a href="http://www.youtube.com/watch?v=4qJMR_Dbxow">&ldquo;This is bullshit!&rdquo;</a>. We cannot build the world on a foundation of bullshit.</p>
+    <content type="html"><![CDATA[<p>We are doing programming wrong. We all know it. Sure, if you sweat and scrub and shine and polish and pray to the gods of TDD you can get stuff done, but in the back of your mind you will always hear Zed Shaw&rsquo;s voice whispering <a href="http://www.youtube.com/watch?v=4qJMR_Dbxow">&ldquo;This is bullshit!&rdquo;</a>. We cannot build the world on a foundation of bullshit.</p>
 
 <!--more-->
 
