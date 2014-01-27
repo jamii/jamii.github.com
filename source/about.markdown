@@ -83,7 +83,7 @@ Studied randomised algorithms, probabilistic model checking, logics of multi-age
 Dissertation: [Design and analysis of a gossip overlay](http://github.com/jamii/dissertation).
 
 ### BA Mathematics, University of Cambridge
-#### Sep 2005 - July 2008
+#### Oct 2005 - July 2008
 
 Transferred from computer science.
 
