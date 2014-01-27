@@ -19,7 +19,7 @@ Light Table has a feature called [watches](http://www.youtube.com/watch?v=d8-b6Q
            {:class "timed" :verbatim true})]
 ```
 
-Similarly, you can write custom eval commands which wrap the selected expression before evaluating it. I have a whole pile of these, for tasks from benchmarking an expression to displaying the bytecode for the resulting object.
+Similarly, you can write custom eval commands which wrap the selected expression before evaluating it. I have a whole pile of these for tasks from benchmarking an expression to displaying the bytecode for the resulting object.
 
 ``` clj
 "alt-shift-b" [(:eval.custom "(do (require '[criterium.core]) (with-out-str (criterium.core/bench (do __SELECTION__))))" {:result-type :inline :verbatim true})]
