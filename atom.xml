@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-01-27T01:25:15+00:00</updated>
+  <updated>2014-01-27T10:50:52+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -103,7 +103,7 @@
 
 <p><img src="http://scattered-thoughts.net/images/square2.gif"></p>
 
-<p>Computers are not just a tool for writing code, they are a tool for thinking. We can <a href="http://clojure.org/macros">extend the language</a>. We can <a href="http://cascalog.org/">make new languages</a>. We can write code that <a href="https://github.com/clojure/core.typed">analyses code</a>, code that <a href="https://github.com/technomancy/slamhound">rewrites code</a>, code that <a href="">inspects code</a>, code that <a href="https://github.com/plasma-umass/causal">finds slow code</a>, code that <a href="http://www.st.cs.uni-saarland.de/dd/">finds bugs</a>, code that <a href="http://google-engtools.blogspot.co.uk/2011/12/bug-prediction-at-google.html">predicts bugs</a>, code that <a href="http://db.cs.berkeley.edu/papers/hotdep10-fts-dts.pdf">breaks code</a>, code that <a href="worrydream.com/MediaForThinkingTheUnthinkable/">visualises code execution</a>, code that <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">queries code execution</a>. We are barely scratching the surface. We have to stop thinking of code as text and start thinking of code as data.</p>
+<p>Computers are not just a tool for writing code, they are a tool for thinking. We can <a href="http://clojure.org/macros">extend the language</a>. We can <a href="http://cascalog.org/">make new languages</a>. We can write code that <a href="https://github.com/clojure/core.typed">analyses code</a>, code that <a href="https://github.com/technomancy/slamhound">rewrites code</a>, code that <a href="http://trac.webkit.org/wiki/WebInspector">inspects code</a>, code that <a href="https://github.com/plasma-umass/causal">finds slow code</a>, code that <a href="http://www.st.cs.uni-saarland.de/dd/">finds bugs</a>, code that <a href="http://google-engtools.blogspot.co.uk/2011/12/bug-prediction-at-google.html">predicts bugs</a>, code that <a href="http://db.cs.berkeley.edu/papers/hotdep10-fts-dts.pdf">breaks code</a>, code that <a href="http://worrydream.com/MediaForThinkingTheUnthinkable/">visualises code execution</a>, code that <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">queries code execution</a>. We are barely scratching the surface. We have to stop thinking of code as text and start thinking of code as data.</p>
 
 <p>And I have to go learn how to use the webkit debugger in Light Table.</p>
 ]]></content>
