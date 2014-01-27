@@ -1,0 +1,255 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>We're not even trying - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="Light Table has a feature called watches, where you select an expression to watch and behind the scenes the editor wraps that expression in some code &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">We're not even trying</h1>
+	<div class="entry-content"><p>Light Table has a feature called <a href="http://www.youtube.com/watch?v=d8-b6QEN-rk">watches</a>, where you select an expression to watch and behind the scenes the editor wraps that expression in some code that sends the results back to the editor every time the expression is executed. You can also write custom watches that wrap the selected expression however you like. For example, this watch displays the time the expression took to execute.</p>
+
+<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="s">&quot;alt-m&quot;</span> <span class="p">[(</span><span class="ss">:editor.watch.custom-watch-selection</span>
+</span><span class='line'>           <span class="s">&quot;(let [start (.getTime (js/Date.))</span>
+</span><span class='line'><span class="s">                  res (do __SELECTION__)]</span>
+</span><span class='line'><span class="s">              __|(str (- (.getTime (js/Date.)) start) \&quot; ms\&quot;)|__</span>
+</span><span class='line'><span class="s">              res)&quot;</span>
+</span><span class='line'>           <span class="p">{</span><span class="ss">:class</span> <span class="s">&quot;timed&quot;</span> <span class="ss">:verbatim</span> <span class="nv">true</span><span class="p">})]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Similarly, you can write custom eval commands which wrap the selected expression before evaluating it. I have a whole pile of these, for tasks from benchmarking an expression to displaying the bytecode for the resulting object.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="s">&quot;alt-shift-b&quot;</span> <span class="p">[(</span><span class="ss">:eval.custom</span> <span class="s">&quot;(do (require &#39;[criterium.core]) (with-out-str (criterium.core/bench (do __SELECTION__))))&quot;</span> <span class="p">{</span><span class="ss">:result-type</span> <span class="ss">:inline</span> <span class="ss">:verbatim</span> <span class="nv">true</span><span class="p">})]</span>
+</span><span class='line'><span class="s">&quot;alt-d&quot;</span> <span class="p">[(</span><span class="ss">:eval.custom</span> <span class="s">&quot;(do (require &#39;[no.disassemble]) (no.disassemble/disassemble (do __SELECTION__)))&quot;</span> <span class="p">{</span><span class="ss">:result-type</span> <span class="ss">:inline</span> <span class="ss">:verbatim</span> <span class="nv">true</span><span class="p">})]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This has completely replaced print statement debugging for me. It probably saves me 10-20 minutes of typing per day, reduces context switching a little and prevents me accidentally checking in print statements. It doesn&rsquo;t sound like much, but if you make three or four improvements like that it starts to add up.</p>
+
+<p>But the point of this post is not Light Table is awesome (although it is). The point is that I spent four years as a professional programmer typing in print statements every day and I never once thought to automate that process. If I missed something so simple, what else am I missing?</p>
+
+<p>I lose hours and hours every week to mistyped variables and function names. When using clojurescript in Light Table there are no warnings shown and the stack traces don&rsquo;t identify which variable was mistyped. But the clojurescript compiler can emit warnings and webkit inspector can show which line the error occured at. All I have to do is take a few hours to improve the clojurescript plugin and I would never suffer from mistyped names again.</p>
+
+<p>I spend even more hours painstakingly inserting watches and setting up test cases when all I really want to do is step through the call-stack. We have a debugger! The webkit inspector has an excellent debugger which uses the source maps that we so carefully emit to enable stepping though clojurescript code directly. But I haven&rsquo;t gotten around to taking ten minutes to learn to use it, so I rely entirely on watches instead.</p>
+
+<p>I know I&rsquo;m not the only one. I&rsquo;ve seen otherwise intelligent people go through a code file and manually rename every occurence of a function, as if they had never heard of find-and-replace. I know people who write code in notepad because they don&rsquo;t need any &ldquo;fancy IDE features&rdquo; getting in the way.</p>
+
+<p><img src="/images/square1.gif"></p>
+
+<p>I see people tolerate waiting minutes to compile and endure restarting their program every time they make a change. I worked with one company whose build process so annoyed me that I started writing down the time I spent waiting and worked out it was costing them an hour of consulting time every day. They wouldn&rsquo;t let me fix it. At another company, a new service made it into master despite the fact that it crashed on startup. Setting up a working mock environment was so painful that neither the original developer nor the reviewer had actually tried running the code.</p>
+
+<p>How does this happen? What the hell went wrong?</p>
+
+<h2>I don&rsquo;t have the time to fix the problem</h2>
+
+<p>The correct response to this is to make a note of how much time I waste every day by not fixing the problem. That&rsquo;s <em>why</em> I don&rsquo;t have time.</p>
+
+<p><img src="/images/square-time.jpg"></p>
+
+<p>Just taking a few hours a week to fix the low-hanging fruit will pay for itself dozens of times over, and every time I add a feature to my editor or write a little command line tool I will learn things that will make it faster and easier next time. Productivity is multiplicative. Small improvements add up to remarkable changes.</p>
+
+<h2>I didn&rsquo;t notice there was a problem</h2>
+
+<p>This suprised me at first, but I realised that the reason I had never fixed the undefined variable problem was because I had never sat down and figured out how much it cost me in terms of lost time and focus. When I&rsquo;m coding I&rsquo;m not really conciously aware of the mechanical details of what I&rsquo;m doing. My head is focused on data and algorithms, bugs and performance problems. I&rsquo;m only vaguely aware that at the other end my hands are repeatedly mistyping println.</p>
+
+<p>I&rsquo;m trying now to maintain some sort of record. Whenever I lose focus or forget what I was doing I write down what distracted me. Whenever something annoys or frustrates me I write it down. Every time I take a break I make a quick note of what I spent the last hour or two doing. Whenever I fix a bug I write down the process that lead me to finding it, what the cause was and how it slipped through testing.</p>
+
+<p>Something else I am considering trying is recording a few hours of video and going back to analyse in detail what worked and what didn&rsquo;t. I suspect that I will spot a number of bad habits that are obvious in hindsight.</p>
+
+<p>The advantage of recording all this evidence is that I can get an <em>accurate</em> picture of where my time is going and how my tools and processes could be improved. Going by my memory of what happened has proven to be less than useful.</p>
+
+<h2>I have a vested interest in there not being a problem</h2>
+
+<p>My favourite language doesn&rsquo;t have a debugger so clearly I don&rsquo;t need one. Besides, real programmers don&rsquo;t need a debugger. They just simulate the program directly in their head.</p>
+
+<p>People <a href="http://www.amazon.co.uk/Thinking-Fast-Slow-Daniel-Kahneman/dp/0141033576/ref=sr_1_1?ie=UTF8&amp;qid=1390773807&amp;sr=8-1&amp;keywords=thinking+fast+and+slow">lie to themselves</a>. We all regularly defend on the grounds of technical merit when really the decision is governed by comfort zones, fashion, superficial impressions and random prejudices. It&rsquo;s hard to make good decisions when you aren&rsquo;t even aware of your own biases.</p>
+
+<p>One idea for combatting this is to take the <a href="http://wiki.lesswrong.com/wiki/Outside_view">outside view</a>. I imagine <em>specific cases</em> where I have seen other developers trying to solve similar bugs and in each one of those cases I would have recommended that they learn to use the debugger rather than painstakingly engineering a test case out of print statements and watches.</p>
+
+<p>Another idea I keep in mind is <a href="http://www.paulgraham.com/identity.html">keeping my identity small</a>. If I persist in thinking of myself as a &lsquo;real hardcore programmer&rsquo; then I will forever be stuck peering at an 80 character ANSI terminal while other people get shit done.</p>
+
+<p>Finally, I hope to be able to rely more on emperical results. If I am disciplined about collecting data then it will be easier to see what the correct answer is without malformed preconceptions getting in the way.</p>
+
+<h2>I didn&rsquo;t realise the problem could be fixed</h2>
+
+<p>The reason I never automated attaching watches is because it never occured to me that that was possible, let alone easy. My mental model of progamming involved me typing text into an editor and later running it. The editor might help me move text around but it couldn&rsquo;t change the text on the way to the repl. I was a victim of first order thinking, seeing my programming environment as a fixed tool where text goes in one end and programs come out the other. The only solution is to tattoo &lsquo;everything is data&rsquo; across my forehead.</p>
+
+<p>It is 2014. We have been programming for six decades. The software world has invested tens of thousands of man-years into building tools to help us write code (I&rsquo;m told that the Visual Studio team alone is 2000 developers). How is it still the case that my fat fingers can mistype a function name and the first I hear about it is &ldquo;Cannot call method &lsquo;call&rsquo; of undefined&rdquo;. Is this really the best we can do? It feels like it takes a monumental amount of effort just to enable the simplest features.</p>
+
+<p><img src="/images/square2.gif"></p>
+
+<p>Computers are not just a tool for writing code, they are a tool for thinking. We can <a href="http://clojure.org/macros">extend the language</a>. We can <a href="http://cascalog.org/">make new languages</a>. We can write code that <a href="https://github.com/clojure/core.typed">analyses code</a>, code that <a href="https://github.com/technomancy/slamhound">rewrites code</a>, code that <a href="">inspects code</a>, code that <a href="https://github.com/plasma-umass/causal">finds slow code</a>, code that <a href="http://www.st.cs.uni-saarland.de/dd/">finds bugs</a>, code that <a href="http://google-engtools.blogspot.co.uk/2011/12/bug-prediction-at-google.html">predicts bugs</a>, code that <a href="http://db.cs.berkeley.edu/papers/hotdep10-fts-dts.pdf">breaks code</a>, code that <a href="worrydream.com/MediaForThinkingTheUnthinkable/">visualises code execution</a>, code that <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">queries code execution</a>. We are barely scratching the surface. We have to stop thinking of code as text and start thinking of code as data.</p>
+
+<p>And I have to go learn how to use the webkit debugger in Light Table.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-27T00:31:00+00:00" pubdate data-updated="true">27 Jan 2014</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2014/01/27/were-not-even-trying/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2014/01/27/were-not-even-trying/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
