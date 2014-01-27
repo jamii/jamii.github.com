@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-01-27T01:11:45+00:00</updated>
+  <updated>2014-01-27T01:25:15+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -40,7 +40,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Similarly, you can write custom eval commands which wrap the selected expression before evaluating it. I have a whole pile of these, for tasks from benchmarking an expression to displaying the bytecode for the resulting object.</p>
+<p>Similarly, you can write custom eval commands which wrap the selected expression before evaluating it. I have a whole pile of these for tasks from benchmarking an expression to displaying the bytecode for the resulting object.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
