@@ -92,7 +92,7 @@
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/</loc>
-        <lastmod>2013-06-02T03:38:41+01:00</lastmod>
+        <lastmod>2013-06-02T03:38:40+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/</loc>
@@ -100,7 +100,7 @@
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/</loc>
-        <lastmod>2013-06-02T03:41:21+01:00</lastmod>
+        <lastmod>2013-06-02T03:41:20+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations/</loc>
@@ -116,7 +116,7 @@
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/</loc>
-        <lastmod>2013-11-24T07:35:45+00:00</lastmod>
+        <lastmod>2013-11-24T07:35:44+00:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/12/12/no-more-bullshit/</loc>
@@ -127,15 +127,19 @@
         <lastmod>2014-01-27T10:50:32+00:00</lastmod>
     </url>
     <url>
-        <loc>http://scattered-thoughts.net/about.html</loc>
-        <lastmod>2014-01-14T16:13:29+00:00</lastmod>
+        <loc>http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/</loc>
+        <lastmod>2014-02-17T05:45:17+00:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/archives/</loc>
-        <lastmod>2014-01-27T10:50:32+00:00</lastmod>
+        <lastmod>2014-02-17T05:45:17+00:00</lastmod>
+    </url>
+    <url>
+        <loc>http://scattered-thoughts.net/about.html</loc>
+        <lastmod>2014-01-14T16:13:28+00:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/</loc>
-        <lastmod>2014-01-27T10:50:32+00:00</lastmod>
+        <lastmod>2014-02-17T05:45:17+00:00</lastmod>
     </url>
 </urlset>

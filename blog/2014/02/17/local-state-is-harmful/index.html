@@ -1,0 +1,668 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Local state is harmful - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="Don&rsquo;t lynch me just yet :) Picture a tradiional webapp. We have a number of stateless workers connected to a stateful, relational database. &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Local state is harmful</h1>
+	<div class="entry-content"><p>Don&rsquo;t lynch me just yet :)</p>
+
+<!--more-->
+
+
+<p>Picture a tradiional webapp. We have a number of stateless workers connected to a stateful, relational database. This is a setup with a number of excellent properties:</p>
+
+<ul>
+<li>All state can be queried using a uniform api &ndash; SQL. This enables flexible ad-hoc exploration of the application state as well as generic UIs like <a href="https://docs.djangoproject.com/en/dev/ref/contrib/admin/">django admin</a></li>
+<li>Every item of state has a unique and predictable name by which it can be identified &ndash; a unique key in the table.</li>
+<li>Access to state can be restricted and controlled. Transactions prevent different workers from interfering with each other. ACLs allow giving individual workers access to only the information they need to limit the scope of mistakes.</li>
+<li>Changes to state can be monitored. Tailing the transaction log is an effective way to stream to a backup server or to debug errors that occurred in production. One can reconstuct the state of the database at any time.</li>
+<li>State is separate from code. You can change client code, rename all your classes or restart workers on the fly and the state in the database will be unharmed.</li>
+</ul>
+
+
+<p>The database state is also pervasive, mutable and <em>global</em>.</p>
+
+<p>Now let&rsquo;s zoom in and look at our imperative, object-oriented workers:</p>
+
+<ul>
+<li>State is encapuslated in objects and hidden behind an ad-hoc collection of methods.</li>
+<li>Objects are effectively named only by their location in the (cyclic, directed) object graph or their position in memory.</li>
+<li>Access to state can be restricted and controlled through encapsulation. Concurrent modifications are a constant source of bugs. Access control is adhoc and transitive &ndash; if you can walk the object graph to an object you can access it.</li>
+<li>Changes to state are usually monitored via adhoc methods such as manually inserting debug statements. Approximating history by watching debug statements and reconstructing state in ones head is the normal method of debugging.</li>
+<li>State is entangled with code. Portable serialization is difficult. Live-coding works to some extent but requires reasoning about the interaction of state and code (eg in js redefining a function does not modify old instances that may still be hanging around in data structures or in callbacks)</li>
+</ul>
+
+
+<p>Functional programmers need not look so smug at this point. The Haskell/OCaml family struggles to redefine types at runtime or handle live data migrations (the declaration of a nominal type is a side-effect in a live language). Clojure does better on these points but still gets burned by nominal types (eg extend a deftype/defrecord and the reeval the definition) and more generally by treating the definition of new code as mutation of state (which has to be papered over by <a href="https://github.com/clojure/tools.namespace/">tools.namespace</a>).</p>
+
+<p>Why are these points important? We spend most of our time not writing code but <em>reasoning about code</em>, whether hunting for bugs, refactoring old code or trying to extend a module. We end up with questions like:</p>
+
+<ul>
+<li>When did this state change?</li>
+<li>What caused it to change?</li>
+<li>Did this invariant ever break?</li>
+<li>How did this output get here?</li>
+</ul>
+
+
+<p>How do we answer these questions?</p>
+
+<p>In the database we have a transaction log containing for each transaction: the queries involved, the commit time, the client name etc. We can write code that specifies the condition we are interested in via an sql query, locates the relevant transactions by running through the log and then recreates the state of the database at that point. This works even if the error happened elsewhere &ndash; just have the user ship you their transaction log.</p>
+
+<p>In the worker, we have two familiar workhorses:</p>
+
+<ul>
+<li>Manually add print statements, recompile the code, try to recreate the conditions we are interested in and then reconstruct the causality by reading the printed statements</li>
+<li>Add a breakpoint in the debugger, try to recreate the conditions we are interested in and then step through the code line by line</li>
+</ul>
+
+
+<p>What these two have in common is that they are both achingly <em>manual</em>. There is no easy way to automate the process. There are no libraries full of debugging strategies that you can deploy. The questions we have are about time and causality but our current tools restrict us to looking at tiny slices of space (print statements) or time (debuggers) and offer no way to automate our actions.</p>
+
+<p>I propose that if we were to manage state more like a database and less like a traditional imperative language then understanding and debugging programs would become easier. As is traditional, I aim to convince the reader by the use of an unrealistically simple example.</p>
+
+<h2>Counting sheep</h2>
+
+<p>As everyone knows the main purpose of advanced technology has always been to help us <a href="http://sl4.org/wiki/TheSimpleTruth">count our sheep</a>. At the dawn of time this was very simple.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">inc!</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">dec!</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">inc!</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">dec!</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But as civilisation advanced so too did the demands on technology. With newfound riches came multiple pens of sheep. People soon realised that the trusty old global variable had a crucial flaw &ndash; it was not reentrant. Having been burned by mutable state they decided to keep it under lock and guard.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">make-counter</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">{</span><span class="ss">:inc!</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>     <span class="ss">:dec!</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)}))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span><span class="ss">:keys</span> <span class="p">[</span><span class="nv">inc!</span> <span class="nv">dec!</span><span class="p">]}</span> <span class="p">(</span><span class="nf">make-counter</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">inc!</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">dec!</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Later programmers were a more trusting bunch and left their data unprotected, but still hidden.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It took thousands of years of progress before anyone asked the crucial question: &ldquo;So how many sheep do we actually have?&rdquo;. The guardian of the count was reluctant to give up this delicate information, having been lectured all its life about the importance of data hiding. The only solution was torture.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:how-many-sheep</span> <span class="p">(</span><span class="nf">send-message</span> <span class="nv">socket</span> <span class="p">[</span><span class="err">@</span><span class="nb">count </span><span class="ss">:sheep</span><span class="p">])))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In erlang they still hold to these cruel and brutal traditions.</p>
+
+<p>Let&rsquo;s try something different. We can separate state from code and allow uniform access to all application state. We just have to carefully control access to that state.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="c1">;; in the code</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span> <span class="nv">count</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; in the repl</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">state</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:count-a</span> <span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>   <span class="ss">:count-b</span> <span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)})</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span> <span class="p">(</span><span class="nf">state</span> <span class="ss">:count-a</span><span class="p">))</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span> <span class="p">(</span><span class="nf">state</span> <span class="ss">:count-b</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="p">(</span><span class="nf">state</span> <span class="ss">:count-a</span><span class="p">)</span> <span class="c1">;; check the number of sheep</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1083</span> <span class="p">(</span><span class="nf">state</span> <span class="ss">:count-a</span><span class="p">))</span> <span class="c1">;; share sheep with 1081</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a kind of pseudo-global state. We can easily examine any application state in the repl but functions can only modify state this is passed to them directly. All we need now is to monitor changes to the state.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span> <span class="nv">count</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">state</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">atom</span> <span class="p">{</span><span class="ss">:count-a</span> <span class="mi">0</span>
+</span><span class='line'>         <span class="ss">:count-b</span> <span class="mi">0</span><span class="p">}))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span> <span class="p">(</span><span class="nf">subatom</span> <span class="nv">state</span> <span class="ss">:count-a</span><span class="p">))</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span> <span class="p">(</span><span class="nf">subatom</span> <span class="nv">state</span> <span class="ss">:count-b</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>subatom</code> is not a clojure function, but it shows up regularly in clojure libraries (eg my <a href="https://github.com/jamii/bigatom">bigatom</a> is a simple, self-contained implementation). All it does is create a view on the original atom. This approximates a mutable tree while still allowing immutable snapshots.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">x</span> <span class="p">(</span><span class="nf">atom</span> <span class="p">{</span><span class="ss">:foo</span> <span class="p">{</span><span class="ss">:bar</span> <span class="mi">0</span><span class="p">}}))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">y</span> <span class="p">(</span><span class="nf">subatom</span> <span class="nv">x</span> <span class="ss">:foo</span> <span class="ss">:bar</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nv">y</span> <span class="c1">;; =&gt; 0</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">swap!</span> <span class="nv">y</span> <span class="nv">inc</span><span class="p">)</span> <span class="c1">;; =&gt; 1</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nv">x</span> <span class="c1">;; =&gt; {:foo {:bar 1}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can record changes and explore them programatically. Suppose that sheep pen 1082 is actually inside sheep pen 1081. If everything is working correctly, we should have the invariant <code>(&gt; (:count-a @state) (:count-b @state))</code>. Most of the time this is indeed the case, but once in a blue moon an unhappy customer reports that the invariant is broken.</p>
+
+<p>Luckily, as modern programmers we can simply query the clients state history to find out what happened.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">history</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">atom</span> <span class="p">[[(</span><span class="nf">time</span><span class="p">)</span> <span class="err">@</span><span class="nv">state</span><span class="p">]]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">add-watch</span> <span class="nv">state</span> <span class="nv">history</span> <span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">_</span> <span class="nv">_</span> <span class="nv">new-state</span><span class="p">]</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nv">history</span> <span class="nb">conj </span><span class="p">[(</span><span class="nf">time</span><span class="p">)</span> <span class="nv">new-state</span><span class="p">])))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">drop-while</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">fn </span><span class="p">[[</span><span class="nb">time </span><span class="nv">state</span><span class="p">]]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">&gt; </span><span class="p">(</span><span class="ss">:count-a</span> <span class="nv">state</span><span class="p">)</span> <span class="p">(</span><span class="ss">:count-b</span> <span class="nv">state</span><span class="p">)))</span>
+</span><span class='line'>  <span class="err">@</span><span class="nv">history</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a trivial example, but this kind of ability to debug programmatically is potentially very valuable.</p>
+
+<h2>Real world use</h2>
+
+<p>Removing hidden state does not have to be a binary change. The more you move in that direction the more of the benefits you will gain.</p>
+
+<p>The project that convinced me was a prototype betting exchange written in clojure. Although I relied on mutable collections (and thus lost the ablity to record history easily) I used <a href="https://github.com/prismatic/plumbing">Graph</a> to wire components together.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">log</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:stream</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">log-file</span><span class="p">]</span> <span class="p">(</span><span class="nf">java.io.FileOutputStream.</span> <span class="nv">log-file</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:channel</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">stream</span><span class="p">]</span> <span class="p">(</span><span class="nf">.getChannel</span> <span class="nv">stream</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:writer</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">stream</span><span class="p">]</span> <span class="p">(</span><span class="nf">clojure.java.io/writer</span> <span class="nv">stream</span><span class="p">))})</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">server</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:log</span> <span class="nv">log</span>
+</span><span class='line'>   <span class="ss">:queue</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">batch-size</span><span class="p">]</span> <span class="p">(</span><span class="nf">java.util.concurrent.ArrayBlockingQueue.</span> <span class="nv">batch-size</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:server</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">queue</span> <span class="nv">frame</span> <span class="nv">port</span><span class="p">]</span> <span class="p">(</span><span class="nf">network/receive-events</span> <span class="nv">queue</span> <span class="nv">frame</span> <span class="nv">port</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:state</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">init-state</span><span class="p">]</span> <span class="p">(</span><span class="nf">atom</span> <span class="nv">init-state</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:persistor</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">state</span> <span class="nv">queue</span> <span class="p">[</span><span class="ss">:log</span> <span class="nv">channel</span> <span class="nv">writer</span><span class="p">]</span> <span class="nv">handler</span> <span class="nv">batch-size</span><span class="p">]</span>
+</span><span class='line'>                   <span class="p">(</span><span class="nf">future-loop</span> <span class="p">(</span><span class="nf">persistence/handle-events</span> <span class="nv">state</span> <span class="nv">queue</span> <span class="nv">channel</span> <span class="nv">writer</span> <span class="nv">handler</span> <span class="nv">batch-size</span><span class="p">)))})</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">defnk</span> <span class="nv">client</span> <span class="p">[</span><span class="nv">frame</span> <span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">lamina/wait-for-result</span> <span class="p">(</span><span class="nf">tcp/tcp-client</span> <span class="p">{</span><span class="ss">:host</span> <span class="s">&quot;localhost&quot;</span> <span class="ss">:port</span> <span class="nv">port</span> <span class="ss">:frame</span> <span class="nv">frame</span><span class="p">})))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; wiring for throughput test</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">load</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:client</span> <span class="nv">client</span>
+</span><span class='line'>   <span class="ss">:send-count</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[]</span> <span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:recv-count</span> <span class="nv">load/recv-count</span>
+</span><span class='line'>   <span class="ss">:counter</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">recv-count</span><span class="p">]</span> <span class="p">(</span><span class="nf">future</span> <span class="p">(</span><span class="nf">load/counter-loop</span> <span class="nv">recv-count</span> <span class="err">@</span><span class="nv">recv-count</span><span class="p">)))</span>
+</span><span class='line'>   <span class="ss">:loader</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">client</span> <span class="nv">send-count</span> <span class="nv">recv-count</span> <span class="nv">rate-limit</span><span class="p">]</span>
+</span><span class='line'>                <span class="p">(</span><span class="nf">future</span> <span class="p">(</span><span class="nf">load/loader-loop</span> <span class="nv">client</span> <span class="nv">send-count</span> <span class="nv">recv-count</span> <span class="nv">rate-limit</span><span class="p">)))})</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; wiring for latency test</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">measure</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:client</span> <span class="nv">client</span>
+</span><span class='line'>   <span class="ss">:measurer</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">client</span><span class="p">]</span> <span class="p">(</span><span class="nf">future</span> <span class="p">(</span><span class="nf">load/measurer-loop</span> <span class="nv">client</span><span class="p">)))})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With explicit names for all state, dependency injection is easy. When I start a component I can swap out the network implementation for testing or compare different implementations of the event handler etc.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'>  <span class="p">(</span><span class="k">def </span><span class="nv">s</span> <span class="p">((</span><span class="nf">graph/eager-compile</span> <span class="nv">server</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">{</span><span class="ss">:port</span> <span class="mi">19997</span>
+</span><span class='line'>           <span class="ss">:frame</span> <span class="nv">etf-frame</span>
+</span><span class='line'>           <span class="ss">:init-state</span> <span class="nv">load/init-state</span>
+</span><span class='line'>           <span class="ss">:handler</span> <span class="nv">exchange/handle-event</span>
+</span><span class='line'>           <span class="ss">:log-file</span> <span class="s">&quot;test-out&quot;</span>
+</span><span class='line'>           <span class="ss">:batch-size</span> <span class="mi">1000</span><span class="p">}))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Creating a component returns a nested map of all the state in all the subcomponenets. I can poke around inside the state whilst debugging. A little snippet I often used polls the queue size and prints to the console whenever it is full.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="nf">future</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">when </span><span class="p">(</span><span class="nb">&gt;= </span><span class="p">(</span><span class="nf">.size</span> <span class="p">(</span><span class="ss">:queue</span> <span class="nv">s</span><span class="p">))</span> <span class="p">(</span><span class="ss">:batch-size</span> <span class="nv">s</span><span class="p">))</span>
+</span><span class='line'>      <span class="p">(</span><span class="nb">println </span><span class="s">&quot;Full at&quot;</span> <span class="p">(</span><span class="nf">time</span><span class="p">)))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Uniform access to all state makes it easy to write generic functions to eg view the entire object graph or shutdown every component.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defprotocol </span><span class="nv">Poke</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">poke</span> <span class="p">[</span><span class="nv">this</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">extend-protocol</span> <span class="nv">Poke</span>
+</span><span class='line'>  <span class="nv">java.util.concurrent.Future</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">poke</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="p">(</span><span class="nb">deref </span><span class="nv">this</span> <span class="mi">0</span> <span class="ss">:pending-future</span><span class="p">))</span>
+</span><span class='line'>  <span class="nv">clojure.lang.Atom</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">poke</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="err">@</span><span class="nv">this</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">poke-all</span> <span class="p">[</span><span class="nv">form</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">satisfies?</span> <span class="nv">Poke</span> <span class="nv">form</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">walk</span> <span class="nb">identity </span><span class="nv">poke-all</span> <span class="p">(</span><span class="nf">poke</span> <span class="nv">form</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">walk</span> <span class="nb">identity </span><span class="nv">poke-all</span> <span class="nv">form</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defprotocol </span><span class="nv">Kill</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">kill</span> <span class="p">[</span><span class="nv">this</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">extend-protocol</span> <span class="nv">Kill</span>
+</span><span class='line'>  <span class="nv">clojure.lang.Fn</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">kill</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="p">(</span><span class="nf">this</span><span class="p">))</span>
+</span><span class='line'>  <span class="nv">java.util.concurrent.Future</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">kill</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="p">(</span><span class="nf">future-cancel</span> <span class="nv">this</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">kill-all</span> <span class="p">[</span><span class="nv">form</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">walk</span> <span class="o">#</span><span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">satisfies?</span> <span class="nv">Kill</span> <span class="nv">%</span><span class="p">)</span> <span class="p">(</span><span class="nf">kill</span> <span class="nv">%</span><span class="p">)</span> <span class="nv">%</span><span class="p">)</span> <span class="nv">kill-all</span> <span class="nv">form</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The difference in productivity compared to the old actor-based version was incredible.</p>
+
+<h2>Examples</h2>
+
+<p><a href="http://boom.cs.berkeley.edu/">Overlog</a> makes use of this idea by reflecting many runtime events into in-process tables. My favourite <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">paper</a> describes using streaming queries on these tables for programmable profiling, monitoring and even distributed debugging.</p>
+
+<p><a href="https://github.com/swannodette/om">Om</a> uses cursors similarly to the way I use subatoms here, to manage relative names within the state tree. David Nolen&rsquo;s <a href="http://swannodette.github.io/">blog</a> has some excellent examples of using this global state to enable application-wide undo and syncing state without modifying application code.</p>
+
+<p>The <a href="http://facebook.github.io/react/blog/2014/01/02/react-chrome-developer-tools.html">React devtools</a> allow you to click on an element on the page and display the state of the component that created that element.  A trivial extension in Om would be to display the past states and for each state change show the event and handler that caused that change. Together with the ability to programmatically access state and history this could lead to a beautiful debugging experience.</p>
+
+<p>&ldquo;Why is this box here? Ah, it comes from component Foo. The state of component Foo is messed up. When did that happen? Ah, it was caused by event handler Bar firing with these arguments.&rdquo; How long would that same chain of reasoning take you with println debugging? In a language with tighter tool integration it should be possible to just directly drop into the debugger at that point in history and replay the events.</p>
+
+<h2>Summary</h2>
+
+<p>Interaction with running programs (live coding, debugging, monitoring, hot code reloading etc) is greatly aided by several design principles:</p>
+
+<ul>
+<li>All state can be queried using some uniform api.</li>
+<li>Every item of state has a unique and predictable name by which it can be identified.</li>
+<li>Access to state can be restricted and controlled.</li>
+<li>Changes to state can be monitored.</li>
+<li>State is separate from code.</li>
+</ul>
+
+
+<p>These principles are well understood in database systems and in ops in general.</p>
+
+<p>The same principles are not applied in the small by most programmers and are not encouraged by most languages.</p>
+
+<p>Several examples exist of using these principles to quickly produce simple, powerful programs.</p>
+
+<p>Most of our questions about code are questions about time, state and causality. Our existing tools do not lend much support in answering those questions. Following these principles makes it easier to develop better tools.</p>
+
+<p>I would also speculate that a large part of the <a href="http://www.youtube.com/watch?v=ayPD0U_FO4Y">frustration</a> that people experience with computers is a result of opaque abstractions which prevent users from being able to connect cause and effect when the machine misbehaves.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-17T05:02:00+00:00" pubdate data-updated="true">17 Feb 2014</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

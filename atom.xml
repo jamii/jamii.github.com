@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-01-27T10:50:52+00:00</updated>
+  <updated>2014-02-17T05:45:39+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,515 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Local state is harmful]]></title>
+    <link href="http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/"/>
+    <updated>2014-02-17T05:02:00+00:00</updated>
+    <id>http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful</id>
+    <content type="html"><![CDATA[<p>Don&rsquo;t lynch me just yet :)</p>
+
+<!--more-->
+
+
+<p>Picture a tradiional webapp. We have a number of stateless workers connected to a stateful, relational database. This is a setup with a number of excellent properties:</p>
+
+<ul>
+<li>All state can be queried using a uniform api &ndash; SQL. This enables flexible ad-hoc exploration of the application state as well as generic UIs like <a href="https://docs.djangoproject.com/en/dev/ref/contrib/admin/">django admin</a></li>
+<li>Every item of state has a unique and predictable name by which it can be identified &ndash; a unique key in the table.</li>
+<li>Access to state can be restricted and controlled. Transactions prevent different workers from interfering with each other. ACLs allow giving individual workers access to only the information they need to limit the scope of mistakes.</li>
+<li>Changes to state can be monitored. Tailing the transaction log is an effective way to stream to a backup server or to debug errors that occurred in production. One can reconstuct the state of the database at any time.</li>
+<li>State is separate from code. You can change client code, rename all your classes or restart workers on the fly and the state in the database will be unharmed.</li>
+</ul>
+
+
+<p>The database state is also pervasive, mutable and <em>global</em>.</p>
+
+<p>Now let&rsquo;s zoom in and look at our imperative, object-oriented workers:</p>
+
+<ul>
+<li>State is encapuslated in objects and hidden behind an ad-hoc collection of methods.</li>
+<li>Objects are effectively named only by their location in the (cyclic, directed) object graph or their position in memory.</li>
+<li>Access to state can be restricted and controlled through encapsulation. Concurrent modifications are a constant source of bugs. Access control is adhoc and transitive &ndash; if you can walk the object graph to an object you can access it.</li>
+<li>Changes to state are usually monitored via adhoc methods such as manually inserting debug statements. Approximating history by watching debug statements and reconstructing state in ones head is the normal method of debugging.</li>
+<li>State is entangled with code. Portable serialization is difficult. Live-coding works to some extent but requires reasoning about the interaction of state and code (eg in js redefining a function does not modify old instances that may still be hanging around in data structures or in callbacks)</li>
+</ul>
+
+
+<p>Functional programmers need not look so smug at this point. The Haskell/OCaml family struggles to redefine types at runtime or handle live data migrations (the declaration of a nominal type is a side-effect in a live language). Clojure does better on these points but still gets burned by nominal types (eg extend a deftype/defrecord and the reeval the definition) and more generally by treating the definition of new code as mutation of state (which has to be papered over by <a href="https://github.com/clojure/tools.namespace/">tools.namespace</a>).</p>
+
+<p>Why are these points important? We spend most of our time not writing code but <em>reasoning about code</em>, whether hunting for bugs, refactoring old code or trying to extend a module. We end up with questions like:</p>
+
+<ul>
+<li>When did this state change?</li>
+<li>What caused it to change?</li>
+<li>Did this invariant ever break?</li>
+<li>How did this output get here?</li>
+</ul>
+
+
+<p>How do we answer these questions?</p>
+
+<p>In the database we have a transaction log containing for each transaction: the queries involved, the commit time, the client name etc. We can write code that specifies the condition we are interested in via an sql query, locates the relevant transactions by running through the log and then recreates the state of the database at that point. This works even if the error happened elsewhere &ndash; just have the user ship you their transaction log.</p>
+
+<p>In the worker, we have two familiar workhorses:</p>
+
+<ul>
+<li>Manually add print statements, recompile the code, try to recreate the conditions we are interested in and then reconstruct the causality by reading the printed statements</li>
+<li>Add a breakpoint in the debugger, try to recreate the conditions we are interested in and then step through the code line by line</li>
+</ul>
+
+
+<p>What these two have in common is that they are both achingly <em>manual</em>. There is no easy way to automate the process. There are no libraries full of debugging strategies that you can deploy. The questions we have are about time and causality but our current tools restrict us to looking at tiny slices of space (print statements) or time (debuggers) and offer no way to automate our actions.</p>
+
+<p>I propose that if we were to manage state more like a database and less like a traditional imperative language then understanding and debugging programs would become easier. As is traditional, I aim to convince the reader by the use of an unrealistically simple example.</p>
+
+<h2>Counting sheep</h2>
+
+<p>As everyone knows the main purpose of advanced technology has always been to help us <a href="http://sl4.org/wiki/TheSimpleTruth">count our sheep</a>. At the dawn of time this was very simple.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">inc!</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">dec!</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">inc!</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">dec!</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>But as civilisation advanced so too did the demands on technology. With newfound riches came multiple pens of sheep. People soon realised that the trusty old global variable had a crucial flaw &ndash; it was not reentrant. Having been burned by mutable state they decided to keep it under lock and guard.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">make-counter</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">{</span><span class="ss">:inc!</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>     <span class="ss">:dec!</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)}))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span><span class="ss">:keys</span> <span class="p">[</span><span class="nv">inc!</span> <span class="nv">dec!</span><span class="p">]}</span> <span class="p">(</span><span class="nf">make-counter</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">inc!</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">dec!</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Later programmers were a more trusting bunch and left their data unprotected, but still hidden.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It took thousands of years of progress before anyone asked the crucial question: &ldquo;So how many sheep do we actually have?&rdquo;. The guardian of the count was reluctant to give up this delicate information, having been lectured all its life about the importance of data hiding. The only solution was torture.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)</span>
+</span><span class='line'>        <span class="nb">count </span><span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:how-many-sheep</span> <span class="p">(</span><span class="nf">send-message</span> <span class="nv">socket</span> <span class="p">[</span><span class="err">@</span><span class="nb">count </span><span class="ss">:sheep</span><span class="p">])))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span><span class="p">)</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In erlang they still hold to these cruel and brutal traditions.</p>
+
+<p>Let&rsquo;s try something different. We can separate state from code and allow uniform access to all application state. We just have to carefully control access to that state.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="c1">;; in the code</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span> <span class="nv">count</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; in the repl</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">state</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:count-a</span> <span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>   <span class="ss">:count-b</span> <span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">)})</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span> <span class="p">(</span><span class="nf">state</span> <span class="ss">:count-a</span><span class="p">))</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span> <span class="p">(</span><span class="nf">state</span> <span class="ss">:count-b</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="p">(</span><span class="nf">state</span> <span class="ss">:count-a</span><span class="p">)</span> <span class="c1">;; check the number of sheep</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1083</span> <span class="p">(</span><span class="nf">state</span> <span class="ss">:count-a</span><span class="p">))</span> <span class="c1">;; share sheep with 1081</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a kind of pseudo-global state. We can easily examine any application state in the repl but functions can only modify state this is passed to them directly. All we need now is to monitor changes to the state.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">run-counter</span> <span class="p">[</span><span class="nv">port</span> <span class="nv">count</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">socket</span> <span class="p">(</span><span class="nf">open</span> <span class="nv">port</span><span class="p">)]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>      <span class="p">(</span><span class="nf">case</span> <span class="p">(</span><span class="nf">receive-message</span> <span class="nv">socket</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-in</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count + </span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>        <span class="ss">:sheep-out</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nb">count - </span><span class="mi">1</span><span class="p">)))))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">state</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">atom</span> <span class="p">{</span><span class="ss">:count-a</span> <span class="mi">0</span>
+</span><span class='line'>         <span class="ss">:count-b</span> <span class="mi">0</span><span class="p">}))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1081</span> <span class="p">(</span><span class="nf">subatom</span> <span class="nv">state</span> <span class="ss">:count-a</span><span class="p">))</span>
+</span><span class='line'><span class="p">(</span><span class="nf">run-counter</span> <span class="mi">1082</span> <span class="p">(</span><span class="nf">subatom</span> <span class="nv">state</span> <span class="ss">:count-b</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>subatom</code> is not a clojure function, but it shows up regularly in clojure libraries (eg my <a href="https://github.com/jamii/bigatom">bigatom</a> is a simple, self-contained implementation). All it does is create a view on the original atom. This approximates a mutable tree while still allowing immutable snapshots.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">x</span> <span class="p">(</span><span class="nf">atom</span> <span class="p">{</span><span class="ss">:foo</span> <span class="p">{</span><span class="ss">:bar</span> <span class="mi">0</span><span class="p">}}))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">y</span> <span class="p">(</span><span class="nf">subatom</span> <span class="nv">x</span> <span class="ss">:foo</span> <span class="ss">:bar</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nv">y</span> <span class="c1">;; =&gt; 0</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">swap!</span> <span class="nv">y</span> <span class="nv">inc</span><span class="p">)</span> <span class="c1">;; =&gt; 1</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">@</span><span class="nv">x</span> <span class="c1">;; =&gt; {:foo {:bar 1}}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we can record changes and explore them programatically. Suppose that sheep pen 1082 is actually inside sheep pen 1081. If everything is working correctly, we should have the invariant <code>(&gt; (:count-a @state) (:count-b @state))</code>. Most of the time this is indeed the case, but once in a blue moon an unhappy customer reports that the invariant is broken.</p>
+
+<p>Luckily, as modern programmers we can simply query the clients state history to find out what happened.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">history</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">atom</span> <span class="p">[[(</span><span class="nf">time</span><span class="p">)</span> <span class="err">@</span><span class="nv">state</span><span class="p">]]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">add-watch</span> <span class="nv">state</span> <span class="nv">history</span> <span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">_</span> <span class="nv">_</span> <span class="nv">new-state</span><span class="p">]</span> <span class="p">(</span><span class="nf">swap!</span> <span class="nv">history</span> <span class="nb">conj </span><span class="p">[(</span><span class="nf">time</span><span class="p">)</span> <span class="nv">new-state</span><span class="p">])))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">drop-while</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">fn </span><span class="p">[[</span><span class="nb">time </span><span class="nv">state</span><span class="p">]]</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">&gt; </span><span class="p">(</span><span class="ss">:count-a</span> <span class="nv">state</span><span class="p">)</span> <span class="p">(</span><span class="ss">:count-b</span> <span class="nv">state</span><span class="p">)))</span>
+</span><span class='line'>  <span class="err">@</span><span class="nv">history</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a trivial example, but this kind of ability to debug programmatically is potentially very valuable.</p>
+
+<h2>Real world use</h2>
+
+<p>Removing hidden state does not have to be a binary change. The more you move in that direction the more of the benefits you will gain.</p>
+
+<p>The project that convinced me was a prototype betting exchange written in clojure. Although I relied on mutable collections (and thus lost the ablity to record history easily) I used <a href="https://github.com/prismatic/plumbing">Graph</a> to wire components together.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">log</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:stream</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">log-file</span><span class="p">]</span> <span class="p">(</span><span class="nf">java.io.FileOutputStream.</span> <span class="nv">log-file</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:channel</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">stream</span><span class="p">]</span> <span class="p">(</span><span class="nf">.getChannel</span> <span class="nv">stream</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:writer</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">stream</span><span class="p">]</span> <span class="p">(</span><span class="nf">clojure.java.io/writer</span> <span class="nv">stream</span><span class="p">))})</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">server</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:log</span> <span class="nv">log</span>
+</span><span class='line'>   <span class="ss">:queue</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">batch-size</span><span class="p">]</span> <span class="p">(</span><span class="nf">java.util.concurrent.ArrayBlockingQueue.</span> <span class="nv">batch-size</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:server</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">queue</span> <span class="nv">frame</span> <span class="nv">port</span><span class="p">]</span> <span class="p">(</span><span class="nf">network/receive-events</span> <span class="nv">queue</span> <span class="nv">frame</span> <span class="nv">port</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:state</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">init-state</span><span class="p">]</span> <span class="p">(</span><span class="nf">atom</span> <span class="nv">init-state</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:persistor</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">state</span> <span class="nv">queue</span> <span class="p">[</span><span class="ss">:log</span> <span class="nv">channel</span> <span class="nv">writer</span><span class="p">]</span> <span class="nv">handler</span> <span class="nv">batch-size</span><span class="p">]</span>
+</span><span class='line'>                   <span class="p">(</span><span class="nf">future-loop</span> <span class="p">(</span><span class="nf">persistence/handle-events</span> <span class="nv">state</span> <span class="nv">queue</span> <span class="nv">channel</span> <span class="nv">writer</span> <span class="nv">handler</span> <span class="nv">batch-size</span><span class="p">)))})</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">defnk</span> <span class="nv">client</span> <span class="p">[</span><span class="nv">frame</span> <span class="nv">port</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">lamina/wait-for-result</span> <span class="p">(</span><span class="nf">tcp/tcp-client</span> <span class="p">{</span><span class="ss">:host</span> <span class="s">&quot;localhost&quot;</span> <span class="ss">:port</span> <span class="nv">port</span> <span class="ss">:frame</span> <span class="nv">frame</span><span class="p">})))</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; wiring for throughput test</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">load</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:client</span> <span class="nv">client</span>
+</span><span class='line'>   <span class="ss">:send-count</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[]</span> <span class="p">(</span><span class="nf">atom</span> <span class="mi">0</span><span class="p">))</span>
+</span><span class='line'>   <span class="ss">:recv-count</span> <span class="nv">load/recv-count</span>
+</span><span class='line'>   <span class="ss">:counter</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">recv-count</span><span class="p">]</span> <span class="p">(</span><span class="nf">future</span> <span class="p">(</span><span class="nf">load/counter-loop</span> <span class="nv">recv-count</span> <span class="err">@</span><span class="nv">recv-count</span><span class="p">)))</span>
+</span><span class='line'>   <span class="ss">:loader</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">client</span> <span class="nv">send-count</span> <span class="nv">recv-count</span> <span class="nv">rate-limit</span><span class="p">]</span>
+</span><span class='line'>                <span class="p">(</span><span class="nf">future</span> <span class="p">(</span><span class="nf">load/loader-loop</span> <span class="nv">client</span> <span class="nv">send-count</span> <span class="nv">recv-count</span> <span class="nv">rate-limit</span><span class="p">)))})</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;; wiring for latency test</span>
+</span><span class='line'><span class="p">(</span><span class="k">def </span><span class="nv">measure</span>
+</span><span class='line'>  <span class="p">{</span><span class="ss">:client</span> <span class="nv">client</span>
+</span><span class='line'>   <span class="ss">:measurer</span> <span class="p">(</span><span class="nf">fnk</span> <span class="p">[</span><span class="nv">client</span><span class="p">]</span> <span class="p">(</span><span class="nf">future</span> <span class="p">(</span><span class="nf">load/measurer-loop</span> <span class="nv">client</span><span class="p">)))})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With explicit names for all state, dependency injection is easy. When I start a component I can swap out the network implementation for testing or compare different implementations of the event handler etc.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'>  <span class="p">(</span><span class="k">def </span><span class="nv">s</span> <span class="p">((</span><span class="nf">graph/eager-compile</span> <span class="nv">server</span><span class="p">)</span>
+</span><span class='line'>          <span class="p">{</span><span class="ss">:port</span> <span class="mi">19997</span>
+</span><span class='line'>           <span class="ss">:frame</span> <span class="nv">etf-frame</span>
+</span><span class='line'>           <span class="ss">:init-state</span> <span class="nv">load/init-state</span>
+</span><span class='line'>           <span class="ss">:handler</span> <span class="nv">exchange/handle-event</span>
+</span><span class='line'>           <span class="ss">:log-file</span> <span class="s">&quot;test-out&quot;</span>
+</span><span class='line'>           <span class="ss">:batch-size</span> <span class="mi">1000</span><span class="p">}))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Creating a component returns a nested map of all the state in all the subcomponenets. I can poke around inside the state whilst debugging. A little snippet I often used polls the queue size and prints to the console whenever it is full.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="nf">future</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">while</span> <span class="nv">true</span>
+</span><span class='line'>    <span class="p">(</span><span class="nb">when </span><span class="p">(</span><span class="nb">&gt;= </span><span class="p">(</span><span class="nf">.size</span> <span class="p">(</span><span class="ss">:queue</span> <span class="nv">s</span><span class="p">))</span> <span class="p">(</span><span class="ss">:batch-size</span> <span class="nv">s</span><span class="p">))</span>
+</span><span class='line'>      <span class="p">(</span><span class="nb">println </span><span class="s">&quot;Full at&quot;</span> <span class="p">(</span><span class="nf">time</span><span class="p">)))))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Uniform access to all state makes it easy to write generic functions to eg view the entire object graph or shutdown every component.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='clj'><span class='line'><span class="p">(</span><span class="kd">defprotocol </span><span class="nv">Poke</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">poke</span> <span class="p">[</span><span class="nv">this</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">extend-protocol</span> <span class="nv">Poke</span>
+</span><span class='line'>  <span class="nv">java.util.concurrent.Future</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">poke</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="p">(</span><span class="nb">deref </span><span class="nv">this</span> <span class="mi">0</span> <span class="ss">:pending-future</span><span class="p">))</span>
+</span><span class='line'>  <span class="nv">clojure.lang.Atom</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">poke</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="err">@</span><span class="nv">this</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">poke-all</span> <span class="p">[</span><span class="nv">form</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">satisfies?</span> <span class="nv">Poke</span> <span class="nv">form</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">walk</span> <span class="nb">identity </span><span class="nv">poke-all</span> <span class="p">(</span><span class="nf">poke</span> <span class="nv">form</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">(</span><span class="nf">walk</span> <span class="nb">identity </span><span class="nv">poke-all</span> <span class="nv">form</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defprotocol </span><span class="nv">Kill</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">kill</span> <span class="p">[</span><span class="nv">this</span><span class="p">]))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="nf">extend-protocol</span> <span class="nv">Kill</span>
+</span><span class='line'>  <span class="nv">clojure.lang.Fn</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">kill</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="p">(</span><span class="nf">this</span><span class="p">))</span>
+</span><span class='line'>  <span class="nv">java.util.concurrent.Future</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">kill</span> <span class="p">[</span><span class="nv">this</span><span class="p">]</span> <span class="p">(</span><span class="nf">future-cancel</span> <span class="nv">this</span><span class="p">)))</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">(</span><span class="kd">defn </span><span class="nv">kill-all</span> <span class="p">[</span><span class="nv">form</span><span class="p">]</span>
+</span><span class='line'>  <span class="p">(</span><span class="nf">walk</span> <span class="o">#</span><span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nf">satisfies?</span> <span class="nv">Kill</span> <span class="nv">%</span><span class="p">)</span> <span class="p">(</span><span class="nf">kill</span> <span class="nv">%</span><span class="p">)</span> <span class="nv">%</span><span class="p">)</span> <span class="nv">kill-all</span> <span class="nv">form</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The difference in productivity compared to the old actor-based version was incredible.</p>
+
+<h2>Examples</h2>
+
+<p><a href="http://boom.cs.berkeley.edu/">Overlog</a> makes use of this idea by reflecting many runtime events into in-process tables. My favourite <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">paper</a> describes using streaming queries on these tables for programmable profiling, monitoring and even distributed debugging.</p>
+
+<p><a href="https://github.com/swannodette/om">Om</a> uses cursors similarly to the way I use subatoms here, to manage relative names within the state tree. David Nolen&rsquo;s <a href="http://swannodette.github.io/">blog</a> has some excellent examples of using this global state to enable application-wide undo and syncing state without modifying application code.</p>
+
+<p>The <a href="http://facebook.github.io/react/blog/2014/01/02/react-chrome-developer-tools.html">React devtools</a> allow you to click on an element on the page and display the state of the component that created that element.  A trivial extension in Om would be to display the past states and for each state change show the event and handler that caused that change. Together with the ability to programmatically access state and history this could lead to a beautiful debugging experience.</p>
+
+<p>&ldquo;Why is this box here? Ah, it comes from component Foo. The state of component Foo is messed up. When did that happen? Ah, it was caused by event handler Bar firing with these arguments.&rdquo; How long would that same chain of reasoning take you with println debugging? In a language with tighter tool integration it should be possible to just directly drop into the debugger at that point in history and replay the events.</p>
+
+<h2>Summary</h2>
+
+<p>Interaction with running programs (live coding, debugging, monitoring, hot code reloading etc) is greatly aided by several design principles:</p>
+
+<ul>
+<li>All state can be queried using some uniform api.</li>
+<li>Every item of state has a unique and predictable name by which it can be identified.</li>
+<li>Access to state can be restricted and controlled.</li>
+<li>Changes to state can be monitored.</li>
+<li>State is separate from code.</li>
+</ul>
+
+
+<p>These principles are well understood in database systems and in ops in general.</p>
+
+<p>The same principles are not applied in the small by most programmers and are not encouraged by most languages.</p>
+
+<p>Several examples exist of using these principles to quickly produce simple, powerful programs.</p>
+
+<p>Most of our questions about code are questions about time, state and causality. Our existing tools do not lend much support in answering those questions. Following these principles makes it easier to develop better tools.</p>
+
+<p>I would also speculate that a large part of the <a href="http://www.youtube.com/watch?v=ayPD0U_FO4Y">frustration</a> that people experience with computers is a result of opaque abstractions which prevent users from being able to connect cause and effect when the machine misbehaves.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[We're not even trying]]></title>
@@ -3280,431 +3789,6 @@ If VC_A &lt; VC_B then A-&gt;B
 <p>but there were more problems. Most of the event handlers used erlang:send_after to handle timeouts but since they all run in the same process they all receive each others timeouts. Also, every event handler is run sequentially so the switch_event process becomes a huge bottleneck.</p>
 
 <p>The solution I settled on was to change each event handler into a gen_server and write a simple event handler that just forwards events to its owner. By using gen_event:add_sup_handler and listening for event handler exits we can keep the two in sync.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Telehash: buckets]]></title>
-    <link href="http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets/"/>
-    <updated>2011-03-30T06:16:00+01:00</updated>
-    <id>http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets</id>
-    <content type="html"><![CDATA[<p>The other half of the routing table is the buckets which store node addresses.</p>
-
-<!--more-->
-
-
-<p>Usual disclaimer: none of this is properly tested yet.</p>
-
-<p>The Kademlia paper has much to say on the issue of routing, most of it contradictory. My takeaway from many readings and from browsing the source code of various different implementations is that the following points are the most important:</p>
-
-<ul>
-<li>each bucket should contain at most <em>K</em> nodes</li>
-<li>we should only ever report node addresses which we have personally confirmed exist</li>
-<li>responsive nodes should never be removed from buckets</li>
-<li>nodes should never be removed from buckets unless a suitable replacement exists</li>
-</ul>
-
-
-<p>The first three points make the routing table very resistant to flooding and spoofing. In particular, they prevent a common attack for p2p networks where some bad guy floods the routing tables of all the other nodes so that all traffic is routed through nodes controlled by the bad guy. The last point prevents nodes from flushing their routing tables if their own network connection goes down.</p>
-
-<p>I think the implementation I have come up with is fairly clean, if a little lengthy. Like the bit_tree I want the bucket to be completely pure. All side effects will be handled by the router itself. The main data structures are explained pretty well by the comments:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="p">-</span><span class="ni">define</span><span class="p">(</span><span class="no">K</span><span class="p">,</span> <span class="o">?</span><span class="nv">DIAL_DEPTH</span><span class="p">).</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">node</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">address</span><span class="p">,</span> <span class="c">% node #address{} record</span>
-</span><span class='line'>    <span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="c">% node end</span>
-</span><span class='line'>    <span class="n">suffix</span><span class="p">,</span> <span class="c">% the remaining bits of the nodes end left over from the bit_tree</span>
-</span><span class='line'>    <span class="n">status</span><span class="p">,</span> <span class="c">% one of [live, stale, cache]</span>
-</span><span class='line'>    <span class="n">last_seen</span> <span class="c">% for live/stale nodes, the time of the last received message. for cache nodes the time of the last .see reference to the node</span>
-</span><span class='line'>   <span class="p">}).</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">bucket</span><span class="p">,</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nb">nodes</span><span class="p">,</span> <span class="c">% gb_tree mapping addresses to {Status, Last_seen}</span>
-</span><span class='line'>    <span class="c">% remaining fields are pq&#39;s of nodes sorted by their last_seen field</span>
-</span><span class='line'>    <span class="n">live</span><span class="p">,</span> <span class="c">% nodes currently expected to be alive</span>
-</span><span class='line'>    <span class="n">stale</span><span class="p">,</span> <span class="c">% nodes which have not replied recently</span>
-</span><span class='line'>    <span class="n">cache</span> <span class="c">% potential nodes which we have not yet verified </span>
-</span><span class='line'>   <span class="p">}).</span> <span class="c">% invariant: pq_maps:size(live) + pq_maps:size(stale) &lt;= ?K</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The bucket is a two-stage data structure. This allows us the keep nodes of different statuses sorted by the last_seen time but still be able to get/delete nodes just knowing the address. The <em>get_node</em> function should make it clear how this works:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">get_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span>
-</span><span class='line'>   <span class="nl">#bucket</span><span class="p">{</span><span class="nb">nodes</span><span class="o">=</span><span class="nv">Nodes</span><span class="p">,</span> <span class="n">live</span><span class="o">=</span><span class="nv">Live</span><span class="p">,</span> <span class="n">stale</span><span class="o">=</span><span class="nv">Stale</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="nv">Cache</span><span class="p">})</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nn">gb_trees</span><span class="p">:</span><span class="n">lookup</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Nodes</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{</span><span class="n">value</span><span class="p">,</span> <span class="p">{</span><span class="nv">Status</span><span class="p">,</span> <span class="nv">Last_seen</span><span class="p">}}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nv">Status</span> <span class="k">of</span>
-</span><span class='line'>      <span class="n">live</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="nb">get</span><span class="p">({</span><span class="nv">Last_seen</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nv">Live</span><span class="p">)};</span>
-</span><span class='line'>      <span class="n">stale</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="nb">get</span><span class="p">({</span><span class="nv">Last_seen</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nv">Stale</span><span class="p">)};</span>
-</span><span class='line'>      <span class="n">cache</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="nb">get</span><span class="p">({</span><span class="nv">Last_seen</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nv">Cache</span><span class="p">)}</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">none</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="n">none</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is only long because records are purely a compile time structure ie we can&rsquo;t write <em>Bucket#bucket.Status</em> so we have to pattern match on <em>Status</em> instead. We also define <em>add_node/2</em>, <em>del_node/2</em> and <em>update_node/2</em>, which look pretty similar, as well as <em>to_list/1</em>, <em>from_list/1</em> and <em>sizes/1</em>.</p>
-
-<p>The router is going to react to various events by calling the appropriate bucket functions and possibly sending out messages based on the result. The first event it has to handle is a node becoming unresponsive. The bucket will mark this node as stale and return a cache node which the router can attempt to verify.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% this address failed to reply in a timely manner</span>
-</span><span class='line'><span class="nf">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">timing_out</span><span class="p">,</span> <span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>    <span class="k">case</span> <span class="n">get_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nv">Node</span><span class="nl">#node.status</span> <span class="k">of</span>
-</span><span class='line'>      <span class="n">live</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% mark as stale, return a cache node that might be a suitable replacement</span>
-</span><span class='line'>          <span class="nv">Bucket2</span> <span class="o">=</span> <span class="n">update_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">status</span><span class="o">=</span><span class="n">stale</span><span class="p">},</span> <span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>          <span class="n">pop_cache_hi</span><span class="p">(</span><span class="nv">Bucket2</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% if cache or stale already we don&#39;t care </span>
-</span><span class='line'>          <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">none</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% wtf? we don&#39;t even know this node?</span>
-</span><span class='line'>      <span class="c">% one way this could happen: </span>
-</span><span class='line'>      <span class="c">% send N1, sendN1, timedout N1, add N2 (pushing N1 out of stale), timedout N1 </span>
-</span><span class='line'>      <span class="nn">log</span><span class="p">:</span><span class="n">warning</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">unknown_node_timedout</span><span class="p">,</span> <span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>      <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">% return most recently seen cache node, if any exist</span>
-</span><span class='line'><span class="nf">pop_cache_hi</span><span class="p">(</span><span class="nl">#bucket</span><span class="p">{</span><span class="n">cache</span><span class="o">=</span><span class="nv">Cache</span><span class="p">}</span><span class="o">=</span><span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="n">pop_hi</span><span class="p">(</span><span class="nv">Cache</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{_</span><span class="nv">Key</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Cache2</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket</span><span class="nl">#bucket</span><span class="p">{</span><span class="n">cache</span><span class="o">=</span><span class="nv">Cache2</span><span class="p">})};</span>
-</span><span class='line'>  <span class="n">false</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The next event is receiving a <em>.see</em> command. This may be as a result of a <em>+end</em> sent by the router but is more likely to be part of a dialing process happening elsewhere. The beauty of Kademlia is that the router can populate the routing table just by listening in on dialing attempts.</p>
-
-<p>For each node listed in the <em>.see</em> command the router will call <em>seen</em>. This adds the node to the cache and returns the least recently seen live node so the router can check that it is still responsive.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% this address has been reported to exist by another node</span>
-</span><span class='line'><span class="nf">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">seeing</span><span class="p">,</span> <span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>    <span class="k">case</span> <span class="n">get_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nv">Node</span><span class="nl">#node.status</span> <span class="k">of</span>
-</span><span class='line'>      <span class="n">cache</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% for cache nodes being in a .see is good enough</span>
-</span><span class='line'>          <span class="n">ok</span><span class="p">(</span><span class="n">update_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">last_seen</span><span class="o">=</span><span class="nv">Time</span><span class="p">},</span> <span class="nv">Bucket</span><span class="p">));</span>
-</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% for live/stale nodes we require direct contact so ignore this</span>
-</span><span class='line'>          <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">none</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% put node in cache, return a live node to ping</span>
-</span><span class='line'>      <span class="nv">Node</span> <span class="o">=</span> <span class="nl">#node</span><span class="p">{</span>
-</span><span class='line'>        <span class="n">address</span> <span class="o">=</span> <span class="nv">Address</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">&#39;end&#39;</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="n">to_end</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
-</span><span class='line'>        <span class="n">suffix</span> <span class="o">=</span> <span class="nv">Suffix</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">status</span> <span class="o">=</span> <span class="n">cache</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">last_seen</span> <span class="o">=</span> <span class="nv">Time</span>
-</span><span class='line'>       <span class="p">},</span>
-</span><span class='line'>      <span class="nv">Bucket2</span> <span class="o">=</span> <span class="n">add_node</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>      <span class="k">case</span> <span class="n">peek_live_lo</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>      <span class="n">none</span> <span class="o">-&gt;</span> <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket2</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Live_node</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">Live_node</span><span class="p">,</span> <span class="n">ok</span><span class="p">(</span><span class="nv">Bucket2</span><span class="p">)}</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">% return the oldest live node</span>
-</span><span class='line'><span class="nf">peek_live_lo</span><span class="p">(</span><span class="nl">#bucket</span><span class="p">{</span><span class="n">live</span><span class="o">=</span><span class="nv">Live</span><span class="p">})</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="n">peek_lo</span><span class="p">(</span><span class="nv">Live</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="n">none</span> <span class="o">-&gt;</span> <span class="n">none</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">{_,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Any time we receive a message we learn that the node sending it exists (or not &ndash; we&rsquo;ll deal with address spoofing in a later post) so we can potentially mark it as a live node. The <em>touched</em> function checks if the node is already in the bucket or if it needs to be added.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% this address has been verified as actually existing</span>
-</span><span class='line'><span class="nf">touched</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">touching</span><span class="p">,</span> <span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>    <span class="k">case</span> <span class="n">get_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nv">Node</span><span class="nl">#node.status</span> <span class="k">of</span>
-</span><span class='line'>      <span class="n">live</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% update last_seen time</span>
-</span><span class='line'>          <span class="n">ok</span><span class="p">(</span><span class="n">update_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">last_seen</span><span class="o">=</span><span class="nv">Time</span><span class="p">},</span> <span class="nv">Bucket</span><span class="p">));</span>
-</span><span class='line'>      <span class="n">stale</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% update last_seen time and promote to live</span>
-</span><span class='line'>          <span class="n">ok</span><span class="p">(</span><span class="n">update_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">last_seen</span><span class="o">=</span><span class="nv">Time</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">live</span><span class="p">},</span> <span class="nv">Bucket</span><span class="p">));</span>
-</span><span class='line'>      <span class="n">cache</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="c">% potentially promote the node to live</span>
-</span><span class='line'>          <span class="nv">Bucket2</span> <span class="o">=</span> <span class="n">del_node</span><span class="p">(</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>          <span class="n">new_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">Bucket2</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">none</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% potentially add the node to live</span>
-</span><span class='line'>      <span class="n">new_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If the node needs to be added then <em>touched</em> calls <em>new_node</em> which decides if there is space in the bucket and, if so, adds the new node. If the bucket is full and <em>May_split</em> is true then <em>new_node</em> will split the bucket before adding the new node. Deciding whether or not splitting is allowed is the routers job.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="c">% assumes Address is not already in Bucket, otherwise crashes</span>
-</span><span class='line'><span class="nf">new_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Node</span> <span class="o">=</span> <span class="nl">#node</span><span class="p">{</span>
-</span><span class='line'>      <span class="n">address</span> <span class="o">=</span> <span class="nv">Address</span><span class="p">,</span>
-</span><span class='line'>      <span class="n">&#39;end&#39;</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="n">to_end</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
-</span><span class='line'>      <span class="n">suffix</span> <span class="o">=</span> <span class="nv">Suffix</span><span class="p">,</span>
-</span><span class='line'>      <span class="n">status</span> <span class="o">=</span> <span class="n">undefined</span><span class="p">,</span>
-</span><span class='line'>      <span class="n">last_seen</span> <span class="o">=</span> <span class="nv">Time</span>
-</span><span class='line'>     <span class="p">},</span>
-</span><span class='line'>    <span class="p">{</span><span class="nv">Lives</span><span class="p">,</span> <span class="nv">Stales</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>    <span class="k">if</span>
-</span><span class='line'>  <span class="nv">Lives</span> <span class="o">+</span> <span class="nv">Stales</span> <span class="o">&lt;</span> <span class="o">?</span><span class="nv">K</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% space left in live</span>
-</span><span class='line'>      <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">adding</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>      <span class="n">ok</span><span class="p">(</span><span class="n">add_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">status</span><span class="o">=</span><span class="n">live</span><span class="p">},</span> <span class="nv">Bucket</span><span class="p">));</span>
-</span><span class='line'>  <span class="p">(</span><span class="nv">Lives</span> <span class="o">&lt;</span> <span class="o">?</span><span class="nv">K</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nv">Stales</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% space left in live if we push something out of stale</span>
-</span><span class='line'>      <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">adding</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>      <span class="nv">Bucket2</span> <span class="o">=</span> <span class="n">drop_stale</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>      <span class="n">ok</span><span class="p">(</span><span class="n">add_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">status</span><span class="o">=</span><span class="n">live</span><span class="p">},</span> <span class="nv">Bucket2</span><span class="p">));</span>
-</span><span class='line'>  <span class="nv">May_split</span> <span class="ow">and</span> <span class="p">(</span><span class="nv">Suffix</span> <span class="o">/=</span> <span class="p">[])</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% allowed to split the bucket to make space</span>
-</span><span class='line'>      <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">splitting</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>      <span class="p">{</span><span class="n">split</span><span class="p">,</span> <span class="nv">BucketF</span><span class="p">,</span> <span class="nv">BucketT</span><span class="p">}</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>      <span class="p">[</span><span class="nv">Bit</span> <span class="p">|</span> <span class="nv">Suffix2</span><span class="p">]</span> <span class="o">=</span> <span class="nv">Suffix</span><span class="p">,</span>
-</span><span class='line'>      <span class="k">case</span> <span class="nv">Bit</span> <span class="k">of</span>
-</span><span class='line'>      <span class="n">false</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="nv">BucketF2</span> <span class="o">=</span> <span class="n">new_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix2</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">BucketF</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">),</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">split</span><span class="p">,</span> <span class="nv">BucketF2</span><span class="p">,</span> <span class="nv">BucketT</span><span class="p">};</span>
-</span><span class='line'>      <span class="n">true</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="nv">BucketT2</span> <span class="o">=</span> <span class="n">new_node</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix2</span><span class="p">,</span> <span class="nv">Time</span><span class="p">,</span> <span class="nv">BucketT</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">),</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">split</span><span class="p">,</span> <span class="nv">BucketF</span><span class="p">,</span> <span class="nv">BucketT2</span><span class="p">}</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">true</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% not allowed to split, will have to go in the cache</span>
-</span><span class='line'>      <span class="nn">log</span><span class="p">:</span><span class="n">info</span><span class="p">([</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="n">caching</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">]),</span>
-</span><span class='line'>      <span class="n">ok</span><span class="p">(</span><span class="n">add_node</span><span class="p">(</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">status</span><span class="o">=</span><span class="n">cache</span><span class="p">},</span> <span class="n">bucket</span><span class="p">))</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">% drop the oldest stale node, crashes if none exist</span>
-</span><span class='line'><span class="nf">drop_stale</span><span class="p">(</span><span class="nl">#bucket</span><span class="p">{</span><span class="n">stale</span><span class="o">=</span><span class="nv">Stale</span><span class="p">}</span><span class="o">=</span><span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="p">{_</span><span class="nv">Key</span><span class="p">,</span> <span class="p">_</span><span class="nv">Node</span><span class="p">,</span> <span class="nv">Stale2</span><span class="p">}</span> <span class="o">=</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="n">pop_one_hi</span><span class="p">(</span><span class="nv">Stale</span><span class="p">),</span>
-</span><span class='line'>    <span class="nv">Bucket</span><span class="nl">#bucket</span><span class="p">{</span><span class="n">stale</span><span class="o">=</span><span class="nv">Stale2</span><span class="p">}.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">split</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Nodes</span> <span class="o">=</span> <span class="n">to_list</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">),</span>
-</span><span class='line'>    <span class="nv">NodesF</span> <span class="o">=</span> <span class="p">[</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">suffix</span><span class="o">=</span><span class="nv">Suffix2</span><span class="p">}</span> <span class="p">||</span> <span class="nl">#node</span><span class="p">{</span><span class="n">suffix</span><span class="o">=</span><span class="p">[</span><span class="n">false</span><span class="p">|</span><span class="nv">Suffix2</span><span class="p">]}</span><span class="o">=</span><span class="nv">Node</span> <span class="o">&lt;-</span> <span class="nv">Nodes</span><span class="p">],</span>
-</span><span class='line'>    <span class="nv">NodesT</span> <span class="o">=</span> <span class="p">[</span><span class="nv">Node</span><span class="nl">#node</span><span class="p">{</span><span class="n">suffix</span><span class="o">=</span><span class="nv">Suffix2</span><span class="p">}</span> <span class="p">||</span> <span class="nl">#node</span><span class="p">{</span><span class="n">suffix</span><span class="o">=</span><span class="p">[</span><span class="n">true</span><span class="p">|</span><span class="nv">Suffix2</span><span class="p">]}</span><span class="o">=</span><span class="nv">Node</span> <span class="o">&lt;-</span> <span class="nv">Nodes</span><span class="p">],</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">split</span><span class="p">,</span> <span class="n">from_list</span><span class="p">(</span><span class="nv">NodesF</span><span class="p">),</span> <span class="n">from_list</span><span class="p">(</span><span class="nv">NodesT</span><span class="p">)}.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Finally, upon receiving a <em>+end</em> signal the router needs to reply with a <em>.see</em> command listing the <em>K</em> nearest nodes to the specified end. This will be done using a combination of <em>bit_tree:iter</em> and <em>bucket:nearest</em>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">nearest</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nl">#bucket</span><span class="p">{</span><span class="n">live</span><span class="o">=</span><span class="nv">Live</span><span class="p">,</span> <span class="n">stale</span><span class="o">=</span><span class="nv">Stale</span><span class="p">})</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Nodes</span> <span class="o">=</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="n">to_list</span><span class="p">(</span><span class="nv">Live</span><span class="p">)</span> <span class="o">++</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="n">to_list</span><span class="p">(</span><span class="nv">Stale</span><span class="p">),</span>
-</span><span class='line'>    <span class="nv">Num_nodes</span> <span class="o">=</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="nb">size</span><span class="p">(</span><span class="nv">Live</span><span class="p">)</span> <span class="o">+</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="nb">size</span><span class="p">(</span><span class="nv">Stale</span><span class="p">),</span>
-</span><span class='line'>    <span class="k">if</span>
-</span><span class='line'>  <span class="nv">Num_nodes</span> <span class="o">=&lt;</span> <span class="nv">N</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="p">[</span><span class="nv">Node</span><span class="nl">#node.address</span> <span class="p">||</span> <span class="p">{_</span><span class="nv">Key</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nv">Nodes</span><span class="p">];</span>
-</span><span class='line'>  <span class="n">true</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% !!! maybe should prefer to return live nodes even if further away</span>
-</span><span class='line'>      <span class="nv">Nodes_by_dist</span> <span class="o">=</span> <span class="p">[{</span><span class="nn">util</span><span class="p">:</span><span class="n">distance</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="nv">Node</span><span class="nl">#node.&#39;end&#39;</span><span class="p">),</span> <span class="nv">Node</span><span class="p">}</span> <span class="p">||</span> <span class="p">{_</span><span class="nv">Key</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nn">pq_maps</span><span class="p">:</span><span class="n">to_list</span><span class="p">(</span><span class="nv">Live</span><span class="p">)],</span>
-</span><span class='line'>      <span class="p">{</span><span class="nv">Closest</span><span class="p">,</span> <span class="p">_}</span> <span class="o">=</span> <span class="nn">lists</span><span class="p">:</span><span class="n">split</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nn">lists</span><span class="p">:</span><span class="n">sort</span><span class="p">(</span><span class="nv">Nodes_by_dist</span><span class="p">)),</span>
-</span><span class='line'>      <span class="p">[</span><span class="nv">Node</span><span class="nl">#node.address</span> <span class="p">||</span> <span class="p">{_</span><span class="nv">Dist</span><span class="p">,</span> <span class="nv">Node</span><span class="p">}</span> <span class="o">&lt;-</span> <span class="nv">Closest</span><span class="p">]</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>As usual all the code is sitting in the <a href="https://github.com/jamii/erl-telehash">repo</a>.</p>
 ]]></content>
   </entry>
   
