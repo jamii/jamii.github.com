@@ -4,7 +4,7 @@
   <title><![CDATA[Category: texsearch | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/texsearch/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Optimising texsearch: memory usage]]></title>
     <link href="http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage/"/>
-    <updated>2010-12-19T06:16:00+00:00</updated>
+    <updated>2010-12-19T06:16:00-08:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage</id>
     <content type="html"><![CDATA[<p>In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
 
@@ -91,7 +91,7 @@ let ancientify sa =
   <entry>
     <title type="html"><![CDATA[Optimising texsearch]]></title>
     <link href="http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/"/>
-    <updated>2010-12-08T06:16:00+00:00</updated>
+    <updated>2010-12-08T06:16:00-08:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch</id>
     <content type="html"><![CDATA[<p><a href="https://github.com/jamii/texsearch">Texsearch</a> is a search engine for LaTeX formulae. It forms part of the backend for <a href="http://latexsearch.com">latexsearch.com</a> which indexes the entire Springer corpus. It is also crazy slow, until today.</p>
 

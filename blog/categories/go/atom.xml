@@ -4,7 +4,7 @@
   <title><![CDATA[Category: go | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/go/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Hugo-a-go-go: optimisation]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/"/>
-    <updated>2013-11-24T04:43:00+00:00</updated>
+    <updated>2013-11-24T04:43:00-08:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation</id>
     <content type="html"><![CDATA[<p>After a little optimisation work <a href="https://github.com/jamii/hugo-a-go-go/">hugo</a> now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations I made during the last minutes of the competition, the main wins were changing the board representation and carefully inspecting the compiler output to eliminate unneccesary work. A lot of the things I discovered are generally applicable to calculation-heavy, cpu-bound cljs code (with all the usual disclaimers about profiling and premature optimsation).</p>
 
@@ -257,7 +257,7 @@ hugo_a_go_go.board.foo = function() {
   <entry>
     <title type="html"><![CDATA[Hugo-a-go-go]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go/"/>
-    <updated>2013-10-06T13:22:00+01:00</updated>
+    <updated>2013-10-06T13:22:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go</id>
     <content type="html"><![CDATA[<p>For the <a href="http://clojurecup.com/">2013 Clojure Cup</a> myself and <a href="http://www.thattommyhall.com/">Tom Hall</a> wrote a <a href="http://en.wikipedia.org/wiki/Go_%28game%29">go</a> AI in clojurescript, inspired by <a href="https://github.com/ztellman/pushkin">pushkin</a>. The source is <a href="https://github.com/jamii/hugo-a-go-go/">here</a> and it can currently be played on the <a href="http://hugoagogo.clojurecup.com/">clojure cup site</a> (only tested in chrome).</p>
 

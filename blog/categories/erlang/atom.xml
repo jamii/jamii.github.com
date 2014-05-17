@@ -4,7 +4,7 @@
   <title><![CDATA[Category: erlang | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/erlang/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Frustrations with erlang]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang/"/>
-    <updated>2012-01-03T06:16:00+00:00</updated>
+    <updated>2012-01-03T06:16:00-08:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang</id>
     <content type="html"><![CDATA[<p>With my work on erl-telehash and at Smarkets I find myself fighting erlang more and more. The biggest pains are the dearth of libraries, the lack of polymorphism and being forced into a single model of concurrency.</p>
 
@@ -45,7 +45,7 @@ It also means any time you want to change a data-structure for one with an equiv
   <entry>
     <title type="html"><![CDATA[Dial-a-stranger]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
-    <updated>2011-07-10T06:16:00+01:00</updated>
+    <updated>2011-07-10T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
     <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&rsquo;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
 
@@ -65,7 +65,7 @@ It also means any time you want to change a data-structure for one with an equiv
   <entry>
     <title type="html"><![CDATA[Telehash: router]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-router/"/>
-    <updated>2011-04-19T06:16:00+01:00</updated>
+    <updated>2011-04-19T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-router</id>
     <content type="html"><![CDATA[<p>Now that we have all the necessary datastructures we can build the router itself. Most of the routing table logic is handled by the bit_tree and bucket modules. The router just ties these together and handles I/O.</p>
 
@@ -386,7 +386,7 @@ ok.
   <entry>
     <title type="html"><![CDATA[Telehash: gen_event woes]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes/"/>
-    <updated>2011-04-19T06:16:00+01:00</updated>
+    <updated>2011-04-19T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes</id>
     <content type="html"><![CDATA[<p>I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I will say it here: gen_event does NOT spawn individual processes for each handler. Each handler is run sequentially in the event manager process.</p>
 
@@ -428,7 +428,7 @@ ok.
   <entry>
     <title type="html"><![CDATA[Telehash: buckets]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets/"/>
-    <updated>2011-03-30T06:16:00+01:00</updated>
+    <updated>2011-03-30T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets</id>
     <content type="html"><![CDATA[<p>The other half of the routing table is the buckets which store node addresses.</p>
 

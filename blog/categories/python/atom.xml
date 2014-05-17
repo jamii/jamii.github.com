@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Smarkets API documentation]]></title>
     <link href="http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation/"/>
-    <updated>2010-07-30T06:16:00+01:00</updated>
+    <updated>2010-07-30T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation</id>
     <content type="html"><![CDATA[<p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn&rsquo;t really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
 
@@ -143,7 +143,7 @@
   <entry>
     <title type="html"><![CDATA[Examining scampy]]></title>
     <link href="http://scattered-thoughts.net/blog/2010/05/19/examining-scampy/"/>
-    <updated>2010-05-19T06:16:00+01:00</updated>
+    <updated>2010-05-19T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2010/05/19/examining-scampy</id>
     <content type="html"><![CDATA[<p><a href="http://github.com/jamii/scampy">Scampy</a> is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl&rsquo;s for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.</p>
 

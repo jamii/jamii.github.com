@@ -4,7 +4,7 @@
   <title><![CDATA[Category: flow | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/flow/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Flowing faster: lein-gnome]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/"/>
-    <updated>2013-06-25T20:27:00+01:00</updated>
+    <updated>2013-06-25T20:27:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome</id>
     <content type="html"><![CDATA[<p>After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy&rsquo;s <a href="https://github.com/jamii/lein-gnome">lein-gnome</a>. It can build, package, deploy and reload gnome-shell extensions and includes a hello-world template. I&rsquo;ve also added a unified log watcher that hunts down all the various places gnome-shell might choose to put your stack-traces and a cljs repl server that runs inside your extension so you can trial-and-error your way to victory.</p>
 
@@ -46,7 +46,7 @@
   <entry>
     <title type="html"><![CDATA[Flowing faster: foundations]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations/"/>
-    <updated>2013-06-04T18:02:00+01:00</updated>
+    <updated>2013-06-04T18:02:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations</id>
     <content type="html"><![CDATA[<p>I&rsquo;ve spent the last few years using Gnome 2 and <a href="http://xmonad.org/">xmonad</a> on Ubuntu. Since both Ubuntu and the Gnome foundation have dropped support for Gnome 2 I&rsquo;m going to be forced to upgrade sooner or later. Fortunately I have a two week holiday followed by a new desktop at my new job, so now is a good time to break things on my laptop.</p>
 
@@ -94,7 +94,7 @@
   <entry>
     <title type="html"><![CDATA[Flowing faster: saving the cloud]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/"/>
-    <updated>2013-06-02T03:36:00+01:00</updated>
+    <updated>2013-06-02T03:36:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud</id>
     <content type="html"><![CDATA[<p>While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m generally trying to move towards using cloud services as dumb servers so I can easily replace them. The first step is to be able to export and backup all my data.</p>
 
@@ -116,7 +116,7 @@
   <entry>
     <title type="html"><![CDATA[Flowing faster: backing up]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/"/>
-    <updated>2013-06-01T02:12:00+01:00</updated>
+    <updated>2013-06-01T02:12:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up</id>
     <content type="html"><![CDATA[<p>A lot of the work in this series is going to be about improving my working environment. Let&rsquo;s start with backups so I don&rsquo;t lose all this hard work.</p>
 
@@ -158,7 +158,7 @@ tarsnap -v -c -f &ldquo;alien@$DATE&rdquo; \</p>
   <entry>
     <title type="html"><![CDATA[Flowing faster: external memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
-    <updated>2013-05-21T20:43:00+01:00</updated>
+    <updated>2013-05-21T20:43:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
     <content type="html"><![CDATA[<p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
 

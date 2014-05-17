@@ -4,7 +4,7 @@
   <title><![CDATA[Category: strucjure | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/strucjure/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Strucjure: motivation]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/"/>
-    <updated>2012-12-04T02:31:00+00:00</updated>
+    <updated>2012-12-04T02:31:00-08:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation</id>
     <content type="html"><![CDATA[<p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&rsquo;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
 
@@ -463,7 +463,7 @@ clojure.lang.ExceptionInfo: throw+: #strucjure.view.PartialMatch{:view #strucjur
   <entry>
     <title type="html"><![CDATA[Hacker School]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/12/02/hacker-school/"/>
-    <updated>2012-12-02T01:16:00+00:00</updated>
+    <updated>2012-12-02T01:16:00-08:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/02/hacker-school</id>
     <content type="html"><![CDATA[<p>I&rsquo;ve spent the last ten weeks or so at <a href="https://www.hackerschool.com/">Hacker School</a>. It&rsquo;s something like a writer&rsquo;s retreat for programmers. Unlike a traditional school there is very little structure and the focus is on project-based learning. In order to make the most of this environment, it&rsquo;s important to be clear exactly what your goals are.</p>
 
@@ -541,7 +541,7 @@ take another pass at this next year.</p></blockquote>
   <entry>
     <title type="html"><![CDATA[Strucjure: reading the readme]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/"/>
-    <updated>2012-10-25T19:37:00+01:00</updated>
+    <updated>2012-10-25T19:37:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme</id>
     <content type="html"><![CDATA[<p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
 

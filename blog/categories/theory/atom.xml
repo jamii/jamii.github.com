@@ -4,7 +4,7 @@
   <title><![CDATA[Category: theory | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/theory/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Causal ordering]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/08/16/causal-ordering/"/>
-    <updated>2012-08-16T05:16:00+01:00</updated>
+    <updated>2012-08-16T05:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/08/16/causal-ordering</id>
     <content type="html"><![CDATA[<p>Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler.</p>
 

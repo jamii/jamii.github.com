@@ -4,7 +4,7 @@
   <title><![CDATA[Category: telehash | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/telehash/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Telehash: router]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-router/"/>
-    <updated>2011-04-19T06:16:00+01:00</updated>
+    <updated>2011-04-19T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-router</id>
     <content type="html"><![CDATA[<p>Now that we have all the necessary datastructures we can build the router itself. Most of the routing table logic is handled by the bit_tree and bucket modules. The router just ties these together and handles I/O.</p>
 
@@ -337,7 +337,7 @@ ok.
   <entry>
     <title type="html"><![CDATA[Telehash: gen_event woes]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes/"/>
-    <updated>2011-04-19T06:16:00+01:00</updated>
+    <updated>2011-04-19T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes</id>
     <content type="html"><![CDATA[<p>I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I will say it here: gen_event does NOT spawn individual processes for each handler. Each handler is run sequentially in the event manager process.</p>
 
@@ -379,7 +379,7 @@ ok.
   <entry>
     <title type="html"><![CDATA[Telehash: buckets]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets/"/>
-    <updated>2011-03-30T06:16:00+01:00</updated>
+    <updated>2011-03-30T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/30/telehash-buckets</id>
     <content type="html"><![CDATA[<p>The other half of the routing table is the buckets which store node addresses.</p>
 
@@ -656,7 +656,7 @@ end.
   <entry>
     <title type="html"><![CDATA[Telehash: bit_trees revisited]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/03/24/telehash-bittrees-revisited/"/>
-    <updated>2011-03-24T06:16:00+00:00</updated>
+    <updated>2011-03-24T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/24/telehash-bittrees-revisited</id>
     <content type="html"><![CDATA[<p>It has been suggested that the bit_trees presented in my last post are overly complicated. Indeed, in the cold light of the morning there is absolutely no need for that zipper. Without further ado, here is the much simpler version.</p>
 
@@ -862,7 +862,7 @@ lists:map(
   <entry>
     <title type="html"><![CDATA[Telehash: bit_trees]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees/"/>
-    <updated>2011-03-23T06:16:00+00:00</updated>
+    <updated>2011-03-23T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees</id>
     <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&rsquo;m still mulling over the protocol so we&rsquo;ll skip to the routing table.</p>
 

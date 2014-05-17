@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mealy | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/mealy/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-02-17T05:45:39+00:00</updated>
+  <updated>2014-05-17T09:55:46-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Transactional mealy machines]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines/"/>
-    <updated>2011-03-16T06:16:00+00:00</updated>
+    <updated>2011-03-16T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/16/transactional-mealy-machines</id>
     <content type="html"><![CDATA[<p>This is a hugely overdue post about an interesting system I worked on almost a year ago whilst at <a href="http://smarkets.com">Smarkets</a> and never got around to writing about. Unfortunately I don&rsquo;t have the code in front of me but the overall idea is simple enough to explain without examples.</p>
 
