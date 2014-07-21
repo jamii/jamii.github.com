@@ -1,0 +1,199 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Imperative thinking and the making of sandwiches - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="People regularly tell me that imperative programming is the natural form of programming because &lsquo;people think imperatively&rsquo;. I can see &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Imperative thinking and the making of sandwiches</h1>
+	<div class="entry-content"><p>People regularly tell me that imperative programming is the natural form of programming because &lsquo;people think imperatively&rsquo;. I can see where they are coming from. Why, just the other day I found myself saying, &ldquo;Hey Chris, I&rsquo;m hungry. I need you to walk into the kitchen, open the cupboard, take out a bag of bread, open the bag, remove a slice of bread, place it on a plate&hellip;&rdquo; Unfortunately, I hadn&rsquo;t specified where to find the plate so at this point Chris threw a null pointer exception and died.</p>
+
+<!--more-->
+
+
+<p>The truth is that people think in a variety of different ways in different situations. Most people resort to detailed imperative instructions only when describing complicated or unfamiliar tasks (or when explaining how to interact with a machine, which is itself indicative of how pervasive this mindset is in programming). Even then, the resulting communication is unlikely to resemble a perfectly sequential program and will be full of ambiguity, missing steps and contextual assumptions. Anyone who has ever tried to assemble Ikea furniture knows that clearly communicating or precisely following a series of instructions is actually quite difficult. Indeed, one of the hardest things that beginner programmers have to learn is how to break down a task into a series of simple instructions with no ambiguity. It takes years of practice before the process becomes natural, and meanwhile programming courses have a high failure rate.</p>
+
+<p>If we are going to base the design of our tools on poorly thought-out metaphorical comparisons to making lunch then let&rsquo;s at least be realistic about it. &lsquo;Make me a ham sandwich, there is bread in the cupboard&rsquo; will indeed cause Chris to look in the cupboard. But if there is in fact no bread there, instead of exploding he will probably look elsewhere or ask for clarification. Rather than providing detailed instructions, I provide a goal (sandwich) and hints on how to execute it (try looking for bread in the cupboard). Further constraints are inferred from context and general knowledge (the sandwich should be less than one foot long, there should not be mayo all over the counter afterwards). Chris calculates a series of actions that will produce the desired result and modifies that plan as new information and constraints come to light (no bread in the cupboard).</p>
+
+<p>The reason for communicating in this way is that <em>I don&rsquo;t care</em> exactly how the sandwich is made, so long as it is done neatly and quickly. Communicating my exact intent makes the resulting &lsquo;program&rsquo; simpler and more flexible. I may give additional hints and restrictions when they necessary to speed up the process and Chris may ask for clarification if at any point he is unable to plan a path to the goal, but I never have to resort to a full imperative description of the problem.</p>
+
+<p>Today&rsquo;s computers don&rsquo;t have enough contextual knowledge to make me a sandwich but there are lots of domains where this approach excels. The classic example is SQL databases. Rather than specifying exact data-structures and operations, the user specifies a high-level schema and sends descriptions of queries. It is the responsibility of the database to choose storage types, manage concurrent changes and generate query plans. It makes these decisions based on cost models, runtime information and constrained search (e.g., postgres uses a genetic search algorithm to choose efficient plans for large queries). If the database makes bad decisions, the user can help it out by adding size hints, specifying indexes and overriding query plans. So long as the process of turning intent into plans is transparent and interactive there is no need to invoke a <a href="http://c2.com/cgi/wiki?SufficientlySmartCompiler">sufficiently smart compiler</a>. A dumb compiler can do the easy but tedious legwork and the human can supervise and correct mistakes. This saves programmer time, makes the intent of the resulting program easier to understand (because it is not cluttered with irrelevant details) and makes it easier to change parts of the system independently (eg adding an index does not require rewriting all of your queries). There is a reason why SQL databases became a standard storage mechanism &ndash; this model of programming works incredibly well in this domain.</p>
+
+<p>Indeed, the most painful part of using an SQL database is the interface back to purely imperative programming. The <a href="http://en.wikipedia.org/wiki/Object-relational_impedance_mismatch">Object-Relational mismatch</a> is often seen as a failure of SQL databases. But consider the relative strengths and learning curves of the two technologies. SQL is often still used for its original goal: enabling non-programmers to mine data. The database handles choice of serialization protocol, data structures for storage and indexing, query algorithms and manages concurrency. For the majority of applications it makes good enough decisions that the user never needs to provide any hints beyond index choice. Imperative programming, on the other hand, requires the user to handle all of these decisions and requires years of practice before the user can reliably build the same kinds of applications. In that light, it is interesting that the popular trend is towards making databases more like imperative languages (NoSQL, object databases) rather than making programming look more like SQL.</p>
+
+<p>To be clear, SQL is a mess. I claim that it is successful <em>despite</em> its many flaws because of the power of the core ideas:</p>
+
+<ul>
+<li>separate goals from plans</li>
+<li>separate logical data models from physical data-structures</li>
+<li>automatically handle the translation from goals to plans and from logical to physical models</li>
+<li>make the translation transparent and allow the user to provide hints or override sections</li>
+</ul>
+
+
+<p>These ideas allow the programming environment to capture the correct level of detail (&lsquo;make me a sandwich&rsquo; rather than &lsquo;go to the kitchen, open the cupboard&hellip;&rsquo;). This separates meaning from optimisation giving both the user and the compiler more leeway to change the operational details of the program without modifying the specification. The transparency allows us to build this without requiring a SufficientlySmartCompiler™.</p>
+
+<p>This model is well understood in the database world and is the subject of decades of research. Unfortunately the database world and the programming language world rarely interact and so the results are mostly confined to data management systems and rarely extend to general purpose programming, with the possible exception of the <a href="http://www.infoq.com/presentations/Datalog">recent revival of the datalog family</a>.</p>
+
+<p>So what would a general purpose language look like if it took these ideas to heart? Our current prototype takes inspiration from <a href="http://shaffner.us/cs/papers/tarpit.pdf">Out of the Tar Pit</a> and <a href="http://www.vpri.org/pdf/m2009001_prog_as.pdf">Programming as Planning</a>, using a <a href="http://en.wikipedia.org/wiki/Temporal_logic">temporal logic</a> language to write specifications and a variety of extensible constraint solvers to execute plans. That may sound complicated, but the interface for most users looks like a cross between <a href="https://ifttt.com/">IFTTT</a> and a simplified version of SQL. Like SQL, the compiler is able to make good decisions for simple programs so the user doesn&rsquo;t need to think about data structures, algorithms or concurrency. We haven&rsquo;t yet begun to work on surfacing and altering its decisions in the cases where it needs help, but I&rsquo;m hopeful that by bootstrapping the compiler and by providing <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=0CB0QFjAA&amp;url=http%3A%2F%2Fdb.cis.upenn.edu%2FDL%2Fwhywhere.pdf&amp;ei=spTJU5jPAcWTyATT8IHgBA&amp;usg=AFQjCNHovRJYd3vBwhtxze_EuL2w6zIT_w&amp;sig2=4oKCgSECEnZnCOB98Tk0Xw&amp;bvm=bv.71198958,d.aWw">data provenance</a> in the IDE we can go a long way towards easing the learning curve on that front too.</p>
+
+<p>There is a lot of hard work still to go but we have finally have the basic core of our system nailed down and have enough working prototypes to be confident that this approach is compelling.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-21T14:37:00-07:00" pubdate data-updated="true">21 Jul 2014</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>
