@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-07-21T14:41:23-07:00</updated>
+  <updated>2014-10-31T18:36:56-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -3102,7 +3102,7 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <h2>Eventual Consistency</h2>
 
-<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice availability without having the state of different machines diverge irreparably. It doesn&rsquo;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
+<p>A system is eventually consistent if the final state of each machine is the same regardless of how we choose to serialise update events. An eventually consistent system allows us to sacrifice consistency for availability without having the state of different machines diverge irreparably. It doesn&rsquo;t save us from having the outside world see different serialisations of update events. It is also difficult to construct eventually consistent data structures and to reason about their composition.</p>
 
 <h2>Further reading</h2>
 
