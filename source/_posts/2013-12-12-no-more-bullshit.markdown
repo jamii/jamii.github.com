@@ -18,4 +18,4 @@ Like writing and mathematics, computers have the potential to make humanity more
 
 A few people [here](http://www.vpri.org/html/work/ifnct.htm) and [there](http://boom.cs.berkeley.edu/) have proven that we can do better. After seeing the possiblities I can't go back to burying my head in the sand and [writing scala](/images/typing.gif) for the rest of my days.
 
-I'm joining [Light Table](http://www.lighttable.com/) and together we are going to put a dent in this mountain of bullshit.
+I'm joining [Kodowa](http://www.lighttable.com/) and we are going to put a dent in this mountain of bullshit.
