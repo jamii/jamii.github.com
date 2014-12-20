@@ -10,7 +10,7 @@ We are doing programming wrong. We all know it. Sure, if you sweat and scrub and
 
 <!--more-->
 
-There was a time when no-one learned to write. What was the point? Learning to write takes decades of practice and is not useful for anything. If you do need to send a letter you just get the village scribe to write it for you.
+There was a time when no-one learned to write. What was the point? Learning to write took decades of practice and was not useful for anything. If you did need to send a letter you could just get the village scribe to write it for you.
 
 Today if you cannot write you cannot take part in modern society.
 
