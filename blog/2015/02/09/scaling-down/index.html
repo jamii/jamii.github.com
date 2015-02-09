@@ -1,0 +1,204 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Scaling down - Scattered Thoughts</title>
+	<meta name="author" content="Jamie Brandon">
+
+	
+	<meta name="description" content="The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Scattered Thoughts</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+	<li><a href="/about.html">About</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="http://google.com/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:scattered-thoughts.net">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		<a class="email" href="mailto:jamie@scattered-thoughts.net" title="Email">Email</a>
+		
+		
+		
+		
+		
+		<a class="github" href="https://github.com/jamii" title="GitHub">GitHub</a>
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+	</div>
+	<form class="search" action="http://google.com/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:scattered-thoughts.net">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h1 class="title">Scaling down</h1>
+	<div class="entry-content"><p>The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How deeply can I customise this editor? More code, more data, more people, more machines.</p>
+
+<p>Nobody talks about scaling down.</p>
+
+<!--more-->
+
+
+<p>The vast majority of programs are never written. Ideas die stillborn because the startup cost is too high to bear. When we focus entirely on the asymptotic cost of developing large systems we neglect the constant costs that make tedious grinds out of simple tasks.</p>
+
+<p>There is a great deal to be gained from switching the focus from <em>what we can do</em> to <em>what we can get done</em>, from creating the most <em>expressive</em> tools to creating the most <em>efficient</em> tools. To do this we need to become conscious of the friction imposed by our tools. When we scale up, the concerns are performance, modularity, maintainability, expressiveness. A toolset optimised for small-scale programming must have different metrics:</p>
+
+<ul>
+<li><p>How long does it take to create a project? Creating a github repo, making a build file, editing the project template, opening editors, starting repls, launching dev servers.</p></li>
+<li><p>How long does it take to get results on the screen? Compare to how long it takes to get bored and lose interest.</p></li>
+<li><p>How long does it take to leverage libraries? Figuring out which library to use, installing the correct version, understanding the documentation, making a successful api call.</p></li>
+<li><p>How long does it take to deploy? Serving a website, uploading a package, emailing a self-contained script, installing a cron job.</p></li>
+<li><p>How hard is it to see what is going on? Can you inspect variables, set breakpoints, trace messages, rewind time?</p></li>
+<li><p>How quickly are bugs found and corrected? How much time passes between making a mistake, noticing the damage, reproducing the trigger, understanding what went wrong and applying the fix?</p></li>
+<li><p>How much time do you spend on incidental tasks? Installing libraries, committing to version control, drawing module boundaries, constructing class hierarchies, writing build scripts. Anything that is supporting the process rather than directly solving the original problem.</p></li>
+<li><p>How easy is it to collaborate with another person? What is the latency of sharing? Can you work together in real time? How long does it take before the other person is in a state to work on the code?</p></li>
+<li><p>How quickly can you change the program when your goals change? Are you stuck with your architectural mistakes? Is everything tangled together? Do all the boundaries have to change?</p></li>
+</ul>
+
+
+<p>The instinctive reaction is that the problems are overblown and everything would be fine if everybody would just use language / tool / methodology X.</p>
+
+<p>So let&rsquo;s try it. Pick one of these programs and solve it however you think best. Record a video and afterwards break down your activity minute by minute.</p>
+
+<ul>
+<li><p>Fairly queue song choices in the office.</p></li>
+<li><p>Display a notification whenever an email arrives from a specific address.</p></li>
+<li><p>Record audio whenever some hardware button is held on your phone lock-screen and save in a browseable / playable list.</p></li>
+<li><p>Fetch transaction records from your online bank, break down costs by regex categories and display a pie-chart for each month.</p></li>
+</ul>
+
+
+<p>So much of what we actually do goes unnoticed after years of practice and routine. The reality may be quite different from what you imagine.</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-02-09T13:42:00-08:00" pubdate data-updated="true">09 Feb 2015</time></div>
+	<div class="tags">
+
+</div>
+	
+</div></article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+<section id="comment">
+    <h1 class="title">Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+</section>
+</div>
+	<footer id="footer" class="inner"><div class="ps">I am often available for consulting work. Check out my <a href="/about.html">resume</a>.</div>
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+<script type="text/javascript">
+      var disqus_shortname = 'scattered-thoughts';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://scattered-thoughts.net/blog/2015/02/09/scaling-down/';
+        var disqus_url = 'http://scattered-thoughts.net/blog/2015/02/09/scaling-down/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-18515092-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+</body>
+</html>

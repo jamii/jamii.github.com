@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2014-12-20T15:35:55-08:00</updated>
+  <updated>2015-02-09T13:47:08-08:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,51 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Scaling down]]></title>
+    <link href="http://scattered-thoughts.net/blog/2015/02/09/scaling-down/"/>
+    <updated>2015-02-09T13:42:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2015/02/09/scaling-down</id>
+    <content type="html"><![CDATA[<p>The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How deeply can I customise this editor? More code, more data, more people, more machines.</p>
+
+<p>Nobody talks about scaling down.</p>
+
+<!--more-->
+
+
+<p>The vast majority of programs are never written. Ideas die stillborn because the startup cost is too high to bear. When we focus entirely on the asymptotic cost of developing large systems we neglect the constant costs that make tedious grinds out of simple tasks.</p>
+
+<p>There is a great deal to be gained from switching the focus from <em>what we can do</em> to <em>what we can get done</em>, from creating the most <em>expressive</em> tools to creating the most <em>efficient</em> tools. To do this we need to become conscious of the friction imposed by our tools. When we scale up, the concerns are performance, modularity, maintainability, expressiveness. A toolset optimised for small-scale programming must have different metrics:</p>
+
+<ul>
+<li><p>How long does it take to create a project? Creating a github repo, making a build file, editing the project template, opening editors, starting repls, launching dev servers.</p></li>
+<li><p>How long does it take to get results on the screen? Compare to how long it takes to get bored and lose interest.</p></li>
+<li><p>How long does it take to leverage libraries? Figuring out which library to use, installing the correct version, understanding the documentation, making a successful api call.</p></li>
+<li><p>How long does it take to deploy? Serving a website, uploading a package, emailing a self-contained script, installing a cron job.</p></li>
+<li><p>How hard is it to see what is going on? Can you inspect variables, set breakpoints, trace messages, rewind time?</p></li>
+<li><p>How quickly are bugs found and corrected? How much time passes between making a mistake, noticing the damage, reproducing the trigger, understanding what went wrong and applying the fix?</p></li>
+<li><p>How much time do you spend on incidental tasks? Installing libraries, committing to version control, drawing module boundaries, constructing class hierarchies, writing build scripts. Anything that is supporting the process rather than directly solving the original problem.</p></li>
+<li><p>How easy is it to collaborate with another person? What is the latency of sharing? Can you work together in real time? How long does it take before the other person is in a state to work on the code?</p></li>
+<li><p>How quickly can you change the program when your goals change? Are you stuck with your architectural mistakes? Is everything tangled together? Do all the boundaries have to change?</p></li>
+</ul>
+
+
+<p>The instinctive reaction is that the problems are overblown and everything would be fine if everybody would just use language / tool / methodology X.</p>
+
+<p>So let&rsquo;s try it. Pick one of these programs and solve it however you think best. Record a video and afterwards break down your activity minute by minute.</p>
+
+<ul>
+<li><p>Fairly queue song choices in the office.</p></li>
+<li><p>Display a notification whenever an email arrives from a specific address.</p></li>
+<li><p>Record audio whenever some hardware button is held on your phone lock-screen and save in a browseable / playable list.</p></li>
+<li><p>Fetch transaction records from your online bank, break down costs by regex categories and display a pie-chart for each month.</p></li>
+</ul>
+
+
+<p>So much of what we actually do goes unnoticed after years of practice and routine. The reality may be quite different from what you imagine.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Humans should learn maths]]></title>
@@ -3270,276 +3315,6 @@ If VC_A &lt; VC_B then A-&gt;B
 <p>The top candidate at the moment is clojure. It has the potential to replace my use of erlang and python, saving lots of cross-language pain. Agents look a lot like a (cleaner, saner) implementation of the <a href="http://scattered-thoughts.net/one/1300/292121/72985">mealy machines</a> that I wrote at Smarkets. <a href="https://github.com/ztellman/lamina">Lamina</a> neatly solves the queue pains I described above. <a href="http://code.google.com/p/clojure-contrib/wiki/DatalogOverview">Datalog</a> is the natural way to describe a lot of collections, including <a href="https://github.com/jamii/erl-telehash/blob/master/src/th_bucket.erl">th_bucket</a> which is in its current form is not obviously correct. The clojure community just seems to churn out well-designed libraries (lamina, aleph, slice, incanter, pallet, cascalog, storm, overtone etc).</p>
 
 <p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it&rsquo;s fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Binmaps: compressed bitmaps]]></title>
-    <link href="http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/"/>
-    <updated>2012-01-03T06:16:00-08:00</updated>
-    <id>http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps</id>
-    <content type="html"><![CDATA[<p>Lately I&rsquo;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
-
-<!--more-->
-
-
-<p>Here is the basic idea. Conceptually a binmap is a tree of bitmaps. In a leaf at the bottom of the tree each bit in the bitmap represents one bit. In a leaf one layer above the bottom each bit in the bitmap represents two bits. In a leaf two layers above the bottom each bit in the bitmap represents four bits etc.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">layers</span> <span class="o">:</span> <span class="kt">int</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">tree</span> <span class="o">:</span> <span class="n">tree</span> <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="n">tree</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="k">of</span> <span class="kt">int</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Branch</span> <span class="k">of</span> <span class="n">tree</span> <span class="o">*</span> <span class="n">tree</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Let&rsquo;s pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'><span class="o">;</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Bitmap</span> <span class="mi">0</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And the string 00001100 would be:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'><span class="o">;</span> <span class="n">tree</span> <span class="o">=</span>
-</span><span class='line'>    <span class="nc">Branch</span>
-</span><span class='line'>      <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>      <span class="o">(</span><span class="nc">Branch</span>
-</span><span class='line'>        <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">1</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">0</span><span class="o">))</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The worst case for this data structure is the string 0101010101&hellip; In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
-
-<p>Our data structure looks like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">module</span> <span class="nc">Array</span> <span class="o">=</span>
-</span><span class='line'><span class="k">struct</span>
-</span><span class='line'>  <span class="k">include</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="nc">Array1</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">geti</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">=</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">to_int</span> <span class="o">(</span><span class="nn">Bigarray</span><span class="p">.</span><span class="nn">Array1</span><span class="p">.</span><span class="n">get</span> <span class="kt">array</span> <span class="n">i</span><span class="o">)</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">seti</span> <span class="kt">array</span> <span class="n">i</span> <span class="n">v</span> <span class="o">=</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="nn">Array1</span><span class="p">.</span><span class="n">set</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">(</span><span class="nn">Bitmap</span><span class="p">.</span><span class="n">of_int</span> <span class="n">v</span><span class="o">)</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>    <span class="o">{</span> <span class="n">length</span> <span class="o">:</span> <span class="kt">int</span>
-</span><span class='line'>    <span class="o">;</span> <span class="n">layers</span> <span class="o">:</span> <span class="kt">int</span>
-</span><span class='line'>    <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="nn">Bitmap</span><span class="p">.</span><span class="n">t</span><span class="o">,</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">bigarray_elt</span><span class="o">,</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="n">c_layout</span><span class="o">)</span> <span class="nn">Array</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>    <span class="o">;</span> <span class="n">pointers</span> <span class="o">:</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>    <span class="o">;</span> <span class="k">mutable</span> <span class="n">free</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="n">node</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="k">of</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Pointer</span> <span class="k">of</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">get_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="n">is_left</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">index</span> <span class="o">=</span> <span class="n">node_addr</span> <span class="o">+</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_left</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">match</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">get</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="bp">false</span> <span class="o">-&gt;</span> <span class="nc">Bitmap</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">get</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="bp">true</span> <span class="o">-&gt;</span> <span class="nc">Pointer</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">geti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="n">is_left</span> <span class="n">node</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">index</span> <span class="o">=</span> <span class="n">node_addr</span> <span class="o">+</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_left</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">match</span> <span class="n">node</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="n">bitmap</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nn">Widemap</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="bp">false</span><span class="o">;</span>
-</span><span class='line'>      <span class="nn">Array</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span> <span class="n">bitmap</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Pointer</span> <span class="kt">int</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nn">Widemap</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="bp">true</span><span class="o">;</span>
-</span><span class='line'>      <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span> <span class="kt">int</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Each pair of cells in the array represents a branch. Leaves are hoisted into their parent branch, replacing the pointer. Widemap.t is an extensible bitmap which we use here to track whether a given cell in the array is a pointer or a bitmap. The length field is the number of bits represented by bitmap. The free field will be explained later.</p>
-
-<p>Our previous example string 00001100 would now be represented like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(*</span>
-</span><span class='line'><span class="c">  0 -&gt; Bitmap 0</span>
-</span><span class='line'><span class="c">  1 -&gt; Pointer 2</span>
-</span><span class='line'><span class="c">  2 -&gt; Bitmap 1</span>
-</span><span class='line'><span class="c">  3 -&gt; Bitmap 0</span>
-</span><span class='line'><span class="c">*)</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">{</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
-</span><span class='line'><span class="o">;</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
-</span><span class='line'><span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="o">[|</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span> <span class="o">|]</span>
-</span><span class='line'><span class="o">;</span> <span class="n">pointers</span> <span class="o">=</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">of_string</span> <span class="s2">&quot;0100&quot;</span>
-</span><span class='line'><span class="o">;</span> <span class="n">free</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>When the bitmap is changed we may have to add or delete pairs eg if the above example changed to 00001111 it would be represented as:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(*</span>
-</span><span class='line'><span class="c">  0 -&gt; Bitmap 0</span>
-</span><span class='line'><span class="c">  1 -&gt; Bitmap 1</span>
-</span><span class='line'><span class="c">  2 -&gt; ?</span>
-</span><span class='line'><span class="c">  3 -&gt; ?</span>
-</span><span class='line'><span class="c">*)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We can grow and shrink the array as necessary, but since deleted pairs won&rsquo;t necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">del_pair</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="o">=</span>
-</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">node_addr</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">node_addr</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">(* double the size of a full array and then initialise the freelist *)</span>
-</span><span class='line'><span class="k">let</span> <span class="n">grow_array</span> <span class="n">binmap</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">old_len</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">dim</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">old_len</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">old_len</span> <span class="o">&lt;=</span> <span class="n">max_int</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">new_len</span> <span class="o">=</span> <span class="n">min</span> <span class="n">max_int</span> <span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">old_len</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">new_len</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">let</span> <span class="kt">array</span> <span class="o">=</span> <span class="n">create_array</span> <span class="n">new_len</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">blit</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">sub</span> <span class="kt">array</span> <span class="mi">0</span> <span class="n">old_len</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="kt">array</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">old_len</span><span class="o">;</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">old_len</span> <span class="k">to</span> <span class="n">new_len</span><span class="o">-</span><span class="mi">4</span> <span class="k">do</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span>  <span class="k">then</span> <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="o">)</span>
-</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="kt">array</span> <span class="o">(</span><span class="n">new_len</span><span class="o">-</span><span class="mi">2</span><span class="o">)</span> <span class="mi">0</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">add_pair</span> <span class="n">binmap</span> <span class="n">node_left</span> <span class="n">node_right</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">(</span><span class="k">if</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">grow_array</span> <span class="n">binmap</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">node_addr</span> <span class="o">=</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">free_next</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">geti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">free_next</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="bp">true</span> <span class="n">node_left</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="bp">false</span> <span class="n">node_right</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">node_addr</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>I haven&rsquo;t yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
-
-<p>With the freelist our modified example now looks like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
-</span><span class='line'><span class="o">;</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
-</span><span class='line'><span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="o">[|</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">|]</span>
-</span><span class='line'><span class="o">;</span> <span class="n">pointers</span> <span class="o">=</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">of_string</span> <span class="s2">&quot;0100&quot;</span>
-</span><span class='line'><span class="o">;</span> <span class="n">free</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>With the representation sorted the rest of the code more or less writes itself.</p>
-
-<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I&rsquo;ve written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
-
-<p>The paper linked below suggests using a layered address scheme to expand the effective pointer size, where the first bit of the pointer is a flag indicating which layer the address is in. I would suggest rather than putting the flag in the pointer it would be simper to use information implicit in the structure of the tree eg is the current layer mod 8 = 0. Either way, this hugely increases the size of the address space at a the cost of a little extra complexity.</p>
-
-<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&rsquo;t suggest using it without some serious testing.</p>
-
-<p>Overall I&rsquo;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
 ]]></content>
   </entry>
   
