@@ -12,7 +12,7 @@ I've spent the last ten weeks or so at [Hacker School](https://www.hackerschool.
 
 So here is my goal - to create better tools for the problems I regularly encounter. My focus is on building distributed systems and p2p networks but I suspect that these tools will be generally useful. When working as a freelancer I am necessarily constrained to using proven ideas and techniques because the risk assumed is not mine. Hacker School is a chance for me to explore some more far-out ideas. These ideas are drawn primarily from two places: the [Viewpoint Research Institute](http://vpri.org/) and the [Berkeley Order Of Magnitude](boom.cs.berkeley.edu/) project.
 
-# Viewpoint Research Institute
+## Viewpoint Research Institute
 
 Specifically, I'm interested in the [Steps Towards Expressive Programming](http://www.vpri.org/pdf/tr2011004_steps11.pdf) project. Their goal is no less than the reinvention of programming. By way of proof of concept they aim to develop an entire computing system, from OS to compilers to applications, in less than 20k LOC. Such a system would be compact enough to be understood in its entirety by a single person, something that is unthinkable in todays world of multi-million LOC systems. Amazingly, their initial prototypes of various subsystems actually approach this goal.
 
@@ -32,7 +32,7 @@ Their approach relies heavily on the use of [DSLs](http://en.wikipedia.org/wiki/
 
 The 'language transformation techniques' they refer to are embodied in [OMeta](http://lambda-the-ultimate.org/node/2477), a [PEG](http://en.wikipedia.org/wiki/PEG)-based language for parsing and pattern-matching. OMeta provides an incredible amount of leverage for such a simple abstraction. For starters, it leads to very concise and readable descriptions of tokenisers, parsers and tree transformers which are all crucial for developing DSLs.
 
-# Berkeley Order Of Magnitude
+## Berkeley Order Of Magnitude
 
 The Berkeley Order Of Magnitude project has spent a number of years experimenting with using logic languages for distributed systems. Like the STEPS project, their goals are audaciously ambitious.
 
@@ -46,23 +46,15 @@ For me, the most interesting aspect is the amount of reflective power gained by 
 
 The latest project from the BOOM group is the [Bloom language](http://www.bloom-lang.net/). Bloom has a more solid theoretical foundation than their previous languages and also enables an amazing level of static analysis, even being able to guarantee that certain Bloom programs are eventually consistent.
 
-# Core Ideas
+## Core Ideas
 
 What can I take away from these projects? Here are some vague ideas, which to my mind all seem related.
 
-## Higher-level reasoning
+__Higher-level reasoning__. The STEPS notes talk about 'separating meaning from tactics'. It's often easier to specify what a correct solution to a problem looks like than it is to actually find it. In many domains, finding a solution is then just a matter of applying a suitable search algorithm. For example, constraint solvers such as [gecode](http://www.gecode.org/) or [core.logic](https://github.com/clojure/core.logic) express a problem as a set of logical constraints on the possible solutions and then search through the space of variable assignments to find a solution. By automatically pruning parts of the search space which break one or more constraints and applying user-specified search heuristics, constraint solvers can often be faster than hand-coded solvers for complex problems whilst at the same time allowing a clear, concise, declarative specification of the problem.
 
-The STEPS notes talk about 'separating meaning from tactics'. It's often easier to specify what a correct solution to a problem looks like than it is to actually find it. In many domains, finding a solution is then just a matter of applying a suitable search algorithm. For example, constraint solvers such as [gecode](http://www.gecode.org/) or [core.logic](https://github.com/clojure/core.logic) express a problem as a set of logical constraints on the possible solutions and then search through the space of variable assignments to find a solution. By automatically pruning parts of the search space which break one or more constraints and applying user-specified search heuristics, constraint solvers can often be faster than hand-coded solvers for complex problems whilst at the same time allowing a clear, concise, declarative specification of the problem.
+__Everything is data__. Constraint solving is enabled by treating both the problem specification and the solution space as data, reducing the problem to search. In lisps, treating code as data enables macros and code rewriting. In Overlog, everything from persistent data to scheduler state to the language runtime is available as data and can be queried and manipulated using the same powerful abstractions. Tracing in Overlog is as simple as adding a rule that fires whenever a new fact is derived, because the derivation itself is stored alongside the fact. Whatever you are working on, making it accessible as plain data enables turning the full power and expressivity of your language directly onto the problem. This is where OO falls down, in trying to hide data behind custom interfaces. Rob Pike recently put it: "It has become clear that OO zealots are afraid of data".
 
-## Everything is data
-
-Constraint solving is enabled by treating both the problem specification and the solution space as data, reducing the problem to search. In lisps, treating code as data enables macros and code rewriting. In Overlog, everything from persistent data to scheduler state to the language runtime is available as data and can be queried and manipulated using the same powerful abstractions. Tracing in Overlog is as simple as adding a rule that fires whenever a new fact is derived, because the derivation itself is stored alongside the fact.
-
-Whatever you are working on, making it accessible as plain data enables turning the full power and expressivity of your language directly onto the problem. This is where OO falls down, in trying to hide data behind custom interfaces. Rob Pike recently put it: "It has become clear that OO zealots are afraid of data".
-
-## Reflection
-
-When you expose the internals of a system as data to that same system, amazing (and, yes, sometimes terrifying) things happen. The STEPS folks manage to stay withing their code budget by building highly dynamic, self-hosting, meta-circular, introspective languages. Many of the amazing results of the Overlog project, from the optimising compiler to declarative distributed tracing, resulted from exposing the language runtime and program source code to the same logic engine that it implements. Turning a system in on itself and allowing it to reason about its own behaviour is an incredibly powerful idea. Certainly it can be dangerous, and it's all too easy to tangle oneself in knots, but the results speak for themselves. This is an idea that has been [expounded](http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html) [many](http://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach) [times](http://www.paulgraham.com/diff.html) before but I think there is still so much more to explore here.
+__Reflection__. When you expose the internals of a system as data to that same system, amazing (and, yes, sometimes terrifying) things happen. The STEPS folks manage to stay withing their code budget by building highly dynamic, self-hosting, meta-circular, introspective languages. Many of the amazing results of the Overlog project, from the optimising compiler to declarative distributed tracing, resulted from exposing the language runtime and program source code to the same logic engine that it implements. Turning a system in on itself and allowing it to reason about its own behaviour is an incredibly powerful idea. Certainly it can be dangerous, and it's all too easy to tangle oneself in knots, but the results speak for themselves. This is an idea that has been [expounded](http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html) [many](http://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach) [times](http://www.paulgraham.com/diff.html) before but I think there is still so much more to explore here.
 
 # Progress
 

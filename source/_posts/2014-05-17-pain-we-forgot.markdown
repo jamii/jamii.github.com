@@ -18,9 +18,7 @@ One might also argue that these tools are simple enough once you learn to use th
 
 It is tempting to believe that this is the best we can do and that programming is naturally this complex. But as we work through our lunch app, consider how little of the work we have to do actually relates to the problem of specifying the application.
 
----
-
-# Getting started
+## Getting started
 
 First we need to get a development environment running. Let's try clojure:
 
@@ -37,13 +35,13 @@ LightTable cljs/lunch_app/core.cljs # client side, connect to web repl
 
 At this point you have already lost 99% of the population and we haven't even touched on css or templates yet. Worse, none of this was discoverable. I happen to already know how to setup a simple client-server web app so all these steps seem obvious to me. But Anon the intern needs to be able to open up Programming™ and click 'New Web Form'. Intellij does a reasonable job on this front - you can start a new web project, compile and open the result in a browser in a few button clicks. But in most environments you need a tutorial just to start a new project.
 
-# Finding help
+## Finding help
 
 So Anon is now staring at a blinking cursor on a blank editor page. What next? How does one go about making a web form, or send a email? For common tasks google will probably find you entire code samples or at the very least some javadocs. The samples will be missing lots of implicit information such as how to install the necessary libraries and how to deal with missing dependencies and version conflicts. Transcribing and modifying the examples may lead to bugs that suck up time. It's not terrible, mostly thanks to sites like stackoverflow, but it's still a lot of unnecessary distractions from the task at hand.
 
 I want to just type 'email' and see a list of functions and libraries relating to email. If I select a function from autocomplete, its dependencies should be automatically added to the project without any fuss. Missing dependencies or version conflicts should be presented alongside suggestions for resolution (click here to choose version A). [Bing Code Search](http://blogs.msdn.com/b/visualstudio/archive/2014/02/17/introducing-bing-code-search-for-c.aspx) takes this idea even further and autocompletes code for common tasks.
 
-# Writing code
+## Writing code
 
 Even for experts, programming is an exploratory process. We experiment with libraries, run through examples and iteratively build up features. One of the most painful lessons beginners have to learn is just how often everyone is wrong about everything. Tightening the feedback loop between writing code and seeing the results reduces the damage caused by wrong assumptions, lightens the cognitive load of tracking what should be happening and helps build accurate mental models of the system. The latter is especially important for beginners who often suffer from miscomprehensions about even the basic semantics of the language. Unfortunately, the most you are likely get is automatically refreshing your browser. Maybe a REPL if you are lucky.
 
@@ -53,7 +51,7 @@ Light Table at least gives you [inline eval](https://www.youtube.com/watch?v=gtX
 
 Plain text is also very limiting. Language is very good for conveying meaning but not so great for displaying data. Being able to quickly throw up graphs and diagrams (like in [rhizome](https://github.com/ztellman/rhizome), [automat](https://github.com/ztellman/automat) or [lamina](https://github.com/ztellman/lamina/wiki/Channels)) is incredibly useful. Light Table's [inline graphs](http://www.chris-granger.com/images/040/ipygraphs.png) are a start but we haven't otherwise made much use of visualisation. First person to implement inline graphviz gets a cookie.
 
-# Running code
+## Running code
 
 Surprisingly, one of the most common difficulties we have heard from beginners is just running code. Even if we were to hand Anon the entire lunch_app source code they would likely still struggle to actually use it. They have to install dependencies, compile code, start servers and open ports. At each step the errors are difficult to diagnose and time-consuming to fix. The tools that are intended to fix this are often even worse themselves (every time I write a blog post in octopress I find rvm has somehow broken again). IDEs like Intellij and Visual Studio do a reasonable job of standardising the build process and capturing dependencies so that it is usually possible to import a project and just hit run, but that only goes as far as development. For deployment we have tools like Docker which make deployment highly repeatable but don't help much with capturing the process in the first place. None of these really help Anon the intern deploy lunch_app.
 
@@ -63,7 +61,7 @@ Wolfram's Language [workflow](https://www.wolfram.com/universal-deployment-syste
 
 From there it doesn't take much imagination to add easy task scheduling and an error logger that emails Anon when something goes wrong. None of this requires giving up control either. You could just as easily replace 'cloud server' with 'departmental server' or 'little black box that came with our internet'. The important point is that there are sensible defaults for deployment and that it is 'batteries included' in the language or IDE.
 
-# What?
+## What?
 
 The simplest question we could ask about our application is 'what is the current state'. Bizaarely, very few programming environments give you any help on this front. Many programmers get by with nothing but print statements. If you are lucky you may have a debugger or watches, but you still end up looking at your application through a keyhole. You have to actively insert instrumentation by hand to view the state of each tiny part of the application. If you want to modify that state you have to mentally work backwards and construct the correct piece of code to find and change the variable that you are looking at. It may not even have a name that is accessible from the repl (eg a variable in an anonymous closure). Viewing and modifying the state of the application should be a fundamental interaction and yet it's made unreasonably difficult by our languages and tools.
 
@@ -71,7 +69,7 @@ Compare this to a tool like Excel or [Django Admin](http://www.youtube.com/watch
 
 Once we have managed state, whether using a relational model like [Bloom](http://bloom-lang.net/) or more traditional functional data-structures like [Opis](http://infoscience.epfl.ch/record/136776), we can easily record history too. Tools like [time travelling debuggers](http://chrononsystems.com/products/chronon-time-travelling-debugger) that require huge engineering effort in traditional languages become trivial when you can cheaply record or reconstruct the past. Reproducing bugs is easier when you can just snapshot your history and mail it to the developer. Bloom and Opis are also both able to determine dataflow topologies from source code so when stepping into an unfamiliar project you can quickly get a visual overview of how the various components communicate (examples are buried [here](http://db.cs.berkeley.edu/papers/cidr11-bloom.pdf) and [here](http://infoscience.epfl.ch/record/136776/files/DagandETAL09Opis.pdf)).
 
-# Why?
+## Why?
 
 Traditional debuggers focus entirely on the *what* - walking through a narrow slice of state on step at a time. But when debugging the question one usually starts with is *why*? Why are the lunch options in the wrong order? Why didn't the lunch email go out? Why is everyones bill for the month zero? These questions typically involve reasoning backwards from effect to cause whereas debuggers walk you forward from cause to effect. The result is that debugging consists mostly not of finding the problem but manually walking backwards along the chain of causes by setting up isolated test cases and repeatedly rerunning them under the debugger.
 
@@ -79,7 +77,7 @@ Traditional debuggers focus entirely on the *what* - walking through a narrow sl
 
 The problem gets even worse with scale. Debugging by following control flow works poorly in large systems where what really matters is *data flow*. Answering questions like 'why do orders sometimes get lost' requires tracing through an enourmous graph, one which is not even recorded in most systems and instead has to be inferred from logs, like piecing together ancient civilisations from broken pottery. [BOOM analytics](http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf) deals with this by reflecting all data, from error logs and persistent data to message queues and profiling data, into relational tables that are made available to overlog - the same distributed query language that runs the rest of the system. This means you can directly run queries over the causality graph, such as 'for each order that was entered into the system but not completed, give me a list of every message was linked to that order by some chain of rules'. Since the recording of this data was itself governed by overlog rules you can switch on detailed logging at runtime for specific kinds of data eg 'record all messages concerning order 197 originating from cluster C and forward them to me'.
 
-# Change
+## Change
 
 Outside of the software world, version control and collaboration software is limited to saving lunch_app.v07 and attaching it to an email. Collaborating on a single project is difficult and slow. The standard tools of the trade for programmers (git, mercurial etc) are vastly more powerful and solve a pressing problem but present an interface that [baffles and frustrates many users](http://steveko.wordpress.com/2012/02/24/10-things-i-hate-about-git/). The underlying model is elegant and powerful but even the graphical interfaces require a significant investment of time and effort to understand.
 
@@ -87,7 +85,7 @@ What Anon needs is somewhere between [undo-tree](http://www.emacswiki.org/emacs/
 
 Similary, when Anon 2 the accountant wants to modify their client-side copy of the lunch form to remember their favourite lunches it should be a simple process. No hunting down and recompiling system binaries, no installing greasemonkey scripts from the filesystem. Just click to open the source, modify to your satisfaction, click to save. I've never seen anything come close to this basic interaction. The [OLPC view source button](http://blog.printf.net/articles/2006/10/29/the-view-source-key/) promised exactly this experience but as far as I know it never materialised (it certainly didn't work on mine).
 
-# Learning
+## Learning
 
 Programming tools generally pay very little attention to producing helpful error messages (with [one](http://cs.brown.edu/~sk/Publications/Papers/Published/mfk-measur-effect-error-msg-novice-sigcse/paper.pdf) or [two](http://research.microsoft.com/pubs/64590/helium.pdf) exceptions). There is a modest amount of [evidence](http://www.amazon.com/Man-Who-Lied-His-Laptop-ebook/dp/B003YUC7BI/ref=sr_1_1?ie=UTF8&qid=1400099030&sr=8-1&keywords=man+who+lied+to+his+laptop) that people interact with computers as if they were people. Many of the results of this research are suprising and counter-intuitive eg [personifying the compiler](http://faculty.washington.edu/ajko/papers/Lee2011Gidget.pdf) can improve learning rates in students. Given that, do you really want to spend lots of time with the kind of person who just repeatedly shouts 'cannot call method undefined of undefined!' in your face without so much as hinting how you might fix the problem or where you might start looking?
 
@@ -99,7 +97,7 @@ Environments also need to be more proactive. Uncaught errors should drop the use
 
 Finally, environments can't be black boxes. Beginners need a simple experience but if they are to become experts they need to be able to shed the training wheels and open the hood. Many attempts at end-user programming failed because they assumed the user was stupid and so wrapped everything in cotton wool. Whenever we provide a simplified experience, there should be an easy way to crack it open and see how it works. Nothing should be magic forever. Ensure that the users curiousity is never frustrated and they won't need teaching for long.
 
----
+## Plans
 
 Some of the things I have described are just a matter of paying attention to the details. Others require doing things very differently. The key parts of our plan for Aurora are:
 

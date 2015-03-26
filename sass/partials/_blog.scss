@@ -1,5 +1,4 @@
 article {
-  padding-top: 2.3em;
   a { @extend .force-wrap;
     &, &:visited, &:active, &:hover { text-decoration: none; }
   }
@@ -10,8 +9,8 @@ article {
     padding-left: 0;
     padding-right: 0;
     margin-bottom: 1em;
-    background: $img-border bottom left repeat-x;
     h1 {
+      text-align: center;
       margin: 0;
       font-weight: 400;
       a { text-decoration: none;
@@ -31,12 +30,10 @@ article {
     @media only screen and (min-width: 768px) {
       margin-bottom: 1.5em;
       padding-bottom: 1em;
-      background: $img-border bottom left repeat-x;
     }
   }
   h2 {
     padding-top: 0.8em;
-    background: $img-border top left repeat-x;
   }
   .entry-content & h2:first-child, header + h2 { padding-top: 0; }
   h2:first-child, header + h2 { background: none; }
@@ -44,7 +41,6 @@ article {
     padding-top: .5em;
     margin-bottom: 1em;
     padding-bottom: 1em;
-    background: $img-border bottom left repeat-x;
     font-size: 2.0em; font-style: italic;
     line-height: 1.3em;
   }
@@ -52,6 +48,11 @@ article {
     @extend .flex-content;
     @extend .basic-alignment;
     @include shadow-box;
+  }
+  iframe {
+   margin: 0 auto;
+   margin-bottom: 1.5em;
+   display:block;
   }
   video, .flash-video { margin: 0 auto 1.5em; }
   video { display: block; width: 100%; }
@@ -73,15 +74,7 @@ article {
     }
   }
   > footer {
-    padding-bottom: 2.5em;
-    margin-top: 2em;
     @extend .sans;
-    p.meta {
-      margin-bottom: .8em;
-      font-size: .85em;
-      clear: both;
-      overflow: hidden;
-    }
     .byline + time:before, time +time:before, .comments:before, .byline ~ .categories:before {
       @extend .separator;
     }
@@ -90,7 +83,6 @@ article {
 }
 article + article {
   .blog-index & {
-    background: $img-border top left repeat-x;
   }
 }
 #content .blog-index {
@@ -135,8 +127,6 @@ article + article {
   margin-top: 4em;
   margin-bottom: 0;
   padding: {top: 1.5em; bottom: 1.5em;}
-  border-top: dotted 1px #D1D1D1;
-  border-bottom: dotted 1px #D1D1D1;
   a {
     text-decoration: none;
     color: $text-color-light;

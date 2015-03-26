@@ -6,13 +6,13 @@ comments: true
 categories:
 - erlang
 - telehash
----  
+---
 
 Now that we have all the necessary datastructures we can build the router itself. Most of the routing table logic is handled by the bit_tree and bucket modules. The router just ties these together and handles I/O.
 
 <!--more-->
 
-Before actually running the routing table the router has to find out its own address, as it is seen from the outside world. It does this by sending +end signals to a list of known telehash nodes (eg telehash.org:42424). 
+Before actually running the routing table the router has to find out its own address, as it is seen from the outside world. It does this by sending +end signals to a list of known telehash nodes (eg telehash.org:42424).
 
 ``` erlang
 record(bootstrap, { % the state of the router when bootstrapping
@@ -22,9 +22,9 @@ record(bootstrap, { % the state of the router when bootstrapping
 
 bootstrap(Addresses, Timeout) ->
     ?INFO([bootstrapping]),
-    State = #bootstrap{timeout=Timeout, addresses=Addresses},    
+    State = #bootstrap{timeout=Timeout, addresses=Addresses},
     {ok, _Pid} = gen_server:start_link(?MODULE, State, []).
-	 		 
+
 init(State) ->
     switch:listen(),
     case State of
@@ -49,11 +49,11 @@ handle_info({switch, {recv, From, Telex}}, #bootstrap{addresses=Addresses}=Boots
 		End ->
 		    Self = util:to_bits(End),
 		    Table = touched(From, Self, empty_table(Self)),
-		    dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT), 
+		    dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT),
 		    refresh(Self, Table),
 		    ?INFO([bootstrap, finished, {self, Binary}, {from, From}]),
 		    {noreply, #state{self=Self, pinged=sets:new(), table=Table}}
-	    catch 
+	    catch
 		_ ->
 		    ?WARN([bootstrap, bad_self, {self, Binary}, {from, From}]),
 		    {noreply, Bootstrap}
@@ -123,7 +123,7 @@ handle_info({timeout, Address}, #state{self=Self, pinged=Pinged, table=Table}=St
     end;
 ```
 
-One of the rules of the router is that it should never pass on information about a node that it hasn't personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement _ring/_line to protect against address spoofing):
+One of the rules of the router is that it should never pass on information about a node that it hasn't personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement ring/line to protect against address spoofing):
 
 ``` erlang
 touched(Address, Self, Table) ->
@@ -169,10 +169,10 @@ see(To, End, Table) ->
 nearest(N, End, Table) when N>=0 ->
     Bits = util:to_bits(End),
     iter:take(
-      N, 
+      N,
       iter:flatten(
 	iter:map(
-	  fun ({_Prefix, Bucket}) -> bucket:by_dist(End, Bucket) end, 
+	  fun ({_Prefix, Bucket}) -> bucket:by_dist(End, Bucket) end,
 	  bit_tree:iter(Bits, Table)))).
 ```
 
@@ -213,7 +213,7 @@ handle_info({switch, {recv, From, Telex}}, #state{self=Self, pinged=Pinged, tabl
 		_ ->
 		    ?WARN([bad_see, {'end', Hex}, {from, From}])
 	    end;
-	_ -> 
+	_ ->
 	    ok
     end,
     {noreply, State#state{pinged=Pinged2, table=Table2}};
@@ -242,9 +242,9 @@ dialed(Address, Self, Table) ->
 
 needs_refresh(Bucket, Now) ->
     case bucket:last_dialed(Bucket) of
-	never -> 
+	never ->
 	    true;
-	Last -> 
+	Last ->
 	    (timer:now_diff(Now, Last) div 1000) < ?ROUTER_REFRESH_TIME
     end.
 

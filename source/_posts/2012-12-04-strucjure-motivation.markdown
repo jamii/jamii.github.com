@@ -13,7 +13,7 @@ The core idea is that strucjure (and the [OMeta](http://www.google.com/url?sa=t&
 
 (Note: For the purposes of this post I'll use the terms pattern and view interchangeably. There *is* a difference, but the line between the two is not yet clear to me and will probably change in future implementations)
 
-# Pattern matching
+## Pattern matching
 
 Pattern matching is a concept found in many functional languages. The basic idea is something like a switch statement, combined with a mini-language for describing patterns which the input should be tested against. The first pattern which matches has its corresponding branch executed.
 
@@ -132,7 +132,7 @@ Strucjure patterns are first-class values and can call other patterns or recursi
 
 This is a pattern which only matches balanced red-black trees, by recursively matching against each branch and returning the number of black nodes per path (see property 5 [here](http://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Properties)).
 
-# Parsing
+## Parsing
 
 Strucjure supports patterns which only consume part of the input and can chain these patterns together. Combine that with pattern matching and you can very easily write back-tracking recursive-descent parsers.
 
@@ -192,7 +192,7 @@ No more death-by-polish-notation!
 
 Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined [using views](https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178). This is a fairly complex DSL but with strucjure it's was very easy to write, read and modify the parser.
 
-# Generic programming
+## Generic programming
 
 Clojure has some great facilities for generic traversals in the form of clojure.walk:
 
@@ -330,7 +330,7 @@ We're also not limited to just walking over data structures. We can perform more
     @acc))
 ```
 
-# Types
+## Types
 
 I originally learned to code in haskell. One of the things I miss about strong static typing is it that it automatically provides documentation about the data structures used in your program. Strucjure patterns can fulfill the same role. In l-seed, if you are confused about what a rule should look like you can just go look at the +rule+ pattern.
 
@@ -345,7 +345,7 @@ We can't quite get static typing out of this, but we do get runtime checking for
 
 In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for [generative testing](https://github.com/clojure/test.generative). In erlang, [proper](https://github.com/manopapad/proper) allows using type-specs directly alongside hand-written generators. I haven't yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.
 
-# State machines
+## State machines
 
 One can think of parsers in general as state machines with look-ahead and backtracking. OMeta takes this idea and runs with it:
 
@@ -363,7 +363,7 @@ One can think of parsers in general as state machines with look-ahead and backtr
 
 I haven't yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to [droplet](https://github.com/jamii/droplet).
 
-# Moving forward
+## Moving forward
 
 There are of lot of different directions for improvement and experimentation.
 

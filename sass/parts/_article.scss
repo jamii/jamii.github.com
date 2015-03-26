@@ -1,6 +1,4 @@
 article{
-	border-bottom: 1px solid $color-gray04;
-	border-top: 1px solid $color-gray05;
 	padding: 30px 0;
 	position: relative;
 	@media screen and (max-width: 800px){
@@ -54,7 +52,7 @@ article{
 			font-style: italic;
 		}
 		p{
-			margin-top: 10px;	
+			margin-top: 10px;
 		}
 		h2{
 			font-weight: 300;
@@ -83,6 +81,8 @@ article{
 		}
 		iframe{
 			border: none;
+			display:block;
+			margin: 0 auto;
 		}
 		table{
 			background: $color-gray04;

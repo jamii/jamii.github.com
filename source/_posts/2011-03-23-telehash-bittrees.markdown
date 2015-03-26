@@ -8,13 +8,13 @@ categories:
 - telehash
 ---
 
-The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via _ring/_line but I'm still mulling over the protocol so we'll skip to the routing table.
+The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via ring/line but I'm still mulling over the protocol so we'll skip to the routing table.
 
 <!--more-->
 
 I'll add the usual 'I don't understand Kademlia and I didn't test my code' disclaimer in here.
 
-Routing in the Kademlia paper is described using what can best be called the 'mash everything together and be vague about the details' pattern. I want my switch to be a bit cleaner than that so I've split it into three modules. The first of these is the bit_tree. 
+Routing in the Kademlia paper is described using what can best be called the 'mash everything together and be vague about the details' pattern. I want my switch to be a bit cleaner than that so I've split it into three modules. The first of these is the bit_tree.
 
 The bit_tree is a suffix tree which maps ends (lists of bits) to buckets. The bit_tree neither knows nor cares what a bucket is and for now you don't either. The utility of this tree comes down to one important property: the floor of the log (base 2) of the XOR distance between two ends is the height of the smallest sub-tree which contains both of them. Got that? For example, if log(distance(EndA,EndB)) == 7.234... then the height of the smallest sub-tree containing both EndA and EndB is 7 nodes. This makes it easy to locate the nearest known nodes to a specified end, something we are supposed to do in response to a *.see* command.
 
@@ -79,9 +79,9 @@ extend([Next | Bits],
 	    false -> {ChildF, ChildT};
 	    true -> {ChildT, ChildF}
 	end,
-    Self2 = 
+    Self2 =
 	case Self of
-	    {up, Up, Down, Gap} -> 
+	    {up, Up, Down, Gap} ->
 		% already stepped out of gap
 		{up, [not(Next)|Up], Down, Gap};
 	    {down, [Bit|Down]} when Bit == Next ->
@@ -100,10 +100,10 @@ extend([Next | Bits],
       zipper = Zipper2
      },
     extend(Bits, Finger2).
-    
+
 retract(0, Finger) ->
     Finger;
-retract(N, 
+retract(N,
 	#finger{
 	  tree = Tree,
 	  self = Self,
@@ -116,7 +116,7 @@ retract(N,
 	    false -> #branch{size=Size, childF=Branch, childT=Tree};
 	    true -> #branch{size=Size, childF=Tree, childT=Branch}
 	end,
-    Self2 = 
+    Self2 =
 	case Self of
 	    {down, Down} ->
 		% already in gap
@@ -169,7 +169,7 @@ bucket_update_to_tree(Sizer, {split, SplitF, SplitT}) ->
     #branch{size=tree_size(ChildF)+tree_size(ChildT), childF=ChildF, childT=ChildT}.
 ```
 
-In order to handle *.see* commands the *iter* function is used to return buckets in order of distance from the specified end. Here we are making use of the aforementioned nice properties of the bit_tree in order to efficiently return the buckets in order. 
+In order to handle *.see* commands the *iter* function is used to return buckets in order of distance from the specified end. Here we are making use of the aforementioned nice properties of the bit_tree in order to efficiently return the buckets in order.
 
 ``` erlang
 % iterate through buckets in ascending order of xor distance to (current position ++ Suffix)
@@ -178,7 +178,7 @@ iter(Suffix, #finger{tree=Tree, zipper=Zipper}) ->
 
 % iterate through buckets in ascending order of xor distance to (current position ++ Suffix)
 iter_zipper([], _Suffix) ->
-    fun () -> 
+    fun () ->
 	    done
     end;
 iter_zipper([{Bit, Tree} | Zipper], Suffix) ->
@@ -190,7 +190,7 @@ iter_buckets(#leaf{bucket=Bucket}, _Bits, Iter) ->
 	    {Bucket, Iter}
     end;
 iter_buckets(#branch{childF=ChildF, childT=ChildT}, [Bit|Bits], Iter) ->
-    case Bit of 
+    case Bit of
 	true ->
 	    iter_buckets(ChildT, Bits, iter_buckets(ChildF, Bits, Iter));
 	false ->
@@ -226,8 +226,8 @@ add(Suffix, Int, Bucket) ->
     split([{Suffix, Int} | Bucket]).
 
 split(Bucket) ->
-    if 
-	length(Bucket) > ?MAX_SIZE -> 
+    if
+	length(Bucket) > ?MAX_SIZE ->
 	    BucketF = [{Suffix2, Int2} || {[false | Suffix2], Int2} <- Bucket],
 	    BucketT = [{Suffix2, Int2} || {[true | Suffix2], Int2} <- Bucket],
 	    {split, split(BucketF), split(BucketT)};
@@ -242,7 +242,7 @@ add_to_tree(Int, Tree) ->
     {Suffix, Tree2} = move_to(Int, Tree),
     bit_tree:update(fun (Bucket) -> add(Suffix, Int, Bucket) end, Tree2).
 
-make_tree(Int, Ints) ->   
+make_tree(Int, Ints) ->
     Tree = bit_tree:empty(bits(Int), [], fun (Bucket) -> length(Bucket) end),
     lists:foldl(fun add_to_tree/2, Tree, Ints).
 
@@ -250,7 +250,7 @@ distance(IntA, IntB) ->
     util:distance({'end', <<IntA:?BITS>>}, {'end', <<IntB:?BITS>>}).
 
 % output *should* be in ascending order
-move_list_from(Int, Tree) -> 
+move_list_from(Int, Tree) ->
     {Suffix, Tree2} = bit_tree:move_to(bits(Int), Tree),
     list_from(Int, Suffix, Tree2).
 
@@ -266,7 +266,7 @@ list_from(Int, Suffix, Tree) ->
 We can play around with the test buckets a bit:
 
 ``` erlang
-25> Tree = test_bucket:make_tree(47, lists:seq(1,1000)).      
+25> Tree = test_bucket:make_tree(47, lists:seq(1,1000)).
 {finger,#Fun<test_bucket.1.121651971>,
         {leaf,1,[{[false,false,false],1000}]},
         {up,[false,true,false,false,false,false,false,true,true,
@@ -284,7 +284,7 @@ We can play around with the test buckets a bit:
                                 {leaf,2,[{[true],997},{[false],996}]},
                                 {leaf,2,[{[true],999},{[false],998}]}}}},
          {...}|...]}
-26> List = test_bucket:move_list_from(657, Tree).             
+26> List = test_bucket:move_list_from(657, Tree).
 [[{0,657},{1,656}],
  [{2,659},{3,658}],
  [{4,661},{5,660}],
