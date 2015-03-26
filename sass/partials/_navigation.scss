@@ -1,9 +1,6 @@
 body > nav {
   position: relative;
   background-color: $nav-bg;
-  border: {
-    top: 1px solid $nav-border-top;
-    bottom: 1px solid $nav-border-bottom; }
   padding-top: .35em;
   padding-bottom: .35em;
   padding-left: 5px;
