@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: clojure | Scattered Thoughts]]></title>
-  <link href="http://scattered-thoughts.net/blog/categories/clojure/atom.xml" rel="self"/>
+  <title><![CDATA[Category: project | Scattered Thoughts]]></title>
+  <link href="http://scattered-thoughts.net/blog/categories/project/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-03-25T23:23:46-07:00</updated>
+  <updated>2015-03-26T00:02:30-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -567,6 +567,200 @@ defn set-colour [^Board board pos colour]
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[External memory]]></title>
+    <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
+    <updated>2013-05-21T20:43:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
+    <content type="html"><![CDATA[<p> What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
+
+<!--more-->
+
+
+<p>The first thing that I want to fix in this series is offloading memory. There are basically two kinds of questions I regularly deal with:</p>
+
+<ul>
+<li><p>How did I solve this problem / build this software / configure this program X months ago?</p></li>
+<li><p>What was I trying to remember to change X seconds ago?</p></li>
+</ul>
+
+
+<p>I&rsquo;ve started using <a href="http://jblevins.org/projects/deft/">deft</a> to answer both of these. Deft stores notes in a folder full of flat files and adds an incremental search buffer to emacs (searching > organising). This means that my notes are simple plain text which I can easily edit, backup, grep or serve on the web.</p>
+
+<p>For long-term memory I create a new note every time I solve a problem or learn something useful. Within emacs M-&lsquo; brings up the deft window, typing triggers the incremental search and hiting Enter opens the first matching note.</p>
+
+<p>For short-term memory I have a single note called stack. Hitting C-&lsquo; opens the stack note with the cursor on a new blank line for adding items to the stack. Hitting C-DEL deletes the previous line and C-q closes the stack. Hopefully this is sufficiently low-friction that the extra memory makes up for the context switch.</p>
+
+<p>My config is <a href="https://github.com/jamii/emacs-live-packs/blob/master/deft-pack/init.el">here</a>. I&rsquo;m considering writing a gnome-shell extension which displays the last line of the stack in the status bar to remind me what I&rsquo;m supposed to be doing when my mental stack gets rudely dumped. I also want to add the global key bindings to gnome-shell so I don&rsquo;t have to navigate to emacs first.</p>
+
+<p>This is a very simple tool, which is kind of the point. The more stucture and options added to a note-taking tool the more effort it takes to actually use it and the more likely it is that I lose my entire mental stack whilst doing so.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Search trees and core.logic]]></title>
+    <link href="http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/"/>
+    <updated>2012-12-19T20:32:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic</id>
+    <content type="html"><![CDATA[<p>I mentioned in an <a href="http://scattered-thoughts.net/blog/2012/12/02/hacker-school/">earlier post</a> that I had spent some time working on <a href="https://github.com/jamii/shackles">shackles</a>, an extensible <a href="http://en.wikipedia.org/wiki/Constraint_programming">constraint solver</a> based on <a href="http://www.gecode.org/">gecode</a> with extensions for <a href="http://en.wikipedia.org/wiki/Logic_programming">logic programming</a>. I eventually gave up working on shackles in favor of using <a href="https://github.com/clojure/core.logic">core.logic</a> which is much more mature and has actual maintainers. Last week David Nolen (the author of core.logic) was visiting Hacker School so I decided to poke around inside core.logic and see what could be brought over from shackles. The <a href="https://github.com/clojure/core.logic/pull/13">first chunk of work</a> adds fair conjunction, user-configurable search and a parallel solver.</p>
+
+<!--more-->
+
+
+<p>First, a little background. From a high-level point of view, a constraint solver does three things:</p>
+
+<ul>
+<li><p>specifies a search space in the form of a set of constraints</p></li>
+<li><p>turns that search space into a search tree</p></li>
+<li><p>searches the resulting tree for non-failed leaves</p></li>
+</ul>
+
+
+<p>Currently core.logic (and cKanren before it) complects all three of these. My patch partly decomplects the latter from the first two, allowing different search algorithms to be specified independently of the problem specification.</p>
+
+<p>Let&rsquo;s look at how core.logic works. I&rsquo;m going to gloss over a lot of implementation details in order to make the core ideas clearer.</p>
+
+<p>The search tree in core.logic is representated as a lazy stream of the non-failed leaves of the tree. This stream can be:</p>
+
+<ul>
+<li><p><code>nil</code> &ndash; the empty stream</p></li>
+<li><p><code>(Choice. head tail)</code> &ndash; a cons cell</p></li>
+</ul>
+
+
+<p>Disjunction of two goals produces a new goal which contains the search trees of the two goals as adjacent branches. In core.logic, this is implemented by combining their streams with <code>mplus</code>. A naive implementation might look like this:</p>
+
+<p>``` clojure
+(defn mplus [stream1 stream2]
+  (cond</p>
+
+<pre><code>(nil? stream1) stream2
+(choice? stream1) (Choice. (.head stream1) (mplus (.tail stream1) stream2))))
+</code></pre>
+
+<p>```</p>
+
+<p>This amounts to a depth-first search of the leaves of the tree. Unfortunately, search trees in core.logic can be infinitely deep so a depth-first search can get stuck. If the first branch has an infinite subtree we will never see results from the second branch.</p>
+
+<p>``` clojure
+;; simple non-terminating goal
+(def forevero
+  (fresh []</p>
+
+<pre><code>forevero))
+</code></pre>
+
+<p>(run* [q]
+  (conde</p>
+
+<pre><code>[forvero]
+[(== q 1)]))
+</code></pre>
+
+<p>;; with depth-first search blocks immediately, returning (&hellip;)
+;; with breadth-first search blocks after the first result, returning (1 &hellip;)
+```</p>
+
+<p>We can perform breadth-first search by adding a new stream type:</p>
+
+<ul>
+<li><code>(fn [] stream)</code> &ndash; a thunk representing a branch in the search tree</li>
+</ul>
+
+
+<p>And then interleaving results from each branch:</p>
+
+<p>``` clojure
+(defn mplus [stream1 stream2]
+  (cond</p>
+
+<pre><code>...
+(fn? stream1) (fn [] (mplus stream2 (stream1)))))
+</code></pre>
+
+<p>```</p>
+
+<p>This is how core.logic implements fair disjunction (fair in the sense that all branches of <code>conde</code> will be explored equally). However, we still have a problem with fair conjunction. Conjunction is performed in core.logic by running the second goal starting at each of the leaves of the tree of the first goal. In terms of the stream representation, this looks like:</p>
+
+<p>``` clojure
+(defn bind [stream goal]
+  (cond</p>
+
+<pre><code>(nil? stream) nil ;; failure
+(choice? stream) (Choice. (bind (.head stream) goal) (bind (.tail stream) goal))
+(fn? stream) (fn [] (bind (stream) goal))))
+</code></pre>
+
+<p>```</p>
+
+<p>This gives rise to similar behaviour as the naive version of <code>mplus</code>:</p>
+
+<p>``` clojure
+(run* [q]
+  (all</p>
+
+<pre><code>forevero
+(!= q q)))
+</code></pre>
+
+<p>;; with unfair conjunction blocks immediately, returning (&hellip;)
+;; with fair conjunction the second branch causes failure, returning ()
+```</p>
+
+<p>I suspect the reason that core.logic didn&rsquo;t yet have fair conjunction is entirely due to this stream representation, which complects all three stages of constraint solving and hides the underlying search tree. Since shackles is based on gecode it has the advantage of a much clearer theoretical framework (I strongly recommend <a href="http://www.gecode.org/paper.html?id=Tack:PhD:2009">this paper</a>, not just for the insight into gecode but as a shining example of how mathematical intuition can be used to guide software design).</p>
+
+<p>The first step in introducing fair conjunction to core.logic is to explicitly represent the search tree. The types are similar:</p>
+
+<ul>
+<li><code>nil</code> &ndash; the empty tree</li>
+<li><code>(Result. state)</code> &ndash; a leaf</li>
+<li><code>(Choice. left right)</code> &ndash; a branch</li>
+<li><code>(Thunk. state goal)</code> &ndash; a thunk containing the current state and a sub-goal</li>
+</ul>
+
+
+<p>Defining <code>mplus</code> is now trivial since it is no longer responsible for interleaving results:</p>
+
+<p><code>clojure
+(defn mplus [tree1 tree2]
+  (Choice. tree1 tree2))
+</code></p>
+
+<p>And we now have two variants of bind:</p>
+
+<p>``` clojure
+(defn bind-unfair [tree goal]
+  (cond</p>
+
+<pre><code>(nil? goal) nil ;; failure
+(result? tree) (goal (.state tree)) ;; success, start the second tree here
+(choice? tree) (Choice. (bind-unfair (.left tree) goal) (bind-unfair (.right tree) goal))
+(thunk? tree) (Thunk. (.state tree) (bind-unfair ((.goal tree) state) goal))))
+</code></pre>
+
+<p>(defn bind-fair [tree goal]
+  (cond</p>
+
+<pre><code>(nil? goal) nil ;; failure
+(result? tree) (goal (.state tree)) ;; success, start the second tree here
+(choice? tree) (Choice. (bind-fair (.left tree) goal) (bind-fair (.right tree) goal))
+(thunk? tree) (Thunk. (.state tree) (bind-fair (goal state) (.goal tree))))) ;; interleave!
+</code></pre>
+
+<p>```</p>
+
+<p>The crucial difference here is that bind-fair takes advantage of the continuation-like thunk to interleave both goals, allowing each to do one thunk&rsquo;s worth of work before switching to the next.</p>
+
+<p>(We keep bind-unfair around because it tends to be faster in practice &ndash; when you know what order your goals will be run in you can use domain knowledge to specify the most optimal order. However, making program evaluation dependent on goal ordering is less declarative and there are also some problems that cannot be specified without fair conjunction. It&rsquo;s nice to have both.)</p>
+
+<p>Now that we explicity represent the tree we can use different search algorithms. My patch defaults to lazy, breadth-first search (to maintain the previous semantics) but it also supplies a variety of others including a <a href="https://github.com/jamii/core.logic/blob/flexible-search/src/main/clojure/clojure/core/logic/par.clj#L49">parallel depth-first search</a> using <a href="http://docs.oracle.com/javase/tutorial/essential/concurrency/forkjoin.html">fork-join</a>.</p>
+
+<p>I still need to write a few more tests and sign the clojure contributor agreement before this can be considered for merging. I also have a pesky performance regression in lazy searches &ndash; this branch sometimes does more work than the original when only finding the first solution. I&rsquo;m not sure yet whether this is down to a lack of laziness somewhere or maybe just a result of a slightly different search order. Either way, it needs to be fixed.</p>
+
+<p>After this change, core.logic still complects the specification of the search space and the generation of the search tree (eg we have to choose between bind-unfair and bind-fair in the problem specification). At some point I would like to either fix that in core.logic or finish work on shackles. For now though, I&rsquo;m going back to working on <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Strucjure: motivation]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/"/>
     <updated>2012-12-04T02:31:00-08:00</updated>
@@ -1010,217 +1204,6 @@ clojure.lang.ExceptionInfo: throw+: #strucjure.view.PartialMatch{:view #strucjur
 <p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don&rsquo;t expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
 
 <p>For now, I&rsquo;m going to dogfood strucjure in various projects while ruminating on improvements. I&rsquo;m already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Strucjure: reading the readme]]></title>
-    <link href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/"/>
-    <updated>2012-10-25T19:37:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme</id>
-    <content type="html"><![CDATA[<p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
-
-<p>The readme on github has detailed descriptions of the syntax etc which I won&rsquo;t repeat here. What I do want to do is run through a realistic example.</p>
-
-<!--more-->
-
-
-<p>The readme has a large number of examples and I want to be sure that these are all correct and up to date. As part of the test-suite for strucjure I parse the <a href="https://raw.github.com/jamii/strucjure/master/README.md">readme source</a>, pull out all the examples and make sure that they all run correctly and return the expected output.</p>
-
-<p>```bash
-jamie@alien:~/strucjure$ lein test strucjure.test
-WARNING: newline already refers to: #&lsquo;clojure.core/newline in namespace: strucjure.test, being replaced by: #'strucjure.test/newline</p>
-
-<p>lein test strucjure.test</p>
-
-<p>Ran 1 tests containing 166 assertions.
-0 failures, 0 errors.
-```</p>
-
-<p>The readme parser is pretty simple. Since I control both the parser and the readme source so it doesn&rsquo;t need to be bullet-proof, just the simplest thing that will get the job done. Strucjure is very bare-bones at the moment though so we have to create a lot of simple views that really belong in a library somewhere.</p>
-
-<p>```clojure
-(defview space
-  \space %)</p>
-
-<p>(defview newline
-  \newline %)</p>
-
-<p>(defview not-newline
-  (not \newline) %)</p>
-
-<p>(defview line
-  (and (not []) ; have to consume at least one char</p>
-
-<pre><code>   (prefix &amp; ((zero-or-more not-newline) ?line)
-           &amp; ((optional newline) ?end)))
-</code></pre>
-
-<p>  line)</p>
-
-<p>(defview indented-line
-  (prefix &amp; ((one-or-more space) _) &amp; (line ?line))
-  line)
-```</p>
-
-<p>We want a tokeniser for various parts of the readme. We could write it like this:</p>
-
-<p><code>clojure
-(defnview tokenise [sep]
-  ;; empty input
-  [] '(())
-  ;; throw away separator, start a new token
-  [&amp; (sep _) &amp; ((tokenise sep) ?results)] (cons () results)
-  ;; add the current char to the first token
-  [?char &amp; ((tokenise sep) [?result &amp; ?results])] (cons (cons char result) results))
-</code></p>
-
-<p>Unfortunately in the current implementation of strucjure that recursive call goes on the stack, so this view will blow up on large inputs. For now we just have to implement this view by hand to get access to recur.</p>
-
-<p>```clojure
-(defn tokenise [sep]
-  (view/&ndash;>Raw
-   (fn [input opts]</p>
-
-<pre><code> (when-let [elems (seq input)]
-   (loop [elems elems
-          token-acc nil
-          tokens-acc nil]
-     (if-let [[remaining _] (view/run sep elems opts)]
-       (recur remaining nil (cons (reverse token-acc) tokens-acc))
-       (if-let [[elem &amp; elems] elems]
-         (recur elems (cons elem token-acc) tokens-acc)
-         [nil (reverse (cons (reverse token-acc) tokens-acc))])))))))
-</code></pre>
-
-<p>```</p>
-
-<p>The rest of the parser makes more sense reading in reverse order. We start by splitting up the readme by code delimiters (triple backticks). This gives us chunks of alternating text and code, so we parse every other chunk as a block of code.</p>
-
-<p><code>``clojure
-(defview code-delim
-  (prefix \</code> ` `)
-  :code-delim)</p>
-
-<p>(defview readme
-  ((tokenise code-delim) ?chunks)
-  (apply concat (map (partial run code-block) (take-nth 2 (rest chunks)))))
-```</p>
-
-<p>We only want to look at code blocks that are marked as clojure code.</p>
-
-<p><code>clojure
-(defview code-block
-  [\c \l \o \j \u \r \e \newline &amp; (code-block-inner ?result)]
-  result)
-</code></p>
-
-<p>A few of the code blocks don&rsquo;t contain examples &ndash; we can detect these because they don&rsquo;t start with a &ldquo;user> &rdquo; prompt. All the other blocks contain a list of examples separated by prompts.</p>
-
-<p>```clojure
-(defview prompt
-  (prefix \u \s \e \r > \space)
-  :prompt)</p>
-
-<p>(defview code-block-inner
-  (and (prompt _)</p>
-
-<pre><code>   ((tokenise prompt) ?chunks))
-</code></pre>
-
-<p>  (map (partial run example) (filter #(not (empty? %)) chunks))</p>
-
-<p>  _ ;; not a block of examples
-  nil)
-```</p>
-
-<p>An example consists of an input, which may be on multiple lines, zero or more lines of printed output and finally a result.</p>
-
-<p><code>clojure
-(defview example
-  [&amp; (line ?input-first)
-   &amp; ((zero-or-more-prefix indented-line) ?input-rest)
-   &amp; ((one-or-more-prefix line) ?output-lines)]
-  {:input (with-out-str (doseq [line (cons input-first input-rest)] (print (apply str line) \space)))
-   :prints (with-out-str (doseq [line (butlast output-lines)] (println (apply str line))))
-   :result (run result (last output-lines))})
-</code></p>
-
-<p>The result is either a return value or an exception.</p>
-
-<p>```clojure
-;; #&ldquo;[a-zA-Z.]&rdquo;
-(defview exception-chars
-  (or .</p>
-
-<pre><code>  #(&lt;= (int \a) (int %) (int \z))
-  #(&lt;= (int \A) (int %) (int \Z)))
-</code></pre>
-
-<p>  %)</p>
-
-<p>(defview result
-  [\E \x \c \e \p \t \i \o \n \I \n \f \o \space
-   \t \h \r \o \w + \: \space
-   # &amp; ((one-or-more exception-chars) ?exception)
-   &amp; _]
-  [:throws (apply str exception)]</p>
-
-<p>  ?data
-  [:returns (apply str data)])
-```</p>
-
-<p>That&rsquo;s it &ndash; parsing done.</p>
-
-<p>Now we just have to turn the results into unit tests. We have to be careful about comparing the results of the examples because they might contain closures, which look different every time.</p>
-
-<p>```clojure
-(defn replace-fun [unread-form]
-  (.replaceAll unread-form &ldquo;#&lt;[^>]*>&rdquo; &ldquo;#<fun>&rdquo;))</p>
-
-<p>(defn prints-as [string form]
-  (= (replace-fun string) (replace-fun (with-out-str (pr form)))))
-```</p>
-
-<p>Running the examples is a little tricky because some of them create bindings or classes that are used by later examples. We end up needing to eval the code at runtime.</p>
-
-<p>```clojure
-(defn example-test [input prints result]
-  (match result</p>
-
-<pre><code>     [:returns ?value]
-     (do
-       (is (prints-as value (input)))
-       (is (= prints (with-out-str (input)))))
-
-     [:throws ?exception]
-     (do
-       (is (try+ (input)
-                 nil
-                 (catch java.lang.Object thrown
-                   (prints-as exception (class thrown)))))
-       (is (= prints (with-out-str
-                       (try+ (input)
-                             (catch java.lang.Object _ nil))))))))
-</code></pre>
-
-<p>(defmacro insert-example-test [{:keys [input prints result]}]
-  `(example-test (fn [] (eval &lsquo;(do (use &rsquo;~&lsquo;strucjure) ~(read-string input)))) ~prints &rsquo;~result))</p>
-
-<p>(defmacro insert-readme-test [file]
-  `(do</p>
-
-<pre><code> ~@(for [example (run readme (seq (slurp (eval file))))]
-     `(insert-example-test ~example))))
-</code></pre>
-
-<p>(deftest readme-test
-  (insert-readme-test &ldquo;README.md&rdquo;))
-```</p>
-
-<p>This is fun. Not only does strucjure parse its own syntax, it reads its own documentation!</p>
-
-<p>Parts of this were a little painful. The next version of strucjure will definitely have improved string matching. I&rsquo;m also looking at optimising/compiling views, as well as memoisation. Previous versions of strucjure supported both but were hard to maintain. For now I&rsquo;m going to be moving on to using strucjure to build other useful DSLs.</p>
 ]]></content>
   </entry>
   

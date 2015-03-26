@@ -27,18 +27,6 @@
 <link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 <link href="//fonts.googleapis.com/css?family=Fjalla+One" rel="stylesheet" type="text/css">
   
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-18515092-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-
 
 </head>
 
@@ -151,7 +139,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>My attempts to keep up with this have been focused on three projects.</p>
 
-<p><a href="https://github.com/jamii/shackles">Shackles</a> is a constraint solver supporting both finite-domain and logical constraints. It was originally an experiment to see what, if any, extra power could be gained from implementing a gecode-style solver using persistent data-structures (constraint solvers in traditional languages spend much of their time cloning program state to enable back-tracking). Fortunately, <a href="https://github.com/clojure/core.logic">core.logic</a> now supports finite domain variables with constraint propagation and there has been noise about implementing user-specified search heuristcs, so that&rsquo;s one less piece of code I need to write :D</p>
+<p><a href="https://github.com/jamii/shackles">Shackles</a> is a constraint solver supporting both finite-domain and logical constraints. It was originally an experiment to see what, if any, extra power could be gained from implementing a gecode-style solver using persistent data-structures (constraint solvers in traditional languages spend much of their time cloning program state to enable back-tracking). Fortunately, <a href="https://github.com/clojure/core.logic">core.logic</a> now supports finite domain variables with constraint propagation and there has been noise about implementing user-specified search heuristcs, so that&rsquo;s one less piece of code I need to write.</p>
 
 <p><a href="https://github.com/jamii/strucjure">Strucjure</a> is similar to OMeta but aims to be a good clojure citizen rather than a totally separate tool. As such, all of its core components are <a href="http://clojure.org/protocols">protocols</a>, semantic actions are plain clojure code and the resulting patterns and views are just nested <a href="http://clojure.org/datatypes">records</a> which can be manipulated by regular clojure code. Following the principles above, the syntax of strucjure patterns/views is <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L94">self-defined using views</a> and the test suite <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/test.clj#L1">parses the documentation</a> to verify the correctness of the examples.</p>
 
@@ -161,16 +149,6 @@ take another pass at this next year.</p></blockquote>
 </div>
 
 
-  <footer>
-    <p class="meta">
-      
-        <a class="basic-alignment left" href="/blog/2012/10/25/strucjure-reading-the-readme/" title="Previous Post: Strucjure: reading the readme">&laquo; Strucjure: reading the readme</a>
-      
-      
-        <a class="basic-alignment right" href="/blog/2012/12/04/strucjure-motivation/" title="Next Post: Strucjure: motivation">Strucjure: motivation &raquo;</a>
-      
-    </p>
-  </footer>
 </article>
 </div>
 
@@ -182,16 +160,5 @@ take another pass at this next year.</p></blockquote>
 
 </footer>
   
-
-
-
-
-
-
-
-
-
-
-
 </body>
 </html>

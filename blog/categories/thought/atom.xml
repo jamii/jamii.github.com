@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: thought | Scattered Thoughts]]></title>
+  <link href="http://scattered-thoughts.net/blog/categories/thought/atom.xml" rel="self"/>
+  <link href="http://scattered-thoughts.net/"/>
+  <updated>2015-03-26T00:02:30-07:00</updated>
+  <id>http://scattered-thoughts.net/</id>
+  <author>
+    <name><![CDATA[Jamie Brandon]]></name>
+    <email><![CDATA[jamie@scattered-thoughts.net]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Scaling down]]></title>
+    <link href="http://scattered-thoughts.net/blog/2015/02/09/scaling-down/"/>
+    <updated>2015-02-09T13:42:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2015/02/09/scaling-down</id>
+    <content type="html"><![CDATA[<p>The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How deeply can I customise this editor? More code, more data, more people, more machines.</p>
+
+<p>Nobody talks about scaling down.</p>
+
+<!--more-->
+
+
+<p>The vast majority of programs are never written. Ideas die stillborn because the startup cost is too high to bear. When we focus entirely on the asymptotic cost of developing large systems we neglect the constant costs that make tedious grinds out of simple tasks.</p>
+
+<p>There is a great deal to be gained from switching the focus from <em>what we can do</em> to <em>what we can get done</em>, from creating the most <em>expressive</em> tools to creating the most <em>efficient</em> tools. To do this we need to become conscious of the friction imposed by our tools. When we scale up, the concerns are performance, modularity, maintainability, expressiveness. A toolset optimised for small-scale programming must have different metrics:</p>
+
+<ul>
+<li><p>How long does it take to create a project? Creating a github repo, making a build file, editing the project template, opening editors, starting repls, launching dev servers.</p></li>
+<li><p>How long does it take to get results on the screen? Compare to how long it takes to get bored and lose interest.</p></li>
+<li><p>How long does it take to leverage libraries? Figuring out which library to use, installing the correct version, understanding the documentation, making a successful api call.</p></li>
+<li><p>How long does it take to deploy? Serving a website, uploading a package, emailing a self-contained script, installing a cron job.</p></li>
+<li><p>How hard is it to see what is going on? Can you inspect variables, set breakpoints, trace messages, rewind time?</p></li>
+<li><p>How quickly are bugs found and corrected? How much time passes between making a mistake, noticing the damage, reproducing the trigger, understanding what went wrong and applying the fix?</p></li>
+<li><p>How much time do you spend on incidental tasks? Installing libraries, committing to version control, drawing module boundaries, constructing class hierarchies, writing build scripts. Anything that is supporting the process rather than directly solving the original problem.</p></li>
+<li><p>How easy is it to collaborate with another person? What is the latency of sharing? Can you work together in real time? How long does it take before the other person is in a state to work on the code?</p></li>
+<li><p>How quickly can you change the program when your goals change? Are you stuck with your architectural mistakes? Is everything tangled together? Do all the boundaries have to change?</p></li>
+</ul>
+
+
+<p>The instinctive reaction is that the problems are overblown and everything would be fine if everybody would just use language / tool / methodology X.</p>
+
+<p>So let&rsquo;s try it. Pick one of these programs and solve it however you think best. Record a video and afterwards break down your activity minute by minute.</p>
+
+<ul>
+<li><p>Fairly queue song choices in the office.</p></li>
+<li><p>Display a notification whenever an email arrives from a specific address.</p></li>
+<li><p>Record audio whenever some hardware button is held on your phone lock-screen and save in a browseable / playable list.</p></li>
+<li><p>Fetch transaction records from your online bank, break down costs by regex categories and display a pie-chart for each month.</p></li>
+</ul>
+
+
+<p>So much of what we actually do goes unnoticed after years of practice and routine. The reality may be quite different from what you imagine.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Humans should learn maths]]></title>
+    <link href="http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths/"/>
+    <updated>2014-11-15T14:19:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths</id>
+    <content type="html"><![CDATA[<p>In the history of humanity there have been three major inventions that have enabled people to think in entirely new ways. They allow us to learn more, think bigger thoughts and solve harder problems. They are:</p>
+
+<ul>
+<li>Writing: a means to store knowledge in a brain-independent form that can be easily replicated, transmitted and preserved</li>
+<li>Mathematics: a methodology for constructing abstract systems, reasoning about them precisely and finding connections between them</li>
+<li>Science: a methodology for finding abstract systems which map closely to the real world</li>
+</ul>
+
+
+<p>The reason why we teach these in schools to everyone everywhere is that they are part of your cultural inheritance as a human. It is your right to have these tools. Over the last few hundred years they have empowered us to eradicate diseases, light the dark and explore the stars.</p>
+
+<!--more-->
+
+
+<p>Recently there has been a fourth major tool added to the list:</p>
+
+<ul>
+<li>Computing: a way to arrange inanimate systems to simulate arbitrary abstract systems</li>
+</ul>
+
+
+<p>Take a step back and think about what a remarkable idea it is a universal computer is even possible. We can take this inanimate system and arrange it so that it&rsquo;s behaviour gives us information about another, completely unrelated system. We sit down and press buttons for a while and the machine churns and the screen glows and suddenly we know whether or not it will rain tomorrow. We discovered that the same system can be implemented using digital circuits or vacuum tubes or the atmosphere of a planet. Somehow the physical substrate doesn&rsquo;t matter &ndash; the system has a life independent of it&rsquo;s physical existence.</p>
+
+<p>This idea of <a href="http://yudkowsky.net/rational/the-simple-truth">entangling</a> unrelated systems so that the heap of silicon you hold can tell you what the weather will be tomorrow or what just happened on the other side of the world is impossibly and wonderfully strange and yet hardly even noticed.</p>
+
+<p>The process of entangling one of these miraculous devices is called programming. At some point the internet collectively decided to have a civilised debate about whether or not programming is maths. The implied subtext wavers between &ldquo;if you don&rsquo;t know category theory you are a bad programmer and should feel bad&rdquo; and &ldquo;maths ought to stay up in its ivory tower where it belongs and stop getting in the way of good honest engineering&rdquo;.</p>
+
+<p>Aside from being nonsensical, the question is missing the point. For a start, it&rsquo;s not clear that either side of the argument agrees on what math even is. Tragically, most people&rsquo;s exposure to mathematics consists solely of memorising algorithms to solve numerical problems expressed in arcane syntax without reference to anything that they might ever care about. <a href="https://www.maa.org/external_archive/devlin/LockhartsLament.pdf">Lockhart</a> has more and better to say on this topic than I can manage. Suffice to say that most of what you endured in school is the math equivalent of making you compile java into binary in your head for six years without ever showing you a computer or explaining why you might want to write a program in the first place.</p>
+
+<p>But if you can get past the childhood trauma, the poor presentation and the awful syntax there is a whole world of important and beautiful ideas to explore. Mathematics is not about calculation and memorisation, but about building and studying different abstract systems and the connections between them.</p>
+
+<p>Mathematics is:</p>
+
+<ul>
+<li>A set of methods for thinking correctly and precisely about abstract systems</li>
+<li>A body of knowledge generated by those methods</li>
+<li>A collection of conventions, notations and terminology for talking about that knowledge</li>
+</ul>
+
+
+<p><a href="http://worrydream.com/oatmeal/changing-minds.jpg">&ldquo;An average ninth-grade mathematics student plus a particular inscription system yields a material intelligence that surpasses Galileo&rsquo;s intelligence&rdquo;</a></p>
+
+<p>Andy diSessa notes that Galileo&rsquo;s proofs of the laws of uniform motion cover page after page to establish complicated relationships that young students today can express and remember simply as &rsquo;d=vt'. Notation matters. Not the little details of what particular symbols we use or the arrangement of characters but the frameworks within which we hang our ideas. Galileo was one of the greatest minds of his century but his seminal work could today be performed trivially by anyone with a passing knowledge of algebra. This represents a massive increase in humanities collective intelligence.</p>
+
+<p>If you are an experienced programmer, you have likely already developed a natural talent for proof and abstraction. But talent alone has limited use. Knowledge is leverage. For hundreds of years mathematicians have been creating tools for understanding the world; tools that are applicable to almost every human endeavour. Those tools belong to you.</p>
+
+<h1>How to learn</h1>
+
+<p>To gain access to these tools, you must first perform several rituals. These rituals don&rsquo;t just give you access to the body of knowledge accumulated over hundreds of years, they also give you the tools to build your own. Even if the problem you are working on has never been studied before, you can approach it with a huge collection of tools and techniques as well as the experience and confidence to apply them correctly.</p>
+
+<ul>
+<li>Ritual 1: Learn to read and write proofs</li>
+</ul>
+
+
+<p>A proof is just an argument which is sufficiently detailed to convince the listener. In most cases the listener is just a more suspicious and pessimistic version of yourself &ndash; suspicious because they have learned that humans are not good at reasoning precisely about abstract structures. As a programmer, you spend a great deal of time forming informal proofs about your code and the systems it interacts with. After all, you have to convince yourself that the code you have written actually does what you want it to do, all the time, on every input. Many of the established practices for writing good code &ndash; separation of concerns, clean interfaces, isolation of effects &ndash; boil down to making reasoning easier by reducing the amount of complexity you have to handle at once.</p>
+
+<p>Anyone who was forced to study mathematics at a university level probably has unpleasant memories of being asked to prove some simple obvious fact in tedious detail. Every pedantic little mistake or ambiguity is picked out and criticised. For many people the whole experience is frustrating and seems pointless.</p>
+
+<p>The goal of this exercise is to debug your thought process. It is surprising how many things are totally obvious and yet not true. How many times have you been convinced that a program is absolutely definitely correct this time only for blatant bugs to emerge within minutes? By becoming conscious of the reasoning process itself and by correcting it&rsquo;s mistakes you can learn to reason correctly and precisely. These skills are initially practiced on the solid ground of trivial theorems so that they are second nature by the time you reach less sure footing.</p>
+
+<p>As your skills develop you can return to more fast-and-loose reasoning most of the time. As <a href="http://terrytao.wordpress.com/career-advice/there%E2%80%99s-more-to-mathematics-than-rigour-and-proofs/">Terence Tao explains</a>, the purpose of rigour is to develop and guide intuition. The working mathematician proceeds in rapid leaps and bounds when on familiar ground, only resorting to careful tiptoeing proofs when in unfamiliar territory. Through practice they develop a good sense of when a detailed proof is needed to catch mistakes and when they can get away with just a sketch and a wave, in the same way that a good programmer knows which code can be churned out in a moment and which needs careful thought, review and testing.</p>
+
+<p>Intuition also guides proof. A student unfamiliar with a particular subject will stumble around trying to construct a proof by brute force but an experienced practitioner will find the correct proof just emerges fully formed in their head as if by magic. To paraphrase <a href="http://www.infoq.com/presentations/Simple-Made-Easy">Rich Hickey</a>: proofs are guard rails &ndash; they are essential for safety but you don&rsquo;t drive by bouncing back and forth off the guard rails. Somehow the image of mathematics has become one of drudgery and endless formality when the reality is a balance between the intuitive leaps of understanding and the pillars of proof that prop them up afterwards.</p>
+
+<ul>
+<li>Ritual 2: Learn the language</li>
+</ul>
+
+
+<p>You need at least a passing familiarity with numbers, functions, sets, relations, vectors, matrices, graphs and predicates as well as the syntax used to describe them, their basic properties and how they relate to each other. The amount of knowledge may seem intimidating, but your average math undergraduate learns all this in their first year whilst mostly drunk. You are smarter than them and possibly more sober.</p>
+
+<p>One of the huge benefits of the second ritual is that the knowledge starts to link together. Each fact slots into a huge web with many connections so that you have multiple pathways to remember and understand it. The more different ways you have to look at a subject, the more likely it is that one of them will click and make sense. Theorems and definitions are no longer handed down from on high to be memorized, but seem intuitive and natural because you understand <em>why</em> they are true.</p>
+
+<ul>
+<li>Ritual 3: Practice</li>
+</ul>
+
+
+<p>Mathematical theories are tools and only by applying them repeatedly in different contexts will you learn to wield them properly. Like any other skill, mathematical thinking becomes truly powerful when it is so practiced that it no longer requires conscious effort or awareness. It just becomes another lens through which you can see the world.</p>
+
+<p>Read books. Expect this to be hard. Studying maths texts is less like reading a novel and more like trying to unravel a knot. If something doesn&rsquo;t make sense, skip it and come back later. Study it again and again, in different orders. Don&rsquo;t just read passively, <a href="http://web.stonehill.edu/compsci/history_math/math-read.htm">fight back</a>. Can you find concrete examples of each theorem? Can you find counter-examples? Can you find alternate proofs of key theorems? Can you make the result of a theorem stronger by adding more conditions? If you take away conditions, can you prove a weaker version? Why prove this theorem at all &ndash; what does it mean and what problems can you use it to solve?</p>
+
+<p>Find your own puzzles to solve. When walking to work, is it always fastest to take the first green light at an intersection? Does it depend on the timing of the lights? Is it possible to get to work earlier by leaving later to avoid rush hour traffic? If there were half as many cars but they were twice as long, would traffic be better or worse? Would adding more roads relieve traffic by reducing the density or increase traffic by adding more intersections? Write down the proof and send it to a friend. Tear holes in their proofs. Find ways to falsify your own proofs. The only way to know if your foundations are solid is to kick the shit out of them and see if they fall down.</p>
+
+<h1>Where to start</h1>
+
+<p>The high school math syllabus across most of the western world was designed to create rocket scientists. Literally. Trigonometry, laws of motion and calculus gained pride of place during the space race over fears that Soviet schooling was producing superior rocket scientists. Rote calculation and memorisation were vital skills before the advent of computers. It&rsquo;s little surprise that students don&rsquo;t see maths as being relevant to their lives.</p>
+
+<p>The programming world is little better. Any discussion of maths in programming quickly turns to lambda calculus, type theory or category theory. These topics may be interesting in their own right, but the ratio of time-invested to problem-solving-abilities-gained is less than compelling. Automata theory and complexity theory fare a little better but still don&rsquo;t inspire much.</p>
+
+<p>It&rsquo;s easy to forget that programmers do more than program. The entire goal of programming is to solve problems in the real world and maths has been helping solve those problems for hundreds of years in every field. If you want to learn, study whatever you find interesting and apply it to whatever you enjoy doing.</p>
+
+<p>Find a friend to study with. It&rsquo;s easy to get stuck or misunderstand something but the chances of you both making the same mistake is much lower. Talking it over with someone else is often the quickest way to make sense of a problem.</p>
+
+<p>The transition from high school memorise-and-calculate to real problem solving is legendarily jarring. Suddenly there is not a correct path laid out for you but a bewildering swamp which can only be navigated by skilled reasoning. Learning to think and communicate <em>precisely</em> is useful everywhere but is especially vital when reasoning about complex algorithms or concurrent/distributed systems. <a href="http://www.amazon.com/How-Solve-Mathematical-Princeton-Science-ebook/dp/B0073X0IOA/">How To Solve It</a> is a classic text on tactics for solving hard problems in general. <a href="http://www.amazon.com/How-Prove-It-Structured-Approach-ebook/dp/B009XBOBL6">How To Prove It</a> deals more specifically with finding and expressing proofs and also covers the core constructs of mathematics (logic, numbers, sets, relations, functions).</p>
+
+<p>Depending on how long ago you broke up with maths, you may need to brush up on the foundations. If you need to consciously think about basic algebra and logic you won&rsquo;t have enough brain power left over to handle more advanced material. Whenever you get stuck with something, head over to <a href="https://www.khanacademy.org/">Khan Academy</a> and make sure that you are completely fluent in the prerequisites. <a href="https://www.khanacademy.org/math/algebra">Algebra I</a> is especially important. Khan Academy focuses more on developing concrete intuition than on abstraction and rigour so it&rsquo;s a good complement to more theoretical sources.</p>
+
+<h1>Where to go</h1>
+
+<p>You won&rsquo;t live long enough to learn more than a tiny fraction of all there is to know. Ideas have costs in the time it takes to learn them, the amount of maintenance required to remember them and the amount of effort it takes to apply them. Prefer ideas that have a high power-to-cost ratio. Some of my personal favourites:</p>
+
+<ul>
+<li><p><strong>Randomised algorithms</strong> are often faster, simpler and easier to understand than the best deterministic algorithms. <a href="http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.8277">The Power of Two Random Choices</a> gives a laundry list of important applications for one simple idea. <a href="www.amazon.com/Probability-Computing-Randomized-Algorithms-Probabilistic/dp/0521835402/">Probability and Computing</a> covers the entire field from the absolute basics of probability to the most sophisticated modern applications.</p></li>
+<li><p><strong>Entropy</strong> is a very simple concept that governs compression and error-correcting codes, without which modern communications would be impossible. <a href="http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf">A Mathematical Theory of Communication</a> managed to lay the foundations for an entire field whilst still being readable by anyone with a basic knowledge of probability.</p></li>
+<li><p><strong>The possible-worlds model</strong> is a powerful way to reason about distributed algorithms. <a href="www.cs.cornell.edu/home/halpern/papers/usingrak.pdf">Using Reasoning about Knowledge to Analyze Distributed Systems</a> introduces the model and shows how it simplifies reasoning about a variety of famous algorithms and impossibility proofs.</p></li>
+<li><p><strong>Denotational design</strong> is a technique for designing composable abstractions. While it is commonly used, the only explicit description I have encountered is in <a href="http://conal.net/papers/type-class-morphisms/">Denotational design with type class morphisms</a>. For a real world example see <a href="http://www.gecode.org/papers/Tack_PhD_2009.pdf">Constraint Propagation &ndash; Models, Techniques, Implementation</a> which smoothly transitions from a simple mathematical model of finite-domain constraints to one of the faster constraint solvers in the world.</p></li>
+</ul>
+
+
+<p>Surf wikipedia. Get a sense the major areas of study in mathematics and what kinds of problems they deal with. That way, when you encounter a new and scary problem you at least know where to look for the solution.</p>
+
+<p>Keep reading. Read textbooks. Read papers. Read <a href="http://terrytao.wordpress.com/career-advice/">blogs</a>. Read <a href="http://www.amazon.com/s/ref=nb_sb_noss_1?url=search-alias%3Daps&amp;field-keywords=martin+gardner">puzzle books</a>. Watch <a href="https://www.youtube.com/user/Vihart">videos</a>.</p>
+
+<p>Play around. Don&rsquo;t limit yourself to learning &lsquo;official&rsquo; theory &ndash; discover and invent new ideas for yourself.</p>
+
+<p>Teach somebody. The best way to really understand something is to try and explain it to someone else.</p>
+
+<p>Enjoy yourself. Life is too short not to.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Imperative thinking and the making of sandwiches]]></title>
+    <link href="http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/"/>
+    <updated>2014-07-21T14:37:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches</id>
+    <content type="html"><![CDATA[<p>People regularly tell me that imperative programming is the natural form of programming because &lsquo;people think imperatively&rsquo;. I can see where they are coming from. Why, just the other day I found myself saying, &ldquo;Hey Chris, I&rsquo;m hungry. I need you to walk into the kitchen, open the cupboard, take out a bag of bread, open the bag, remove a slice of bread, place it on a plate&hellip;&rdquo; Unfortunately, I hadn&rsquo;t specified where to find the plate so at this point Chris threw a null pointer exception and died.</p>
+
+<!--more-->
+
+
+<p>The truth is that people think in a variety of different ways in different situations. Most people resort to detailed imperative instructions only when describing complicated or unfamiliar tasks (or when explaining how to interact with a machine, which is itself indicative of how pervasive this mindset is in programming). Even then, the resulting communication is unlikely to resemble a perfectly sequential program and will be full of ambiguity, missing steps and contextual assumptions. Anyone who has ever tried to assemble Ikea furniture knows that clearly communicating or precisely following a series of instructions is actually quite difficult. Indeed, one of the hardest things that beginner programmers have to learn is how to break down a task into a series of simple instructions with no ambiguity. It takes years of practice before the process becomes natural, and meanwhile programming courses have a high failure rate.</p>
+
+<p>If we are going to base the design of our tools on poorly thought-out metaphorical comparisons to making lunch then let&rsquo;s at least be realistic about it. &lsquo;Make me a ham sandwich, there is bread in the cupboard&rsquo; will indeed cause Chris to look in the cupboard. But if there is in fact no bread there, instead of exploding he will probably look elsewhere or ask for clarification. Rather than providing detailed instructions, I provide a goal (sandwich) and hints on how to execute it (try looking for bread in the cupboard). Further constraints are inferred from context and general knowledge (the sandwich should be less than one foot long, there should not be mayo all over the counter afterwards). Chris calculates a series of actions that will produce the desired result and modifies that plan as new information and constraints come to light (no bread in the cupboard).</p>
+
+<p>The reason for communicating in this way is that <em>I don&rsquo;t care</em> exactly how the sandwich is made, so long as it is done neatly and quickly. Communicating my exact intent makes the resulting &lsquo;program&rsquo; simpler and more flexible. I may give additional hints and restrictions when they necessary to speed up the process and Chris may ask for clarification if at any point he is unable to plan a path to the goal, but I never have to resort to a full imperative description of the problem.</p>
+
+<p>Today&rsquo;s computers don&rsquo;t have enough contextual knowledge to make me a sandwich but there are lots of domains where this approach excels. The classic example is SQL databases. Rather than specifying exact data-structures and operations, the user specifies a high-level schema and sends descriptions of queries. It is the responsibility of the database to choose storage types, manage concurrent changes and generate query plans. It makes these decisions based on cost models, runtime information and constrained search (e.g., postgres uses a genetic search algorithm to choose efficient plans for large queries). If the database makes bad decisions, the user can help it out by adding size hints, specifying indexes and overriding query plans. So long as the process of turning intent into plans is transparent and interactive there is no need to invoke a <a href="http://c2.com/cgi/wiki?SufficientlySmartCompiler">sufficiently smart compiler</a>. A dumb compiler can do the easy but tedious legwork and the human can supervise and correct mistakes. This saves programmer time, makes the intent of the resulting program easier to understand (because it is not cluttered with irrelevant details) and makes it easier to change parts of the system independently (eg adding an index does not require rewriting all of your queries). There is a reason why SQL databases became a standard storage mechanism &ndash; this model of programming works incredibly well in this domain.</p>
+
+<p>Indeed, the most painful part of using an SQL database is the interface back to purely imperative programming. The <a href="http://en.wikipedia.org/wiki/Object-relational_impedance_mismatch">Object-Relational mismatch</a> is often seen as a failure of SQL databases. But consider the relative strengths and learning curves of the two technologies. SQL is often still used for its original goal: enabling non-programmers to mine data. The database handles choice of serialization protocol, data structures for storage and indexing, query algorithms and manages concurrency. For the majority of applications it makes good enough decisions that the user never needs to provide any hints beyond index choice. Imperative programming, on the other hand, requires the user to handle all of these decisions and requires years of practice before the user can reliably build the same kinds of applications. In that light, it is interesting that the popular trend is towards making databases more like imperative languages (NoSQL, object databases) rather than making programming look more like SQL.</p>
+
+<p>To be clear, SQL is a mess. I claim that it is successful <em>despite</em> its many flaws because of the power of the core ideas:</p>
+
+<ul>
+<li>separate goals from plans</li>
+<li>separate logical data models from physical data-structures</li>
+<li>automatically handle the translation from goals to plans and from logical to physical models</li>
+<li>make the translation transparent and allow the user to provide hints or override sections</li>
+</ul>
+
+
+<p>These ideas allow the programming environment to capture the correct level of detail (&lsquo;make me a sandwich&rsquo; rather than &lsquo;go to the kitchen, open the cupboard&hellip;&rsquo;). This separates meaning from optimisation giving both the user and the compiler more leeway to change the operational details of the program without modifying the specification. The transparency allows us to build this without requiring a SufficientlySmartCompiler™.</p>
+
+<p>This model is well understood in the database world and is the subject of decades of research. Unfortunately the database world and the programming language world rarely interact and so the results are mostly confined to data management systems and rarely extend to general purpose programming, with the possible exception of the <a href="http://www.infoq.com/presentations/Datalog">recent revival of the datalog family</a>.</p>
+
+<p>So what would a general purpose language look like if it took these ideas to heart? Our current prototype takes inspiration from <a href="http://shaffner.us/cs/papers/tarpit.pdf">Out of the Tar Pit</a> and <a href="http://www.vpri.org/pdf/m2009001_prog_as.pdf">Programming as Planning</a>, using a <a href="http://en.wikipedia.org/wiki/Temporal_logic">temporal logic</a> language to write specifications and a variety of extensible constraint solvers to execute plans. That may sound complicated, but the interface for most users looks like a cross between <a href="https://ifttt.com/">IFTTT</a> and a simplified version of SQL. Like SQL, the compiler is able to make good decisions for simple programs so the user doesn&rsquo;t need to think about data structures, algorithms or concurrency. We haven&rsquo;t yet begun to work on surfacing and altering its decisions in the cases where it needs help, but I&rsquo;m hopeful that by bootstrapping the compiler and by providing <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;cad=rja&amp;uact=8&amp;ved=0CB0QFjAA&amp;url=http%3A%2F%2Fdb.cis.upenn.edu%2FDL%2Fwhywhere.pdf&amp;ei=spTJU5jPAcWTyATT8IHgBA&amp;usg=AFQjCNHovRJYd3vBwhtxze_EuL2w6zIT_w&amp;sig2=4oKCgSECEnZnCOB98Tk0Xw&amp;bvm=bv.71198958,d.aWw">data provenance</a> in the IDE we can go a long way towards easing the learning curve on that front too.</p>
+
+<p>There is a lot of hard work still to go but we have finally have the basic core of our system nailed down and have enough working prototypes to be confident that this approach is compelling.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Pain we forgot]]></title>
+    <link href="http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot/"/>
+    <updated>2014-05-17T09:54:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot</id>
+    <content type="html"><![CDATA[<p>Much of the pain in programming is taken for granted. After years of repetition it fades into the background and is forgotten. The first step in making programming easier is to be concious of what makes it hard. So let&rsquo;s put ourselves in the shoes of a smart but inexperienced end user trying to build, test and maintain a simple application.</p>
+
+<!--more-->
+
+
+<p>Anon the intern is charged with managing lunch orders and quickly realises that their job could be done by a computer: Every day at 1000, send each employee an email with a link to a form where they can choose what they want for lunch. At 1200, gather up the replies and email the list to the catering company. At the end of every month, tally up what each person owes and send the list to accounting. While this a simple program, it covers all the basics: data input, validation, error handling, calculation, presentation, communication, reactivity, scheduling, deployment etc. There are probably dedicated apps that cover this particular example but we are more concerned with how an end-user would solve this kind of problem in general and the difficulties they will encounter along the way.</p>
+
+<p>A lot of the problems we will encounter seem unavoidable &ndash; they are forced on us by outside constraints. Most of these constraints though are the product not of deliberate choices but of historical accident. We still program like it&rsquo;s 1960 because there are powerful path dependencies that incentivise pretending your space age computing machine is actually an 80 character tty. We are trapped in a local maximum.</p>
+
+<p>One might also argue that these tools are simple enough once you learn to use them. I would only point out that, emperically, that bar is too high. Despite the clear benefits, the vast majority of the world was chosen to remain illiterate. Even tools for which there is a clear need (eg version control) have largely failed to make a dent. Clearly there is a need for a less hostile programming environment.</p>
+
+<p>It is tempting to believe that this is the best we can do and that programming is naturally this complex. But as we work through our lunch app, consider how little of the work we have to do actually relates to the problem of specifying the application.</p>
+
+<h2>Getting started</h2>
+
+<p>First we need to get a development environment running. Let&rsquo;s try clojure:</p>
+
+<p><code>bash
+lein new lunch_app
+cd lunch_app
+mkdir resources
+touch resources/index.html
+LightTable resources/index.html # insert script tag for web repl
+firefox resources/index.html
+LightTable clj/lunch_app/core.clj # server side, fire up compiler, connect to repl
+LightTable cljs/lunch_app/core.cljs # client side, connect to web repl
+</code></p>
+
+<p>At this point you have already lost 99% of the population and we haven&rsquo;t even touched on css or templates yet. Worse, none of this was discoverable. I happen to already know how to setup a simple client-server web app so all these steps seem obvious to me. But Anon the intern needs to be able to open up Programming™ and click &lsquo;New Web Form&rsquo;. Intellij does a reasonable job on this front &ndash; you can start a new web project, compile and open the result in a browser in a few button clicks. But in most environments you need a tutorial just to start a new project.</p>
+
+<h2>Finding help</h2>
+
+<p>So Anon is now staring at a blinking cursor on a blank editor page. What next? How does one go about making a web form, or send a email? For common tasks google will probably find you entire code samples or at the very least some javadocs. The samples will be missing lots of implicit information such as how to install the necessary libraries and how to deal with missing dependencies and version conflicts. Transcribing and modifying the examples may lead to bugs that suck up time. It&rsquo;s not terrible, mostly thanks to sites like stackoverflow, but it&rsquo;s still a lot of unnecessary distractions from the task at hand.</p>
+
+<p>I want to just type &lsquo;email&rsquo; and see a list of functions and libraries relating to email. If I select a function from autocomplete, its dependencies should be automatically added to the project without any fuss. Missing dependencies or version conflicts should be presented alongside suggestions for resolution (click here to choose version A). <a href="http://blogs.msdn.com/b/visualstudio/archive/2014/02/17/introducing-bing-code-search-for-c.aspx">Bing Code Search</a> takes this idea even further and autocompletes code for common tasks.</p>
+
+<h2>Writing code</h2>
+
+<p>Even for experts, programming is an exploratory process. We experiment with libraries, run through examples and iteratively build up features. One of the most painful lessons beginners have to learn is just how often everyone is wrong about everything. Tightening the feedback loop between writing code and seeing the results reduces the damage caused by wrong assumptions, lightens the cognitive load of tracking what should be happening and helps build accurate mental models of the system. The latter is especially important for beginners who often suffer from miscomprehensions about even the basic semantics of the language. Unfortunately, the most you are likely get is automatically refreshing your browser. Maybe a REPL if you are lucky.</p>
+
+<p>Imagine a spreadsheet where every time you change something you must open a terminal, run the compiler and scan through the cell / value pairs in the printout to see the effects of your change. We wouldn&rsquo;t put up with UX that appalling in any other tool but somehow that is still the state of the art for programming tools. I suspect a lot of the blame lies in our failure to find a model for GUI tools that is as flexible and composable as plain text. I see a lot of potential in Paul Chiusano&rsquo;s ideas for <a href="http://pchiusano.blogspot.com/2013/05/the-future-of-software-end-of-apps-and.html">killing the application</a> and in Eskil Steenburgs <a href="https://www.youtube.com/watch?feature=player_detailpage&amp;v=f90R2taD1WQ#t=1837">Verse</a>.</p>
+
+<p>Light Table at least gives you <a href="https://www.youtube.com/watch?v=gtXpOD6jFls">inline eval</a>, <a href="https://www.youtube.com/watch?v=d8-b6QEN-rk">watches</a> and the <a href="https://www.youtube.com/watch?v=YY6B9EHbH24">instarepl</a>. This type of interaction is taken further by ideas like <a href="http://gbracha.blogspot.com/2012/11/debug-mode-is-only-mode.html">Debug Mode is the Only Mode</a> and <a href="http://www.subtext-lang.org/OOPSLA04.pdf">Example Centric Programming</a>). Instead of having a separate editor, compiler, repl, debugger etc you develop everything by editing code in the debugger. It is a similar idea to JIT compilers &ndash; the IDE has more information available at runtime then at compile time so it can make better decisions and provide better feedback (eg by generating example inputs and outputs as you write a function).</p>
+
+<p>Plain text is also very limiting. Language is very good for conveying meaning but not so great for displaying data. Being able to quickly throw up graphs and diagrams (like in <a href="https://github.com/ztellman/rhizome">rhizome</a>, <a href="https://github.com/ztellman/automat">automat</a> or <a href="https://github.com/ztellman/lamina/wiki/Channels">lamina</a>) is incredibly useful. Light Table&rsquo;s <a href="http://www.chris-granger.com/images/040/ipygraphs.png">inline graphs</a> are a start but we haven&rsquo;t otherwise made much use of visualisation. First person to implement inline graphviz gets a cookie.</p>
+
+<h2>Running code</h2>
+
+<p>Surprisingly, one of the most common difficulties we have heard from beginners is just running code. Even if we were to hand Anon the entire lunch_app source code they would likely still struggle to actually use it. They have to install dependencies, compile code, start servers and open ports. At each step the errors are difficult to diagnose and time-consuming to fix. The tools that are intended to fix this are often even worse themselves (every time I write a blog post in octopress I find rvm has somehow broken again). IDEs like Intellij and Visual Studio do a reasonable job of standardising the build process and capturing dependencies so that it is usually possible to import a project and just hit run, but that only goes as far as development. For deployment we have tools like Docker which make deployment highly repeatable but don&rsquo;t help much with capturing the process in the first place. None of these really help Anon the intern deploy lunch_app.</p>
+
+<p>The lunch app is going to need scheduling too, and error logging and monitoring. Anon needs to be alerted if the emails don&rsquo;t go out or if there are no reponses. Setting up even the simplest logging, monitoring and restarting is a hassle even for professional programmers.</p>
+
+<p>Wolfram&rsquo;s Language <a href="https://www.wolfram.com/universal-deployment-system/">workflow</a> is pretty close to ideal. You work in a notebook where code runs and updates instantly with no manual compile step. Deploying to a cloud server is just a single function call which automatically collects code and dependencies and returns a url where your program is now running. No need to think about files or libraries, no project files, no build artefacts, no messing about setting up servers and opening ports.</p>
+
+<p>From there it doesn&rsquo;t take much imagination to add easy task scheduling and an error logger that emails Anon when something goes wrong. None of this requires giving up control either. You could just as easily replace &lsquo;cloud server&rsquo; with &lsquo;departmental server&rsquo; or &lsquo;little black box that came with our internet&rsquo;. The important point is that there are sensible defaults for deployment and that it is &lsquo;batteries included&rsquo; in the language or IDE.</p>
+
+<h2>What?</h2>
+
+<p>The simplest question we could ask about our application is &lsquo;what is the current state&rsquo;. Bizaarely, very few programming environments give you any help on this front. Many programmers get by with nothing but print statements. If you are lucky you may have a debugger or watches, but you still end up looking at your application through a keyhole. You have to actively insert instrumentation by hand to view the state of each tiny part of the application. If you want to modify that state you have to mentally work backwards and construct the correct piece of code to find and change the variable that you are looking at. It may not even have a name that is accessible from the repl (eg a variable in an anonymous closure). Viewing and modifying the state of the application should be a fundamental interaction and yet it&rsquo;s made unreasonably difficult by our languages and tools.</p>
+
+<p>Compare this to a tool like Excel or <a href="http://www.youtube.com/watch?v=kvFDV1oM-ZA">Django Admin</a> where <em>all</em> the data is laid out for easy browsing without any active effort from the user and can be <em>directly</em> modified just by clicking and typing. The tooling itself isn&rsquo;t difficult but it requires rethinking the way we manage state in programming languages. All mainstream languages, regardless of paradigm, encourage <a href="http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/">anonymous local state</a> which can&rsquo;t be easily observed and modified.</p>
+
+<p>Once we have managed state, whether using a relational model like <a href="http://bloom-lang.net/">Bloom</a> or more traditional functional data-structures like <a href="http://infoscience.epfl.ch/record/136776">Opis</a>, we can easily record history too. Tools like <a href="http://chrononsystems.com/products/chronon-time-travelling-debugger">time travelling debuggers</a> that require huge engineering effort in traditional languages become trivial when you can cheaply record or reconstruct the past. Reproducing bugs is easier when you can just snapshot your history and mail it to the developer. Bloom and Opis are also both able to determine dataflow topologies from source code so when stepping into an unfamiliar project you can quickly get a visual overview of how the various components communicate (examples are buried <a href="http://db.cs.berkeley.edu/papers/cidr11-bloom.pdf">here</a> and <a href="http://infoscience.epfl.ch/record/136776/files/DagandETAL09Opis.pdf">here</a>).</p>
+
+<h2>Why?</h2>
+
+<p>Traditional debuggers focus entirely on the <em>what</em> &ndash; walking through a narrow slice of state on step at a time. But when debugging the question one usually starts with is <em>why</em>? Why are the lunch options in the wrong order? Why didn&rsquo;t the lunch email go out? Why is everyones bill for the month zero? These questions typically involve reasoning backwards from effect to cause whereas debuggers walk you forward from cause to effect. The result is that debugging consists mostly not of finding the problem but manually walking backwards along the chain of causes by setting up isolated test cases and repeatedly rerunning them under the debugger.</p>
+
+<p><a href="http://blog.brackets.io/2013/08/28/theseus-javascript-debugger-for-chrome-and-nodejs/">Theseus</a> improves on this slightly by capturing arguments at the entrace to each event callback, so that you don&rsquo;t have to repeatedly rerun. Ko and Myer&rsquo;s <a href="http://repository.cmu.edu/cgi/viewcontent.cgi?article=1165&amp;context=hcii">causal debugger</a> explicitly answers the questions <em>why</em> and <em>why not</em> by tracing the tree of causes for each state change, so that the process of walking backwards from effect to cause is entirely automated and you can just focus on figuring out where things went wrong.</p>
+
+<p>The problem gets even worse with scale. Debugging by following control flow works poorly in large systems where what really matters is <em>data flow</em>. Answering questions like &lsquo;why do orders sometimes get lost&rsquo; requires tracing through an enourmous graph, one which is not even recorded in most systems and instead has to be inferred from logs, like piecing together ancient civilisations from broken pottery. <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">BOOM analytics</a> deals with this by reflecting all data, from error logs and persistent data to message queues and profiling data, into relational tables that are made available to overlog &ndash; the same distributed query language that runs the rest of the system. This means you can directly run queries over the causality graph, such as &lsquo;for each order that was entered into the system but not completed, give me a list of every message was linked to that order by some chain of rules&rsquo;. Since the recording of this data was itself governed by overlog rules you can switch on detailed logging at runtime for specific kinds of data eg &lsquo;record all messages concerning order 197 originating from cluster C and forward them to me&rsquo;.</p>
+
+<h2>Change</h2>
+
+<p>Outside of the software world, version control and collaboration software is limited to saving lunch_app.v07 and attaching it to an email. Collaborating on a single project is difficult and slow. The standard tools of the trade for programmers (git, mercurial etc) are vastly more powerful and solve a pressing problem but present an interface that <a href="http://steveko.wordpress.com/2012/02/24/10-things-i-hate-about-git/">baffles and frustrates many users</a>. The underlying model is elegant and powerful but even the graphical interfaces require a significant investment of time and effort to understand.</p>
+
+<p>What Anon needs is somewhere between <a href="http://www.emacswiki.org/emacs/UndoTree">undo-tree</a> (without the ascii art) and <a href="http://etherpad.org/">etherpad</a>. Changes should be automatically recorded and (optionally) retroactively tagged with commit messages. Real-time collaboration should be as simple as clicking on a coworkers face. Undoing changes and checking out different versions should just be a matter of moving around on the <a href="https://github.com/blog/39-say-hello-to-the-network-graph-visualizer">commit graph</a>. Dragging a piece of code out of the editor should produce a link to the VCS page for that code. If the editor understands the structure of the code we even can track semantic changes to individual units of code (eg rename function, reorder expressions) rather than diffing text in a file, making both automatic and manual merges easier since we have a better record of the intent of the change.</p>
+
+<p>Similary, when Anon 2 the accountant wants to modify their client-side copy of the lunch form to remember their favourite lunches it should be a simple process. No hunting down and recompiling system binaries, no installing greasemonkey scripts from the filesystem. Just click to open the source, modify to your satisfaction, click to save. I&rsquo;ve never seen anything come close to this basic interaction. The <a href="http://blog.printf.net/articles/2006/10/29/the-view-source-key/">OLPC view source button</a> promised exactly this experience but as far as I know it never materialised (it certainly didn&rsquo;t work on mine).</p>
+
+<h2>Learning</h2>
+
+<p>Programming tools generally pay very little attention to producing helpful error messages (with <a href="http://cs.brown.edu/~sk/Publications/Papers/Published/mfk-measur-effect-error-msg-novice-sigcse/paper.pdf">one</a> or <a href="http://research.microsoft.com/pubs/64590/helium.pdf">two</a> exceptions). There is a modest amount of <a href="http://www.amazon.com/Man-Who-Lied-His-Laptop-ebook/dp/B003YUC7BI/ref=sr_1_1?ie=UTF8&amp;qid=1400099030&amp;sr=8-1&amp;keywords=man+who+lied+to+his+laptop">evidence</a> that people interact with computers as if they were people. Many of the results of this research are suprising and counter-intuitive eg <a href="http://faculty.washington.edu/ajko/papers/Lee2011Gidget.pdf">personifying the compiler</a> can improve learning rates in students. Given that, do you really want to spend lots of time with the kind of person who just repeatedly shouts &lsquo;cannot call method undefined of undefined!&rsquo; in your face without so much as hinting how you might fix the problem or where you might start looking?</p>
+
+<p>Our programming environments are absurdly hostile. Interfaces either <a href="http://www.suggestsoft.com/images/quest-software/comparerocket-for-visual-studio.gif">overwhelm with detail</a> or <a href="http://i.stack.imgur.com/VqPMv.png">hide everything</a>. Most actions cannot be undone (eg changing a variable, defining a function, installing a library). Runtimes default to exiting on uncaught exceptions, throwing away all the context that would be useful for solving the problem and forcing the user to try to recreate the crashing state. When any action can lead to confusing breakage and ruined work, inexperienced users suffer from fear and paralysis and an unwillingness to experiment. This cripples their ability to learn.</p>
+
+<p>Error messages should at the very least identify what might have caused the error and preferably offer options for fixing it. Intellij, for example, will highlight spelling mistakes and offer to correct them (&ldquo;did you mean&hellip;&rdquo;). Good end user applications will link common errors to FAQs. Suggestions don&rsquo;t need to be perfect, just accurate. Everyone hated Clippy because his advice was useless and repetitive and lacked context. The golden rule is if you don&rsquo;t have something useful to say, don&rsquo;t say nothing at all. One ambitious project (ref?) crowd-sourced examples of causes of and solutions to type-checking errors. Large-scale data collection and testing may end up being the best path to providing helpful feedback.</p>
+
+<p>Environments also need to be more proactive. Uncaught errors should drop the user into the debugger where they can <a href="http://www.gigamonkeys.com/book/beyond-exception-handling-conditions-and-restarts.html">edit and continue</a>. Editors can spot common mistakes and suggest corrections (Intellij is pretty good at this, as is <a href="https://github.com/jonase/kibit">kibit</a>, but many people are still working with editors that don&rsquo;t even warn them of typos or shadowed variables). Profilers can heuristically explore bottlenecks and suggest solutions (eg if foo was indexed this query would run 10x faster). Rather than rely on users to create their own tests we can prompt them for examples and invariant properties and <a href="www.scs.stanford.edu/11au-cs240h/notes/testing-slides.html">search for counter-examples</a>. <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=3&amp;cad=rja&amp;uact=8&amp;ved=0CD0QFjAC&amp;url=http%3A%2F%2Finfoscience.epfl.ch%2Frecord%2F136776&amp;ei=gNpzU7yeKMTesASLr4KoCA&amp;usg=AFQjCNGyqXOAavdVfGxGuBFZbTzobRmXtQ&amp;sig2=jvF_qeyNTyCOffdJkC-twA&amp;bvm=bv.66917471,d.cWc">Opis</a> comes equipped with a profiler that automatically estimates the asymptotic complexity of each function in the model and a finite-state model checker that can prove invariants always hold by efficiently and exhaustively checking every possible state. Bloom features a <a href="http://db.cs.berkeley.edu/papers/dbtest12-bloom.pdf">generative testing framework</a> that uses an SMT solver to efficiently explore the space of possible and a <a href="http://www.bloom-lang.net/calm/">static analysis pass</a> that warns of missed coordination points in distributed programs. Does your IDE even run your unit tests for you?</p>
+
+<p>Finally, environments can&rsquo;t be black boxes. Beginners need a simple experience but if they are to become experts they need to be able to shed the training wheels and open the hood. Many attempts at end-user programming failed because they assumed the user was stupid and so wrapped everything in cotton wool. Whenever we provide a simplified experience, there should be an easy way to crack it open and see how it works. Nothing should be magic forever. Ensure that the users curiousity is never frustrated and they won&rsquo;t need teaching for long.</p>
+
+<h2>Plans</h2>
+
+<p>Some of the things I have described are just a matter of paying attention to the details. Others require doing things very differently. The key parts of our plan for Aurora are:</p>
+
+<ul>
+<li>storing code in a networked database with version control and realtime sync</li>
+<li>a <a href="http://en.wikipedia.org/wiki/Structure_editor">structured editor</a> to enable rich ASTs with unique UUIDs</li>
+<li>managing environments declaratively so that evaluating code is always safe</li>
+<li>a uniform (logical) data model where every piece of state is globally addressable</li>
+<li>a model for change that tracks history and causality</li>
+<li>a powerful query language that can be used for querying code, runtime state, causal graphs, profiling data etc</li>
+<li>composable gui tools with transparent guts</li>
+<li>a smooth interface to the old world so we don&rsquo;t end up sharing a grave with smalltalk</li>
+</ul>
+
+
+<p>We will dive into these in more detail in the coming months.</p>
+
+<p>None of this will be at all easy, but it&rsquo;s no harder than continuing what we are doing now and much of the groundwork has already been laid if you know where to look. If one thing is certain, it is that the future is not 80 characters wide.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Local state is harmful]]></title>
+    <link href="http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/"/>
+    <updated>2014-02-17T05:02:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful</id>
+    <content type="html"><![CDATA[<p>Don&rsquo;t lynch me just yet :)</p>
+
+<!--more-->
+
+
+<p>Picture a tradiional webapp. We have a number of stateless workers connected to a stateful, relational database. This is a setup with a number of excellent properties:</p>
+
+<ul>
+<li>All state can be queried using a uniform api &ndash; SQL. This enables flexible ad-hoc exploration of the application state as well as generic UIs like <a href="https://docs.djangoproject.com/en/dev/ref/contrib/admin/">django admin</a></li>
+<li>Every item of state has a unique and predictable name by which it can be identified &ndash; a unique key in the table.</li>
+<li>Access to state can be restricted and controlled. Transactions prevent different workers from interfering with each other. ACLs allow giving individual workers access to only the information they need to limit the scope of mistakes.</li>
+<li>Changes to state can be monitored. Tailing the transaction log is an effective way to stream to a backup server or to debug errors that occurred in production. One can reconstuct the state of the database at any time.</li>
+<li>State is separate from code. You can change client code, rename all your classes or restart workers on the fly and the state in the database will be unharmed.</li>
+</ul>
+
+
+<p>The database state is also pervasive, mutable and <em>global</em>.</p>
+
+<p>Now let&rsquo;s zoom in and look at our imperative, object-oriented workers:</p>
+
+<ul>
+<li>State is encapuslated in objects and hidden behind an ad-hoc collection of methods.</li>
+<li>Objects are effectively named only by their location in the (cyclic, directed) object graph or their position in memory.</li>
+<li>Access to state can be restricted and controlled through encapsulation. Concurrent modifications are a constant source of bugs. Access control is adhoc and transitive &ndash; if you can walk the object graph to an object you can access it.</li>
+<li>Changes to state are usually monitored via adhoc methods such as manually inserting debug statements. Approximating history by watching debug statements and reconstructing state in ones head is the normal method of debugging.</li>
+<li>State is entangled with code. Portable serialization is difficult. Live-coding works to some extent but requires reasoning about the interaction of state and code (eg in js redefining a function does not modify old instances that may still be hanging around in data structures or in callbacks)</li>
+</ul>
+
+
+<p>Functional programmers need not look so smug at this point. The Haskell/OCaml family struggles to redefine types at runtime or handle live data migrations (the declaration of a nominal type is a side-effect in a live language). Clojure does better on these points but still gets burned by nominal types (eg extend a deftype/defrecord and the reeval the definition) and more generally by treating the definition of new code as mutation of state (which has to be papered over by <a href="https://github.com/clojure/tools.namespace/">tools.namespace</a>).</p>
+
+<p>Why are these points important? We spend most of our time not writing code but <em>reasoning about code</em>, whether hunting for bugs, refactoring old code or trying to extend a module. We end up with questions like:</p>
+
+<ul>
+<li>When did this state change?</li>
+<li>What caused it to change?</li>
+<li>Did this invariant ever break?</li>
+<li>How did this output get here?</li>
+</ul>
+
+
+<p>How do we answer these questions?</p>
+
+<p>In the database we have a transaction log containing for each transaction: the queries involved, the commit time, the client name etc. We can write code that specifies the condition we are interested in via an sql query, locates the relevant transactions by running through the log and then recreates the state of the database at that point. This works even if the error happened elsewhere &ndash; just have the user ship you their transaction log.</p>
+
+<p>In the worker, we have two familiar workhorses:</p>
+
+<ul>
+<li>Manually add print statements, recompile the code, try to recreate the conditions we are interested in and then reconstruct the causality by reading the printed statements</li>
+<li>Add a breakpoint in the debugger, try to recreate the conditions we are interested in and then step through the code line by line</li>
+</ul>
+
+
+<p>What these two have in common is that they are both achingly <em>manual</em>. There is no easy way to automate the process. There are no libraries full of debugging strategies that you can deploy. The questions we have are about time and causality but our current tools restrict us to looking at tiny slices of space (print statements) or time (debuggers) and offer no way to automate our actions.</p>
+
+<p>I propose that if we were to manage state more like a database and less like a traditional imperative language then understanding and debugging programs would become easier. As is traditional, I aim to convince the reader by the use of an unrealistically simple example.</p>
+
+<h2>Counting sheep</h2>
+
+<p>As everyone knows the main purpose of advanced technology has always been to help us <a href="http://sl4.org/wiki/TheSimpleTruth">count our sheep</a>. At the dawn of time this was very simple.</p>
+
+<p>``` clj
+(def count (atom 0))</p>
+
+<p>(defn inc! []
+  (swap! count + 1))</p>
+
+<p>(defn dec! []
+  (swap! count &ndash; 1))</p>
+
+<p>(defn run-counter [port]
+  (let [socket (open port)]</p>
+
+<pre><code>(while true
+  (case (receive-message socket)
+    :sheep-in (inc!)
+    :sheep-out (dec!)))))
+</code></pre>
+
+<p>(run-counter 1081)
+```</p>
+
+<p>But as civilisation advanced so too did the demands on technology. With newfound riches came multiple pens of sheep. People soon realised that the trusty old global variable had a crucial flaw &ndash; it was not reentrant. Having been burned by mutable state they decided to keep it under lock and guard.</p>
+
+<p>``` clj
+(defn make-counter []
+  (let [count (atom 0)]</p>
+
+<pre><code>{:inc! (swap! count + 1)
+ :dec! (swap! count - 1)}))
+</code></pre>
+
+<p>(defn run-counter [port]
+  (let [socket (open port)</p>
+
+<pre><code>    {:keys [inc! dec!]} (make-counter)]
+(while true
+  (case (receive-message socket)
+    :sheep-in (inc!)
+    :sheep-out (dec!)))))
+</code></pre>
+
+<p>(run-counter 1081)
+(run-counter 1082)
+```</p>
+
+<p>Later programmers were a more trusting bunch and left their data unprotected, but still hidden.</p>
+
+<p>``` clj
+(defn run-counter [port]
+  (let [socket (open port)</p>
+
+<pre><code>    count (atom 0)]
+(while true
+  (case (receive-message socket)
+    :sheep-in (swap! count + 1)
+    :sheep-out (swap! count - 1)))))
+</code></pre>
+
+<p>(run-counter 1081)
+(run-counter 1082)
+```</p>
+
+<p>It took thousands of years of progress before anyone asked the crucial question: &ldquo;So how many sheep do we actually have?&rdquo;. The guardian of the count was reluctant to give up this delicate information, having been lectured all its life about the importance of data hiding. The only solution was torture.</p>
+
+<p>``` clj
+(defn run-counter [port]
+  (let [socket (open port)</p>
+
+<pre><code>    count (atom 0)]
+(while true
+  (case (receive-message socket)
+    :sheep-in (swap! count + 1)
+    :sheep-out (swap! count - 1)
+    :how-many-sheep (send-message socket [@count :sheep])))))
+</code></pre>
+
+<p>(run-counter 1081)
+(run-counter 1082)
+```</p>
+
+<p>In erlang they still hold to these cruel and brutal traditions.</p>
+
+<p>Let&rsquo;s try something different. We can separate state from code and allow uniform access to all application state. We just have to carefully control access to that state.</p>
+
+<p>``` clj
+;; in the code</p>
+
+<p>(defn run-counter [port count]
+  (let [socket (open port)]</p>
+
+<pre><code>(while true
+  (case (receive-message socket)
+    :sheep-in (swap! count + 1)
+    :sheep-out (swap! count - 1)))))
+</code></pre>
+
+<p>;; in the repl</p>
+
+<p>(def state
+  {:count-a (atom 0)
+   :count-b (atom 0)})</p>
+
+<p>(run-counter 1081 (state :count-a))
+(run-counter 1082 (state :count-b))</p>
+
+<p>@(state :count-a) ;; check the number of sheep</p>
+
+<p>(run-counter 1083 (state :count-a)) ;; share sheep with 1081
+```</p>
+
+<p>This is a kind of pseudo-global state. We can easily examine any application state in the repl but functions can only modify state this is passed to them directly. All we need now is to monitor changes to the state.</p>
+
+<p>``` clj
+(defn run-counter [port count]
+  (let [socket (open port)]</p>
+
+<pre><code>(while true
+  (case (receive-message socket)
+    :sheep-in (swap! count + 1)
+    :sheep-out (swap! count - 1)))))
+</code></pre>
+
+<p>(def state
+  (atom {:count-a 0</p>
+
+<pre><code>     :count-b 0}))
+</code></pre>
+
+<p>(run-counter 1081 (subatom state :count-a))
+(run-counter 1082 (subatom state :count-b))
+```</p>
+
+<p><code>subatom</code> is not a clojure function, but it shows up regularly in clojure libraries (eg my <a href="https://github.com/jamii/bigatom">bigatom</a> is a simple, self-contained implementation). All it does is create a view on the original atom. This approximates a mutable tree while still allowing immutable snapshots.</p>
+
+<p>``` clj
+(def x (atom {:foo {:bar 0}}))</p>
+
+<p>(def y (subatom x :foo :bar))</p>
+
+<p>@y ;; => 0</p>
+
+<p>(swap! y inc) ;; => 1</p>
+
+<p>@x ;; => {:foo {:bar 1}}
+```</p>
+
+<p>Now we can record changes and explore them programatically. Suppose that sheep pen 1082 is actually inside sheep pen 1081. If everything is working correctly, we should have the invariant <code>(&gt; (:count-a @state) (:count-b @state))</code>. Most of the time this is indeed the case, but once in a blue moon an unhappy customer reports that the invariant is broken.</p>
+
+<p>Luckily, as modern programmers we can simply query the clients state history to find out what happened.</p>
+
+<p>``` clj
+(def history
+  (atom [[(time) @state]]))</p>
+
+<p>(add-watch state history (fn [_ _ new-state] (swap! history conj [(time) new-state])))</p>
+
+<p>(drop-while
+  (fn [[time state]]</p>
+
+<pre><code>(&gt; (:count-a state) (:count-b state)))
+</code></pre>
+
+<p>  @history)
+```</p>
+
+<p>This is a trivial example, but this kind of ability to debug programmatically is potentially very valuable.</p>
+
+<h2>Real world use</h2>
+
+<p>Removing hidden state does not have to be a binary change. The more you move in that direction the more of the benefits you will gain.</p>
+
+<p>The project that convinced me was a prototype betting exchange written in clojure. Although I relied on mutable collections (and thus lost the ablity to record history easily) I used <a href="https://github.com/prismatic/plumbing">Graph</a> to wire components together.</p>
+
+<p>``` clj
+(def log
+  {:stream (fnk [log-file] (java.io.FileOutputStream. log-file))
+   :channel (fnk [stream] (.getChannel stream))
+   :writer (fnk [stream] (clojure.java.io/writer stream))})</p>
+
+<p>(def server
+  {:log log
+   :queue (fnk [batch-size] (java.util.concurrent.ArrayBlockingQueue. batch-size))
+   :server (fnk [queue frame port] (network/receive-events queue frame port))
+   :state (fnk [init-state] (atom init-state))
+   :persistor (fnk [state queue [:log channel writer] handler batch-size]</p>
+
+<pre><code>               (future-loop (persistence/handle-events state queue channel writer handler batch-size)))})
+</code></pre>
+
+<p>(defnk client [frame port]
+  (lamina/wait-for-result (tcp/tcp-client {:host &ldquo;localhost&rdquo; :port port :frame frame})))</p>
+
+<p>;; wiring for throughput test
+(def load
+  {:client client
+   :send-count (fnk [] (atom 0))
+   :recv-count load/recv-count
+   :counter (fnk [recv-count] (future (load/counter-loop recv-count @recv-count)))
+   :loader (fnk [client send-count recv-count rate-limit]</p>
+
+<pre><code>            (future (load/loader-loop client send-count recv-count rate-limit)))})
+</code></pre>
+
+<p>;; wiring for latency test
+(def measure
+  {:client client
+   :measurer (fnk [client] (future (load/measurer-loop client)))})
+```</p>
+
+<p>With explicit names for all state, dependency injection is easy. When I start a component I can swap out the network implementation for testing or compare different implementations of the event handler etc.</p>
+
+<p>``` clj
+  (def s ((graph/eager-compile server)</p>
+
+<pre><code>      {:port 19997
+       :frame etf-frame
+       :init-state load/init-state
+       :handler exchange/handle-event
+       :log-file "test-out"
+       :batch-size 1000}))
+</code></pre>
+
+<p>```</p>
+
+<p>Creating a component returns a nested map of all the state in all the subcomponenets. I can poke around inside the state whilst debugging. A little snippet I often used polls the queue size and prints to the console whenever it is full.</p>
+
+<p>``` clj
+(future
+  (while true</p>
+
+<pre><code>(when (&gt;= (.size (:queue s)) (:batch-size s))
+  (println "Full at" (time)))))
+</code></pre>
+
+<p>```</p>
+
+<p>Uniform access to all state makes it easy to write generic functions to eg view the entire object graph or shutdown every component.</p>
+
+<p>```
+(defprotocol Poke
+  (poke [this]))</p>
+
+<p>(extend-protocol Poke
+  java.util.concurrent.Future
+  (poke [this] (deref this 0 :pending-future))
+  clojure.lang.Atom
+  (poke [this] @this))</p>
+
+<p>(defn poke-all [form]
+  (if (satisfies? Poke form)</p>
+
+<pre><code>(walk identity poke-all (poke form))
+(walk identity poke-all form)))
+</code></pre>
+
+<p>(defprotocol Kill
+  (kill [this]))</p>
+
+<p>(extend-protocol Kill
+  clojure.lang.Fn
+  (kill [this] (this))
+  java.util.concurrent.Future
+  (kill [this] (future-cancel this)))</p>
+
+<p>(defn kill-all [form]
+  (walk #(if (satisfies? Kill %) (kill %) %) kill-all form))
+```</p>
+
+<p>The difference in productivity compared to the old actor-based version was incredible.</p>
+
+<h2>Examples</h2>
+
+<p><a href="http://boom.cs.berkeley.edu/">Overlog</a> makes use of this idea by reflecting many runtime events into in-process tables. My favourite <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">paper</a> describes using streaming queries on these tables for programmable profiling, monitoring and even distributed debugging.</p>
+
+<p><a href="https://github.com/swannodette/om">Om</a> uses cursors similarly to the way I use subatoms here, to manage relative names within the state tree. David Nolen&rsquo;s <a href="http://swannodette.github.io/">blog</a> has some excellent examples of using this global state to enable application-wide undo and syncing state without modifying application code.</p>
+
+<p>The <a href="http://facebook.github.io/react/blog/2014/01/02/react-chrome-developer-tools.html">React devtools</a> allow you to click on an element on the page and display the state of the component that created that element.  A trivial extension in Om would be to display the past states and for each state change show the event and handler that caused that change. Together with the ability to programmatically access state and history this could lead to a beautiful debugging experience.</p>
+
+<p>&ldquo;Why is this box here? Ah, it comes from component Foo. The state of component Foo is messed up. When did that happen? Ah, it was caused by event handler Bar firing with these arguments.&rdquo; How long would that same chain of reasoning take you with println debugging? In a language with tighter tool integration it should be possible to just directly drop into the debugger at that point in history and replay the events.</p>
+
+<h2>Summary</h2>
+
+<p>Interaction with running programs (live coding, debugging, monitoring, hot code reloading etc) is greatly aided by several design principles:</p>
+
+<ul>
+<li>All state can be queried using some uniform api.</li>
+<li>Every item of state has a unique and predictable name by which it can be identified.</li>
+<li>Access to state can be restricted and controlled.</li>
+<li>Changes to state can be monitored.</li>
+<li>State is separate from code.</li>
+</ul>
+
+
+<p>These principles are well understood in database systems and in ops in general.</p>
+
+<p>The same principles are not applied in the small by most programmers and are not encouraged by most languages.</p>
+
+<p>Several examples exist of using these principles to quickly produce simple, powerful programs.</p>
+
+<p>Most of our questions about code are questions about time, state and causality. Our existing tools do not lend much support in answering those questions. Following these principles makes it easier to develop better tools.</p>
+
+<p>I would also speculate that a large part of the <a href="http://www.youtube.com/watch?v=ayPD0U_FO4Y">frustration</a> that people experience with computers is a result of opaque abstractions which prevent users from being able to connect cause and effect when the machine misbehaves.</p>
+]]></content>
+  </entry>
+  
+</feed>

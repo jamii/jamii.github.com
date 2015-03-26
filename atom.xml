@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-03-25T23:23:46-07:00</updated>
+  <updated>2015-03-26T00:02:30-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -972,7 +972,7 @@
 
 <p>Today if you cannot write you cannot take part in modern society.</p>
 
-<p>Like writing and mathematics, computers have the potential to make humanity more intelligent. <a href="http://en.wikiquote.org/wiki/Alfred_North_Whitehead">Civilization advances by extending the number of important operations which we can perform without thinking about them.</a>. Computers are not a specialist tool for solving a particular problem, they are universal machines that can carry out any thought process you know how to express, leaving your brain free to concentrate on the problem at hand. The fact that programming is not useful to the average person today reflects only on our failure as a profession to create usable tools.</p>
+<p>Like writing and mathematics, computers have the potential to make humanity more intelligent. <a href="http://en.wikiquote.org/wiki/Alfred_North_Whitehead">Civilization advances by extending the number of important operations which we can perform without thinking about them</a>. Computers are not a specialist tool for solving a particular problem, they are universal machines that can carry out any thought process you know how to express, leaving your brain free to concentrate on the problem at hand. The fact that programming is not useful to the average person today reflects only on our failure as a profession to create usable tools.</p>
 
 <p>A few people <a href="http://www.vpri.org/html/work/ifnct.htm">here</a> and <a href="http://boom.cs.berkeley.edu/">there</a> have proven that we can do better. After seeing the possiblities I can&rsquo;t go back to burying my head in the sand and <a href="http://scattered-thoughts.net/images/typing.gif">writing scala</a> for the rest of my days.</p>
 
@@ -2702,7 +2702,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>My attempts to keep up with this have been focused on three projects.</p>
 
-<p><a href="https://github.com/jamii/shackles">Shackles</a> is a constraint solver supporting both finite-domain and logical constraints. It was originally an experiment to see what, if any, extra power could be gained from implementing a gecode-style solver using persistent data-structures (constraint solvers in traditional languages spend much of their time cloning program state to enable back-tracking). Fortunately, <a href="https://github.com/clojure/core.logic">core.logic</a> now supports finite domain variables with constraint propagation and there has been noise about implementing user-specified search heuristcs, so that&rsquo;s one less piece of code I need to write :D</p>
+<p><a href="https://github.com/jamii/shackles">Shackles</a> is a constraint solver supporting both finite-domain and logical constraints. It was originally an experiment to see what, if any, extra power could be gained from implementing a gecode-style solver using persistent data-structures (constraint solvers in traditional languages spend much of their time cloning program state to enable back-tracking). Fortunately, <a href="https://github.com/clojure/core.logic">core.logic</a> now supports finite domain variables with constraint propagation and there has been noise about implementing user-specified search heuristcs, so that&rsquo;s one less piece of code I need to write.</p>
 
 <p><a href="https://github.com/jamii/strucjure">Strucjure</a> is similar to OMeta but aims to be a good clojure citizen rather than a totally separate tool. As such, all of its core components are <a href="http://clojure.org/protocols">protocols</a>, semantic actions are plain clojure code and the resulting patterns and views are just nested <a href="http://clojure.org/datatypes">records</a> which can be manipulated by regular clojure code. Following the principles above, the syntax of strucjure patterns/views is <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L94">self-defined using views</a> and the test suite <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/test.clj#L1">parses the documentation</a> to verify the correctness of the examples.</p>
 
@@ -3118,37 +3118,6 @@ take another pass at this next year.</p></blockquote>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Frustrations with erlang]]></title>
-    <link href="http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang/"/>
-    <updated>2012-01-03T06:16:00-08:00</updated>
-    <id>http://scattered-thoughts.net/blog/2012/01/03/frustrations-with-erlang</id>
-    <content type="html"><![CDATA[<p>With my work on erl-telehash and at Smarkets I find myself fighting erlang more and more. The biggest pains are the dearth of libraries, the lack of polymorphism and being forced into a single model of concurrency.</p>
-
-<!--more-->
-
-
-<p>The first is self-explanatory and pretty well-known. I frequently have to fire up a python process through a port to do something simple like send an email. Even the standard library is incomplete and inconsistent.</p>
-
-<p>The second doesn&rsquo;t start to hurt until your codebase gets a bit bigger. For example, Smarkets makes a lot of use of fixed-precision decimal arithmetic which leads to code like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nn">decimal</span><span class="p">:</span><span class="n">mult</span><span class="p">(</span><span class="nv">Qty</span><span class="p">,</span>  <span class="nn">decimal</span><span class="p">:</span><span class="n">sub</span><span class="p">(</span><span class="nn">decimal</span><span class="p">:</span><span class="n">to_decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nv">Price</span><span class="p">))</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It also means any time you want to change a data-structure for one with an equivalent interface you have to rewrite whole swathes of code.</p>
-
-<p>The third point is a bit more contentious. I&rsquo;m fairly convinced that the erlang philosophy of fail-early, crash-only, restartable tasks is the right solution for most problems. What bugs me is that erlang conflates addresses, queues and actors by giving each process a single mailbox. This leads to problems like requiring the recipient of a message to have a global name if it is to be independently restartable, which means you can&rsquo;t run more than one copy of that message topology on the same node. It also encourages processes to send messages directly to other processes which makes it difficult to create flexible, rewirable topologies or to isolate pieces of a topology for testing. I would prefer a model in which processes send and receive messages through queues which are wired together outside of the process. This would also allow restarting a process (and clearing but not deleting its queues) without giving it a global name.</p>
-
-<p>I&rsquo;m not about to run out now and rewrite erl-telehash in another language. It&rsquo;s close enough to complete (for my purposes at least) that I&rsquo;ll just continue with the existing code. For future experiments, however, I want something better.</p>
-
-<p>The top candidate at the moment is clojure. It has the potential to replace my use of erlang and python, saving lots of cross-language pain. Agents look a lot like a (cleaner, saner) implementation of the <a href="http://scattered-thoughts.net/one/1300/292121/72985">mealy machines</a> that I wrote at Smarkets. <a href="https://github.com/ztellman/lamina">Lamina</a> neatly solves the queue pains I described above. <a href="http://code.google.com/p/clojure-contrib/wiki/DatalogOverview">Datalog</a> is the natural way to describe a lot of collections, including <a href="https://github.com/jamii/erl-telehash/blob/master/src/th_bucket.erl">th_bucket</a> which is in its current form is not obviously correct. The clojure community just seems to churn out well-designed libraries (lamina, aleph, slice, incanter, pallet, cascalog, storm, overtone etc).</p>
-
-<p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it&rsquo;s fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[Binmaps: compressed bitmaps]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/"/>
     <updated>2012-01-03T06:16:00-08:00</updated>
@@ -3439,16 +3408,35 @@ take another pass at this next year.</p></blockquote>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Telehash: router]]></title>
-    <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-router/"/>
-    <updated>2011-04-19T06:16:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-router</id>
-    <content type="html"><![CDATA[<p>Now that we have all the necessary datastructures we can build the router itself. Most of the routing table logic is handled by the bit_tree and bucket modules. The router just ties these together and handles I/O.</p>
+    <title type="html"><![CDATA[Optimising texsearch: memory usage]]></title>
+    <link href="http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage/"/>
+    <updated>2010-12-19T06:16:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage</id>
+    <content type="html"><![CDATA[<p>In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
 
 <!--more-->
 
 
-<p>Before actually running the routing table the router has to find out its own address, as it is seen from the outside world. It does this by sending +end signals to a list of known telehash nodes (eg telehash.org:42424).</p>
+<p>The main data structure looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">deleted</span> <span class="o">:</span> <span class="kt">bool</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="n">id</span> <span class="o">*</span> <span class="n">pos</span><span class="o">)</span> <span class="kt">array</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The array field is responsible for the vast majority of the memory usage. Each cell in the array contains a pointer to a tuple containing two integers for a total of 4 words per suffix. The types id and pos are both small integers so if we pack them into a single unboxed integer we can reduce this to 1 word per suffix. We have a new module suffix.ml with some simple bit-munging:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3470,32 +3458,32 @@ take another pass at this next year.</p></blockquote>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">record</span><span class="p">(</span><span class="n">bootstrap</span><span class="p">,</span> <span class="p">{</span> <span class="c">% the state of the router when bootstrapping</span>
-</span><span class='line'>    <span class="n">timeout</span><span class="p">,</span> <span class="c">% give up if no address received before this time</span>
-</span><span class='line'>    <span class="n">addresses</span> <span class="c">% list of addresses contacted to find out our address</span>
-</span><span class='line'>   <span class="p">}).</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">id</span> <span class="o">=</span> <span class="kt">int</span>
+</span><span class='line'><span class="k">type</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">int</span>
 </span><span class='line'>
-</span><span class='line'><span class="nf">bootstrap</span><span class="p">(</span><span class="nv">Addresses</span><span class="p">,</span> <span class="nv">Timeout</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">bootstrapping</span><span class="p">]),</span>
-</span><span class='line'>    <span class="nv">State</span> <span class="o">=</span> <span class="nl">#bootstrap</span><span class="p">{</span><span class="n">timeout</span><span class="o">=</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">addresses</span><span class="o">=</span><span class="nv">Addresses</span><span class="p">},</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">_</span><span class="nv">Pid</span><span class="p">}</span> <span class="o">=</span> <span class="nn">gen_server</span><span class="p">:</span><span class="nf">start_link</span><span class="p">(</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="nv">State</span><span class="p">,</span> <span class="p">[]).</span>
+</span><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span> <span class="kt">int</span>
 </span><span class='line'>
-</span><span class='line'><span class="nf">init</span><span class="p">(</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">switch</span><span class="p">:</span><span class="nf">listen</span><span class="p">(),</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nv">State</span> <span class="k">of</span>
-</span><span class='line'>  <span class="nl">#bootstrap</span><span class="p">{</span><span class="n">timeout</span><span class="o">=</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">addresses</span><span class="o">=</span><span class="nv">Addresses</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nv">Telex</span> <span class="o">=</span> <span class="nn">telex</span><span class="p">:</span><span class="nf">end_signal</span><span class="p">(</span><span class="nn">util</span><span class="p">:</span><span class="nf">random_end</span><span class="p">()),</span>
-</span><span class='line'>      <span class="nn">lists</span><span class="p">:</span><span class="nf">foreach</span><span class="p">(</span><span class="k">fun</span> <span class="p">(</span><span class="nv">Address</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">)</span> <span class="k">end</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">),</span>
-</span><span class='line'>      <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="n">giveup</span><span class="p">);</span>
-</span><span class='line'>  <span class="nl">#state</span><span class="p">{}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="n">ok</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">State</span><span class="p">}.</span>
+</span><span class='line'><span class="k">let</span> <span class="n">pack_size</span> <span class="o">=</span> <span class="o">(</span><span class="nn">Sys</span><span class="p">.</span><span class="n">word_size</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span class='line'><span class="k">let</span> <span class="n">max_size</span> <span class="o">=</span> <span class="mi">1</span> <span class="ow">lsl</span> <span class="n">pack_size</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">exception</span> <span class="nc">Invalid_suffix</span> <span class="k">of</span> <span class="n">id</span> <span class="o">*</span> <span class="n">pos</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">pack</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">id</span> <span class="o">&gt;=</span> <span class="n">max_size</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">||</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="n">max_size</span><span class="o">)</span>
+</span><span class='line'>  <span class="k">then</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">Invalid_suffix</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">))</span>
+</span><span class='line'>  <span class="k">else</span> <span class="n">pos</span> <span class="ow">lor</span> <span class="o">(</span><span class="n">id</span> <span class="ow">lsl</span> <span class="n">pack_size</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">unpack</span> <span class="n">suffix</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">id</span> <span class="o">=</span> <span class="n">suffix</span> <span class="n">lsr</span> <span class="n">pack_size</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">suffix</span> <span class="ow">land</span> <span class="o">(</span><span class="n">max_size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Then we listen until we either get a reply with a _to field or run out of time.</p>
+<p>Notice how confusing infix functions are in ocaml.</p>
+
+<p>The suffix array type becomes:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3504,463 +3492,561 @@ take another pass at this next year.</p></blockquote>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">switch</span><span class="p">,</span> <span class="p">{</span><span class="n">recv</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">}},</span> <span class="nl">#bootstrap</span><span class="p">{</span><span class="n">addresses</span><span class="o">=</span><span class="nv">Addresses</span><span class="p">}</span><span class="o">=</span><span class="nv">Bootstrap</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="c">% bootstrapping, waiting to receive a message telling us our own address</span>
-</span><span class='line'>    <span class="k">case</span> <span class="p">{</span><span class="nn">lists</span><span class="p">:</span><span class="nf">member</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">),</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;_to&#39;</span><span class="p">)}</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{</span><span class="n">true</span><span class="p">,</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Binary</span><span class="p">}}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">try</span> <span class="nn">util</span><span class="p">:</span><span class="nf">to_end</span><span class="p">(</span><span class="nn">util</span><span class="p">:</span><span class="nf">binary_to_address</span><span class="p">(</span><span class="nv">Binary</span><span class="p">))</span> <span class="k">of</span>
-</span><span class='line'>      <span class="nv">End</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="nv">Self</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="nf">to_bits</span><span class="p">(</span><span class="nv">End</span><span class="p">),</span>
-</span><span class='line'>          <span class="nv">Table</span> <span class="o">=</span> <span class="n">touched</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="n">empty_table</span><span class="p">(</span><span class="nv">Self</span><span class="p">)),</span>
-</span><span class='line'>          <span class="nn">dialer</span><span class="p">:</span><span class="nf">dial</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="p">[</span><span class="nv">From</span><span class="p">],</span> <span class="o">?</span><span class="nv">ROUTER_DIAL_TIMEOUT</span><span class="p">),</span>
-</span><span class='line'>          <span class="n">refresh</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
-</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">bootstrap</span><span class="p">,</span> <span class="n">finished</span><span class="p">,</span> <span class="p">{</span><span class="n">self</span><span class="p">,</span> <span class="nv">Binary</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nn">sets</span><span class="p">:</span><span class="nf">new</span><span class="p">(),</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}}</span>
-</span><span class='line'>      <span class="k">catch</span>
-</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="o">?</span><span class="nv">WARN</span><span class="p">([</span><span class="n">bootstrap</span><span class="p">,</span> <span class="n">bad_self</span><span class="p">,</span> <span class="p">{</span><span class="n">self</span><span class="p">,</span> <span class="nv">Binary</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
-</span><span class='line'>          <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">Bootstrap</span><span class="p">}</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">Bootstrap</span><span class="p">}</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">handle_info</span><span class="p">(</span><span class="n">giveup</span><span class="p">,</span> <span class="nl">#bootstrap</span><span class="p">{}</span><span class="o">=</span><span class="nv">Bootstrap</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="c">% failed to bootstrap, die</span>
-</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">giveup</span><span class="p">,</span> <span class="p">{</span><span class="n">state</span><span class="p">,</span> <span class="nv">Bootstrap</span><span class="p">}]),</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">stop</span><span class="p">,</span> <span class="p">{</span><span class="n">shutdown</span><span class="p">,</span> <span class="n">gaveup</span><span class="p">},</span> <span class="nv">Bootstrap</span><span class="p">};</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">deleted</span> <span class="o">:</span> <span class="kt">bool</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="nn">Suffix</span><span class="p">.</span><span class="n">t</span> <span class="kt">array</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Once we know our own address we can fill in the state record and start managing the routing table.</p>
+<p>With this change the memory usage drops down to 1.4 gb. The mean search time also improves. It seems that having fewer cache misses makes up for the extra computation involved in unpacking the suffixes.</p>
+
+<p>Now that the array field is a single block it is easy to move it out of the heap entirely so the gc never has to scan it.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">state</span><span class="p">,</span> <span class="p">{</span> <span class="c">% the state of the router in normal operation</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">,</span> <span class="c">% the bits of the routers own end</span>
-</span><span class='line'>    <span class="n">pinged</span><span class="p">,</span> <span class="c">% set of addresses which have been pinged and not yet replied/timedout</span>
-</span><span class='line'>    <span class="n">table</span> <span class="c">% the routing table, a bit_tree containing buckets of nodes</span>
-</span><span class='line'>   <span class="p">}).</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">ancientify</span> <span class="n">sa</span> <span class="o">=</span>
+</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="nn">Ancient</span><span class="p">.</span><span class="n">follow</span> <span class="o">(</span><span class="nn">Ancient</span><span class="p">.</span><span class="n">mark</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">);</span>
+</span><span class='line'>  <span class="nn">Gc</span><span class="p">.</span><span class="n">full_major</span> <span class="bp">()</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&rsquo;t actually be dropped from the table until a replacement is found &ndash; this prevents the table from getting flushed if our network connection goes down.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">ping</span><span class="p">(</span><span class="nv">To</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Telex</span> <span class="o">=</span> <span class="nn">telex</span><span class="p">:</span><span class="n">end_signal</span><span class="p">(</span><span class="nn">util</span><span class="p">:</span><span class="n">random_end</span><span class="p">()),</span>
-</span><span class='line'>    <span class="c">% do this in a message to self to avoid some awkward control flow</span>
-</span><span class='line'>    <span class="n">self</span><span class="p">()</span> <span class="o">!</span> <span class="p">{</span><span class="n">pinging</span><span class="p">,</span> <span class="nv">To</span><span class="p">},</span>
-</span><span class='line'>    <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">),</span>
-</span><span class='line'>    <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="o">?</span><span class="nv">ROUTER_PING_TIMEOUT</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="p">{</span><span class="n">timeout</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}).</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="n">update</span><span class="p">(</span>
-</span><span class='line'>      <span class="k">fun</span> <span class="p">(_</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nn">bucket</span><span class="p">:</span><span class="n">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>        <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Update</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="c">% try to touch this node, might be suitable replacement</span>
-</span><span class='line'>            <span class="n">ping</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span>
-</span><span class='line'>            <span class="nv">Update</span><span class="p">;</span>
-</span><span class='line'>        <span class="nv">Update</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="nv">Update</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="n">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
-</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
-</span><span class='line'>      <span class="nv">Table</span>
-</span><span class='line'>     <span class="p">).</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">pinging</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="c">% do this in a message to self to avoid some awkward control flow</span>
-</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">recording_ping</span><span class="p">,</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}]),</span>
-</span><span class='line'>    <span class="nv">Pinged2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="n">add_element</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">),</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged2</span><span class="p">}};</span>
-</span><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">timeout</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nn">lists</span><span class="p">:</span><span class="n">member</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="n">true</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% ping timedout</span>
-</span><span class='line'>      <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">timeout</span><span class="p">,</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}]),</span>
-</span><span class='line'>      <span class="nv">Table2</span> <span class="o">=</span> <span class="n">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
-</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">table</span><span class="o">=</span><span class="nv">Table2</span><span class="p">}};</span>
-</span><span class='line'>  <span class="n">false</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="c">% address already replied</span>
-</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">State</span><span class="p">}</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement ring/line to protect against address spoofing):</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">touched</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="n">update</span><span class="p">(</span>
-</span><span class='line'>      <span class="k">fun</span> <span class="p">(</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>        <span class="nv">May_split</span> <span class="o">=</span> <span class="p">(</span><span class="nv">Gap</span> <span class="o">&lt;</span> <span class="o">?</span><span class="nv">K</span><span class="p">),</span> <span class="c">% !!! or (Depth &lt; ?ROUTER_TABLE_EXPANSION)</span>
-</span><span class='line'>        <span class="nn">bucket</span><span class="p">:</span><span class="n">touched</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="n">now</span><span class="p">(),</span> <span class="nv">Bucket</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="n">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
-</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
-</span><span class='line'>      <span class="nv">Table</span>
-</span><span class='line'>     <span class="p">).</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>On receiving a .see command we record all the contained addresses as potential nodes and ping them to try to confirm their existence.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="n">update</span><span class="p">(</span>
-</span><span class='line'>      <span class="k">fun</span> <span class="p">(</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="nn">bucket</span><span class="p">:</span><span class="n">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="n">now</span><span class="p">(),</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>        <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Update</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="c">% check if this node is stale</span>
-</span><span class='line'>            <span class="n">ping</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span>
-</span><span class='line'>            <span class="nv">Update</span><span class="p">;</span>
-</span><span class='line'>        <span class="nv">Update</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="nv">Update</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="n">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
-</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
-</span><span class='line'>      <span class="nv">Table</span>
-</span><span class='line'>     <span class="p">).</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>On receiving a +end signal we reply with a .see command containing the nearest K addresses which we have confirmed to exist.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">see</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Telex</span> <span class="o">=</span> <span class="nn">telex</span><span class="p">:</span><span class="nf">see_command</span><span class="p">(</span><span class="n">nearest</span><span class="p">(</span><span class="o">?</span><span class="nv">K</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)),</span>
-</span><span class='line'>    <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">).</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">nearest</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="k">when</span> <span class="nv">N</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Bits</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="nf">to_bits</span><span class="p">(</span><span class="nv">End</span><span class="p">),</span>
-</span><span class='line'>    <span class="nn">iter</span><span class="p">:</span><span class="nf">take</span><span class="p">(</span>
-</span><span class='line'>      <span class="nv">N</span><span class="p">,</span>
-</span><span class='line'>      <span class="nn">iter</span><span class="p">:</span><span class="nf">flatten</span><span class="p">(</span>
-</span><span class='line'>  <span class="nn">iter</span><span class="p">:</span><span class="nf">map</span><span class="p">(</span>
-</span><span class='line'>    <span class="k">fun</span> <span class="p">({_</span><span class="nv">Prefix</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nn">bucket</span><span class="p">:</span><span class="nf">by_dist</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="nf">iter</span><span class="p">(</span><span class="nv">Bits</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)))).</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>On receiving a message we have handle the above three cases, which gets a little ugly.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">switch</span><span class="p">,</span> <span class="p">{</span><span class="n">recv</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">}},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="c">% this counts as a reply</span>
-</span><span class='line'>    <span class="nv">Pinged2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="nf">del_element</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">),</span>
-</span><span class='line'>    <span class="c">% touched the sender</span>
-</span><span class='line'>    <span class="c">% !!! eventually will check _line here</span>
-</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">touched</span><span class="p">,</span> <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
-</span><span class='line'>    <span class="nv">Table2</span> <span class="o">=</span> <span class="n">touched</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
-</span><span class='line'>    <span class="c">% maybe seen some nodes</span>
-</span><span class='line'>    <span class="nv">Table3</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">case</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;.see&#39;</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Binaries</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">try</span> <span class="p">[</span><span class="nn">util</span><span class="p">:</span><span class="nf">binary_to_address</span><span class="p">(</span><span class="nv">Bin</span><span class="p">)</span> <span class="p">||</span> <span class="nv">Bin</span> <span class="o">&lt;-</span> <span class="nv">Binaries</span><span class="p">]</span> <span class="k">of</span>
-</span><span class='line'>          <span class="nv">Addresses</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">seen</span><span class="p">,</span> <span class="p">{</span><span class="nb">nodes</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
-</span><span class='line'>          <span class="nn">lists</span><span class="p">:</span><span class="nf">foldl</span><span class="p">(</span><span class="k">fun</span> <span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Table_acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table_acc</span><span class="p">)</span> <span class="k">end</span><span class="p">,</span> <span class="nv">Table2</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">catch</span>
-</span><span class='line'>          <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">bad_seen</span><span class="p">,</span> <span class="p">{</span><span class="nb">nodes</span><span class="p">,</span> <span class="nv">Binaries</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
-</span><span class='line'>          <span class="nv">Table2</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nv">Table2</span>
-</span><span class='line'>  <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>    <span class="c">% maybe send some nodes back</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;+end&#39;</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Hex</span><span class="p">}</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">try</span> <span class="nn">util</span><span class="p">:</span><span class="nf">hex_to_end</span><span class="p">(</span><span class="nv">Hex</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>      <span class="nv">End</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">see</span><span class="p">,</span> <span class="p">{</span><span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="nv">End</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
-</span><span class='line'>          <span class="n">see</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table3</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">catch</span>
-</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>          <span class="o">?</span><span class="nv">WARN</span><span class="p">([</span><span class="n">bad_see</span><span class="p">,</span> <span class="p">{</span><span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="nv">Hex</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}])</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">_</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="n">ok</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged2</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table2</span><span class="p">}};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The last responsibility of the router is to periodically refresh buckets which haven&rsquo;t recently seen any activity.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">(</span><span class="n">refresh</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">refreshing_table</span><span class="p">]),</span>
-</span><span class='line'>    <span class="n">refresh</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="p">};</span>
-</span><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">dialed</span><span class="p">,</span> <span class="p">_,</span> <span class="p">_},</span> <span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="c">% response from a bucket refresh, we don&#39;t care</span>
-</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">dialed</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="nf">update</span><span class="p">(</span>
-</span><span class='line'>      <span class="k">fun</span> <span class="p">(_</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>        <span class="nn">bucket</span><span class="p">:</span><span class="nf">dialed</span><span class="p">(</span><span class="n">now</span><span class="p">(),</span> <span class="nv">Bucket</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="nf">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
-</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
-</span><span class='line'>      <span class="nv">Table</span>
-</span><span class='line'>     <span class="p">).</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">needs_refresh</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">,</span> <span class="nv">Now</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="k">case</span> <span class="nn">bucket</span><span class="p">:</span><span class="nf">last_dialed</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>  <span class="n">never</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="n">true</span><span class="p">;</span>
-</span><span class='line'>  <span class="nv">Last</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="p">(</span><span class="nn">timer</span><span class="p">:</span><span class="nf">now_diff</span><span class="p">(</span><span class="nv">Now</span><span class="p">,</span> <span class="nv">Last</span><span class="p">)</span> <span class="ow">div</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">?</span><span class="nv">ROUTER_REFRESH_TIME</span>
-</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">refresh</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
-</span><span class='line'>    <span class="nv">Now</span> <span class="o">=</span> <span class="n">now</span><span class="p">(),</span>
-</span><span class='line'>    <span class="nn">iter</span><span class="p">:</span><span class="nf">foreach</span><span class="p">(</span>
-</span><span class='line'>      <span class="k">fun</span> <span class="p">({</span><span class="nv">Prefix</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">})</span> <span class="o">-&gt;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="n">needs_refresh</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">,</span> <span class="nv">Now</span><span class="p">)</span> <span class="k">of</span>
-</span><span class='line'>        <span class="n">true</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">refreshing_bucket</span><span class="p">,</span> <span class="p">{</span><span class="n">prefix</span><span class="p">,</span> <span class="nv">Prefix</span><span class="p">},</span> <span class="p">{</span><span class="n">bucket</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">}]),</span>
-</span><span class='line'>            <span class="nv">To</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="nf">random_end</span><span class="p">(</span><span class="nv">Prefix</span><span class="p">),</span>
-</span><span class='line'>            <span class="nv">From</span> <span class="o">=</span> <span class="n">nearest</span><span class="p">(</span><span class="o">?</span><span class="nv">K</span><span class="p">,</span> <span class="nv">To</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
-</span><span class='line'>            <span class="nn">dialer</span><span class="p">:</span><span class="nf">dial</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="o">?</span><span class="nv">ROUTER_DIAL_TIMEOUT</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">false</span> <span class="o">-&gt;</span>
-</span><span class='line'>            <span class="n">ok</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
-</span><span class='line'>      <span class="nn">bit_tree</span><span class="p">:</span><span class="nf">iter</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span>
-</span><span class='line'>     <span class="p">),</span>
-</span><span class='line'>    <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="o">?</span><span class="nv">ROUTER_REFRESH_TIME</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="n">refresh</span><span class="p">),</span>
-</span><span class='line'>    <span class="n">ok</span><span class="p">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That&rsquo;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
+<p>This eliminates the annoyingly noticeable gc pauses.</p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Telehash: gen_event woes]]></title>
-    <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes/"/>
-    <updated>2011-04-19T06:16:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes</id>
-    <content type="html"><![CDATA[<p>I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I will say it here: gen_event does NOT spawn individual processes for each handler. Each handler is run sequentially in the event manager process.</p>
+    <title type="html"><![CDATA[Optimising texsearch]]></title>
+    <link href="http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/"/>
+    <updated>2010-12-08T06:16:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/texsearch">Texsearch</a> is a search engine for LaTeX formulae. It forms part of the backend for <a href="http://latexsearch.com">latexsearch.com</a> which indexes the entire Springer corpus. It is also crazy slow, until today.</p>
 
 <!--more-->
 
 
-<p>Now obviously the documentation is not at fault here. I assumed that each handler got its own process solely because the callbacks resembled gen_server. However, a little googling reveals that several other people made the same mistake so I thought it was worth mentioning.</p>
+<p>Intuitively, when searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.</p>
 
-<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn&rsquo;t find the dialer process (because it doesn&rsquo;t exist, it&rsquo;s an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
+<p>Texsearch uses <a href="http://plastex.sourceforge.net/">PlasTeX</a> to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2<sup>63</sup> possible elements.</p>
 
-<p>Eventually I noticed that the switch_event process was blocking inside a receive and the whole thing unravelled. The dialer is an event handler so when started it calls:</p>
+<p>At the core of texsearch is a search algorithm which performs approximate searches over the search corpus. Specifically, given a search term S and a search radius R we want to return all corpus terms T such that the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> between S and some substring of T is less than R. This is a common problem in bioinformatics and NLP and there is a <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.7225&amp;rep=rep1&amp;type=pdf">substantial amount of research</a> on how to solve this efficiently. I have been through a range of different algorithms in previous iterations of texsearch and have only recently achieved reasonable performance (mean search time is now ~300ms for a corpus of 1.5m documents). The code is available <a href="https://github.com/jamii/texsearch">here</a>.</p>
+
+<p>We define the distance from latexL to latexR as the minimum Levenshtein distance between latexL and any substring of latexR. With this definition we can specify the results of the search algorithm more simply as returning all corpus terms with distance R of S.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'>  <span class="nn">gen_event</span><span class="p">:</span><span class="n">add_handler</span><span class="p">(</span><span class="n">switch_event</span><span class="p">,</span> <span class="n">dialer</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">distance</span> <span class="n">latexL</span> <span class="n">latexR</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">maxl</span><span class="o">,</span> <span class="n">maxr</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">latexL</span><span class="o">,</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">latexR</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">maxl</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">maxr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">maxl</span> <span class="k">else</span>
+</span><span class='line'>  <span class="c">(* cache.(l).(r) is the distance between latexL[l to maxl] and latexR[r to maxr] *)</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">cache</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make_matrix</span> <span class="o">(</span><span class="n">maxl</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">(</span><span class="n">maxr</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="mi">0</span> <span class="k">in</span>
+</span><span class='line'>  <span class="c">(* Must match everything on the left *)</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="o">=</span> <span class="n">maxl</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">maxr</span><span class="o">)</span> <span class="o">&lt;-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">maxr</span><span class="o">)</span>
+</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
+</span><span class='line'>  <span class="c">(* General matching *)</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="o">=</span> <span class="n">maxl</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">1</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">for</span> <span class="n">r</span> <span class="o">=</span> <span class="n">maxr</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">r</span><span class="o">)</span> <span class="o">&lt;-</span>
+</span><span class='line'>          <span class="n">minimum</span>
+</span><span class='line'>            <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
+</span><span class='line'>            <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">))</span>
+</span><span class='line'>            <span class="o">((</span><span class="n">abs</span> <span class="o">(</span><span class="n">compare</span> <span class="n">latexL</span><span class="o">.(</span><span class="n">l</span><span class="o">)</span> <span class="n">latexR</span><span class="o">.(</span><span class="n">r</span><span class="o">)))</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
+</span><span class='line'>  <span class="k">done</span> <span class="k">done</span><span class="o">;</span>
+</span><span class='line'>  <span class="c">(* Non-matches on the right dont count until left starts matching *)</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">r</span> <span class="o">=</span> <span class="n">maxr</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="n">r</span><span class="o">)</span> <span class="o">&lt;-</span>
+</span><span class='line'>        <span class="n">minimum</span>
+</span><span class='line'>          <span class="o">(</span><span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
+</span><span class='line'>          <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">))</span>
+</span><span class='line'>          <span class="o">((</span><span class="n">abs</span> <span class="o">(</span><span class="n">compare</span> <span class="n">latexL</span><span class="o">.(</span><span class="mi">0</span><span class="o">)</span> <span class="n">latexR</span><span class="o">.(</span><span class="n">r</span><span class="o">)))</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
+</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="mi">0</span><span class="o">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>which is a synchronous call to the switch_event process. The router event handler is running inside the switch_event process so when the router tries to dial it deadlocks.</p>
-
-<p>The moral of this story is <em>RTFM</em>.</p>
-
-<p>This is easily fixed by changing</p>
+<p>The search algorithm is built around a <a href="http://en.wikipedia.org/wiki/Suffix_array">suffix array</a> presenting the following interface:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'>  <span class="nn">dialer</span><span class="p">:</span><span class="n">dial</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="p">[</span><span class="nv">Address</span><span class="p">])</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">val</span> <span class="n">create</span> <span class="o">:</span> <span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span>
+</span><span class='line'><span class="k">val</span> <span class="n">add</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
+</span><span class='line'><span class="k">val</span> <span class="n">prepare</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">val</span> <span class="n">delete</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">val</span> <span class="n">find_exact</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
+</span><span class='line'><span class="k">val</span> <span class="n">find_approx</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">float</span> <span class="o">-&gt;</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
+</span><span class='line'><span class="k">val</span> <span class="n">find_query</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">float</span> <span class="o">-&gt;</span> <span class="nn">Query</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>to</p>
+<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers &ndash; the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='erlang'><span class='line'>  <span class="nb">spawn</span><span class="p">(</span><span class="k">fun</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">dialer</span><span class="p">:</span><span class="n">dial</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="p">[</span><span class="nv">Address</span><span class="p">])</span> <span class="k">end</span><span class="p">)</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">id</span> <span class="o">=</span> <span class="kt">int</span>
+</span><span class='line'><span class="k">type</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">int</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="n">id</span> <span class="o">*</span> <span class="n">pos</span><span class="o">)</span> <span class="kt">array</span>
+</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">create</span> <span class="bp">()</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">next_id</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make</span> <span class="mi">0</span> <span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">unsorted</span> <span class="o">=</span> <span class="bp">[]</span><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>but there were more problems. Most of the event handlers used erlang:send_after to handle timeouts but since they all run in the same process they all receive each others timeouts. Also, every event handler is run sequentially so the switch_event process becomes a huge bottleneck.</p>
+<p>The suffix array is built in a completely naive way. We just throw all the suffixes into a list and sort it. There are much more efficient methods known but this is fast enough, especially since we do updates offline. The building is separated into two functions to make incremental updates easier.</p>
 
-<p>The solution I settled on was to change each event handler into a gen_server and write a simple event handler that just forwards events to its owner. By using gen_event:add_sup_handler and listening for event handler exits we can keep the two in sync.</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">add</span> <span class="n">sa</span> <span class="n">latexs</span> <span class="o">=</span>
+</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="o">&lt;-</span> <span class="n">latexs</span> <span class="o">@</span> <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">insert</span> <span class="n">sa</span> <span class="o">(</span><span class="n">opaque</span><span class="o">,</span> <span class="n">latex</span><span class="o">)</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">id</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">next_id</span> <span class="k">in</span>
+</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">next_id</span> <span class="o">&lt;-</span> <span class="n">id</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>  <span class="nn">DynArray</span><span class="p">.</span><span class="n">add</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">opaque</span><span class="o">;</span>
+</span><span class='line'>  <span class="nn">DynArray</span><span class="p">.</span><span class="n">add</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">latex</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">id</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">prepare</span> <span class="n">sa</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="n">insert</span> <span class="n">sa</span><span class="o">)</span> <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">new_suffixes</span> <span class="o">=</span> <span class="nn">Util</span><span class="p">.</span><span class="n">concat_map</span> <span class="o">(</span><span class="n">suffixes</span> <span class="n">sa</span><span class="o">)</span> <span class="n">ids</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">cmp</span> <span class="o">=</span> <span class="n">compare_suffix</span> <span class="n">sa</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="kt">array</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">of_list</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">merge</span> <span class="n">cmp</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">fast_sort</span> <span class="n">cmp</span> <span class="n">new_suffixes</span><span class="o">)</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">to_list</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">))</span> <span class="k">in</span>
+</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="o">&lt;-</span> <span class="bp">[]</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="kt">array</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in gather_exact (better name, anyone?), where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then find_exact runs through the HashSet and looks up the matching opaques.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(* binary search *)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">=</span>
+</span><span class='line'>  <span class="c">(* find beginning of region *)</span>
+</span><span class='line'>  <span class="c">(* lo &lt; latex *)</span>
+</span><span class='line'>  <span class="c">(* hi &gt;= latex *)</span>
+</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">narrow</span> <span class="n">lo</span> <span class="n">hi</span> <span class="o">=</span>
+</span><span class='line'>    <span class="k">let</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">+</span> <span class="o">((</span><span class="n">hi</span><span class="o">-</span><span class="n">lo</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span> <span class="k">then</span> <span class="n">hi</span> <span class="k">else</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">leq</span> <span class="n">sa</span> <span class="n">latex</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">.(</span><span class="n">mid</span><span class="o">)</span>
+</span><span class='line'>    <span class="k">then</span> <span class="n">narrow</span> <span class="n">lo</span> <span class="n">mid</span>
+</span><span class='line'>    <span class="k">else</span> <span class="n">narrow</span> <span class="n">mid</span> <span class="n">hi</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">n</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">traverse</span> <span class="n">index</span> <span class="o">=</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">n</span> <span class="k">then</span> <span class="bp">()</span> <span class="k">else</span>
+</span><span class='line'>    <span class="k">let</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">.(</span><span class="n">index</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">is_prefix</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span>
+</span><span class='line'>    <span class="k">then</span>
+</span><span class='line'>      <span class="k">begin</span>
+</span><span class='line'>  <span class="nn">Hashset</span><span class="p">.</span><span class="n">add</span> <span class="n">ids</span> <span class="n">id</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">traverse</span> <span class="o">(</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">else</span> <span class="bp">()</span> <span class="k">in</span>
+</span><span class='line'>  <span class="n">traverse</span> <span class="o">(</span><span class="n">narrow</span> <span class="o">(-</span><span class="mi">1</span><span class="o">)</span> <span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">))</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">exact_match</span> <span class="n">sa</span> <span class="n">id</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">find_exact</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">create</span> <span class="mi">0</span> <span class="k">in</span>
+</span><span class='line'>  <span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span> <span class="n">latex</span><span class="o">;</span>
+</span><span class='line'>  <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="n">exact_match</span> <span class="n">sa</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now for the clever part &ndash; approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">k</span> <span class="o">=</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">cutoff</span> <span class="n">precision</span> <span class="n">latex</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">create</span> <span class="mi">0</span> <span class="k">in</span>
+</span><span class='line'>  <span class="nn">List</span><span class="p">.</span><span class="n">iter</span> <span class="o">(</span><span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span><span class="o">)</span> <span class="o">(</span><span class="nn">Latex</span><span class="p">.</span><span class="n">fragments</span> <span class="n">latex</span> <span class="n">k</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">ids</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">approx_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latexL</span> <span class="n">id</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">latexR</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">id</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">match</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">similar</span> <span class="n">precision</span> <span class="n">latexL</span> <span class="n">latexR</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Some</span> <span class="n">dist</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="k">let</span> <span class="n">opaque</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span> <span class="k">in</span>
+</span><span class='line'>      <span class="nc">Some</span> <span class="o">(</span><span class="n">dist</span><span class="o">,</span> <span class="n">opaque</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nc">None</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">find_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="k">in</span>
+</span><span class='line'>  <span class="nn">Util</span><span class="p">.</span><span class="n">filter_map</span> <span class="o">(</span><span class="n">approx_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can also extend this to allow boolean queries.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="k">rec</span> <span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">match</span> <span class="n">query</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">Latex</span> <span class="o">(</span><span class="n">latex</span><span class="o">,</span> <span class="o">_)</span> <span class="o">-&gt;</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">And</span> <span class="o">(</span><span class="n">query1</span><span class="o">,</span> <span class="n">query2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">inter</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query1</span><span class="o">)</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query2</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">Or</span> <span class="o">(</span><span class="n">query1</span><span class="o">,</span> <span class="n">query2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">union</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query1</span><span class="o">)</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query2</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">query_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="n">id</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">latexR</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">id</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">match</span> <span class="nn">Query</span><span class="p">.</span><span class="n">similar</span> <span class="n">precision</span> <span class="n">query</span> <span class="n">latexR</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Some</span> <span class="n">dist</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="k">let</span> <span class="n">opaque</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span> <span class="k">in</span>
+</span><span class='line'>      <span class="nc">Some</span> <span class="o">(</span><span class="n">dist</span><span class="o">,</span> <span class="n">opaque</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nc">None</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">find_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="k">in</span>
+</span><span class='line'>  <span class="nn">Util</span><span class="p">.</span><span class="n">filter_map</span> <span class="o">(</span><span class="n">query_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a lot simpler than my previous approach, which required some uncomfortable reasoning about overlapping regions in quasi-metric spaces.</p>
+
+<p>It is instructive to compare texsearch with other math search engines. Texsearch is effectively a brute force solution that gave us an ok search engine search engine with minimal risk. It has minimal understanding of LaTeX and no understanding of the structure of the formulae it searches in. <a href="http://uniquation.com/en/">Uniquation</a> accepts only a small (but widely used) subset of LaTeX but understands the structure of the equation itself and so can infer scope and perform variable substitution when searching. I am not sure yet how much content they are indexing or how well they handle searching within full LaTeX content but hopefully this approach can scale up to big corpuses. <a href="http://haskell.org/hoogle/">Hoogle</a> is a search engine for haskell types which can handle even more sophisticated equivalences than uniquation thanks to its specialised domain. <a href="https://trac.kwarc.info/arXMLiv/">ArXMLiv</a> is developing tools for inferring semantic information from LaTeX content in order to convert it to Semantic MathML, which is much easier for search engines to handle.</p>
+
+<p>So, in summary, LaTeX is a pain in the ass.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Smarkets API documentation]]></title>
+    <link href="http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation/"/>
+    <updated>2010-07-30T06:16:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation</id>
+    <content type="html"><![CDATA[<p>I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn&rsquo;t really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.</p>
+
+<!--more-->
+
+
+<p>We have our own home-grown and slightly crappy web framework which powers the public API. A typical resource declaration looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'>   <span class="nl">#a</span><span class="p">{</span><span class="n">m</span><span class="o">=</span><span class="p">[</span><span class="k">fun</span> <span class="nn">rest_aux</span><span class="p">:</span><span class="n">user_id</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span> <span class="n">emails</span><span class="p">,</span>
+</span><span class='line'>         <span class="k">fun</span> <span class="nn">rest_aux</span><span class="p">:</span><span class="n">email</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span> <span class="k">fun</span> <span class="nn">rest_aux</span><span class="p">:</span><span class="nb">hash</span><span class="o">/</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">=</span><span class="p">[{</span><span class="n">&#39;PUT&#39;</span><span class="p">,</span> <span class="k">fun</span> <span class="nn">rest_users</span><span class="p">:</span><span class="n">user_or_admin</span><span class="o">/</span><span class="mi">3</span><span class="p">}],</span>
+</span><span class='line'>      <span class="n">scope</span><span class="o">=</span><span class="p">[{</span><span class="n">&#39;PUT&#39;</span><span class="p">,</span> <span class="n">private</span><span class="p">}],</span>
+</span><span class='line'>      <span class="n">pu</span><span class="o">=</span><span class="k">fun</span><span class="p">(</span><span class="nv">UserId</span><span class="p">,</span> <span class="nv">Email</span><span class="p">,</span> <span class="nv">Hash</span><span class="p">,</span> <span class="p">_</span><span class="nv">Auth</span><span class="p">,</span> <span class="nv">Ctx</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>             <span class="k">case</span> <span class="nn">users</span><span class="p">:</span><span class="n">verify_email</span><span class="p">(</span><span class="nv">UserId</span><span class="p">,</span> <span class="nv">Email</span><span class="p">,</span> <span class="nv">Hash</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>               <span class="n">ok</span> <span class="o">-&gt;</span>
+</span><span class='line'>                 <span class="nn">smarkets_rest</span><span class="p">:</span><span class="n">nc</span><span class="p">(</span><span class="nv">Ctx</span><span class="p">);</span>
+</span><span class='line'>               <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="n">conflict</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>                 <span class="nn">smarkets_rest</span><span class="p">:</span><span class="n">cfl</span><span class="p">(</span><span class="nv">Ctx</span><span class="p">);</span>
+</span><span class='line'>               <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="n">not_found</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>                 <span class="nn">smarkets_rest</span><span class="p">:</span><span class="n">nf</span><span class="p">(</span><span class="nv">Ctx</span><span class="p">)</span>
+</span><span class='line'>             <span class="k">end</span>
+</span><span class='line'>         <span class="k">end</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To this I added a documentation field for each method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'>   <span class="nl">#a</span><span class="p">{</span><span class="n">m</span><span class="o">=</span><span class="p">[</span><span class="k">fun</span> <span class="nn">rest_aux</span><span class="p">:</span><span class="n">user_id</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span> <span class="n">emails</span><span class="p">,</span>
+</span><span class='line'>         <span class="k">fun</span> <span class="nn">rest_aux</span><span class="p">:</span><span class="n">email</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span> <span class="k">fun</span> <span class="nn">rest_aux</span><span class="p">:</span><span class="nb">hash</span><span class="o">/</span><span class="mi">1</span><span class="p">],</span>
+</span><span class='line'>      <span class="n">f</span><span class="o">=</span><span class="p">[{</span><span class="n">&#39;PUT&#39;</span><span class="p">,</span> <span class="k">fun</span> <span class="nn">rest_users</span><span class="p">:</span><span class="n">user_or_admin</span><span class="o">/</span><span class="mi">3</span><span class="p">}],</span>
+</span><span class='line'>      <span class="n">scope</span><span class="o">=</span><span class="p">[{</span><span class="n">&#39;PUT&#39;</span><span class="p">,</span> <span class="n">private</span><span class="p">}],</span>
+</span><span class='line'>      <span class="n">pu_doc</span> <span class="o">=</span> <span class="nl">#&#39;doc.method&#39;</span><span class="p">{</span>
+</span><span class='line'>        <span class="n">doc</span> <span class="o">=</span> <span class="s">&quot;Verify the specified email using the hash code sent to the user&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">responses</span> <span class="o">=</span>
+</span><span class='line'>          <span class="p">[{</span><span class="mi">200</span><span class="p">,</span> <span class="s">&quot;Successful&quot;</span><span class="p">}</span>
+</span><span class='line'>          <span class="p">,{</span><span class="mi">404</span><span class="p">,</span> <span class="s">&quot;Specified user or email does not exist&quot;</span><span class="p">}</span>
+</span><span class='line'>          <span class="p">,{</span><span class="mi">409</span><span class="p">,</span> <span class="s">&quot;Incorrect hash code&quot;</span><span class="p">}]},</span>
+</span><span class='line'>      <span class="n">pu</span><span class="o">=</span><span class="k">fun</span><span class="p">(</span><span class="nv">UserId</span><span class="p">,</span> <span class="nv">Email</span><span class="p">,</span> <span class="nv">Hash</span><span class="p">,</span> <span class="p">_</span><span class="nv">Auth</span><span class="p">,</span> <span class="nv">Ctx</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>             <span class="k">case</span> <span class="nn">users</span><span class="p">:</span><span class="n">verify_email</span><span class="p">(</span><span class="nv">UserId</span><span class="p">,</span> <span class="nv">Email</span><span class="p">,</span> <span class="nv">Hash</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>               <span class="n">ok</span> <span class="o">-&gt;</span>
+</span><span class='line'>                 <span class="nn">smarkets_rest</span><span class="p">:</span><span class="n">nc</span><span class="p">(</span><span class="nv">Ctx</span><span class="p">);</span>
+</span><span class='line'>               <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="n">conflict</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>                 <span class="nn">smarkets_rest</span><span class="p">:</span><span class="n">cfl</span><span class="p">(</span><span class="nv">Ctx</span><span class="p">);</span>
+</span><span class='line'>               <span class="p">{</span><span class="n">error</span><span class="p">,</span> <span class="n">not_found</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>                 <span class="nn">smarkets_rest</span><span class="p">:</span><span class="n">nf</span><span class="p">(</span><span class="nv">Ctx</span><span class="p">)</span>
+</span><span class='line'>             <span class="k">end</span>
+</span><span class='line'>         <span class="k">end</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>From this the documentation system generates a json object which is stored in couchdb:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;users/{user_id}/emails/{email}/{hash}&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;_rev&quot;</span><span class="p">:</span> <span class="s2">&quot;1-0c4c3aad1227a62429ffb0c05a7059f1&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;doc.action&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;term&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nt">&quot;methods&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>           <span class="nt">&quot;PUT&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>               <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;doc.method&quot;</span><span class="p">,</span>
+</span><span class='line'>               <span class="nt">&quot;term&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>                   <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>                   <span class="p">},</span>
+</span><span class='line'>                   <span class="nt">&quot;opt_params&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>                   <span class="p">},</span>
+</span><span class='line'>                   <span class="nt">&quot;req_params&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>                   <span class="p">},</span>
+</span><span class='line'>                   <span class="nt">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;private&quot;</span><span class="p">,</span>
+</span><span class='line'>                   <span class="nt">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;rest_users.user_or_admin&quot;</span><span class="p">,</span>
+</span><span class='line'>                   <span class="nt">&quot;auth&quot;</span><span class="p">:</span> <span class="s2">&quot;needs_user&quot;</span><span class="p">,</span>
+</span><span class='line'>                   <span class="nt">&quot;responses&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>                       <span class="nt">&quot;200&quot;</span><span class="p">:</span> <span class="s2">&quot;Successful&quot;</span><span class="p">,</span>
+</span><span class='line'>                       <span class="nt">&quot;404&quot;</span><span class="p">:</span> <span class="s2">&quot;Specified user or email does not exist&quot;</span><span class="p">,</span>
+</span><span class='line'>                       <span class="nt">&quot;409&quot;</span><span class="p">:</span> <span class="s2">&quot;Incorrect hash code&quot;</span>
+</span><span class='line'>                   <span class="p">},</span>
+</span><span class='line'>                   <span class="nt">&quot;doc&quot;</span><span class="p">:</span> <span class="s2">&quot;Verify the specified email using the hash code sent to the user&quot;</span>
+</span><span class='line'>               <span class="p">}</span>
+</span><span class='line'>           <span class="p">}</span>
+</span><span class='line'>       <span class="p">},</span>
+</span><span class='line'>       <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;users/{user_id}/emails/{email}/{hash}&quot;</span>
+</span><span class='line'>   <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This json object is used by a couple of different scripts. Both the <a href="http://smarkets.com/api/documentation/">public api reference</a> and our own internal api reference are produced from these json objects. I also added a fuzzer which can read the json documentation and generate calls with both random data and records pulled from the development database. The fuzzer logs the results of these calls like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>   <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;320f2a4bc956334c66c84a4d9f6160a0&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;_rev&quot;</span><span class="p">:</span> <span class="s2">&quot;1-a109f7aa2906e2452e45a49d649674cb&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;body&quot;</span><span class="p">:</span> <span class="s2">&quot;{}&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="mi">403</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;path_spec&quot;</span><span class="p">:</span> <span class="s2">&quot;users/{user_id}/emails/{email}/{hash}&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;PUT&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;headers&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>       <span class="nt">&quot;Content-type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+</span><span class='line'>       <span class="nt">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;UserLogin token=\&quot;O3bHthtJ6wumlt0yjf0q8OrYURMBKiRbfNRmhfGLJNCXhcXkSrzyPVzm47MoWD_lt6UdOJlA8wf1AWY~\&quot;&quot;</span>
+</span><span class='line'>   <span class="p">},</span>
+</span><span class='line'>   <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;users/54ad2cc2a1dd2871518c528a11a40f00/emails/jMt%40XPqKYLNx/50584d82c756b2e4a53c8695553ae34a&quot;</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;response&quot;</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+</span><span class='line'>   <span class="nt">&quot;port&quot;</span><span class="p">:</span> <span class="mi">9000</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Another set of scripts then combs through these tables looking for errors. Anything that returns &lsquo;500 internal server error&rsquo; is flagged. Calls which return &lsquo;400 bad request&rsquo; and are not tagged as being deliberately malformed are also flagged. Same goes for any response code which isn&rsquo;t documented for that call and any documented response code which isn&rsquo;t observed in the fuzzer table. One particularly useful script lists methods which are accessible via the public port.</p>
+
+<p>This system has worked out quite well so far. The documentation is embedded directly next to the related code so its hard to forget to update it when changing the code. The fuzzer is worth its weight in gold and has uncovered countless bugs and weird corner cases. For such a crude fuzzer it generates suprisingly good code coverage. The next step is to combine the fuzzer with a smallcheck-style test system in order to better narrow down errors in long sequences of calls.</p>
 ]]></content>
   </entry>
   
