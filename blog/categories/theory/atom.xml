@@ -4,7 +4,7 @@
   <title><![CDATA[Category: theory | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/theory/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-02-09T13:47:08-08:00</updated>
+  <updated>2015-03-25T22:58:00-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -25,8 +25,7 @@
 
 <p>We&rsquo;ll start with the fundamental property of distributed systems:</p>
 
-<pre><code>Messages sent between machines may arrive zero or more times at any point after they are sent
-</code></pre>
+<blockquote><p>Messages sent between machines may arrive zero or more times at any point after they are sent</p></blockquote>
 
 <p>This is the sole reason that building distributed systems is hard.</p>
 
@@ -36,31 +35,27 @@
 
 <p>This concept is called causal ordering and is written like this:</p>
 
-<pre><code>A-&gt;B (event A is causally ordered before event B)
-</code></pre>
+<blockquote><p>A &ndash;> B (event A is causally ordered before event B)</p></blockquote>
 
 <p>Let&rsquo;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
 
-<pre><code>If A and B happen on the same machine and A happens before B then A-&gt;B
+<blockquote><p>If A and B happen on the same machine and A happens before B then A &ndash;> B</p>
 
-If I send you some message M and you receive it then (send M)-&gt;(recv M)
+<p>If I send you some message M and you receive it then (send M) &ndash;> (recv M)</p>
 
-If A-&gt;B and B-&gt;C then A-&gt;C
-</code></pre>
+<p>If A &ndash;> B and B &ndash;> C then A &ndash;> C</p></blockquote>
 
-<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> &ndash; every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> &ndash; sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
+<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> &ndash; every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> &ndash; sometimes events happen with no possible causal relationship i.e. not (A &ndash;> B or B &ndash;> A).</p>
 
 <p><a href="http://upload.wikimedia.org/wikipedia/commons/5/55/Vector_Clock.svg">This image</a> shows a nice way to picture these relationships.</p>
 
 <p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&rsquo;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
 
-<pre><code>If not(A-&gt;B) then A cannot possibly have caused B
-</code></pre>
+<blockquote><p>If not(A &ndash;> B) then A cannot possibly have caused B</p></blockquote>
 
 <p>Since we don&rsquo;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&rsquo;s say it again:</p>
 
-<pre><code>Communication bounds causality
-</code></pre>
+<blockquote><p>Communication bounds causality</p></blockquote>
 
 <p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&rsquo;s skim over some examples.</p>
 
@@ -68,10 +63,9 @@ If A-&gt;B and B-&gt;C then A-&gt;C
 
 <p><a href="http://en.wikipedia.org/wiki/Lamport_timestamps">Lamport clocks</a> and <a href="http://en.wikipedia.org/wiki/Vector_clock">Vector clocks</a> are data-structures which efficiently approximate the causal ordering and so can be used by programs to reason about causality.</p>
 
-<pre><code>If A-&gt;B then LC_A &lt; LC_B
+<blockquote><p>If A &ndash;> B then LC_A &lt; LC_B</p>
 
-If VC_A &lt; VC_B then A-&gt;B
-</code></pre>
+<p>If VC_A &lt; VC_B then A &ndash;> B</p></blockquote>
 
 <p>Different types of vector clock trade-off compression vs accuracy by storing smaller or larger portions of the causal history of an event.</p>
 
@@ -83,16 +77,15 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>The CAP (Consistency-Availability-Partition) theorem also boils down to causality. When a machine in a distributed system is asked to perform an action that depends on its current state it must decide that state by choosing a serialisation of the events it has seen. It has two options:</p>
 
-<ol>
+<ul>
 <li>Choose a serialisation of its current events immediately</li>
 <li>Wait until it is sure it has seen all concurrent events before choosing a serialisation</li>
-</ol>
+</ul>
 
 
 <p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen &ndash; the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
 
-<pre><code>Ordering requires waiting
-</code></pre>
+<blockquote><p>Ordering requires waiting</p></blockquote>
 
 <p>Even your hardware <a href="http://en.wikipedia.org/wiki/Memory_barrier">cannot escape</a> this law. It provides the illusion of synchronous access to memory at the cost of availabilty. If you want to write fast parallel programs then you need to understand the messaging model used by the underlying hardware.</p>
 

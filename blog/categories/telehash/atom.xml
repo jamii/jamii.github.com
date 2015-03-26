@@ -4,7 +4,7 @@
   <title><![CDATA[Category: telehash | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/telehash/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-02-09T13:47:08-08:00</updated>
+  <updated>2015-03-25T22:58:00-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -36,7 +36,7 @@ record(bootstrap, { % the state of the router when bootstrapping</p>
 <p>bootstrap(Addresses, Timeout) &ndash;></p>
 
 <pre><code>?INFO([bootstrapping]),
-State = #bootstrap{timeout=Timeout, addresses=Addresses},    
+State = #bootstrap{timeout=Timeout, addresses=Addresses},
 {ok, _Pid} = gen_server:start_link(?MODULE, State, []).
 </code></pre>
 
@@ -68,11 +68,11 @@ case {lists:member(From, Addresses), telex:get(Telex, '_to')} of
     End -&gt;
         Self = util:to_bits(End),
         Table = touched(From, Self, empty_table(Self)),
-        dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT), 
+        dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT),
         refresh(Self, Table),
         ?INFO([bootstrap, finished, {self, Binary}, {from, From}]),
         {noreply, #state{self=Self, pinged=sets:new(), table=Table}}
-    catch 
+    catch
     _ -&gt;
         ?WARN([bootstrap, bad_self, {self, Binary}, {from, From}]),
         {noreply, Bootstrap}
@@ -159,7 +159,7 @@ end;
 
 <p>```</p>
 
-<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement ring/line to protect against address spoofing):</p>
 
 <p>``` erlang
 touched(Address, Self, Table) &ndash;></p>
@@ -214,10 +214,10 @@ switch:send(To, Telex).
 
 <pre><code>Bits = util:to_bits(End),
 iter:take(
-  N, 
+  N,
   iter:flatten(
 iter:map(
-  fun ({_Prefix, Bucket}) -&gt; bucket:by_dist(End, Bucket) end, 
+  fun ({_Prefix, Bucket}) -&gt; bucket:by_dist(End, Bucket) end,
   bit_tree:iter(Bits, Table)))).
 </code></pre>
 
@@ -261,7 +261,7 @@ case telex:get(Telex, '+end') of
     _ -&gt;
         ?WARN([bad_see, {'end', Hex}, {from, From}])
     end;
-_ -&gt; 
+_ -&gt;
     ok
 end,
 {noreply, State#state{pinged=Pinged2, table=Table2}};
@@ -300,9 +300,9 @@ refresh(Self, Table),
 <p>needs_refresh(Bucket, Now) &ndash;></p>
 
 <pre><code>case bucket:last_dialed(Bucket) of
-never -&gt; 
+never -&gt;
     true;
-Last -&gt; 
+Last -&gt;
     (timer:now_diff(Now, Last) div 1000) &lt; ?ROUTER_REFRESH_TIME
 end.
 </code></pre>
@@ -864,7 +864,7 @@ lists:map(
     <link href="http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees/"/>
     <updated>2011-03-23T06:16:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/03/23/telehash-bittrees</id>
-    <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via <em>ring/</em>line but I&rsquo;m still mulling over the protocol so we&rsquo;ll skip to the routing table.</p>
+    <content type="html"><![CDATA[<p>The next step in building a switch is managing a routing table. Actually, the next step is handling sessions via ring/line but I&rsquo;m still mulling over the protocol so we&rsquo;ll skip to the routing table.</p>
 
 <!--more-->
 
@@ -952,9 +952,9 @@ case Next of
     false -&gt; {ChildF, ChildT};
     true -&gt; {ChildT, ChildF}
 end,
-Self2 = 
+Self2 =
 case Self of
-    {up, Up, Down, Gap} -&gt; 
+    {up, Up, Down, Gap} -&gt;
     % already stepped out of gap
     {up, [not(Next)|Up], Down, Gap};
     {down, [Bit|Down]} when Bit == Next -&gt;
@@ -994,7 +994,7 @@ case Last of
     false -&gt; #branch{size=Size, childF=Branch, childT=Tree};
     true -&gt; #branch{size=Size, childF=Tree, childT=Branch}
 end,
-Self2 = 
+Self2 =
 case Self of
     {down, Down} -&gt;
     % already in gap
@@ -1072,7 +1072,7 @@ iter(Suffix, #finger{tree=Tree, zipper=Zipper}) &ndash;></p>
 <p>% iterate through buckets in ascending order of xor distance to (current position ++ Suffix)
 iter_zipper([], _Suffix) &ndash;></p>
 
-<pre><code>fun () -&gt; 
+<pre><code>fun () -&gt;
     done
 end;
 </code></pre>
@@ -1092,7 +1092,7 @@ end;
 
 <p>iter_buckets(#branch{childF=ChildF, childT=ChildT}, [Bit|Bits], Iter) &ndash;></p>
 
-<pre><code>case Bit of 
+<pre><code>case Bit of
 true -&gt;
     iter_buckets(ChildT, Bits, iter_buckets(ChildF, Bits, Iter));
 false -&gt;
@@ -1135,8 +1135,8 @@ bit_tree:iter(Suffix, Tree2)
 
 <p>split(Bucket) &ndash;></p>
 
-<pre><code>if 
-length(Bucket) &gt; ?MAX_SIZE -&gt; 
+<pre><code>if
+length(Bucket) &gt; ?MAX_SIZE -&gt;
     BucketF = [{Suffix2, Int2} || {[false | Suffix2], Int2} &lt;- Bucket],
     BucketT = [{Suffix2, Int2} || {[true | Suffix2], Int2} &lt;- Bucket],
     {split, split(BucketF), split(BucketT)};
@@ -1189,7 +1189,7 @@ lists:map(
 <p>We can play around with the test buckets a bit:</p>
 
 <p>``` erlang
-25> Tree = test_bucket:make_tree(47, lists:seq(1,1000)).    <br/>
+25> Tree = test_bucket:make_tree(47, lists:seq(1,1000)).
 {finger,#Fun&lt;test_bucket.1.121651971>,</p>
 
 <pre><code>    {leaf,1,[{[false,false,false],1000}]},
@@ -1210,7 +1210,7 @@ lists:map(
      {...}|...]}
 </code></pre>
 
-<p>26> List = test_bucket:move_list_from(657, Tree).           <br/>
+<p>26> List = test_bucket:move_list_from(657, Tree).
 [[{0,657},{1,656}],
  [{2,659},{3,658}],
  [{4,661},{5,660}],

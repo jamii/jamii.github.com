@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-02-09T13:47:08-08:00</updated>
+  <updated>2015-03-25T22:58:00-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -244,9 +244,7 @@
 
 <p>It is tempting to believe that this is the best we can do and that programming is naturally this complex. But as we work through our lunch app, consider how little of the work we have to do actually relates to the problem of specifying the application.</p>
 
-<hr />
-
-<h1>Getting started</h1>
+<h2>Getting started</h2>
 
 <p>First we need to get a development environment running. Let&rsquo;s try clojure:</p>
 
@@ -271,13 +269,13 @@
 
 <p>At this point you have already lost 99% of the population and we haven&rsquo;t even touched on css or templates yet. Worse, none of this was discoverable. I happen to already know how to setup a simple client-server web app so all these steps seem obvious to me. But Anon the intern needs to be able to open up Programming™ and click &lsquo;New Web Form&rsquo;. Intellij does a reasonable job on this front &ndash; you can start a new web project, compile and open the result in a browser in a few button clicks. But in most environments you need a tutorial just to start a new project.</p>
 
-<h1>Finding help</h1>
+<h2>Finding help</h2>
 
 <p>So Anon is now staring at a blinking cursor on a blank editor page. What next? How does one go about making a web form, or send a email? For common tasks google will probably find you entire code samples or at the very least some javadocs. The samples will be missing lots of implicit information such as how to install the necessary libraries and how to deal with missing dependencies and version conflicts. Transcribing and modifying the examples may lead to bugs that suck up time. It&rsquo;s not terrible, mostly thanks to sites like stackoverflow, but it&rsquo;s still a lot of unnecessary distractions from the task at hand.</p>
 
 <p>I want to just type &lsquo;email&rsquo; and see a list of functions and libraries relating to email. If I select a function from autocomplete, its dependencies should be automatically added to the project without any fuss. Missing dependencies or version conflicts should be presented alongside suggestions for resolution (click here to choose version A). <a href="http://blogs.msdn.com/b/visualstudio/archive/2014/02/17/introducing-bing-code-search-for-c.aspx">Bing Code Search</a> takes this idea even further and autocompletes code for common tasks.</p>
 
-<h1>Writing code</h1>
+<h2>Writing code</h2>
 
 <p>Even for experts, programming is an exploratory process. We experiment with libraries, run through examples and iteratively build up features. One of the most painful lessons beginners have to learn is just how often everyone is wrong about everything. Tightening the feedback loop between writing code and seeing the results reduces the damage caused by wrong assumptions, lightens the cognitive load of tracking what should be happening and helps build accurate mental models of the system. The latter is especially important for beginners who often suffer from miscomprehensions about even the basic semantics of the language. Unfortunately, the most you are likely get is automatically refreshing your browser. Maybe a REPL if you are lucky.</p>
 
@@ -287,7 +285,7 @@
 
 <p>Plain text is also very limiting. Language is very good for conveying meaning but not so great for displaying data. Being able to quickly throw up graphs and diagrams (like in <a href="https://github.com/ztellman/rhizome">rhizome</a>, <a href="https://github.com/ztellman/automat">automat</a> or <a href="https://github.com/ztellman/lamina/wiki/Channels">lamina</a>) is incredibly useful. Light Table&rsquo;s <a href="http://www.chris-granger.com/images/040/ipygraphs.png">inline graphs</a> are a start but we haven&rsquo;t otherwise made much use of visualisation. First person to implement inline graphviz gets a cookie.</p>
 
-<h1>Running code</h1>
+<h2>Running code</h2>
 
 <p>Surprisingly, one of the most common difficulties we have heard from beginners is just running code. Even if we were to hand Anon the entire lunch_app source code they would likely still struggle to actually use it. They have to install dependencies, compile code, start servers and open ports. At each step the errors are difficult to diagnose and time-consuming to fix. The tools that are intended to fix this are often even worse themselves (every time I write a blog post in octopress I find rvm has somehow broken again). IDEs like Intellij and Visual Studio do a reasonable job of standardising the build process and capturing dependencies so that it is usually possible to import a project and just hit run, but that only goes as far as development. For deployment we have tools like Docker which make deployment highly repeatable but don&rsquo;t help much with capturing the process in the first place. None of these really help Anon the intern deploy lunch_app.</p>
 
@@ -297,7 +295,7 @@
 
 <p>From there it doesn&rsquo;t take much imagination to add easy task scheduling and an error logger that emails Anon when something goes wrong. None of this requires giving up control either. You could just as easily replace &lsquo;cloud server&rsquo; with &lsquo;departmental server&rsquo; or &lsquo;little black box that came with our internet&rsquo;. The important point is that there are sensible defaults for deployment and that it is &lsquo;batteries included&rsquo; in the language or IDE.</p>
 
-<h1>What?</h1>
+<h2>What?</h2>
 
 <p>The simplest question we could ask about our application is &lsquo;what is the current state&rsquo;. Bizaarely, very few programming environments give you any help on this front. Many programmers get by with nothing but print statements. If you are lucky you may have a debugger or watches, but you still end up looking at your application through a keyhole. You have to actively insert instrumentation by hand to view the state of each tiny part of the application. If you want to modify that state you have to mentally work backwards and construct the correct piece of code to find and change the variable that you are looking at. It may not even have a name that is accessible from the repl (eg a variable in an anonymous closure). Viewing and modifying the state of the application should be a fundamental interaction and yet it&rsquo;s made unreasonably difficult by our languages and tools.</p>
 
@@ -305,7 +303,7 @@
 
 <p>Once we have managed state, whether using a relational model like <a href="http://bloom-lang.net/">Bloom</a> or more traditional functional data-structures like <a href="http://infoscience.epfl.ch/record/136776">Opis</a>, we can easily record history too. Tools like <a href="http://chrononsystems.com/products/chronon-time-travelling-debugger">time travelling debuggers</a> that require huge engineering effort in traditional languages become trivial when you can cheaply record or reconstruct the past. Reproducing bugs is easier when you can just snapshot your history and mail it to the developer. Bloom and Opis are also both able to determine dataflow topologies from source code so when stepping into an unfamiliar project you can quickly get a visual overview of how the various components communicate (examples are buried <a href="http://db.cs.berkeley.edu/papers/cidr11-bloom.pdf">here</a> and <a href="http://infoscience.epfl.ch/record/136776/files/DagandETAL09Opis.pdf">here</a>).</p>
 
-<h1>Why?</h1>
+<h2>Why?</h2>
 
 <p>Traditional debuggers focus entirely on the <em>what</em> &ndash; walking through a narrow slice of state on step at a time. But when debugging the question one usually starts with is <em>why</em>? Why are the lunch options in the wrong order? Why didn&rsquo;t the lunch email go out? Why is everyones bill for the month zero? These questions typically involve reasoning backwards from effect to cause whereas debuggers walk you forward from cause to effect. The result is that debugging consists mostly not of finding the problem but manually walking backwards along the chain of causes by setting up isolated test cases and repeatedly rerunning them under the debugger.</p>
 
@@ -313,7 +311,7 @@
 
 <p>The problem gets even worse with scale. Debugging by following control flow works poorly in large systems where what really matters is <em>data flow</em>. Answering questions like &lsquo;why do orders sometimes get lost&rsquo; requires tracing through an enourmous graph, one which is not even recorded in most systems and instead has to be inferred from logs, like piecing together ancient civilisations from broken pottery. <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">BOOM analytics</a> deals with this by reflecting all data, from error logs and persistent data to message queues and profiling data, into relational tables that are made available to overlog &ndash; the same distributed query language that runs the rest of the system. This means you can directly run queries over the causality graph, such as &lsquo;for each order that was entered into the system but not completed, give me a list of every message was linked to that order by some chain of rules&rsquo;. Since the recording of this data was itself governed by overlog rules you can switch on detailed logging at runtime for specific kinds of data eg &lsquo;record all messages concerning order 197 originating from cluster C and forward them to me&rsquo;.</p>
 
-<h1>Change</h1>
+<h2>Change</h2>
 
 <p>Outside of the software world, version control and collaboration software is limited to saving lunch_app.v07 and attaching it to an email. Collaborating on a single project is difficult and slow. The standard tools of the trade for programmers (git, mercurial etc) are vastly more powerful and solve a pressing problem but present an interface that <a href="http://steveko.wordpress.com/2012/02/24/10-things-i-hate-about-git/">baffles and frustrates many users</a>. The underlying model is elegant and powerful but even the graphical interfaces require a significant investment of time and effort to understand.</p>
 
@@ -321,7 +319,7 @@
 
 <p>Similary, when Anon 2 the accountant wants to modify their client-side copy of the lunch form to remember their favourite lunches it should be a simple process. No hunting down and recompiling system binaries, no installing greasemonkey scripts from the filesystem. Just click to open the source, modify to your satisfaction, click to save. I&rsquo;ve never seen anything come close to this basic interaction. The <a href="http://blog.printf.net/articles/2006/10/29/the-view-source-key/">OLPC view source button</a> promised exactly this experience but as far as I know it never materialised (it certainly didn&rsquo;t work on mine).</p>
 
-<h1>Learning</h1>
+<h2>Learning</h2>
 
 <p>Programming tools generally pay very little attention to producing helpful error messages (with <a href="http://cs.brown.edu/~sk/Publications/Papers/Published/mfk-measur-effect-error-msg-novice-sigcse/paper.pdf">one</a> or <a href="http://research.microsoft.com/pubs/64590/helium.pdf">two</a> exceptions). There is a modest amount of <a href="http://www.amazon.com/Man-Who-Lied-His-Laptop-ebook/dp/B003YUC7BI/ref=sr_1_1?ie=UTF8&amp;qid=1400099030&amp;sr=8-1&amp;keywords=man+who+lied+to+his+laptop">evidence</a> that people interact with computers as if they were people. Many of the results of this research are suprising and counter-intuitive eg <a href="http://faculty.washington.edu/ajko/papers/Lee2011Gidget.pdf">personifying the compiler</a> can improve learning rates in students. Given that, do you really want to spend lots of time with the kind of person who just repeatedly shouts &lsquo;cannot call method undefined of undefined!&rsquo; in your face without so much as hinting how you might fix the problem or where you might start looking?</p>
 
@@ -333,7 +331,7 @@
 
 <p>Finally, environments can&rsquo;t be black boxes. Beginners need a simple experience but if they are to become experts they need to be able to shed the training wheels and open the hood. Many attempts at end-user programming failed because they assumed the user was stupid and so wrapped everything in cotton wool. Whenever we provide a simplified experience, there should be an easy way to crack it open and see how it works. Nothing should be magic forever. Ensure that the users curiousity is never frustrated and they won&rsquo;t need teaching for long.</p>
 
-<hr />
+<h2>Plans</h2>
 
 <p>Some of the things I have described are just a matter of paying attention to the details. Others require doing things very differently. The key parts of our plan for Aurora are:</p>
 
@@ -1751,164 +1749,11 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Flowing faster: lein-gnome]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/"/>
-    <updated>2013-06-25T20:27:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome</id>
-    <content type="html"><![CDATA[<p>After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy&rsquo;s <a href="https://github.com/jamii/lein-gnome">lein-gnome</a>. It can build, package, deploy and reload gnome-shell extensions and includes a hello-world template. I&rsquo;ve also added a unified log watcher that hunts down all the various places gnome-shell might choose to put your stack-traces and a cljs repl server that runs inside your extension so you can trial-and-error your way to victory.</p>
-
-<!--more-->
-
-
-<p>Future plans for a rainy day include:</p>
-
-<ul>
-<li><p>Writing a proper nrepl server for cljs so you can <code>C-x e</code> directly from emacs (this is non-trivial for projects with crossover code).</p></li>
-<li><p>Figure out how dynamic loading of bindings works in gjs so I can support tab-completion</p></li>
-<li><p>Clone the Looking Glass picker tool</p></li>
-</ul>
-
-
-<p>In the meantime I&rsquo;m going to start work on <a href="https://github.com/jamii/golem">golem</a>. Until cljs has true nrepl support my hack for live interaction in emacs is the following:</p>
-
-<ul>
-<li><p>Save all extension state to disk on <code>disable</code></p></li>
-<li><p>Load all extension state from disk on <code>enable</code></p></li>
-<li><p>Hook <code>lein gnome install</code> into <code>lein cljsbuild auto</code></p></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: foundations]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations/"/>
-    <updated>2013-06-04T18:02:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations</id>
-    <content type="html"><![CDATA[<p>I&rsquo;ve spent the last few years using Gnome 2 and <a href="http://xmonad.org/">xmonad</a> on Ubuntu. Since both Ubuntu and the Gnome foundation have dropped support for Gnome 2 I&rsquo;m going to be forced to upgrade sooner or later. Fortunately I have a two week holiday followed by a new desktop at my new job, so now is a good time to break things on my laptop.</p>
-
-<!--more-->
-
-
-<h1>Choices</h1>
-
-<p>Almost all of my work happens in bash, emacs, firefox and xmonad. What these have in common, to various extents, is what Mr Yegge likes to call <a href="http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html">living software</a>. This breaks down the interaction barrier and allows them to grow beyond point-and-grunt into an extension of my mind. This is what I look for in any system I&rsquo;m going to spend lots of time with.</p>
-
-<p><a href="http://unity.ubuntu.com/">Unity</a> has the <a href="https://wiki.ubuntu.com/Unity/HUD">HUD</a> which is basically a CLI for individual applications. There is plugin support <a href="http://wiki.compiz.org/Plugins%E2%80%8E">via Compiz</a> but nobody seems to be writing any. It&rsquo;s also incredibly closely tied to Ubuntu and despite all the good they have done some of their recent decisions have been worrying. Individually, they are each sensible and justified but taken as a whole they make me a little nervous about investing heavily in Unity. It&rsquo;s a shame, because I would love to use the <a href="http://www.ubuntu.com/phone">Ubuntu phone</a>.</p>
-
-<p><a href="https://live.gnome.org/GnomeShell">Gnome Shell</a> is largely written in js and is on its way to building a <a href="https://extensions.gnome.org/">healthy ecosystem of extensions</a> (or will be, if it stops breaking them every version bump). It even has an <a href="https://live.gnome.org/GnomeShell/LookingGlass">almost-functional repl</a> which surely can be shoe-horned into running <a href="https://github.com/clojure/clojurescript">cljs</a>. It&rsquo;s missing the HUD but most of the applications I use have their own CLI anyway. As proof of its flexibility, it has acquired not one but three tiling window managers: <a href="https://extensions.gnome.org/extension/657/shelltile/">shelltile</a>, <a href="https://extensions.gnome.org/extension/294/shellshape/">shellshape</a> and <a href="https://extensions.gnome.org/extension/28/gtile/">gtile</a>. Of course, all them were broken by the 3.8 update&hellip;</p>
-
-<p><a href="http://www.kde.org/">KDE</a> has <a href="http://www.kde.org/workspaces/plasmadesktop/">plasma</a>, which it uses for &hellip; uh &hellip; desktop widgets. It also has <a href="http://userbase.kde.org/Plasma#Activities">activities</a> which are almost a fantastic idea but it uses them to manage &hellip; desktop widgets. I don&rsquo;t remember the last time I saw my desktop. If I&rsquo;m being unfair to KDE it stems from frustration &ndash; they were way ahead of the game on customisation and inter-application communication and they don&rsquo;t seem to have done anything <em>useful</em> with it.</p>
-
-<p>There are also a million minimalist desktop environments but I prefer to have most of my work done for me, so long as I have the power to monkey-patch anything I disagree with. Vertical integration can be a beautiful thing when it works.</p>
-
-<p>So it looks like Gnome Shell wins. People complain that it is unusable without extensions. For my purposes that is irrelevant. Most of my favourite software is unusable without customisation (especially emacs). What is important is the potential for sculpting it into something better.</p>
-
-<h1>Experience</h1>
-
-<p>The <a href="https://live.gnome.org/GnomeTweakTool">Gnome Tweak Tool</a> is absolutely essential. I have a few other extensions installed so far but none are particularly essential. There are a few more I will have to write myself.</p>
-
-<p>I expected to find <a href="http://cooperteam.net/">Gnome Do</a> indispensable. I can&rsquo;t quite puy my finger on the reason but I instead found it intensely annoying and quickly uninstalled it. I think it&rsquo;s an uncanny valley thing &ndash; it&rsquo;s <em>almost</em> a real repl. Adding panels to the <a href="http://media.bestofmicro.com/fedora-linux-gnome,M-M-329998-13.png">Overview</a> might be a better option for me.</p>
-
-<p>Most of my setup time was burned on remapping keys. Gnome doesn&rsquo;t run .xprofile or .Xmodmaprc and adding them to gnome-session doesn&rsquo;t persist the changes across suspend/hibernate. I spent a while trying to remap keys <a href="https://wiki.archlinux.org/index.php/Map_scancodes_to_keycodes">at the kernel level</a> before eventually realising that Gnome Tweak Tool has a keyboard section. It doesn&rsquo;t have all the options I want but it does mean I can crib from their remapping code later.</p>
-
-<p>Similarly, Gnome overrides the xorg.conf touchpad settings and its settings dialog doesn&rsquo;t provide an vertical-edge-scroll option. Fortunately the setting still exists and can be set with dconf-editor under <code>org/gnome/settings-daemon/touchpad</code>. Again, I&rsquo;m leaning towards configuring this in js in the future to keep all my changes in the same place.</p>
-
-<p>So far I&rsquo;m impressed at the potential of Gnome Shell, if not the default reality. The overview completion is fast and accurate. The notification system is a big improvement over Gnome 2 (especially the on/off toggle). The animations are smooth even on my integrated graphics. The ui and icons are simple and clear. With the dark theme enabled the shell is beautiful without getting in the way. Beauty is important in anything I spend half my life staring at.</p>
-
-<h1>Bonus</h1>
-
-<p>I also took the oppurtunuity to switch from <a href="https://www.archlinux.org/">Ubuntu</a> to <a href="https://www.archlinux.org/">Arch</a>. Partly because of the nervousness I mentioned earlier, but also because Ubuntu keeps fucking overwriting my config files. I&rsquo;ve given up touching anything beneath the surface because every Ubuntu upgrade breaks everything. Arch seems to be more kindly inclined towards tinkering and customisation and the wiki is a fantastic resource for learning about linux internals. It has a reputation for being unstable but since my new job will be developing in Windows on a fancy desktop the risk of breakage on my laptop isn&rsquo;t a big deal. And it doesn&rsquo;t overwrite my config files without asking.</p>
-
-<p>The installation was straight-forward apart from a <a href="https://bbs.archlinux.org/viewtopic.php?id=162725">known mistake</a> in this months iso. My hardware all worked without any configuration. Suspend and hibernate are faster and more reliable than they were in Ubuntu. My battery life is slightly better. <a href="http://kmkeen.com/pacmatic/">Pacmatic</a> somewhat alleviates the fear of breakage. Installing proprietary software (skype, spotify) has not been a problem. I did have to <a href="https://wiki.archlinux.org/index.php/Font_Configuration#Infinality:_the_easy_way">tweak the fonts</a> and I have still have some missing unicode characters in firefox which I haven&rsquo;t yet looked into.</p>
-
-<h1>Next</h1>
-
-<p>The next part of this series (which is due at some undetermined point in the future) will probably be writing a hello-world style extension in <a href="https://github.com/clojure/clojurescript">cljs</a> as the first step towards a document-centric tiling window manager.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: saving the cloud]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/"/>
-    <updated>2013-06-02T03:36:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud</id>
-    <content type="html"><![CDATA[<p>While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m generally trying to move towards using cloud services as dumb servers so I can easily replace them. The first step is to be able to export and backup all my data.</p>
-
-<!--more-->
-
-
-<p>I considered using The Locker Project for backing up cloud services, but it appears that Singly have pivoted from <a href="http://lockerproject.org/">&lsquo;control your own data&rsquo;</a> to <a href="https://singly.com/product/">&lsquo;give all your data to us&rsquo;</a>. Back to the drawing board&hellip;</p>
-
-<p>I use <a href="https://addons.mozilla.org/en-US/firefox/addon/opml-support/">OPML Support</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/brief/">Brief</a> to replace google reader and <a href="http://projects.gnome.org/evolution/">Evolution</a> to back up google mail, calendar and contacts. My address is on my own domain and managed by google apps. I don&rsquo;t yet use a local mail reader but Evolution looks like a reasonable fallback if I have to drop gmail.</p>
-
-<p>For music I use <a href="http://www.tomahawk-player.org/">Tomahawk</a> with a <a href="https://www.spotify.com/">Spotify Premium</a> account as the main resolver. I create playlists in Tomahawk using both the chart apis and the <a href="http://echonest.com/">Echo Nest</a> api and sync them to Spotify to download to my phone. There&rsquo;s still a little too much manual button pressing in that process but it&rsquo;s much easier than managing my own collection. Both Tomahawk and Spotify mobile scrobble to my last.fm account which I backup with <a href="https://gitorious.org/fmthings/lasttolibre/blobs/master/lastexport.py">lastexport</a>.</p>
-
-<p>Facebook is really the only service I couldn&rsquo;t replace, due to a combination of network effects and poor export tools. I use the builtin export service but unfortunately it seems to be pretty hard to automate. The only non-proprietary solution I could find was <a href="https://addons.mozilla.org/en-us/firefox/addon/archivefacebook/">ArchiveFacebook</a> which I suppose could be run from the command line somehow. For now I just set a monthly reminder in my calendar.</p>
-
-<p>So now I have all my cloud data synced on my machine where the backup tools from my last post can take care of it.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: backing up]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/"/>
-    <updated>2013-06-01T02:12:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up</id>
-    <content type="html"><![CDATA[<p>A lot of the work in this series is going to be about improving my working environment. Let&rsquo;s start with backups so I don&rsquo;t lose all this hard work.</p>
-
-<!--more-->
-
-
-<p>I backup my entire filesystem to <a href="http://www.tarsnap.com/">tarsnap</a> every week. I paid around $70 for the last year of usage which is cheap for the peace of mind it brings. The tarsnap documentation is excellent so I won&rsquo;t go through the setup here, just my usage:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">set</span> -e
-</span><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>pacman -Qeq &gt; /home/jamie/packages
-</span><span class='line'><span class="nv">DATE</span><span class="o">=</span><span class="sb">`</span>date +%Y.%m.%d-%H.%m.%S<span class="sb">`</span>
-</span><span class='line'>tarsnap -v -c -f <span class="s2">&quot;alien@$DATE&quot;</span> <span class="se">\</span>
-</span><span class='line'>    --cachedir /usr/local/tarsnap-cache --keyfile /home/jamie/tarsnap.key <span class="se">\</span>
-</span><span class='line'>    --exclude /dev --exclude /proc --exclude /sys --exclude /tmp --exclude /run --exclude /mnt --exclude /media --exclude /lost+found --exclude /swapfile <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/.thumbnails --exclude /home/jamie/.mozilla/firefox/*.default/Cache --exclude /home/jamie/.cache/chromium <span class="se">\</span>
-</span><span class='line'>    --exclude /var/lib/pacman <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/Downloads <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/.cache <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/music <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/.local/share/Trash <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/VirtualBox* <span class="se">\</span>
-</span><span class='line'>    --exclude /home/jamie/old-home <span class="se">\</span>
-</span><span class='line'>    /
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The first two lines of excludes are fairly standard. The rest come from looking through the output of <code>sudo du -h -t 100000000 /</code> for unnecessary folders.</p>
-
-<p>The restore process is pretty simple even for a different machine: install the os, restore /home/jamie, reinstall all packages in /home/jamie/packages, diff the rest of the backup and copy over anything that&rsquo;s not machine-specific.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: external memory]]></title>
+    <title type="html"><![CDATA[External memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
     <updated>2013-05-21T20:43:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
-    <content type="html"><![CDATA[<p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
+    <content type="html"><![CDATA[<p> What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
 
 <!--more-->
 
@@ -2138,7 +1983,7 @@
 
 <p>(Note: For the purposes of this post I&rsquo;ll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
 
-<h1>Pattern matching</h1>
+<h2>Pattern matching</h2>
 
 <p>Pattern matching is a concept found in many functional languages. The basic idea is something like a switch statement, combined with a mini-language for describing patterns which the input should be tested against. The first pattern which matches has its corresponding branch executed.</p>
 
@@ -2344,7 +2189,7 @@
 
 <p>This is a pattern which only matches balanced red-black trees, by recursively matching against each branch and returning the number of black nodes per path (see property 5 <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Properties">here</a>).</p>
 
-<h1>Parsing</h1>
+<h2>Parsing</h2>
 
 <p>Strucjure supports patterns which only consume part of the input and can chain these patterns together. Combine that with pattern matching and you can very easily write back-tracking recursive-descent parsers.</p>
 
@@ -2442,7 +2287,7 @@
 
 <p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it&rsquo;s was very easy to write, read and modify the parser.</p>
 
-<h1>Generic programming</h1>
+<h2>Generic programming</h2>
 
 <p>Clojure has some great facilities for generic traversals in the form of clojure.walk:</p>
 
@@ -2687,7 +2532,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h1>Types</h1>
+<h2>Types</h2>
 
 <p>I originally learned to code in haskell. One of the things I miss about strong static typing is it that it automatically provides documentation about the data structures used in your program. Strucjure patterns can fulfill the same role. In l-seed, if you are confused about what a rule should look like you can just go look at the +rule+ pattern.</p>
 
@@ -2706,7 +2551,7 @@
 
 <p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven&rsquo;t yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
 
-<h1>State machines</h1>
+<h2>State machines</h2>
 
 <p>One can think of parsers in general as state machines with look-ahead and backtracking. OMeta takes this idea and runs with it:</p>
 
@@ -2724,7 +2569,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>I haven&rsquo;t yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
 
-<h1>Moving forward</h1>
+<h2>Moving forward</h2>
 
 <p>There are of lot of different directions for improvement and experimentation.</p>
 
@@ -2809,7 +2654,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>So here is my goal &ndash; to create better tools for the problems I regularly encounter. My focus is on building distributed systems and p2p networks but I suspect that these tools will be generally useful. When working as a freelancer I am necessarily constrained to using proven ideas and techniques because the risk assumed is not mine. Hacker School is a chance for me to explore some more far-out ideas. These ideas are drawn primarily from two places: the <a href="http://vpri.org/">Viewpoint Research Institute</a> and the <a href="boom.cs.berkeley.edu/">Berkeley Order Of Magnitude</a> project.</p>
 
-<h1>Viewpoint Research Institute</h1>
+<h2>Viewpoint Research Institute</h2>
 
 <p>Specifically, I&rsquo;m interested in the <a href="http://www.vpri.org/pdf/tr2011004_steps11.pdf">Steps Towards Expressive Programming</a> project. Their goal is no less than the reinvention of programming. By way of proof of concept they aim to develop an entire computing system, from OS to compilers to applications, in less than 20k LOC. Such a system would be compact enough to be understood in its entirety by a single person, something that is unthinkable in todays world of multi-million LOC systems. Amazingly, their initial prototypes of various subsystems actually approach this goal.</p>
 
@@ -2829,7 +2674,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>The &lsquo;language transformation techniques&rsquo; they refer to are embodied in <a href="http://lambda-the-ultimate.org/node/2477">OMeta</a>, a <a href="http://en.wikipedia.org/wiki/PEG">PEG</a>-based language for parsing and pattern-matching. OMeta provides an incredible amount of leverage for such a simple abstraction. For starters, it leads to very concise and readable descriptions of tokenisers, parsers and tree transformers which are all crucial for developing DSLs.</p>
 
-<h1>Berkeley Order Of Magnitude</h1>
+<h2>Berkeley Order Of Magnitude</h2>
 
 <p>The Berkeley Order Of Magnitude project has spent a number of years experimenting with using logic languages for distributed systems. Like the STEPS project, their goals are audaciously ambitious.</p>
 
@@ -2843,23 +2688,15 @@ take another pass at this next year.</p></blockquote>
 
 <p>The latest project from the BOOM group is the <a href="http://www.bloom-lang.net/">Bloom language</a>. Bloom has a more solid theoretical foundation than their previous languages and also enables an amazing level of static analysis, even being able to guarantee that certain Bloom programs are eventually consistent.</p>
 
-<h1>Core Ideas</h1>
+<h2>Core Ideas</h2>
 
 <p>What can I take away from these projects? Here are some vague ideas, which to my mind all seem related.</p>
 
-<h2>Higher-level reasoning</h2>
+<p><strong>Higher-level reasoning</strong>. The STEPS notes talk about &lsquo;separating meaning from tactics&rsquo;. It&rsquo;s often easier to specify what a correct solution to a problem looks like than it is to actually find it. In many domains, finding a solution is then just a matter of applying a suitable search algorithm. For example, constraint solvers such as <a href="http://www.gecode.org/">gecode</a> or <a href="https://github.com/clojure/core.logic">core.logic</a> express a problem as a set of logical constraints on the possible solutions and then search through the space of variable assignments to find a solution. By automatically pruning parts of the search space which break one or more constraints and applying user-specified search heuristics, constraint solvers can often be faster than hand-coded solvers for complex problems whilst at the same time allowing a clear, concise, declarative specification of the problem.</p>
 
-<p>The STEPS notes talk about &lsquo;separating meaning from tactics&rsquo;. It&rsquo;s often easier to specify what a correct solution to a problem looks like than it is to actually find it. In many domains, finding a solution is then just a matter of applying a suitable search algorithm. For example, constraint solvers such as <a href="http://www.gecode.org/">gecode</a> or <a href="https://github.com/clojure/core.logic">core.logic</a> express a problem as a set of logical constraints on the possible solutions and then search through the space of variable assignments to find a solution. By automatically pruning parts of the search space which break one or more constraints and applying user-specified search heuristics, constraint solvers can often be faster than hand-coded solvers for complex problems whilst at the same time allowing a clear, concise, declarative specification of the problem.</p>
+<p><strong>Everything is data</strong>. Constraint solving is enabled by treating both the problem specification and the solution space as data, reducing the problem to search. In lisps, treating code as data enables macros and code rewriting. In Overlog, everything from persistent data to scheduler state to the language runtime is available as data and can be queried and manipulated using the same powerful abstractions. Tracing in Overlog is as simple as adding a rule that fires whenever a new fact is derived, because the derivation itself is stored alongside the fact. Whatever you are working on, making it accessible as plain data enables turning the full power and expressivity of your language directly onto the problem. This is where OO falls down, in trying to hide data behind custom interfaces. Rob Pike recently put it: &ldquo;It has become clear that OO zealots are afraid of data&rdquo;.</p>
 
-<h2>Everything is data</h2>
-
-<p>Constraint solving is enabled by treating both the problem specification and the solution space as data, reducing the problem to search. In lisps, treating code as data enables macros and code rewriting. In Overlog, everything from persistent data to scheduler state to the language runtime is available as data and can be queried and manipulated using the same powerful abstractions. Tracing in Overlog is as simple as adding a rule that fires whenever a new fact is derived, because the derivation itself is stored alongside the fact.</p>
-
-<p>Whatever you are working on, making it accessible as plain data enables turning the full power and expressivity of your language directly onto the problem. This is where OO falls down, in trying to hide data behind custom interfaces. Rob Pike recently put it: &ldquo;It has become clear that OO zealots are afraid of data&rdquo;.</p>
-
-<h2>Reflection</h2>
-
-<p>When you expose the internals of a system as data to that same system, amazing (and, yes, sometimes terrifying) things happen. The STEPS folks manage to stay withing their code budget by building highly dynamic, self-hosting, meta-circular, introspective languages. Many of the amazing results of the Overlog project, from the optimising compiler to declarative distributed tracing, resulted from exposing the language runtime and program source code to the same logic engine that it implements. Turning a system in on itself and allowing it to reason about its own behaviour is an incredibly powerful idea. Certainly it can be dangerous, and it&rsquo;s all too easy to tangle oneself in knots, but the results speak for themselves. This is an idea that has been <a href="http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html">expounded</a> <a href="http://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach">many</a> <a href="http://www.paulgraham.com/diff.html">times</a> before but I think there is still so much more to explore here.</p>
+<p><strong>Reflection</strong>. When you expose the internals of a system as data to that same system, amazing (and, yes, sometimes terrifying) things happen. The STEPS folks manage to stay withing their code budget by building highly dynamic, self-hosting, meta-circular, introspective languages. Many of the amazing results of the Overlog project, from the optimising compiler to declarative distributed tracing, resulted from exposing the language runtime and program source code to the same logic engine that it implements. Turning a system in on itself and allowing it to reason about its own behaviour is an incredibly powerful idea. Certainly it can be dangerous, and it&rsquo;s all too easy to tangle oneself in knots, but the results speak for themselves. This is an idea that has been <a href="http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html">expounded</a> <a href="http://en.wikipedia.org/wiki/G%C3%B6del,_Escher,_Bach">many</a> <a href="http://www.paulgraham.com/diff.html">times</a> before but I think there is still so much more to explore here.</p>
 
 <h1>Progress</h1>
 
@@ -3202,8 +3039,7 @@ take another pass at this next year.</p></blockquote>
 
 <p>We&rsquo;ll start with the fundamental property of distributed systems:</p>
 
-<pre><code>Messages sent between machines may arrive zero or more times at any point after they are sent
-</code></pre>
+<blockquote><p>Messages sent between machines may arrive zero or more times at any point after they are sent</p></blockquote>
 
 <p>This is the sole reason that building distributed systems is hard.</p>
 
@@ -3213,31 +3049,27 @@ take another pass at this next year.</p></blockquote>
 
 <p>This concept is called causal ordering and is written like this:</p>
 
-<pre><code>A-&gt;B (event A is causally ordered before event B)
-</code></pre>
+<blockquote><p>A &ndash;> B (event A is causally ordered before event B)</p></blockquote>
 
 <p>Let&rsquo;s define it a little more formally. We model the world as follows: We have a number of machines on which we observe a series of events. These events are either specific to one machine (eg user input) or are communications between machines. We define the causal ordering of these events by three rules:</p>
 
-<pre><code>If A and B happen on the same machine and A happens before B then A-&gt;B
+<blockquote><p>If A and B happen on the same machine and A happens before B then A &ndash;> B</p>
 
-If I send you some message M and you receive it then (send M)-&gt;(recv M)
+<p>If I send you some message M and you receive it then (send M) &ndash;> (recv M)</p>
 
-If A-&gt;B and B-&gt;C then A-&gt;C
-</code></pre>
+<p>If A &ndash;> B and B &ndash;> C then A &ndash;> C</p></blockquote>
 
-<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> &ndash; every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> &ndash; sometimes events happen with no possible causal relationship i.e. not (A->B or B->A).</p>
+<p>We are used to thinking of ordering by time which is a <a href="http://en.wikipedia.org/wiki/Total_order">total order</a> &ndash; every pair of events can be placed in some order. In contrast, causal ordering is only a <a href="http://en.wikipedia.org/wiki/Partially_ordered_set">partial order</a> &ndash; sometimes events happen with no possible causal relationship i.e. not (A &ndash;> B or B &ndash;> A).</p>
 
 <p><a href="http://upload.wikimedia.org/wikipedia/commons/5/55/Vector_Clock.svg">This image</a> shows a nice way to picture these relationships.</p>
 
 <p>On a single machine causal ordering is exactly the same as time ordering (actually, on a multi-core machine the situation is <a href="http://mechanical-sympathy.blogspot.com/2011/08/inter-thread-latency.html">more complicated</a>, but let&rsquo;s forget about that for now). Between machines causal ordering is conveyed by messages. Since sending messages is the only way for machines to affect each other this gives rise to a nice property:</p>
 
-<pre><code>If not(A-&gt;B) then A cannot possibly have caused B
-</code></pre>
+<blockquote><p>If not(A &ndash;> B) then A cannot possibly have caused B</p></blockquote>
 
 <p>Since we don&rsquo;t have a single global time this is the only thing that allows us to reason about causality in a distributed system. This is really important so let&rsquo;s say it again:</p>
 
-<pre><code>Communication bounds causality
-</code></pre>
+<blockquote><p>Communication bounds causality</p></blockquote>
 
 <p>The lack of a total global order is not just an accidental property of computer systems, it is a <a href="http://en.wikipedia.org/wiki/Light_cone">fundamental property</a> of the laws of physics. I claimed that understanding causal order makes many other concepts much simpler. Let&rsquo;s skim over some examples.</p>
 
@@ -3245,10 +3077,9 @@ If A-&gt;B and B-&gt;C then A-&gt;C
 
 <p><a href="http://en.wikipedia.org/wiki/Lamport_timestamps">Lamport clocks</a> and <a href="http://en.wikipedia.org/wiki/Vector_clock">Vector clocks</a> are data-structures which efficiently approximate the causal ordering and so can be used by programs to reason about causality.</p>
 
-<pre><code>If A-&gt;B then LC_A &lt; LC_B
+<blockquote><p>If A &ndash;> B then LC_A &lt; LC_B</p>
 
-If VC_A &lt; VC_B then A-&gt;B
-</code></pre>
+<p>If VC_A &lt; VC_B then A &ndash;> B</p></blockquote>
 
 <p>Different types of vector clock trade-off compression vs accuracy by storing smaller or larger portions of the causal history of an event.</p>
 
@@ -3260,16 +3091,15 @@ If VC_A &lt; VC_B then A-&gt;B
 
 <p>The CAP (Consistency-Availability-Partition) theorem also boils down to causality. When a machine in a distributed system is asked to perform an action that depends on its current state it must decide that state by choosing a serialisation of the events it has seen. It has two options:</p>
 
-<ol>
+<ul>
 <li>Choose a serialisation of its current events immediately</li>
 <li>Wait until it is sure it has seen all concurrent events before choosing a serialisation</li>
-</ol>
+</ul>
 
 
 <p>The first choice risks violating consistency if some other machine makes the same choice with a different set of events. The second violates availability by waiting for every other machine that could possibly have received a conflicting event before performing the requested action. There is no need for an actual network partition to happen &ndash; the trade-off between availability and consistency exists whenever communication between components is not instant. We can state this even more simply:</p>
 
-<pre><code>Ordering requires waiting
-</code></pre>
+<blockquote><p>Ordering requires waiting</p></blockquote>
 
 <p>Even your hardware <a href="http://en.wikipedia.org/wiki/Memory_barrier">cannot escape</a> this law. It provides the illusion of synchronous access to memory at the cost of availabilty. If you want to write fast parallel programs then you need to understand the messaging model used by the underlying hardware.</p>
 
@@ -3315,6 +3145,822 @@ If VC_A &lt; VC_B then A-&gt;B
 <p>The top candidate at the moment is clojure. It has the potential to replace my use of erlang and python, saving lots of cross-language pain. Agents look a lot like a (cleaner, saner) implementation of the <a href="http://scattered-thoughts.net/one/1300/292121/72985">mealy machines</a> that I wrote at Smarkets. <a href="https://github.com/ztellman/lamina">Lamina</a> neatly solves the queue pains I described above. <a href="http://code.google.com/p/clojure-contrib/wiki/DatalogOverview">Datalog</a> is the natural way to describe a lot of collections, including <a href="https://github.com/jamii/erl-telehash/blob/master/src/th_bucket.erl">th_bucket</a> which is in its current form is not obviously correct. The clojure community just seems to churn out well-designed libraries (lamina, aleph, slice, incanter, pallet, cascalog, storm, overtone etc).</p>
 
 <p>In the short term I will get started by rewriting <a href="https://github.com/jamii/binmap">binmap</a>, since it&rsquo;s fresh in my mind and simple enough to finish quickly. If that goes well it might eventually become an educational port of <a href="http://libswift.org">swift</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Binmaps: compressed bitmaps]]></title>
+    <link href="http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/"/>
+    <updated>2012-01-03T06:16:00-08:00</updated>
+    <id>http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps</id>
+    <content type="html"><![CDATA[<p>Lately I&rsquo;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
+
+<!--more-->
+
+
+<p>Here is the basic idea. Conceptually a binmap is a tree of bitmaps. In a leaf at the bottom of the tree each bit in the bitmap represents one bit. In a leaf one layer above the bottom each bit in the bitmap represents two bits. In a leaf two layers above the bottom each bit in the bitmap represents four bits etc.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">{</span> <span class="n">layers</span> <span class="o">:</span> <span class="kt">int</span>
+</span><span class='line'>  <span class="o">;</span> <span class="n">tree</span> <span class="o">:</span> <span class="n">tree</span> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="n">tree</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="k">of</span> <span class="kt">int</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Branch</span> <span class="k">of</span> <span class="n">tree</span> <span class="o">*</span> <span class="n">tree</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&rsquo;s pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">;</span> <span class="n">tree</span> <span class="o">=</span> <span class="nc">Bitmap</span> <span class="mi">0</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the string 00001100 would be:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="o">;</span> <span class="n">tree</span> <span class="o">=</span>
+</span><span class='line'>    <span class="nc">Branch</span>
+</span><span class='line'>      <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>      <span class="o">(</span><span class="nc">Branch</span>
+</span><span class='line'>        <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">1</span><span class="o">)</span>
+</span><span class='line'>        <span class="o">(</span><span class="nc">Bitmap</span> <span class="mi">0</span><span class="o">))</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The worst case for this data structure is the string 0101010101&hellip; In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
+
+<p>Our data structure looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">module</span> <span class="nc">Array</span> <span class="o">=</span>
+</span><span class='line'><span class="k">struct</span>
+</span><span class='line'>  <span class="k">include</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="nc">Array1</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">geti</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">=</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">to_int</span> <span class="o">(</span><span class="nn">Bigarray</span><span class="p">.</span><span class="nn">Array1</span><span class="p">.</span><span class="n">get</span> <span class="kt">array</span> <span class="n">i</span><span class="o">)</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">seti</span> <span class="kt">array</span> <span class="n">i</span> <span class="n">v</span> <span class="o">=</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="nn">Array1</span><span class="p">.</span><span class="n">set</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">(</span><span class="nn">Bitmap</span><span class="p">.</span><span class="n">of_int</span> <span class="n">v</span><span class="o">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span>
+</span><span class='line'>    <span class="o">{</span> <span class="n">length</span> <span class="o">:</span> <span class="kt">int</span>
+</span><span class='line'>    <span class="o">;</span> <span class="n">layers</span> <span class="o">:</span> <span class="kt">int</span>
+</span><span class='line'>    <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="nn">Bitmap</span><span class="p">.</span><span class="n">t</span><span class="o">,</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">bigarray_elt</span><span class="o">,</span> <span class="nn">Bigarray</span><span class="p">.</span><span class="n">c_layout</span><span class="o">)</span> <span class="nn">Array</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>    <span class="o">;</span> <span class="n">pointers</span> <span class="o">:</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>    <span class="o">;</span> <span class="k">mutable</span> <span class="n">free</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">type</span> <span class="n">node</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="k">of</span> <span class="nn">Bitmap</span><span class="p">.</span><span class="n">t</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Pointer</span> <span class="k">of</span> <span class="kt">int</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">get_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="n">is_left</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">index</span> <span class="o">=</span> <span class="n">node_addr</span> <span class="o">+</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_left</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">match</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">get</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="bp">false</span> <span class="o">-&gt;</span> <span class="nc">Bitmap</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">get</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">|</span> <span class="bp">true</span> <span class="o">-&gt;</span> <span class="nc">Pointer</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">geti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="n">is_left</span> <span class="n">node</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">index</span> <span class="o">=</span> <span class="n">node_addr</span> <span class="o">+</span> <span class="o">(</span><span class="k">if</span> <span class="n">is_left</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">match</span> <span class="n">node</span> <span class="k">with</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Bitmap</span> <span class="n">bitmap</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nn">Widemap</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="bp">false</span><span class="o">;</span>
+</span><span class='line'>      <span class="nn">Array</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span> <span class="n">bitmap</span>
+</span><span class='line'>  <span class="o">|</span> <span class="nc">Pointer</span> <span class="kt">int</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nn">Widemap</span><span class="p">.</span><span class="n">set</span> <span class="n">binmap</span><span class="o">.</span><span class="n">pointers</span> <span class="n">index</span> <span class="bp">true</span><span class="o">;</span>
+</span><span class='line'>      <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">index</span> <span class="kt">int</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Each pair of cells in the array represents a branch. Leaves are hoisted into their parent branch, replacing the pointer. Widemap.t is an extensible bitmap which we use here to track whether a given cell in the array is a pointer or a bitmap. The length field is the number of bits represented by bitmap. The free field will be explained later.</p>
+
+<p>Our previous example string 00001100 would now be represented like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(*</span>
+</span><span class='line'><span class="c">  0 -&gt; Bitmap 0</span>
+</span><span class='line'><span class="c">  1 -&gt; Pointer 2</span>
+</span><span class='line'><span class="c">  2 -&gt; Bitmap 1</span>
+</span><span class='line'><span class="c">  3 -&gt; Bitmap 0</span>
+</span><span class='line'><span class="c">*)</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="o">[|</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span> <span class="o">|]</span>
+</span><span class='line'><span class="o">;</span> <span class="n">pointers</span> <span class="o">=</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">of_string</span> <span class="s2">&quot;0100&quot;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">free</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When the bitmap is changed we may have to add or delete pairs eg if the above example changed to 00001111 it would be represented as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(*</span>
+</span><span class='line'><span class="c">  0 -&gt; Bitmap 0</span>
+</span><span class='line'><span class="c">  1 -&gt; Bitmap 1</span>
+</span><span class='line'><span class="c">  2 -&gt; ?</span>
+</span><span class='line'><span class="c">  3 -&gt; ?</span>
+</span><span class='line'><span class="c">*)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can grow and shrink the array as necessary, but since deleted pairs won&rsquo;t necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">del_pair</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="o">=</span>
+</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">node_addr</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">node_addr</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">(* double the size of a full array and then initialise the freelist *)</span>
+</span><span class='line'><span class="k">let</span> <span class="n">grow_array</span> <span class="n">binmap</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">old_len</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">dim</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">old_len</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">old_len</span> <span class="o">&lt;=</span> <span class="n">max_int</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">new_len</span> <span class="o">=</span> <span class="n">min</span> <span class="n">max_int</span> <span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">old_len</span><span class="o">)</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">assert</span> <span class="o">(</span><span class="n">new_len</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="kt">array</span> <span class="o">=</span> <span class="n">create_array</span> <span class="n">new_len</span> <span class="k">in</span>
+</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">blit</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">sub</span> <span class="kt">array</span> <span class="mi">0</span> <span class="n">old_len</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="kt">array</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">old_len</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="o">=</span> <span class="n">old_len</span> <span class="k">to</span> <span class="n">new_len</span><span class="o">-</span><span class="mi">4</span> <span class="k">do</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">i</span> <span class="ow">mod</span> <span class="mi">2</span> <span class="o">=</span> <span class="mi">0</span>  <span class="k">then</span> <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="kt">array</span> <span class="n">i</span> <span class="o">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="o">)</span>
+</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
+</span><span class='line'>  <span class="nn">Array</span><span class="p">.</span><span class="n">seti</span> <span class="kt">array</span> <span class="o">(</span><span class="n">new_len</span><span class="o">-</span><span class="mi">2</span><span class="o">)</span> <span class="mi">0</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">let</span> <span class="n">add_pair</span> <span class="n">binmap</span> <span class="n">node_left</span> <span class="n">node_right</span> <span class="o">=</span>
+</span><span class='line'>  <span class="o">(</span><span class="k">if</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">grow_array</span> <span class="n">binmap</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">node_addr</span> <span class="o">=</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="k">in</span>
+</span><span class='line'>  <span class="k">let</span> <span class="n">free_next</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">geti</span> <span class="n">binmap</span><span class="o">.</span><span class="kt">array</span> <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="k">in</span>
+</span><span class='line'>  <span class="n">binmap</span><span class="o">.</span><span class="n">free</span> <span class="o">&lt;-</span> <span class="n">free_next</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="bp">true</span> <span class="n">node_left</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">set_node</span> <span class="n">binmap</span> <span class="n">node_addr</span> <span class="bp">false</span> <span class="n">node_right</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">node_addr</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I haven&rsquo;t yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
+
+<p>With the freelist our modified example now looks like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="o">{</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">8</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">layers</span> <span class="o">=</span> <span class="mi">3</span><span class="o">;</span>
+</span><span class='line'><span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="o">[|</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">0</span> <span class="o">|]</span>
+</span><span class='line'><span class="o">;</span> <span class="n">pointers</span> <span class="o">=</span> <span class="nn">Widemap</span><span class="p">.</span><span class="n">of_string</span> <span class="s2">&quot;0100&quot;</span>
+</span><span class='line'><span class="o">;</span> <span class="n">free</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With the representation sorted the rest of the code more or less writes itself.</p>
+
+<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I&rsquo;ve written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
+
+<p>The paper linked below suggests using a layered address scheme to expand the effective pointer size, where the first bit of the pointer is a flag indicating which layer the address is in. I would suggest rather than putting the flag in the pointer it would be simper to use information implicit in the structure of the tree eg is the current layer mod 8 = 0. Either way, this hugely increases the size of the address space at a the cost of a little extra complexity.</p>
+
+<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&rsquo;t suggest using it without some serious testing.</p>
+
+<p>Overall I&rsquo;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Dial-a-stranger]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
+    <updated>2011-07-10T06:16:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
+    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&rsquo;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
+
+<!--more-->
+
+
+<p>I&rsquo;ve built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
+
+<p>This isn&rsquo;t a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
+
+<p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
+
+<p>I&rsquo;m not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Telehash: router]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-router/"/>
+    <updated>2011-04-19T06:16:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-router</id>
+    <content type="html"><![CDATA[<p>Now that we have all the necessary datastructures we can build the router itself. Most of the routing table logic is handled by the bit_tree and bucket modules. The router just ties these together and handles I/O.</p>
+
+<!--more-->
+
+
+<p>Before actually running the routing table the router has to find out its own address, as it is seen from the outside world. It does this by sending +end signals to a list of known telehash nodes (eg telehash.org:42424).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">record</span><span class="p">(</span><span class="n">bootstrap</span><span class="p">,</span> <span class="p">{</span> <span class="c">% the state of the router when bootstrapping</span>
+</span><span class='line'>    <span class="n">timeout</span><span class="p">,</span> <span class="c">% give up if no address received before this time</span>
+</span><span class='line'>    <span class="n">addresses</span> <span class="c">% list of addresses contacted to find out our address</span>
+</span><span class='line'>   <span class="p">}).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">bootstrap</span><span class="p">(</span><span class="nv">Addresses</span><span class="p">,</span> <span class="nv">Timeout</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">bootstrapping</span><span class="p">]),</span>
+</span><span class='line'>    <span class="nv">State</span> <span class="o">=</span> <span class="nl">#bootstrap</span><span class="p">{</span><span class="n">timeout</span><span class="o">=</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">addresses</span><span class="o">=</span><span class="nv">Addresses</span><span class="p">},</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="p">_</span><span class="nv">Pid</span><span class="p">}</span> <span class="o">=</span> <span class="nn">gen_server</span><span class="p">:</span><span class="nf">start_link</span><span class="p">(</span><span class="o">?</span><span class="nv">MODULE</span><span class="p">,</span> <span class="nv">State</span><span class="p">,</span> <span class="p">[]).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">init</span><span class="p">(</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">switch</span><span class="p">:</span><span class="nf">listen</span><span class="p">(),</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nv">State</span> <span class="k">of</span>
+</span><span class='line'>  <span class="nl">#bootstrap</span><span class="p">{</span><span class="n">timeout</span><span class="o">=</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">addresses</span><span class="o">=</span><span class="nv">Addresses</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nv">Telex</span> <span class="o">=</span> <span class="nn">telex</span><span class="p">:</span><span class="nf">end_signal</span><span class="p">(</span><span class="nn">util</span><span class="p">:</span><span class="nf">random_end</span><span class="p">()),</span>
+</span><span class='line'>      <span class="nn">lists</span><span class="p">:</span><span class="nf">foreach</span><span class="p">(</span><span class="k">fun</span> <span class="p">(</span><span class="nv">Address</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">)</span> <span class="k">end</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">),</span>
+</span><span class='line'>      <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="nv">Timeout</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="n">giveup</span><span class="p">);</span>
+</span><span class='line'>  <span class="nl">#state</span><span class="p">{}</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="n">ok</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">State</span><span class="p">}.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then we listen until we either get a reply with a _to field or run out of time.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">switch</span><span class="p">,</span> <span class="p">{</span><span class="n">recv</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">}},</span> <span class="nl">#bootstrap</span><span class="p">{</span><span class="n">addresses</span><span class="o">=</span><span class="nv">Addresses</span><span class="p">}</span><span class="o">=</span><span class="nv">Bootstrap</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="c">% bootstrapping, waiting to receive a message telling us our own address</span>
+</span><span class='line'>    <span class="k">case</span> <span class="p">{</span><span class="nn">lists</span><span class="p">:</span><span class="nf">member</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">),</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;_to&#39;</span><span class="p">)}</span> <span class="k">of</span>
+</span><span class='line'>  <span class="p">{</span><span class="n">true</span><span class="p">,</span> <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Binary</span><span class="p">}}</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="k">try</span> <span class="nn">util</span><span class="p">:</span><span class="nf">to_end</span><span class="p">(</span><span class="nn">util</span><span class="p">:</span><span class="nf">binary_to_address</span><span class="p">(</span><span class="nv">Binary</span><span class="p">))</span> <span class="k">of</span>
+</span><span class='line'>      <span class="nv">End</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="nv">Self</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="nf">to_bits</span><span class="p">(</span><span class="nv">End</span><span class="p">),</span>
+</span><span class='line'>          <span class="nv">Table</span> <span class="o">=</span> <span class="n">touched</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="n">empty_table</span><span class="p">(</span><span class="nv">Self</span><span class="p">)),</span>
+</span><span class='line'>          <span class="nn">dialer</span><span class="p">:</span><span class="nf">dial</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="p">[</span><span class="nv">From</span><span class="p">],</span> <span class="o">?</span><span class="nv">ROUTER_DIAL_TIMEOUT</span><span class="p">),</span>
+</span><span class='line'>          <span class="n">refresh</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
+</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">bootstrap</span><span class="p">,</span> <span class="n">finished</span><span class="p">,</span> <span class="p">{</span><span class="n">self</span><span class="p">,</span> <span class="nv">Binary</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
+</span><span class='line'>          <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nn">sets</span><span class="p">:</span><span class="nf">new</span><span class="p">(),</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}}</span>
+</span><span class='line'>      <span class="k">catch</span>
+</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="o">?</span><span class="nv">WARN</span><span class="p">([</span><span class="n">bootstrap</span><span class="p">,</span> <span class="n">bad_self</span><span class="p">,</span> <span class="p">{</span><span class="n">self</span><span class="p">,</span> <span class="nv">Binary</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
+</span><span class='line'>          <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">Bootstrap</span><span class="p">}</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">_</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">Bootstrap</span><span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">handle_info</span><span class="p">(</span><span class="n">giveup</span><span class="p">,</span> <span class="nl">#bootstrap</span><span class="p">{}</span><span class="o">=</span><span class="nv">Bootstrap</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="c">% failed to bootstrap, die</span>
+</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">giveup</span><span class="p">,</span> <span class="p">{</span><span class="n">state</span><span class="p">,</span> <span class="nv">Bootstrap</span><span class="p">}]),</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">stop</span><span class="p">,</span> <span class="p">{</span><span class="n">shutdown</span><span class="p">,</span> <span class="n">gaveup</span><span class="p">},</span> <span class="nv">Bootstrap</span><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Once we know our own address we can fill in the state record and start managing the routing table.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="p">-</span><span class="ni">record</span><span class="p">(</span><span class="nl">state</span><span class="p">,</span> <span class="p">{</span> <span class="c">% the state of the router in normal operation</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">,</span> <span class="c">% the bits of the routers own end</span>
+</span><span class='line'>    <span class="n">pinged</span><span class="p">,</span> <span class="c">% set of addresses which have been pinged and not yet replied/timedout</span>
+</span><span class='line'>    <span class="n">table</span> <span class="c">% the routing table, a bit_tree containing buckets of nodes</span>
+</span><span class='line'>   <span class="p">}).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One of the jobs of the router is to remove unresponsive nodes from the routing table. To check if a node is responsive we just a random +end signal and wait for a reply. If the node is unresponsive it gets marked as stale and we try to find a suitable replacement. The node won&rsquo;t actually be dropped from the table until a replacement is found &ndash; this prevents the table from getting flushed if our network connection goes down.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">ping</span><span class="p">(</span><span class="nv">To</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nv">Telex</span> <span class="o">=</span> <span class="nn">telex</span><span class="p">:</span><span class="n">end_signal</span><span class="p">(</span><span class="nn">util</span><span class="p">:</span><span class="n">random_end</span><span class="p">()),</span>
+</span><span class='line'>    <span class="c">% do this in a message to self to avoid some awkward control flow</span>
+</span><span class='line'>    <span class="n">self</span><span class="p">()</span> <span class="o">!</span> <span class="p">{</span><span class="n">pinging</span><span class="p">,</span> <span class="nv">To</span><span class="p">},</span>
+</span><span class='line'>    <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">),</span>
+</span><span class='line'>    <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="o">?</span><span class="nv">ROUTER_PING_TIMEOUT</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="p">{</span><span class="n">timeout</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="n">update</span><span class="p">(</span>
+</span><span class='line'>      <span class="k">fun</span> <span class="p">(_</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nn">bucket</span><span class="p">:</span><span class="n">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>        <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Update</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="c">% try to touch this node, might be suitable replacement</span>
+</span><span class='line'>            <span class="n">ping</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span>
+</span><span class='line'>            <span class="nv">Update</span><span class="p">;</span>
+</span><span class='line'>        <span class="nv">Update</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="nv">Update</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="n">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
+</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
+</span><span class='line'>      <span class="nv">Table</span>
+</span><span class='line'>     <span class="p">).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">pinging</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="c">% do this in a message to self to avoid some awkward control flow</span>
+</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">recording_ping</span><span class="p">,</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}]),</span>
+</span><span class='line'>    <span class="nv">Pinged2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="n">add_element</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">),</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged2</span><span class="p">}};</span>
+</span><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">timeout</span><span class="p">,</span> <span class="nv">Address</span><span class="p">},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nn">lists</span><span class="p">:</span><span class="n">member</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>  <span class="n">true</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="c">% ping timedout</span>
+</span><span class='line'>      <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">timeout</span><span class="p">,</span> <span class="p">{</span><span class="n">address</span><span class="p">,</span> <span class="nv">Address</span><span class="p">}]),</span>
+</span><span class='line'>      <span class="nv">Table2</span> <span class="o">=</span> <span class="n">timedout</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">table</span><span class="o">=</span><span class="nv">Table2</span><span class="p">}};</span>
+</span><span class='line'>  <span class="n">false</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="c">% address already replied</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">State</span><span class="p">}</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement ring/line to protect against address spoofing):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">touched</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="n">update</span><span class="p">(</span>
+</span><span class='line'>      <span class="k">fun</span> <span class="p">(</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="nv">May_split</span> <span class="o">=</span> <span class="p">(</span><span class="nv">Gap</span> <span class="o">&lt;</span> <span class="o">?</span><span class="nv">K</span><span class="p">),</span> <span class="c">% !!! or (Depth &lt; ?ROUTER_TABLE_EXPANSION)</span>
+</span><span class='line'>        <span class="nn">bucket</span><span class="p">:</span><span class="n">touched</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="n">now</span><span class="p">(),</span> <span class="nv">Bucket</span><span class="p">,</span> <span class="nv">May_split</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="n">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
+</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
+</span><span class='line'>      <span class="nv">Table</span>
+</span><span class='line'>     <span class="p">).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On receiving a .see command we record all the contained addresses as potential nodes and ping them to try to confirm their existence.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="n">update</span><span class="p">(</span>
+</span><span class='line'>      <span class="k">fun</span> <span class="p">(</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="nn">bucket</span><span class="p">:</span><span class="n">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Suffix</span><span class="p">,</span> <span class="n">now</span><span class="p">(),</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>        <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">Node</span><span class="p">,</span> <span class="nv">Update</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="c">% check if this node is stale</span>
+</span><span class='line'>            <span class="n">ping</span><span class="p">(</span><span class="nv">Node</span><span class="p">),</span>
+</span><span class='line'>            <span class="nv">Update</span><span class="p">;</span>
+</span><span class='line'>        <span class="nv">Update</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="nv">Update</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="n">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
+</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
+</span><span class='line'>      <span class="nv">Table</span>
+</span><span class='line'>     <span class="p">).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On receiving a +end signal we reply with a .see command containing the nearest K addresses which we have confirmed to exist.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">see</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nv">Telex</span> <span class="o">=</span> <span class="nn">telex</span><span class="p">:</span><span class="nf">see_command</span><span class="p">(</span><span class="n">nearest</span><span class="p">(</span><span class="o">?</span><span class="nv">K</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)),</span>
+</span><span class='line'>    <span class="nn">switch</span><span class="p">:</span><span class="nb">send</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">nearest</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="k">when</span> <span class="nv">N</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nv">Bits</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="nf">to_bits</span><span class="p">(</span><span class="nv">End</span><span class="p">),</span>
+</span><span class='line'>    <span class="nn">iter</span><span class="p">:</span><span class="nf">take</span><span class="p">(</span>
+</span><span class='line'>      <span class="nv">N</span><span class="p">,</span>
+</span><span class='line'>      <span class="nn">iter</span><span class="p">:</span><span class="nf">flatten</span><span class="p">(</span>
+</span><span class='line'>  <span class="nn">iter</span><span class="p">:</span><span class="nf">map</span><span class="p">(</span>
+</span><span class='line'>    <span class="k">fun</span> <span class="p">({_</span><span class="nv">Prefix</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">})</span> <span class="o">-&gt;</span> <span class="nn">bucket</span><span class="p">:</span><span class="nf">by_dist</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="nf">iter</span><span class="p">(</span><span class="nv">Bits</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)))).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>On receiving a message we have handle the above three cases, which gets a little ugly.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">switch</span><span class="p">,</span> <span class="p">{</span><span class="n">recv</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="nv">Telex</span><span class="p">}},</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="c">% this counts as a reply</span>
+</span><span class='line'>    <span class="nv">Pinged2</span> <span class="o">=</span> <span class="nn">sets</span><span class="p">:</span><span class="nf">del_element</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Pinged</span><span class="p">),</span>
+</span><span class='line'>    <span class="c">% touched the sender</span>
+</span><span class='line'>    <span class="c">% !!! eventually will check _line here</span>
+</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">touched</span><span class="p">,</span> <span class="p">{</span><span class="nb">node</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
+</span><span class='line'>    <span class="nv">Table2</span> <span class="o">=</span> <span class="n">touched</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
+</span><span class='line'>    <span class="c">% maybe seen some nodes</span>
+</span><span class='line'>    <span class="nv">Table3</span> <span class="o">=</span>
+</span><span class='line'>  <span class="k">case</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;.see&#39;</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>      <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Binaries</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="k">try</span> <span class="p">[</span><span class="nn">util</span><span class="p">:</span><span class="nf">binary_to_address</span><span class="p">(</span><span class="nv">Bin</span><span class="p">)</span> <span class="p">||</span> <span class="nv">Bin</span> <span class="o">&lt;-</span> <span class="nv">Binaries</span><span class="p">]</span> <span class="k">of</span>
+</span><span class='line'>          <span class="nv">Addresses</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">seen</span><span class="p">,</span> <span class="p">{</span><span class="nb">nodes</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
+</span><span class='line'>          <span class="nn">lists</span><span class="p">:</span><span class="nf">foldl</span><span class="p">(</span><span class="k">fun</span> <span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Table_acc</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">seen</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table_acc</span><span class="p">)</span> <span class="k">end</span><span class="p">,</span> <span class="nv">Table2</span><span class="p">,</span> <span class="nv">Addresses</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">catch</span>
+</span><span class='line'>          <span class="p">_</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">bad_seen</span><span class="p">,</span> <span class="p">{</span><span class="nb">nodes</span><span class="p">,</span> <span class="nv">Binaries</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
+</span><span class='line'>          <span class="nv">Table2</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="nv">Table2</span>
+</span><span class='line'>  <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>    <span class="c">% maybe send some nodes back</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nn">telex</span><span class="p">:</span><span class="nb">get</span><span class="p">(</span><span class="nv">Telex</span><span class="p">,</span> <span class="n">&#39;+end&#39;</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>  <span class="p">{</span><span class="n">ok</span><span class="p">,</span> <span class="nv">Hex</span><span class="p">}</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="k">try</span> <span class="nn">util</span><span class="p">:</span><span class="nf">hex_to_end</span><span class="p">(</span><span class="nv">Hex</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>      <span class="nv">End</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">see</span><span class="p">,</span> <span class="p">{</span><span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="nv">End</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}]),</span>
+</span><span class='line'>          <span class="n">see</span><span class="p">(</span><span class="nv">From</span><span class="p">,</span> <span class="nv">End</span><span class="p">,</span> <span class="nv">Table3</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">catch</span>
+</span><span class='line'>      <span class="p">_</span> <span class="o">-&gt;</span>
+</span><span class='line'>          <span class="o">?</span><span class="nv">WARN</span><span class="p">([</span><span class="n">bad_see</span><span class="p">,</span> <span class="p">{</span><span class="n">&#39;end&#39;</span><span class="p">,</span> <span class="nv">Hex</span><span class="p">},</span> <span class="p">{</span><span class="n">from</span><span class="p">,</span> <span class="nv">From</span><span class="p">}])</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">_</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="n">ok</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="nl">#state</span><span class="p">{</span><span class="n">pinged</span><span class="o">=</span><span class="nv">Pinged2</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table2</span><span class="p">}};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The last responsibility of the router is to periodically refresh buckets which haven&rsquo;t recently seen any activity.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'><span class="nf">handle_info</span><span class="p">(</span><span class="n">refresh</span><span class="p">,</span> <span class="nl">#state</span><span class="p">{</span><span class="n">self</span><span class="o">=</span><span class="nv">Self</span><span class="p">,</span> <span class="n">table</span><span class="o">=</span><span class="nv">Table</span><span class="p">}</span><span class="o">=</span><span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">refreshing_table</span><span class="p">]),</span>
+</span><span class='line'>    <span class="n">refresh</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="p">};</span>
+</span><span class='line'><span class="nf">handle_info</span><span class="p">({</span><span class="n">dialed</span><span class="p">,</span> <span class="p">_,</span> <span class="p">_},</span> <span class="nv">State</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="c">% response from a bucket refresh, we don&#39;t care</span>
+</span><span class='line'>    <span class="p">{</span><span class="n">noreply</span><span class="p">,</span> <span class="nv">State</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">dialed</span><span class="p">(</span><span class="nv">Address</span><span class="p">,</span> <span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nn">bit_tree</span><span class="p">:</span><span class="nf">update</span><span class="p">(</span>
+</span><span class='line'>      <span class="k">fun</span> <span class="p">(_</span><span class="nv">Suffix</span><span class="p">,</span> <span class="p">_</span><span class="nv">Depth</span><span class="p">,</span> <span class="p">_</span><span class="nv">Gap</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="nn">bucket</span><span class="p">:</span><span class="nf">dialed</span><span class="p">(</span><span class="n">now</span><span class="p">(),</span> <span class="nv">Bucket</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>      <span class="nn">util</span><span class="p">:</span><span class="nf">to_bits</span><span class="p">(</span><span class="nv">Address</span><span class="p">),</span>
+</span><span class='line'>      <span class="nv">Self</span><span class="p">,</span>
+</span><span class='line'>      <span class="nv">Table</span>
+</span><span class='line'>     <span class="p">).</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">needs_refresh</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">,</span> <span class="nv">Now</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="k">case</span> <span class="nn">bucket</span><span class="p">:</span><span class="nf">last_dialed</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>  <span class="n">never</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="n">true</span><span class="p">;</span>
+</span><span class='line'>  <span class="nv">Last</span> <span class="o">-&gt;</span>
+</span><span class='line'>      <span class="p">(</span><span class="nn">timer</span><span class="p">:</span><span class="nf">now_diff</span><span class="p">(</span><span class="nv">Now</span><span class="p">,</span> <span class="nv">Last</span><span class="p">)</span> <span class="ow">div</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">&lt;</span> <span class="o">?</span><span class="nv">ROUTER_REFRESH_TIME</span>
+</span><span class='line'>    <span class="k">end</span><span class="p">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">refresh</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span> <span class="o">-&gt;</span>
+</span><span class='line'>    <span class="nv">Now</span> <span class="o">=</span> <span class="n">now</span><span class="p">(),</span>
+</span><span class='line'>    <span class="nn">iter</span><span class="p">:</span><span class="nf">foreach</span><span class="p">(</span>
+</span><span class='line'>      <span class="k">fun</span> <span class="p">({</span><span class="nv">Prefix</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">})</span> <span class="o">-&gt;</span>
+</span><span class='line'>        <span class="k">case</span> <span class="n">needs_refresh</span><span class="p">(</span><span class="nv">Bucket</span><span class="p">,</span> <span class="nv">Now</span><span class="p">)</span> <span class="k">of</span>
+</span><span class='line'>        <span class="n">true</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="o">?</span><span class="nv">INFO</span><span class="p">([</span><span class="n">refreshing_bucket</span><span class="p">,</span> <span class="p">{</span><span class="n">prefix</span><span class="p">,</span> <span class="nv">Prefix</span><span class="p">},</span> <span class="p">{</span><span class="n">bucket</span><span class="p">,</span> <span class="nv">Bucket</span><span class="p">}]),</span>
+</span><span class='line'>            <span class="nv">To</span> <span class="o">=</span> <span class="nn">util</span><span class="p">:</span><span class="nf">random_end</span><span class="p">(</span><span class="nv">Prefix</span><span class="p">),</span>
+</span><span class='line'>            <span class="nv">From</span> <span class="o">=</span> <span class="n">nearest</span><span class="p">(</span><span class="o">?</span><span class="nv">K</span><span class="p">,</span> <span class="nv">To</span><span class="p">,</span> <span class="nv">Table</span><span class="p">),</span>
+</span><span class='line'>            <span class="nn">dialer</span><span class="p">:</span><span class="nf">dial</span><span class="p">(</span><span class="nv">To</span><span class="p">,</span> <span class="nv">From</span><span class="p">,</span> <span class="o">?</span><span class="nv">ROUTER_DIAL_TIMEOUT</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">false</span> <span class="o">-&gt;</span>
+</span><span class='line'>            <span class="n">ok</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span><span class="p">,</span>
+</span><span class='line'>      <span class="nn">bit_tree</span><span class="p">:</span><span class="nf">iter</span><span class="p">(</span><span class="nv">Self</span><span class="p">,</span> <span class="nv">Table</span><span class="p">)</span>
+</span><span class='line'>     <span class="p">),</span>
+</span><span class='line'>    <span class="nn">erlang</span><span class="p">:</span><span class="nb">send_after</span><span class="p">(</span><span class="o">?</span><span class="nv">ROUTER_REFRESH_TIME</span><span class="p">,</span> <span class="n">self</span><span class="p">(),</span> <span class="n">refresh</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">ok</span><span class="p">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&rsquo;s it. As usual the (untested) code is in the <a href="https://github.com/jamii/erl-telehash">repo</a>. The next post will probably deal with taps.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Telehash: gen_event woes]]></title>
+    <link href="http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes/"/>
+    <updated>2011-04-19T06:16:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2011/04/19/telehash-gen-event-woes</id>
+    <content type="html"><![CDATA[<p>I ran into some tricky bugs caused by a misconception I had about gen_event. Since this is not explicitly stated in the gen_event documentation I will say it here: gen_event does NOT spawn individual processes for each handler. Each handler is run sequentially in the event manager process.</p>
+
+<!--more-->
+
+
+<p>Now obviously the documentation is not at fault here. I assumed that each handler got its own process solely because the callbacks resembled gen_server. However, a little googling reveals that several other people made the same mistake so I thought it was worth mentioning.</p>
+
+<p>Here is how I found this out. I was working on the router implementation for telehash. When I tested the bootstrapping algorithm everything looked fine until the first dial, after which nothing else happened. Straight away I suspected a bug in the dialer, but repeating the exact same call in the console worked fine. After a few deadends I opened pman to look for anything suspicious but couldn&rsquo;t find the dialer process (because it doesn&rsquo;t exist, it&rsquo;s an event handler). I assumed that it was somehow crashing silently and wasted an hour or so reading and rereading the code and stepping through various calls in the debugger. No matter what I tried the dialer worked absolutely perfectly unless it was called by the router.</p>
+
+<p>Eventually I noticed that the switch_event process was blocking inside a receive and the whole thing unravelled. The dialer is an event handler so when started it calls:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'>  <span class="nn">gen_event</span><span class="p">:</span><span class="n">add_handler</span><span class="p">(</span><span class="n">switch_event</span><span class="p">,</span> <span class="n">dialer</span><span class="p">,</span> <span class="nv">State</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which is a synchronous call to the switch_event process. The router event handler is running inside the switch_event process so when the router tries to dial it deadlocks.</p>
+
+<p>The moral of this story is <em>RTFM</em>.</p>
+
+<p>This is easily fixed by changing</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'>  <span class="nn">dialer</span><span class="p">:</span><span class="n">dial</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="p">[</span><span class="nv">Address</span><span class="p">])</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>to</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='erlang'><span class='line'>  <span class="nb">spawn</span><span class="p">(</span><span class="k">fun</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="nn">dialer</span><span class="p">:</span><span class="n">dial</span><span class="p">(</span><span class="nv">End</span><span class="p">,</span> <span class="p">[</span><span class="nv">Address</span><span class="p">])</span> <span class="k">end</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>but there were more problems. Most of the event handlers used erlang:send_after to handle timeouts but since they all run in the same process they all receive each others timeouts. Also, every event handler is run sequentially so the switch_event process becomes a huge bottleneck.</p>
+
+<p>The solution I settled on was to change each event handler into a gen_server and write a simple event handler that just forwards events to its owner. By using gen_event:add_sup_handler and listening for event handler exits we can keep the two in sync.</p>
 ]]></content>
   </entry>
   

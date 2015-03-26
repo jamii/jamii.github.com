@@ -4,7 +4,7 @@
   <title><![CDATA[Category: flow | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/flow/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-02-09T13:47:08-08:00</updated>
+  <updated>2015-03-25T22:58:00-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -14,153 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Flowing faster: lein-gnome]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome/"/>
-    <updated>2013-06-25T20:27:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/25/flowing-faster-lein-gnome</id>
-    <content type="html"><![CDATA[<p>After several weeks of banging my head against the empty space where the gnome-shell documentation should be, I&rsquo;ve finally revived technomancy&rsquo;s <a href="https://github.com/jamii/lein-gnome">lein-gnome</a>. It can build, package, deploy and reload gnome-shell extensions and includes a hello-world template. I&rsquo;ve also added a unified log watcher that hunts down all the various places gnome-shell might choose to put your stack-traces and a cljs repl server that runs inside your extension so you can trial-and-error your way to victory.</p>
-
-<!--more-->
-
-
-<p>Future plans for a rainy day include:</p>
-
-<ul>
-<li><p>Writing a proper nrepl server for cljs so you can <code>C-x e</code> directly from emacs (this is non-trivial for projects with crossover code).</p></li>
-<li><p>Figure out how dynamic loading of bindings works in gjs so I can support tab-completion</p></li>
-<li><p>Clone the Looking Glass picker tool</p></li>
-</ul>
-
-
-<p>In the meantime I&rsquo;m going to start work on <a href="https://github.com/jamii/golem">golem</a>. Until cljs has true nrepl support my hack for live interaction in emacs is the following:</p>
-
-<ul>
-<li><p>Save all extension state to disk on <code>disable</code></p></li>
-<li><p>Load all extension state from disk on <code>enable</code></p></li>
-<li><p>Hook <code>lein gnome install</code> into <code>lein cljsbuild auto</code></p></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: foundations]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations/"/>
-    <updated>2013-06-04T18:02:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/04/flowing-faster-foundations</id>
-    <content type="html"><![CDATA[<p>I&rsquo;ve spent the last few years using Gnome 2 and <a href="http://xmonad.org/">xmonad</a> on Ubuntu. Since both Ubuntu and the Gnome foundation have dropped support for Gnome 2 I&rsquo;m going to be forced to upgrade sooner or later. Fortunately I have a two week holiday followed by a new desktop at my new job, so now is a good time to break things on my laptop.</p>
-
-<!--more-->
-
-
-<h1>Choices</h1>
-
-<p>Almost all of my work happens in bash, emacs, firefox and xmonad. What these have in common, to various extents, is what Mr Yegge likes to call <a href="http://steve-yegge.blogspot.com/2007/01/pinocchio-problem.html">living software</a>. This breaks down the interaction barrier and allows them to grow beyond point-and-grunt into an extension of my mind. This is what I look for in any system I&rsquo;m going to spend lots of time with.</p>
-
-<p><a href="http://unity.ubuntu.com/">Unity</a> has the <a href="https://wiki.ubuntu.com/Unity/HUD">HUD</a> which is basically a CLI for individual applications. There is plugin support <a href="http://wiki.compiz.org/Plugins%E2%80%8E">via Compiz</a> but nobody seems to be writing any. It&rsquo;s also incredibly closely tied to Ubuntu and despite all the good they have done some of their recent decisions have been worrying. Individually, they are each sensible and justified but taken as a whole they make me a little nervous about investing heavily in Unity. It&rsquo;s a shame, because I would love to use the <a href="http://www.ubuntu.com/phone">Ubuntu phone</a>.</p>
-
-<p><a href="https://live.gnome.org/GnomeShell">Gnome Shell</a> is largely written in js and is on its way to building a <a href="https://extensions.gnome.org/">healthy ecosystem of extensions</a> (or will be, if it stops breaking them every version bump). It even has an <a href="https://live.gnome.org/GnomeShell/LookingGlass">almost-functional repl</a> which surely can be shoe-horned into running <a href="https://github.com/clojure/clojurescript">cljs</a>. It&rsquo;s missing the HUD but most of the applications I use have their own CLI anyway. As proof of its flexibility, it has acquired not one but three tiling window managers: <a href="https://extensions.gnome.org/extension/657/shelltile/">shelltile</a>, <a href="https://extensions.gnome.org/extension/294/shellshape/">shellshape</a> and <a href="https://extensions.gnome.org/extension/28/gtile/">gtile</a>. Of course, all them were broken by the 3.8 update&hellip;</p>
-
-<p><a href="http://www.kde.org/">KDE</a> has <a href="http://www.kde.org/workspaces/plasmadesktop/">plasma</a>, which it uses for &hellip; uh &hellip; desktop widgets. It also has <a href="http://userbase.kde.org/Plasma#Activities">activities</a> which are almost a fantastic idea but it uses them to manage &hellip; desktop widgets. I don&rsquo;t remember the last time I saw my desktop. If I&rsquo;m being unfair to KDE it stems from frustration &ndash; they were way ahead of the game on customisation and inter-application communication and they don&rsquo;t seem to have done anything <em>useful</em> with it.</p>
-
-<p>There are also a million minimalist desktop environments but I prefer to have most of my work done for me, so long as I have the power to monkey-patch anything I disagree with. Vertical integration can be a beautiful thing when it works.</p>
-
-<p>So it looks like Gnome Shell wins. People complain that it is unusable without extensions. For my purposes that is irrelevant. Most of my favourite software is unusable without customisation (especially emacs). What is important is the potential for sculpting it into something better.</p>
-
-<h1>Experience</h1>
-
-<p>The <a href="https://live.gnome.org/GnomeTweakTool">Gnome Tweak Tool</a> is absolutely essential. I have a few other extensions installed so far but none are particularly essential. There are a few more I will have to write myself.</p>
-
-<p>I expected to find <a href="http://cooperteam.net/">Gnome Do</a> indispensable. I can&rsquo;t quite puy my finger on the reason but I instead found it intensely annoying and quickly uninstalled it. I think it&rsquo;s an uncanny valley thing &ndash; it&rsquo;s <em>almost</em> a real repl. Adding panels to the <a href="http://media.bestofmicro.com/fedora-linux-gnome,M-M-329998-13.png">Overview</a> might be a better option for me.</p>
-
-<p>Most of my setup time was burned on remapping keys. Gnome doesn&rsquo;t run .xprofile or .Xmodmaprc and adding them to gnome-session doesn&rsquo;t persist the changes across suspend/hibernate. I spent a while trying to remap keys <a href="https://wiki.archlinux.org/index.php/Map_scancodes_to_keycodes">at the kernel level</a> before eventually realising that Gnome Tweak Tool has a keyboard section. It doesn&rsquo;t have all the options I want but it does mean I can crib from their remapping code later.</p>
-
-<p>Similarly, Gnome overrides the xorg.conf touchpad settings and its settings dialog doesn&rsquo;t provide an vertical-edge-scroll option. Fortunately the setting still exists and can be set with dconf-editor under <code>org/gnome/settings-daemon/touchpad</code>. Again, I&rsquo;m leaning towards configuring this in js in the future to keep all my changes in the same place.</p>
-
-<p>So far I&rsquo;m impressed at the potential of Gnome Shell, if not the default reality. The overview completion is fast and accurate. The notification system is a big improvement over Gnome 2 (especially the on/off toggle). The animations are smooth even on my integrated graphics. The ui and icons are simple and clear. With the dark theme enabled the shell is beautiful without getting in the way. Beauty is important in anything I spend half my life staring at.</p>
-
-<h1>Bonus</h1>
-
-<p>I also took the oppurtunuity to switch from <a href="https://www.archlinux.org/">Ubuntu</a> to <a href="https://www.archlinux.org/">Arch</a>. Partly because of the nervousness I mentioned earlier, but also because Ubuntu keeps fucking overwriting my config files. I&rsquo;ve given up touching anything beneath the surface because every Ubuntu upgrade breaks everything. Arch seems to be more kindly inclined towards tinkering and customisation and the wiki is a fantastic resource for learning about linux internals. It has a reputation for being unstable but since my new job will be developing in Windows on a fancy desktop the risk of breakage on my laptop isn&rsquo;t a big deal. And it doesn&rsquo;t overwrite my config files without asking.</p>
-
-<p>The installation was straight-forward apart from a <a href="https://bbs.archlinux.org/viewtopic.php?id=162725">known mistake</a> in this months iso. My hardware all worked without any configuration. Suspend and hibernate are faster and more reliable than they were in Ubuntu. My battery life is slightly better. <a href="http://kmkeen.com/pacmatic/">Pacmatic</a> somewhat alleviates the fear of breakage. Installing proprietary software (skype, spotify) has not been a problem. I did have to <a href="https://wiki.archlinux.org/index.php/Font_Configuration#Infinality:_the_easy_way">tweak the fonts</a> and I have still have some missing unicode characters in firefox which I haven&rsquo;t yet looked into.</p>
-
-<h1>Next</h1>
-
-<p>The next part of this series (which is due at some undetermined point in the future) will probably be writing a hello-world style extension in <a href="https://github.com/clojure/clojurescript">cljs</a> as the first step towards a document-centric tiling window manager.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: saving the cloud]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud/"/>
-    <updated>2013-06-02T03:36:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/02/flowing-faster-saving-the-cloud</id>
-    <content type="html"><![CDATA[<p>While we&rsquo;re on the subject of backups &ndash; like most people, I rely pretty heavily on cloud services. It sort of snuck up on me. I&rsquo;m generally trying to move towards using cloud services as dumb servers so I can easily replace them. The first step is to be able to export and backup all my data.</p>
-
-<!--more-->
-
-
-<p>I considered using The Locker Project for backing up cloud services, but it appears that Singly have pivoted from <a href="http://lockerproject.org/">&lsquo;control your own data&rsquo;</a> to <a href="https://singly.com/product/">&lsquo;give all your data to us&rsquo;</a>. Back to the drawing board&hellip;</p>
-
-<p>I use <a href="https://addons.mozilla.org/en-US/firefox/addon/opml-support/">OPML Support</a> and <a href="https://addons.mozilla.org/en-us/firefox/addon/brief/">Brief</a> to replace google reader and <a href="http://projects.gnome.org/evolution/">Evolution</a> to back up google mail, calendar and contacts. My address is on my own domain and managed by google apps. I don&rsquo;t yet use a local mail reader but Evolution looks like a reasonable fallback if I have to drop gmail.</p>
-
-<p>For music I use <a href="http://www.tomahawk-player.org/">Tomahawk</a> with a <a href="https://www.spotify.com/">Spotify Premium</a> account as the main resolver. I create playlists in Tomahawk using both the chart apis and the <a href="http://echonest.com/">Echo Nest</a> api and sync them to Spotify to download to my phone. There&rsquo;s still a little too much manual button pressing in that process but it&rsquo;s much easier than managing my own collection. Both Tomahawk and Spotify mobile scrobble to my last.fm account which I backup with <a href="https://gitorious.org/fmthings/lasttolibre/blobs/master/lastexport.py">lastexport</a>.</p>
-
-<p>Facebook is really the only service I couldn&rsquo;t replace, due to a combination of network effects and poor export tools. I use the builtin export service but unfortunately it seems to be pretty hard to automate. The only non-proprietary solution I could find was <a href="https://addons.mozilla.org/en-us/firefox/addon/archivefacebook/">ArchiveFacebook</a> which I suppose could be run from the command line somehow. For now I just set a monthly reminder in my calendar.</p>
-
-<p>So now I have all my cloud data synced on my machine where the backup tools from my last post can take care of it.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: backing up]]></title>
-    <link href="http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up/"/>
-    <updated>2013-06-01T02:12:00-07:00</updated>
-    <id>http://scattered-thoughts.net/blog/2013/06/01/flowing-faster-backing-up</id>
-    <content type="html"><![CDATA[<p>A lot of the work in this series is going to be about improving my working environment. Let&rsquo;s start with backups so I don&rsquo;t lose all this hard work.</p>
-
-<!--more-->
-
-
-<p>I backup my entire filesystem to <a href="http://www.tarsnap.com/">tarsnap</a> every week. I paid around $70 for the last year of usage which is cheap for the peace of mind it brings. The tarsnap documentation is excellent so I won&rsquo;t go through the setup here, just my usage:</p>
-
-<p>``` bash
-set -e</p>
-
-<h1>!/bin/bash</h1>
-
-<p>pacman -Qeq > /home/jamie/packages
-DATE=<code>date +%Y.%m.%d-%H.%m.%S</code>
-tarsnap -v -c -f &ldquo;alien@$DATE&rdquo; \</p>
-
-<pre><code>--cachedir /usr/local/tarsnap-cache --keyfile /home/jamie/tarsnap.key \
---exclude /dev --exclude /proc --exclude /sys --exclude /tmp --exclude /run --exclude /mnt --exclude /media --exclude /lost+found --exclude /swapfile \
---exclude /home/jamie/.thumbnails --exclude /home/jamie/.mozilla/firefox/*.default/Cache --exclude /home/jamie/.cache/chromium \
---exclude /var/lib/pacman \
---exclude /home/jamie/Downloads \
---exclude /home/jamie/.cache \
---exclude /home/jamie/music \
---exclude /home/jamie/.local/share/Trash \
---exclude /home/jamie/VirtualBox* \
---exclude /home/jamie/old-home \
-/
-</code></pre>
-
-<p>```</p>
-
-<p>The first two lines of excludes are fairly standard. The rest come from looking through the output of <code>sudo du -h -t 100000000 /</code> for unnecessary folders.</p>
-
-<p>The restore process is pretty simple even for a different machine: install the os, restore /home/jamie, reinstall all packages in /home/jamie/packages, diff the rest of the backup and copy over anything that&rsquo;s not machine-specific.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Flowing faster: external memory]]></title>
+    <title type="html"><![CDATA[External memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
     <updated>2013-05-21T20:43:00-07:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
-    <content type="html"><![CDATA[<p>I always want to be a better developer than I am. What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
+    <content type="html"><![CDATA[<p> What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
 
 <!--more-->
 

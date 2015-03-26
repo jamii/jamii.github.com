@@ -4,7 +4,7 @@
   <title><![CDATA[Category: erlang | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/erlang/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-02-09T13:47:08-08:00</updated>
+  <updated>2015-03-25T22:58:00-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -85,7 +85,7 @@ record(bootstrap, { % the state of the router when bootstrapping</p>
 <p>bootstrap(Addresses, Timeout) &ndash;></p>
 
 <pre><code>?INFO([bootstrapping]),
-State = #bootstrap{timeout=Timeout, addresses=Addresses},    
+State = #bootstrap{timeout=Timeout, addresses=Addresses},
 {ok, _Pid} = gen_server:start_link(?MODULE, State, []).
 </code></pre>
 
@@ -117,11 +117,11 @@ case {lists:member(From, Addresses), telex:get(Telex, '_to')} of
     End -&gt;
         Self = util:to_bits(End),
         Table = touched(From, Self, empty_table(Self)),
-        dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT), 
+        dialer:dial(End, [From], ?ROUTER_DIAL_TIMEOUT),
         refresh(Self, Table),
         ?INFO([bootstrap, finished, {self, Binary}, {from, From}]),
         {noreply, #state{self=Self, pinged=sets:new(), table=Table}}
-    catch 
+    catch
     _ -&gt;
         ?WARN([bootstrap, bad_self, {self, Binary}, {from, From}]),
         {noreply, Bootstrap}
@@ -208,7 +208,7 @@ end;
 
 <p>```</p>
 
-<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement <em>ring/</em>line to protect against address spoofing):</p>
+<p>One of the rules of the router is that it should never pass on information about a node that it hasn&rsquo;t personally confirmed to exist. Once we receive a message from a node we know that it exists (later we will implement ring/line to protect against address spoofing):</p>
 
 <p>``` erlang
 touched(Address, Self, Table) &ndash;></p>
@@ -263,10 +263,10 @@ switch:send(To, Telex).
 
 <pre><code>Bits = util:to_bits(End),
 iter:take(
-  N, 
+  N,
   iter:flatten(
 iter:map(
-  fun ({_Prefix, Bucket}) -&gt; bucket:by_dist(End, Bucket) end, 
+  fun ({_Prefix, Bucket}) -&gt; bucket:by_dist(End, Bucket) end,
   bit_tree:iter(Bits, Table)))).
 </code></pre>
 
@@ -310,7 +310,7 @@ case telex:get(Telex, '+end') of
     _ -&gt;
         ?WARN([bad_see, {'end', Hex}, {from, From}])
     end;
-_ -&gt; 
+_ -&gt;
     ok
 end,
 {noreply, State#state{pinged=Pinged2, table=Table2}};
@@ -349,9 +349,9 @@ refresh(Self, Table),
 <p>needs_refresh(Bucket, Now) &ndash;></p>
 
 <pre><code>case bucket:last_dialed(Bucket) of
-never -&gt; 
+never -&gt;
     true;
-Last -&gt; 
+Last -&gt;
     (timer:now_diff(Now, Last) div 1000) &lt; ?ROUTER_REFRESH_TIME
 end.
 </code></pre>
