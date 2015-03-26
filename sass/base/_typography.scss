@@ -38,9 +38,13 @@ h1 {
   line-height: 1.2em;
 }
 
+#main {
+  #{headings()}{
+    text-rendering: optimizelegibility;
+  }
+}
 #{headings()}{
   @extend .heading;
-  text-rendering: optimizelegibility;
   margin-bottom: 1em;
   font-weight: bold;
 }
