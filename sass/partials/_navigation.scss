@@ -37,8 +37,7 @@ body > nav {
   fieldset.mobile-nav{ float: left; width: 48%;
     select{ width: 100%; font-size: .8em; border: 1px solid #888;}
   }
-  ul { display: none; }
-  @media only screen and (min-width: 550px) {
+
     font-size: 0.95em;
     ul {
       @include horizontal-list(0);
@@ -96,7 +95,7 @@ body > nav {
     }
     fieldset.mobile-nav { display: none; }
     fieldset[role=search]{ width: 99%; }
-  }
+
   @media only screen and (min-width: 992px) {
     form {
       width: $sidebar-width-wide - $pad-wide - $sidebar-pad-wide*2 + 10px;
