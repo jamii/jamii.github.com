@@ -3,7 +3,7 @@ layout: post
 title: "Hugo-a-go-go"
 date: 2013-10-06 13:22
 comments: true
-categories: clojure go
+categories: project
 ---
 
 For the [2013 Clojure Cup](http://clojurecup.com/) myself and [Tom Hall](http://www.thattommyhall.com/) wrote a [go](http://en.wikipedia.org/wiki/Go_%28game%29) AI in clojurescript, inspired by [pushkin](https://github.com/ztellman/pushkin). The source is [here](https://github.com/jamii/hugo-a-go-go/) and it can currently be played on the [clojure cup site](http://hugoagogo.clojurecup.com/) (only tested in chrome).

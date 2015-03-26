@@ -3,7 +3,7 @@ layout: post
 title: "Hacker School"
 date: 2012-12-02 01:16
 comments: true
-categories: mist droplet strucjure
+categories: thought
 ---
 
 I've spent the last ten weeks or so at [Hacker School](https://www.hackerschool.com/). It's something like a writer's retreat for programmers. Unlike a traditional school there is very little structure and the focus is on project-based learning. In order to make the most of this environment, it's important to be clear exactly what your goals are.

@@ -3,7 +3,7 @@ layout: post
 title: "Scaling down"
 date: 2015-02-09 13:42
 comments: true
-categories:
+categories: thought
 ---
 
 The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How deeply can I customise this editor? More code, more data, more people, more machines.

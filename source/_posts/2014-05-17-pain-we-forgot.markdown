@@ -3,7 +3,7 @@ layout: post
 title: "Pain we forgot"
 date: 2014-05-17 09:54
 comments: true
-categories:
+categories: thought
 ---
 
 Much of the pain in programming is taken for granted. After years of repetition it fades into the background and is forgotten. The first step in making programming easier is to be concious of what makes it hard. So let's put ourselves in the shoes of a smart but inexperienced end user trying to build, test and maintain a simple application.

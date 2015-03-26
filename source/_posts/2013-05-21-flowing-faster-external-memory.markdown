@@ -3,7 +3,7 @@ layout: post
 title: "External memory"
 date: 2013-05-21 20:43
 comments: true
-categories: flow
+categories: project
 ---
 
  What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I'm on my own with the first option, but a better development environment can help with the latter two.

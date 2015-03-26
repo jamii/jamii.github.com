@@ -3,7 +3,7 @@ layout: post
 title: "No more bullshit"
 date: 2013-12-12 01:28
 comments: true
-categories:
+categories: thought
 ---
 
 We are doing programming wrong. We all know it. Sure, if you sweat and scrub and shine and polish and pray to the gods of TDD you can get stuff done, but in the back of your mind you will always hear Zed Shaw's voice whispering ["This is bullshit!"](http://www.youtube.com/watch?v=4qJMR_Dbxow). We cannot build the world on a foundation of bullshit.

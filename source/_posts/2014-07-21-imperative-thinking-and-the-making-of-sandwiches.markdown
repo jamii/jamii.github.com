@@ -3,7 +3,7 @@ layout: post
 title: "Imperative thinking and the making of sandwiches"
 date: 2014-07-21 14:37
 comments: true
-categories:
+categories: thought
 ---
 
 People regularly tell me that imperative programming is the natural form of programming because 'people think imperatively'. I can see where they are coming from. Why, just the other day I found myself saying, "Hey Chris, I'm hungry. I need you to walk into the kitchen, open the cupboard, take out a bag of bread, open the bag, remove a slice of bread, place it on a plate..." Unfortunately, I hadn't specified where to find the plate so at this point Chris threw a null pointer exception and died.

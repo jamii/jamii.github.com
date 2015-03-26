@@ -3,7 +3,7 @@ layout: post
 title: "Humans should learn maths"
 date: 2014-11-15 14:19
 comments: true
-categories:
+categories: thought
 ---
 
 In the history of humanity there have been three major inventions that have enabled people to think in entirely new ways. They allow us to learn more, think bigger thoughts and solve harder problems. They are:

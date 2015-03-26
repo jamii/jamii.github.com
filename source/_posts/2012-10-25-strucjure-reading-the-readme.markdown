@@ -3,7 +3,7 @@ layout: post
 title: "Strucjure: reading the readme"
 date: 2012-10-25 19:37
 comments: true
-categories: clojure strucjure
+categories: project
 ---
 
 I just released [strucjure](https://github.com/jamii/strucjure), a clojure library and DSL for parsing and pattern matching based on [Ometa](http://lambda-the-ultimate.org/node/2477).

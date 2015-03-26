@@ -3,7 +3,7 @@ layout: post
 title: "Search trees and core.logic"
 date: 2012-12-19 20:32
 comments: true
-categories:
+categories: project
 ---
 
 I mentioned in an [earlier post](http://scattered-thoughts.net/blog/2012/12/02/hacker-school/) that I had spent some time working on [shackles](https://github.com/jamii/shackles), an extensible [constraint solver](http://en.wikipedia.org/wiki/Constraint_programming) based on [gecode](http://www.gecode.org/) with extensions for [logic programming](http://en.wikipedia.org/wiki/Logic_programming). I eventually gave up working on shackles in favor of using [core.logic](https://github.com/clojure/core.logic) which is much more mature and has actual maintainers. Last week David Nolen (the author of core.logic) was visiting Hacker School so I decided to poke around inside core.logic and see what could be brought over from shackles. The [first chunk of work](https://github.com/clojure/core.logic/pull/13) adds fair conjunction, user-configurable search and a parallel solver.

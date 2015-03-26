@@ -3,19 +3,16 @@ layout: post
 title: "Optimising texsearch"
 date: 2010-12-08 06:16
 comments: true
-categories:
-- ocaml
-- texsearch
-- latex
+categories: project
 ---
 
 [Texsearch](https://github.com/jamii/texsearch) is a search engine for LaTeX formulae. It forms part of the backend for [latexsearch.com](http://latexsearch.com) which indexes the entire Springer corpus. It is also crazy slow, until today.
 
 <!--more-->
 
-Intuitively, when searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing. 
+Intuitively, when searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.
 
-Texsearch uses [PlasTeX](http://plastex.sourceforge.net/) to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2^63 possible elements. 
+Texsearch uses [PlasTeX](http://plastex.sourceforge.net/) to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2^63 possible elements.
 
 At the core of texsearch is a search algorithm which performs approximate searches over the search corpus. Specifically, given a search term S and a search radius R we want to return all corpus terms T such that the [Levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance) between S and some substring of T is less than R. This is a common problem in bioinformatics and NLP and there is a [substantial amount of research](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.7225&rep=rep1&type=pdf) on how to solve this efficiently. I have been through a range of different algorithms in previous iterations of texsearch and have only recently achieved reasonable performance (mean search time is now ~300ms for a corpus of 1.5m documents). The code is available [here](https://github.com/jamii/texsearch).
 
@@ -75,7 +72,7 @@ type id = int
 type pos = int
 
 type 'a t =
-  { latexs : Latex.t DynArray.t 
+  { latexs : Latex.t DynArray.t
   ; opaques : 'a DynArray.t
   ; mutable next_id : id
   ; mutable array : (id * pos) array
@@ -132,7 +129,7 @@ let gather_exact ids sa latex =
     if is_prefix sa latex (id, pos)
     then
       begin
-	Hashset.add ids id; 
+	Hashset.add ids id;
 	traverse (index+1)
       end
     else () in
@@ -161,7 +158,7 @@ let approx_match sa precision latexL id =
   match Latex.similar precision latexL latexR with
   | Some dist ->
       let opaque = DynArray.get sa.opaques id in
-      Some (dist, opaque) 
+      Some (dist, opaque)
   | None ->
       None
 
@@ -185,10 +182,10 @@ let query_match sa precision query id =
   | Some dist ->
       let opaque = DynArray.get sa.opaques id in
       Some (dist, opaque)
-  | None -> 
+  | None ->
       None
 
-let find_query sa precision query = 
+let find_query sa precision query =
   let ids = gather_query sa precision query in
   Util.filter_map (query_match sa precision query) (Hashset.to_list ids)
 ```

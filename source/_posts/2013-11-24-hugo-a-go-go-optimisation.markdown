@@ -3,7 +3,7 @@ layout: post
 title: "Hugo-a-go-go: optimisation"
 date: 2013-11-24 04:43
 comments: true
-categories: clojure go
+categories: project
 ---
 
 After a little optimisation work [hugo](https://github.com/jamii/hugo-a-go-go/) now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations I made during the last minutes of the competition, the main wins were changing the board representation and carefully inspecting the compiler output to eliminate unneccesary work. A lot of the things I discovered are generally applicable to calculation-heavy, cpu-bound cljs code (with all the usual disclaimers about profiling and premature optimsation).

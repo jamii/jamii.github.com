@@ -3,9 +3,7 @@ layout: post
 title: "Examining scampy"
 date: 2010-05-19 06:16
 comments: true
-categories:
-- python
-- scampy
+categories: project
 ---
 
 [Scampy](http://github.com/jamii/scampy) is a bot for engaging 419 scammers in pointless conversation and consuming time that could have been spent on real victims. It was originally intended to be a smart bot. I had visions of data mining conversations and inventing dsl's for chat scripts. This all takes time however, so in order to get up and running quickly the prototype just selects responses at random from a prewritten list. This turns out to be depressingly effective.

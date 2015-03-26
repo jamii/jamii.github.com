@@ -3,7 +3,7 @@ layout: post
 title: "Local state is harmful"
 date: 2014-02-17 05:02
 comments: true
-categories:
+categories: thought
 ---
 
 Don't lynch me just yet :)

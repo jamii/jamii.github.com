@@ -3,7 +3,7 @@ layout: post
 title: "We're not even trying"
 date: 2014-01-27 00:31
 comments: true
-categories:
+categories: thought
 ---
 
 Light Table has a feature called [watches](http://www.youtube.com/watch?v=d8-b6QEN-rk), where you select an expression to watch and behind the scenes the editor wraps that expression in some code that sends the results back to the editor every time the expression is executed. You can also write custom watches that wrap the selected expression however you like. For example, this watch displays the time the expression took to execute.
