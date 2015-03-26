@@ -207,51 +207,6 @@ $header-height: 30px;
 			}
 		}
 	}
-	.search{
-		position: absolute;
-		top: 0;
-		right: 0;
-		.button{
-			background: $color-gray04;
-			width: 30px;
-			height: 30px;
-			position: absolute;
-			top: 1px;
-			right: -1px;
-			@include border-radius(0 5px 5px 0);
-			&:before{
-				content: "\f002";
-				color: #f2f2f2;
-				font: 20px $font-icon;
-				line-height: 30px;
-				position: absolute;
-				top: 0;
-				left: 7px;
-			}
-			&.on{
-				background: $color-gray03;
-				&:before{
-					content: "\f00d";
-				}
-			}
-		}
-		.container{
-			position: absolute;
-			right: 51px;
-			z-index: 1;
-		}
-		input[type="text"]{
-			background: #fff;
-			border: 1px solid $color-gray04;
-			border-right: none;
-			color: $color-gray02;
-			font: 13px $font-default;
-			height: 30px;
-			width: 100%;
-			padding: 0 10px;
-			@include border-radius(5px 0 0 5px);
-		}
-	}
 }
 #sub-nav{
 	@media screen and (max-width: 1040px){
@@ -261,40 +216,6 @@ $header-height: 30px;
 	}
 	@media screen and (max-width: 600px){
 		display: none;
-	}
-	.search{
-		float: left;
-		margin-top: 1px;
-		position: relative;
-		@media screen and (max-width: 1040px){
-			float: none;
-			margin-top: 15px;
-		}
-		&:before{
-			content: "\f002";
-			color: $color-gray03;
-			font: 18px $font-icon;
-			line-height: 30px;
-			position: absolute;
-			top: 0;
-			right: 125px;
-		}
-		input[type="text"]{
-			background: #f2f2f2;
-			color: $color-gray02;
-			border: 1px solid $color-gray04;
-			font: 13px $font-default;
-			padding: 6px 15px 6px 35px;
-			width: 100px;
-			@include transition(0.3s);
-			@include border-radius(15px);
-			&:focus, &:active{
-				background: #fff;
-				border-top: 1px solid $color-gray03;
-				color: $color-gray01;
-				outline: none;
-			}
-		}
 	}
 	.social{
 		float: left;
