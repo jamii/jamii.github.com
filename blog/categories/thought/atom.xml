@@ -4,7 +4,7 @@
   <title><![CDATA[Category: thought | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/thought/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-06-04T22:28:55-07:00</updated>
+  <updated>2015-06-05T00:08:49-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -303,33 +303,7 @@ bar.foo();
 
 <p>Rust has very similar capabilities to haskell but (so far) abuses them less often. There are only a few cases so far where I felt lost in types &ndash; <a href="http://cyderize.github.io/rust-websocket/doc/websocket/index.html">rust-websocket</a> being the biggest offender.</p>
 
-<p>Traits have different syntax for the distinguished <code>self</code> argument and I never get it right. Nor am I totally sure what the tradeoffs are between having a <code>self</code> argument and not. You can put constraints directly on <code>self</code> but for other arguments you must use a <code>where</code> clause:</p>
-
-<p>``` rust
-trait Foo<B> {
-  fn foo(self, B)
-}</p>
-
-<p>fn do_stuff&lt;A: Foo<B>, B>(a: A, b: B) { .. }</p>
-
-<p>trait Foo&lt;A, B> {
-  fn(a: A, b: B)
-}</p>
-
-<p>fn do_stuff&lt;A,B>(a: A, b: B) where Foo&lt;A, B> { .. }
-```</p>
-
-<p>Some kinds of constraints <a href="https://github.com/rust-lang/rfcs/blob/master/text/0135-where.md">cannot be used in where clauses</a>, so I <em>believe</em> the former is strictly more powerful.</p>
-
-<p>It also affect associated types:</p>
-
-<p>``` rust
-fn next_path&lt;N: Iterator>(nibbles: &amp;mut N) &ndash;> u32 where <N as Iterator>::Item = u8</p>
-
-<p>fn next_path&lt;N: Iterator&lt;Item=u8>>(nibbles: &amp;mut N) &ndash;> u32
-```</p>
-
-<p>At the time I wrote that code, only the latter version worked. Which means that <code>Iterator</code> <em>has</em> to have chosen to use a self type for this function to be written. It looks like there may be cases where choosing the wrong argument to promote to <code>self</code> can prevent me from writing certain constraints?</p>
+<p>EDIT The section here on constraints was completely wrong and has been removed &ndash; see the <a href="https://news.ycombinator.com/item?id=9664017">discussion</a> that corrected me.</p>
 
 <h2>Auto-deref</h2>
 
