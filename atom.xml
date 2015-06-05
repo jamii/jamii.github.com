@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-06-04T22:00:01-07:00</updated>
+  <updated>2015-06-04T22:28:55-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -250,6 +250,43 @@
 
 
 <p>I like this pragmatic approach to safety. When the type-system understands what I&rsquo;m doing I get the full benefit. When it doesn&rsquo;t I can escape and do my own reasoning. If a particular pattern appears frequently I can put that reasoning into a library (like <a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html">RefCell</a> or <a href="https://doc.rust-lang.org/std/rc/struct.Rc.html">Rc</a>) and expose a safe interface that the type system understands. It feels like having an extensible type system that can learn to understand the way each project manages memory.</p>
+
+<p>EDIT <a href="http://www.reddit.com/r/rust/comments/38ljzu/three_months_of_rust/crw6f9m">quxxy</a> suggested a better solution, using the copy-on-write type to allow the vec to own some of the strings and borrow the others:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='rust'><span class='line'><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="n">borrow</span><span class="o">::</span><span class="n">Cow</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">fn</span> <span class="n">step</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">a</span><span class="o">&gt;</span><span class="p">(</span><span class="n">table</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">a</span> <span class="p">[</span><span class="n">String</span><span class="p">],</span> <span class="n">state</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Cow</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">a</span><span class="p">,</span> <span class="n">str</span><span class="o">&gt;&gt;</span><span class="p">,</span> <span class="n">results</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">Vec</span><span class="o">&lt;</span><span class="n">Vec</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">table</span><span class="p">.</span><span class="n">len</span><span class="p">()</span> <span class="o">==</span> <span class="m">0</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">results</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">s</span><span class="o">|</span> <span class="p">(</span><span class="o">**</span><span class="n">s</span><span class="p">).</span><span class="n">to_owned</span><span class="p">()).</span><span class="n">collect</span><span class="p">());</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">table</span><span class="p">.</span><span class="n">len</span><span class="p">()</span> <span class="o">%</span> <span class="m">2</span> <span class="o">==</span> <span class="m">0</span> <span class="p">{</span> <span class="c1">// some complicated condition</span>
+</span><span class='line'>        <span class="n">state</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">Cow</span><span class="o">::</span><span class="n">Borrowed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">table</span><span class="p">[</span><span class="m">0</span><span class="p">][..]));</span>
+</span><span class='line'>        <span class="n">step</span><span class="p">(</span><span class="o">&amp;</span><span class="n">table</span><span class="p">[</span><span class="m">1.</span><span class="p">.],</span> <span class="n">state</span><span class="p">,</span> <span class="n">results</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">state</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">let</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;some new thing&quot;</span><span class="p">.</span><span class="n">to_owned</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">state</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">Cow</span><span class="o">::</span><span class="n">Owned</span><span class="p">(</span><span class="n">s</span><span class="p">));</span>
+</span><span class='line'>        <span class="n">step</span><span class="p">(</span><span class="o">&amp;</span><span class="n">table</span><span class="p">[</span><span class="m">1.</span><span class="p">.],</span> <span class="n">state</span><span class="p">,</span> <span class="n">results</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">state</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <h2>Control</h2>
 

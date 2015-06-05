@@ -4,7 +4,7 @@
   <title><![CDATA[Category: thought | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/thought/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-06-04T22:00:01-07:00</updated>
+  <updated>2015-06-04T22:28:55-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -194,6 +194,30 @@ state.pop();
 <p>```</p>
 
 <p>I like this pragmatic approach to safety. When the type-system understands what I&rsquo;m doing I get the full benefit. When it doesn&rsquo;t I can escape and do my own reasoning. If a particular pattern appears frequently I can put that reasoning into a library (like <a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html">RefCell</a> or <a href="https://doc.rust-lang.org/std/rc/struct.Rc.html">Rc</a>) and expose a safe interface that the type system understands. It feels like having an extensible type system that can learn to understand the way each project manages memory.</p>
+
+<p>EDIT <a href="http://www.reddit.com/r/rust/comments/38ljzu/three_months_of_rust/crw6f9m">quxxy</a> suggested a better solution, using the copy-on-write type to allow the vec to own some of the strings and borrow the others:</p>
+
+<p>``` rust
+use std::borrow::Cow;</p>
+
+<p>fn step&lt;&lsquo;a>(table: &amp;'a [String], state: &amp;mut Vec&lt;Cow&lt;'a, str>>, results: &amp;mut Vec&lt;Vec<String>>) {</p>
+
+<pre><code>if table.len() == 0 {
+    results.push(state.iter().map(|s| (**s).to_owned()).collect());
+} else if table.len() % 2 == 0 { // some complicated condition
+    state.push(Cow::Borrowed(&amp;table[0][..]));
+    step(&amp;table[1..], state, results);
+    state.pop();
+} else {
+    let s = "some new thing".to_owned();
+    state.push(Cow::Owned(s));
+    step(&amp;table[1..], state, results);
+    state.pop();
+}
+</code></pre>
+
+<p>}
+```</p>
 
 <h2>Control</h2>
 
