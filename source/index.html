@@ -4,14 +4,7 @@ layout: default
 
 <div id="blog-archives">
   <article class="hentry" role="article">
-    <h2>Thoughts</h2>
-    {% for post in site.categories["thought"] reverse %}
-    <article>
-      {% include archive_post.html %}
-    </article>
-    {% endfor %}
-    <h2>Projects</h2>
-    {% for post in site.categories["project"] reverse %}
+    {% for post in site.posts reverse %}
     <article>
       {% include archive_post.html %}
     </article>
