@@ -157,6 +157,27 @@ The core problem is that I'm pushing a value `s` into a vector which lives longe
 
 I like this pragmatic approach to safety. When the type-system understands what I'm doing I get the full benefit. When it doesn't I can escape and do my own reasoning. If a particular pattern appears frequently I can put that reasoning into a library (like [RefCell](https://doc.rust-lang.org/std/cell/struct.RefCell.html) or [Rc](https://doc.rust-lang.org/std/rc/struct.Rc.html)) and expose a safe interface that the type system understands. It feels like having an extensible type system that can learn to understand the way each project manages memory.
 
+EDIT [quxxy](http://www.reddit.com/r/rust/comments/38ljzu/three_months_of_rust/crw6f9m) suggested a better solution, using the copy-on-write type to allow the vec to own some of the strings and borrow the others:
+
+``` rust
+use std::borrow::Cow;
+
+fn step<'a>(table: &'a [String], state: &mut Vec<Cow<'a, str>>, results: &mut Vec<Vec<String>>) {
+    if table.len() == 0 {
+        results.push(state.iter().map(|s| (**s).to_owned()).collect());
+    } else if table.len() % 2 == 0 { // some complicated condition
+        state.push(Cow::Borrowed(&table[0][..]));
+        step(&table[1..], state, results);
+        state.pop();
+    } else {
+        let s = "some new thing".to_owned();
+        state.push(Cow::Owned(s));
+        step(&table[1..], state, results);
+        state.pop();
+    }
+}
+```
+
 ## Control
 
 Rust has [algebraic data-types](http://en.wikipedia.org/wiki/Algebraic_data_type) that layout data consecutively. Pointers are opt-in. Gaining a similar level of control in javascript *is* possible but it requires some mightily unpleasant gymnastics. Rust feels like a high-level language most of the time but manages to do it without vomiting all over the cache.
