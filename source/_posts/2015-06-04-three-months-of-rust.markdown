@@ -198,8 +198,6 @@ Modern machines are a huge pile of opaque and unreliable heuristics and the curr
 
 Doesn't matter that much. I got used to it.
 
-There is a hint of object-orientation in that one can write `foo.bar(x, y, z)` and it desugars to something like `bar(foo, x, y, z)`. If it was only sugar I would be happy enough, but it also has non-trivial interactions with namespaces, trait dispatch, auto-deref and auto-borrow which I will go into below. There is a whole pile of intertwined design decisions here that have been made for totally valid ergonomic reasons but give rise to some interactions that make me nervous.
-
 ## Namespaces
 
 There are effectively three kinds of namespaces.
@@ -266,7 +264,7 @@ EDIT The section here on constraints was completely wrong and has been removed -
 
 ## Auto-deref
 
-Self types are further privileged. Suppose we have:
+Method calls are not as simple as they look at first. Suppose we have:
 
 ``` rust
 trait Foo {
@@ -318,7 +316,6 @@ The type of `x` in the first two examples is `&str` which auto-derefs to `str` a
 This is a risk for traits in general, but auto-deref exacerbates it by creating multiple types that might choose an instance. In this case it caused a type error but you can imagine cases where adding a new trait implementation silently changes the selected instance of a seemingly unrelated call in far away code. Very difficult for code review to catch.
 
 A similar mistake can happen if both the dereferenced type and the pointer type implement a method with the same name, but it looks like the standard library authors are aware of this and have stopped implementing methods directly on pointer types.
-
 
 ## Learning curve
 
