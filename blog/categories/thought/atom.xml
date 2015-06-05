@@ -4,7 +4,7 @@
   <title><![CDATA[Category: thought | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/thought/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-04-28T13:20:57-07:00</updated>
+  <updated>2015-06-04T17:14:29-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,377 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Three months of Rust]]></title>
+    <link href="http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust/"/>
+    <updated>2015-06-04T16:30:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust</id>
+    <content type="html"><![CDATA[<p>I work on <a href="http://incidentalcomplexity.com/">Eve</a>, a functional-relational programming language and environment. Since the Eve editor has to run in a browser we built the first few versions entirely in javascript. This has been pretty painful, so a little over three months ago we started looking at other options.</p>
+
+<p>The only hard requirements for the runtime are a) we need control over memory layout and b) we need to safely execute untrusted Eve code. Preemptive threads and the ability to compile to efficient javascript would also be valuable.</p>
+
+<p>Javascript <em>can</em> support manual memory layout but provides very little help in getting it right. Native objects have some <a href="https://news.ycombinator.com/item?id=8793817">necessary limitations</a> and asm.js is impractical to write by hand.</p>
+
+<p>C can run in the browser via Emscripten but the available evidence suggests that writing secure C is not a thing that mortals are good at.</p>
+
+<p>Rust is an unknown. It provides control over memory layout, has a community with a strong focus on safety and <em>may</em> support Emscripten in the future. It also promises a minimum of <a href="http://www.urbandictionary.com/define.php?term=footgun&amp;defid=7493319">footguns</a>, which is an attractive feature after many months of javascript and ArrayBuffers. Our initial experiments were promising, so we decided that in the next version of Eve we would write the query planner and runtime in Rust.</p>
+
+<p>There are a number of things that made this much less risky than it sounds. First, the query planner is on the way to being bootstrapped and the remaining runtime is only a few thousand lines of code. Most of the development time is spent experimenting with different language semantics and evaluation strategies, rather than building up a large codebase that would tie us to Rust. Second, we have two escape hatches if Rust doesn&rsquo;t work out. We can use the FFI to gradually port components to C, or we can use the websocket interface to the editor to gradually port components to javascript.</p>
+
+<p>(&ldquo;You should look at language X!&rdquo;. We did, and then we decided to use Rust. We can still be friends.)</p>
+
+<p>So here is what I think after three months of working with Rust full-time. TLDR: mostly impressive, a few worrying quirks, probably the best option for us right now.</p>
+
+<h2>Community</h2>
+
+<p>The Rust community seems to be populated entirely by human beings. I have no idea how this was done. I suspect Graydon Hoare deserves a large share of the credit for leading by example but everyone I have interacted with in the community has been friendly and patient.</p>
+
+<p>Despite my concerns over the size and complexity of the compiler and the LLVM toolchain, I haven&rsquo;t encountered any compiler bugs and only a <a href="https://github.com/rust-lang/rust/issues/24557">single bug</a> in the standard library. The community&rsquo;s attitude towards reliability and safety is by far the strongest point in favour of us continuing to use Rust.</p>
+
+<h2>Tooling</h2>
+
+<p>Compile times are brutal. For our 2400 loc it takes 20s for a dev build and 70s for a release build. Word is that compile time just hasn&rsquo;t been a focus so far and will improve in future releases. Type checking occurs very early in that 20s so running <code>cargo build</code> in a loop gives reasonably fast feedback on type errors, but any time we want to add an extra print statement we pay the full price. Moving the Eve editor into Rust would simplify the overall architecture but the people writing the editor refuse to wait 20s for a page refresh.</p>
+
+<p>Error messages are better than any other tool I have used. For most errors the compiler not only clearly explains the problem but also offers the correct solution. There is no secret sauce, it&rsquo;s just the result of long hours from the compiler team and a culture of caring about usability.</p>
+
+<p><code>rust
+src/relation.rs:110:29: 110:38 error: unresolved name `before_op`. Did you mean `before_opt`?
+src/relation.rs:110                             before_op = befores.next();
+</code></p>
+
+<p><code>`` rust
+src/relation.rs:121:29: 121:33 error: attempted to take value of method</code>iter<code>on type</code>collections::vec::Vec&lt;collections::string::String>`
+src/relation.rs:121         let ix = self.names.iter.position(|my_name| &amp;my_name[..] == name).unwrap();</p>
+
+<pre><code>                                            ^~~~
+</code></pre>
+
+<p>src/relation.rs:121:29: 121:33 help: maybe a <code>()</code> to call it is missing? If not, try an anonymous function
+```</p>
+
+<p>``` rust
+src/value.rs:14:15: 14:20 error: cannot move out of borrowed content
+src/value.rs:14         match *self {</p>
+
+<pre><code>                          ^~~~~
+</code></pre>
+
+<p>src/value.rs:17:27: 17:33 note: attempting to move value to here
+src/value.rs:17             Value::String(string) => string.fmt(formatter),</p>
+
+<pre><code>                                      ^~~~~~
+</code></pre>
+
+<p>src/value.rs:17:27: 17:33 help: to prevent the move, use <code>ref string</code> or <code>ref mut string</code> to capture value by reference
+```</p>
+
+<p>Cargo is solid. Building projects, versioning dependencies and running tests/benchmarks are all easy. I would like to see <code>cargo bench</code> produce comparison graphs (like <a href="https://github.com/garybernhardt/readygo">readygo</a>). I&rsquo;m also looking forward to <a href="https://github.com/nrc/rustfmt">rustfmt</a> since most editors currently do a pretty poor job of auto-indenting.</p>
+
+<p>Javascript profilers tend to tell me that the Eve runtime spends 100% of its time in <code>main</code> and calls no other functions. With Rust I get to use valgrind and perf which actually return useful information.</p>
+
+<p>Debugging is less exciting &ndash; both GDB and LLDB work and there is a <a href="https://michaelwoerister.github.io/2015/03/27/rust-xxdb.html">macros package</a> that makes them more useful but the Chrome debugger is still far more useable (when it doesn&rsquo;t crash).</p>
+
+<h2>Ownership</h2>
+
+<p>One of the unique features of Rust is that the type system tracks ownership of data. Shared mutability is the root of many bugs and vulnerabilities, especially in concurrent environments. Functional languages address this by removing or strictly controlling mutability. Rust addresses this by tracking and controlling sharing. See the <a href="https://doc.rust-lang.org/book/ownership.html">documentation</a> for the gory details.</p>
+
+<p>Most code I write now compiles without error. Most errors I see are clearly mistakes on my part and are easy to fix. About once a week, I hit an error that causes some headscratching. In most case I fume for a while before realising that I was trying to blow my foot off.</p>
+
+<p><code>``
+src/view.rs:205:70: 205:81 error:</code>outer_items` does not live long enough
+src/view.rs:205                     output_pairs.push((&amp;aggregate.outer.fields[..], &amp;outer_items[..]));</p>
+
+<pre><code>                                                                                 ^~~~~~~~~~~
+</code></pre>
+
+<p>note: in expansion of for loop expansion
+src/view.rs:172:17: 212:18 note: expansion site
+src/view.rs:203:47: 212:18 note: reference must be valid for the block suffix following statement 3 at 203:46&hellip;
+src/view.rs:203                         ).collect::&lt;Vec&lt;_>>();
+src/view.rs:204                     let outer_items = vec![outer_values];
+src/view.rs:205                     output_pairs.push((&amp;aggregate.outer.fields[..], &amp;outer_items[..]));
+src/view.rs:206                     if aggregate.selects_inner {
+src/view.rs:207                         output_pairs.push((&amp;aggregate.inner.fields[..], group))
+src/view.rs:208                     }</p>
+
+<pre><code>            ...
+</code></pre>
+
+<p>src/view.rs:204:58: 212:18 note: &hellip;but borrowed value is only valid for the block suffix following statement 4 at 204:57
+src/view.rs:204                     let outer_items = vec![outer_values];
+src/view.rs:205                     output_pairs.push((&amp;aggregate.outer.fields[..], &amp;outer_items[..]));
+src/view.rs:206                     if aggregate.selects_inner {
+src/view.rs:207                         output_pairs.push((&amp;aggregate.inner.fields[..], group))
+src/view.rs:208                     }
+src/view.rs:209                     let mut tuples = Vec::with_capacity(output_pairs.len());
+```</p>
+
+<p>It took me a while to realise that this error is trying to tell me is that <code>output_pairs</code> is declared one line before <code>outer_items</code>. Declarations for a block are freed in reverse order, so <code>outer_items</code> will be freed first and there will be a dangling pointer when <code>output_pairs</code> is freed. All I have to do to fix it is declare <code>output_pairs</code> after <code>outer_items</code>.</p>
+
+<p>Most of my confusion looks like this. There is some pattern that I didn&rsquo;t think about before and now that I understand it I won&rsquo;t struggle with that kind of error again. As the language matures I expect that these patterns will be collected and documented.</p>
+
+<p>There are also some patterns that the borrow checker can&rsquo;t understand (or, more accurately, there is no matching pattern in the standard library). This is a heavily simplified version of a common pattern in the query engine:</p>
+
+<p>``` rust
+fn step&lt;&lsquo;a>(table: &amp;'a [String], state: &amp;mut Vec&lt;&amp;'a String>, results: &amp;mut Vec&lt;Vec<String>>) {</p>
+
+<pre><code>if table.len() == 0 {
+    results.push(state.iter().map(|s| (*s).to_owned()).collect());
+} else if table.len() % 2 == 0 { // some complicated condition
+    state.push(&amp;table[0]);
+    step(&amp;table[1..], state, results);
+    state.pop();
+} else {
+    let s = "some new thing".to_owned();
+    state.push(&amp;s);
+    step(&amp;table[1..], state, results);
+    state.pop();
+}
+</code></pre>
+
+<p>}</p>
+
+<p>fn main() {
+   let table = vec![&ldquo;a&rdquo;.to_owned(), &ldquo;b&rdquo;.to_owned(), &ldquo;c&rdquo;.to_owned(), &ldquo;d&rdquo;.to_owned()];
+   let mut state = vec![];
+   let mut results = vec![];
+   step(&amp;table[..], &amp;mut state, &amp;mut results);
+}
+```</p>
+
+<p>Which produces this error:</p>
+
+<p><code>`` rust
+&lt;anon&gt;:10:21: 10:22 error:</code>s` does not live long enough
+<anon>:10         state.push(&amp;s);</p>
+
+<pre><code>                          ^
+</code></pre>
+
+<p><anon>:1:95: 14:2 note: reference must be valid for the lifetime &lsquo;a as defined on the block at 1:94&hellip;
+<anon>:1 fn step&lt;'a>(table: &amp;'a [String], state: &amp;mut Vec&lt;&amp;'a String>, results: &amp;mut Vec&lt;Vec<String>>) {
+<anon>:2     if table.len() == 0 {
+<anon>:3         results.push(state.iter().map(|s| (*s).to_owned()).collect());
+<anon>:4     } else if table.len() % 2 == 0 { // some complicated condition
+<anon>:5         state.push(&amp;table[0]);
+<anon>:6         step(&amp;table[1..], state, results);</p>
+
+<pre><code>     ...
+</code></pre>
+
+<p><anon>:9:40: 13:6 note: &hellip;but borrowed value is only valid for the block suffix following statement 0 at 9:39
+<anon>:9         let s = &ldquo;some new thing&rdquo;.to_owned();
+<anon>:10         state.push(&amp;s);
+<anon>:11         step(&amp;table[1..], state, results);
+<anon>:12         state.pop();
+<anon>:13     }
+```</p>
+
+<p>The core problem is that I&rsquo;m pushing a value <code>s</code> into a vector which lives longer than <code>s</code>. The borrow checker isn&rsquo;t capable of proving that I remove the value again before it is freed. I could build a wrapper around the vector library that understands this pattern, or I could just promise the borrow checker that I know what I&rsquo;m doing:</p>
+
+<p>``` rust</p>
+
+<pre><code>let s = "some new thing".to_owned();
+// promise the borrow checker that we will pop s before we exit this scope
+let s = unsafe { ::std::mem::transmute::&lt;&amp;String, &amp;'a String&gt;(&amp;s) };
+state.push(s);
+step(&amp;table[1..], state, results);
+state.pop();
+</code></pre>
+
+<p>```</p>
+
+<p>I like this pragmatic approach to safety. When the type-system understands what I&rsquo;m doing I get the full benefit. When it doesn&rsquo;t I can escape and do my own reasoning. If a particular pattern appears frequently I can put that reasoning into a library (like <a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html">RefCell</a> or <a href="https://doc.rust-lang.org/std/rc/struct.Rc.html">Rc</a>) and expose a safe interface that the type system understands. It feels like having an extensible type system that can learn to understand the way each project manages memory.</p>
+
+<h2>Control</h2>
+
+<p>Rust has <a href="http://en.wikipedia.org/wiki/Algebraic_data_type">algebraic data-types</a> that layout data consecutively. Pointers are opt-in. Gaining a similar level of control in javascript <em>is</em> possible but it requires some mightily unpleasant gymnastics. Rust feels like a high-level language most of the time but manages to do it without vomiting all over the cache.</p>
+
+<p>Rust doesn&rsquo;t help at all with <a href="http://bitsquid.blogspot.com/2010/02/blob-and-i.html">blobs</a> though. They have to be handled with &lsquo;unsafe&rsquo; code which subverts the normal Rust guarantees. The unsafe code could be wrapped in a library (like <a href="https://github.com/frankmcsherry/columnar">columnar</a>) to ensure that clients use it correctly but the library code itself will still need very careful review. And speaking of review&hellip;</p>
+
+<h2>Unsafe</h2>
+
+<p>There is a very recent effort to define <a href="http://cglab.ca/~abeinges/blah/rust-unsafe-intro/">exactly what unsafe code has to do</a> to not ruin all the guarantees that Rust works so hard to provide. The list of <a href="https://doc.rust-lang.org/reference.html#behavior-considered-undefined">undefined behaviour</a> is long and scary. It looks like consensus and documentation is on the way but until then &hellip; here be dragons.</p>
+
+<h2>Zero cost</h2>
+
+<p>Rust provides a lot of high-level abstractions which LLVM then optimises away. For example, large chains of iterator functions usually optimise into imperative loops. And the word &lsquo;usually&rsquo; is what makes me worry. So far Rust has behaved but I have been bitten badly by other &lsquo;sufficiently smart&rsquo; compilers.</p>
+
+<p>Modern machines are a huge pile of opaque and unreliable heuristics and the current trend is to add more and more layers on top. The vast majority of systems are built this way and it is by all accounts a successful strategy. That doesn&rsquo;t mean I have to like it.</p>
+
+<h2>Syntax</h2>
+
+<p>Doesn&rsquo;t matter that much. I got used to it.</p>
+
+<p>There is a hint of object-orientation in that one can write <code>foo.bar(x, y, z)</code> and it desugars to something like <code>bar(foo, x, y, z)</code>. If it was only sugar I would be happy enough, but it also has non-trivial interactions with namespaces, trait dispatch, auto-deref and auto-borrow which I will go into below. There is a whole pile of intertwined design decisions here that have been made for totally valid ergonomic reasons but give rise to some interactions that make me nervous.</p>
+
+<h2>Namespaces</h2>
+
+<p>There are effectively three kinds of namespaces.</p>
+
+<p>Modules behave like most static languages &ndash; you can call functions using their full path or you can import them under a short name eg</p>
+
+<p>``` rust
+::my::global::namespace::foo(bar)</p>
+
+<p>use my::global::namespace;
+namespace::foo(bar);</p>
+
+<p>use my::global::namespace::foo;
+foo(bar);
+```</p>
+
+<p>There is some funkiness around how modules are structured and how they are scoped relative to each other that I haven&rsquo;t taken the trouble to understand. I only need one level of namespaces.</p>
+
+<p>Types can also be namespaces. You can add a method to a type and access it either through the type or through the dot syntax.</p>
+
+<p>``` rust
+struct Bar{
+  &hellip;
+}</p>
+
+<p>impl Bar{
+  fn foo(self) {&hellip;}
+}</p>
+
+<p>Bar::foo(bar);
+bar.foo();
+```</p>
+
+<p>Lastly, traits can attach methods to types. To prevent collisions, the methods are namespaced by the trait.</p>
+
+<p>``` rust
+struct Bar {
+  &hellip;
+}</p>
+
+<p>trait Foo{
+  fn foo(self);
+}</p>
+
+<p>impl Foo for Bar {&hellip;}</p>
+
+<p>Foo::foo(bar);</p>
+
+<p>use Foo; // import foo for the dot syntax
+bar.foo();
+```</p>
+
+<p>Not unreasonable so far. It can sometimes be hard to track down where a particular method came from but the dispatch is at least direct. No inheritance or prototype chains to deal with.</p>
+
+<h2>Traits</h2>
+
+<p>Haskell suffers from an excess of magic. Typeclass methods can dispatch on the type of any argument (or on the return type!) but the types are usually inferred. Reading haskell code that overuses typeclasses may require running the inference algorithms in your head, which is difficult and error-prone. This can also lead to bugs when an edit in one place changes a type, causing a different instance to be silently selected somewhere else (Don Stewart warned against this in his <a href="http://code.haskell.org/~dons/talks/padl-keynote-2012-01-24.pdf">PADL keynote</a>).</p>
+
+<p>OCaml leans entirely the other way. Code is very readable and maintainable because all the information needed to follow the dispatch is written down explicitly. On the other hand, printing a simple data-structure can require chaining together multiple lines of functors to get to the correct function.</p>
+
+<p>Rust has very similar capabilities to haskell but (so far) abuses them less often. There are only a few cases so far where I felt lost in types &ndash; <a href="http://cyderize.github.io/rust-websocket/doc/websocket/index.html">rust-websocket</a> being the biggest offender.</p>
+
+<p>Traits have different syntax for the distinguished <code>self</code> argument and I never get it right. Nor am I totally sure what the tradeoffs are between having a <code>self</code> argument and not. You can put constraints directly on <code>self</code> but for other arguments you must use a <code>where</code> clause:</p>
+
+<p>``` rust
+trait Foo<B> {
+  fn foo(self, B)
+}</p>
+
+<p>fn do_stuff&lt;A: Foo<B>, B>(a: A, b: B) { .. }</p>
+
+<p>trait Foo&lt;A, B> {
+  fn(a: A, b: B)
+}</p>
+
+<p>fn do_stuff&lt;A,B>(a: A, b: B) where Foo&lt;A, B> { .. }
+```</p>
+
+<p>Some kinds of constraints <a href="https://github.com/rust-lang/rfcs/blob/master/text/0135-where.md">cannot be used in where clauses</a>, so I <em>believe</em> the former is strictly more powerful.</p>
+
+<p>It also affect associated types:</p>
+
+<p>``` rust
+fn next_path&lt;N: Iterator>(nibbles: &amp;mut N) &ndash;> u32 where <N as Iterator>::Item = u8</p>
+
+<p>fn next_path&lt;N: Iterator&lt;Item=u8>>(nibbles: &amp;mut N) &ndash;> u32
+```</p>
+
+<p>At the time I wrote that code, only the latter version worked. Which means that <code>Iterator</code> <em>has</em> to have chosen to use a self type for this function to be written. It looks like there may be cases where choosing the wrong argument to promote to <code>self</code> can prevent me from writing certain constraints?</p>
+
+<h2>Auto-deref</h2>
+
+<p>Self types are further privileged. Suppose we have:</p>
+
+<p>``` rust
+trait Foo {
+  fn foo(self);
+}</p>
+
+<p>x.foo()
+```</p>
+
+<p>If <code>x</code> implements <code>Foo</code> then life is simple. If <code>x</code> doesn&rsquo;t implement <code>Foo</code> but does implement <code>Deref</code> then the compiler will change the call to <code>x.deref().foo()</code>. This continues with <code>x.deref().deref().foo()</code> and so on until compiler finds a type that doesn&rsquo;t implement <code>Deref</code> or a type that does implement <code>Foo</code>. This is great ergonomically &ndash; it means you can call methods on a smart pointer as it were the pointed-at object. But it only works on the self argument &ndash; other arguments have to be manually deref-ed.</p>
+
+<p>Similarly, if a method is declared to take <code>&amp;self</code> or <code>&amp;mut self</code> the compiler will insert the appropriate borrow before making the call. <code>foo.bar()</code> could desugar to <code>bar(foo)</code> or <code>bar(&amp;foo)</code> or <code>bar(&amp;mut foo)</code> depending on the type of <code>bar</code>.</p>
+
+<p>Auto-deref and auto-borrow can interact unpleasantly with traits and inference. Here is a real example that totally confused me:</p>
+
+<p>``` rust
+let x = &ldquo;foo&rdquo;:
+print_type_of(x.to_owned()); // prints String</p>
+
+<p>let xs = vec![&ldquo;foo&rdquo;];
+for x in xs.into_iter() {
+  print_type_of(x.to_owned()); // prints String
+}</p>
+
+<p>let xs = vec![&ldquo;foo&rdquo;];
+for x in xs.iter() {
+  print_type_of(x.to_owned()); // prints &amp;str
+)
+```</p>
+
+<p>What&rsquo;s going on? The standard library has the following implementations:</p>
+
+<p>```
+impl ToOwned for str {
+  type Owned = String
+  &hellip;
+}</p>
+
+<p>impl<T> ToOwned for T where T: Clone {
+  type Owned = T
+  &hellip;
+}</p>
+
+<p>impl Clone for &amp;T
+```</p>
+
+<p>The type of <code>x</code> in the first two examples is <code>&amp;str</code> which auto-derefs to <code>str</code> and gets <code>Owned = String</code>. The type of <code>x</code> in the third example is <code>&amp;&amp;str</code> (because iter borrows elements of the vec). <code>&amp;str</code> implements <code>Clone</code> so <code>&amp;&amp;str</code> implements <code>ToOwned</code> directly and does not auto-deref to <code>str</code>.</p>
+
+<p>This is a risk for traits in general, but auto-deref exacerbates it by creating multiple types that might choose an instance. In this case it caused a type error but you can imagine cases where adding a new trait implementation silently changes the selected instance of a seemingly unrelated call in far away code. Very difficult for code review to catch.</p>
+
+<p>A similar mistake can happen if both the dereferenced type and the pointer type implement a method with the same name, but it looks like the standard library authors are aware of this and have stopped implementing methods directly on pointer types.</p>
+
+<h2>Learning curve</h2>
+
+<p>The borrow checker was initially huge impediment to productivity but I reached the break-even point around the second month. Ownership and borrowing have become intuitive and I no longer have to contort designs around them.</p>
+
+<p>Safety is an enormous productivity boon. I&rsquo;ve checked in a total of 10k lines of Rust code and written many more experiments that didn&rsquo;t make it to master, and in that time I haven&rsquo;t had a single segfault, nor any bugs caused by accidental mutation, aliasing, type errors or null pointers. The vast majority of typing mistakes are also caught at compile time (the exceptions being interactions with dynamically typed Eve data).</p>
+
+<p>Despite the restrictions of the type system, I am more productive in Rust than I am in either Javascript or Haskell. It manages somehow to hit a sweet spot between safety and ease of use.</p>
+
+<p>By far, the feature I miss most is interactive development. The <a href="https://github.com/murarth/rusti">repl</a> is only a thin layer over the compiler &ndash; it&rsquo;s equally slow and nukes all state between every eval. Adding interactivity to a language that wasn&rsquo;t designed for it is generally unsatisfying so this is not something that it likely to be fixed.</p>
+
+<h2>For Eve</h2>
+
+<p>One of the core values of Eve is radical simplicity, in the same vein as the <a href="http://www.vpri.org/pdf/tr2011004_steps11.pdf">STEPS</a> and <a href="http://boom.cs.berkeley.edu/">BOOM</a> projects. We have to make compromises if we want to ever ship, but sitting atop Rust, LLVM and possibly Emscripten feels like a pretty big compromise.</p>
+
+<p>The complexity in Rust exists to create a general-purpose systems language with an array of features and zero-cost abstractions that are incredibly useful for building large projects. But we aren&rsquo;t building a large project, by design, and we don&rsquo;t <em>need</em> most of the features.</p>
+
+<p>The only places where we absolutely need manual layout so far are for Eve data and indexes. Those are nicely self-contained &ndash; no pointers to the outside world &ndash; and have a well-defined life-cycle. I wonder how far we could get with an approach like <a href="http://terralang.org/">Terra</a>, writing the core data-structures and algorithms in some scary unsafe language and interact with them safely from a managed language. With a staged approach we could build just the safety mechanisms that we need and avoid carrying around the complexity of the rest. Javascript seems to have all the features needed to make this kind of approach work but it doesn&rsquo;t have the tools needed to make it bearable. Creating one programming language is hard enough &ndash; we probably shouldn&rsquo;t start on another.</p>
+
+<p>Regardless, Rust is an incredible language in general. Even if we end up using something else for Eve, I can see myself using Rust for other projects where I care about performance, safety or reliability.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Scaling down]]></title>
@@ -342,377 +713,6 @@ LightTable cljs/lunch_app/core.cljs # client side, connect to web repl
 <p>We will dive into these in more detail in the coming months.</p>
 
 <p>None of this will be at all easy, but it&rsquo;s no harder than continuing what we are doing now and much of the groundwork has already been laid if you know where to look. If one thing is certain, it is that the future is not 80 characters wide.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Local state is harmful]]></title>
-    <link href="http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/"/>
-    <updated>2014-02-17T05:02:00-08:00</updated>
-    <id>http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful</id>
-    <content type="html"><![CDATA[<p>Don&rsquo;t lynch me just yet :)</p>
-
-<!--more-->
-
-
-<p>Picture a tradiional webapp. We have a number of stateless workers connected to a stateful, relational database. This is a setup with a number of excellent properties:</p>
-
-<ul>
-<li>All state can be queried using a uniform api &ndash; SQL. This enables flexible ad-hoc exploration of the application state as well as generic UIs like <a href="https://docs.djangoproject.com/en/dev/ref/contrib/admin/">django admin</a></li>
-<li>Every item of state has a unique and predictable name by which it can be identified &ndash; a unique key in the table.</li>
-<li>Access to state can be restricted and controlled. Transactions prevent different workers from interfering with each other. ACLs allow giving individual workers access to only the information they need to limit the scope of mistakes.</li>
-<li>Changes to state can be monitored. Tailing the transaction log is an effective way to stream to a backup server or to debug errors that occurred in production. One can reconstuct the state of the database at any time.</li>
-<li>State is separate from code. You can change client code, rename all your classes or restart workers on the fly and the state in the database will be unharmed.</li>
-</ul>
-
-
-<p>The database state is also pervasive, mutable and <em>global</em>.</p>
-
-<p>Now let&rsquo;s zoom in and look at our imperative, object-oriented workers:</p>
-
-<ul>
-<li>State is encapuslated in objects and hidden behind an ad-hoc collection of methods.</li>
-<li>Objects are effectively named only by their location in the (cyclic, directed) object graph or their position in memory.</li>
-<li>Access to state can be restricted and controlled through encapsulation. Concurrent modifications are a constant source of bugs. Access control is adhoc and transitive &ndash; if you can walk the object graph to an object you can access it.</li>
-<li>Changes to state are usually monitored via adhoc methods such as manually inserting debug statements. Approximating history by watching debug statements and reconstructing state in ones head is the normal method of debugging.</li>
-<li>State is entangled with code. Portable serialization is difficult. Live-coding works to some extent but requires reasoning about the interaction of state and code (eg in js redefining a function does not modify old instances that may still be hanging around in data structures or in callbacks)</li>
-</ul>
-
-
-<p>Functional programmers need not look so smug at this point. The Haskell/OCaml family struggles to redefine types at runtime or handle live data migrations (the declaration of a nominal type is a side-effect in a live language). Clojure does better on these points but still gets burned by nominal types (eg extend a deftype/defrecord and the reeval the definition) and more generally by treating the definition of new code as mutation of state (which has to be papered over by <a href="https://github.com/clojure/tools.namespace/">tools.namespace</a>).</p>
-
-<p>Why are these points important? We spend most of our time not writing code but <em>reasoning about code</em>, whether hunting for bugs, refactoring old code or trying to extend a module. We end up with questions like:</p>
-
-<ul>
-<li>When did this state change?</li>
-<li>What caused it to change?</li>
-<li>Did this invariant ever break?</li>
-<li>How did this output get here?</li>
-</ul>
-
-
-<p>How do we answer these questions?</p>
-
-<p>In the database we have a transaction log containing for each transaction: the queries involved, the commit time, the client name etc. We can write code that specifies the condition we are interested in via an sql query, locates the relevant transactions by running through the log and then recreates the state of the database at that point. This works even if the error happened elsewhere &ndash; just have the user ship you their transaction log.</p>
-
-<p>In the worker, we have two familiar workhorses:</p>
-
-<ul>
-<li>Manually add print statements, recompile the code, try to recreate the conditions we are interested in and then reconstruct the causality by reading the printed statements</li>
-<li>Add a breakpoint in the debugger, try to recreate the conditions we are interested in and then step through the code line by line</li>
-</ul>
-
-
-<p>What these two have in common is that they are both achingly <em>manual</em>. There is no easy way to automate the process. There are no libraries full of debugging strategies that you can deploy. The questions we have are about time and causality but our current tools restrict us to looking at tiny slices of space (print statements) or time (debuggers) and offer no way to automate our actions.</p>
-
-<p>I propose that if we were to manage state more like a database and less like a traditional imperative language then understanding and debugging programs would become easier. As is traditional, I aim to convince the reader by the use of an unrealistically simple example.</p>
-
-<h2>Counting sheep</h2>
-
-<p>As everyone knows the main purpose of advanced technology has always been to help us <a href="http://sl4.org/wiki/TheSimpleTruth">count our sheep</a>. At the dawn of time this was very simple.</p>
-
-<p>``` clj
-(def count (atom 0))</p>
-
-<p>(defn inc! []
-  (swap! count + 1))</p>
-
-<p>(defn dec! []
-  (swap! count &ndash; 1))</p>
-
-<p>(defn run-counter [port]
-  (let [socket (open port)]</p>
-
-<pre><code>(while true
-  (case (receive-message socket)
-    :sheep-in (inc!)
-    :sheep-out (dec!)))))
-</code></pre>
-
-<p>(run-counter 1081)
-```</p>
-
-<p>But as civilisation advanced so too did the demands on technology. With newfound riches came multiple pens of sheep. People soon realised that the trusty old global variable had a crucial flaw &ndash; it was not reentrant. Having been burned by mutable state they decided to keep it under lock and guard.</p>
-
-<p>``` clj
-(defn make-counter []
-  (let [count (atom 0)]</p>
-
-<pre><code>{:inc! (swap! count + 1)
- :dec! (swap! count - 1)}))
-</code></pre>
-
-<p>(defn run-counter [port]
-  (let [socket (open port)</p>
-
-<pre><code>    {:keys [inc! dec!]} (make-counter)]
-(while true
-  (case (receive-message socket)
-    :sheep-in (inc!)
-    :sheep-out (dec!)))))
-</code></pre>
-
-<p>(run-counter 1081)
-(run-counter 1082)
-```</p>
-
-<p>Later programmers were a more trusting bunch and left their data unprotected, but still hidden.</p>
-
-<p>``` clj
-(defn run-counter [port]
-  (let [socket (open port)</p>
-
-<pre><code>    count (atom 0)]
-(while true
-  (case (receive-message socket)
-    :sheep-in (swap! count + 1)
-    :sheep-out (swap! count - 1)))))
-</code></pre>
-
-<p>(run-counter 1081)
-(run-counter 1082)
-```</p>
-
-<p>It took thousands of years of progress before anyone asked the crucial question: &ldquo;So how many sheep do we actually have?&rdquo;. The guardian of the count was reluctant to give up this delicate information, having been lectured all its life about the importance of data hiding. The only solution was torture.</p>
-
-<p>``` clj
-(defn run-counter [port]
-  (let [socket (open port)</p>
-
-<pre><code>    count (atom 0)]
-(while true
-  (case (receive-message socket)
-    :sheep-in (swap! count + 1)
-    :sheep-out (swap! count - 1)
-    :how-many-sheep (send-message socket [@count :sheep])))))
-</code></pre>
-
-<p>(run-counter 1081)
-(run-counter 1082)
-```</p>
-
-<p>In erlang they still hold to these cruel and brutal traditions.</p>
-
-<p>Let&rsquo;s try something different. We can separate state from code and allow uniform access to all application state. We just have to carefully control access to that state.</p>
-
-<p>``` clj
-;; in the code</p>
-
-<p>(defn run-counter [port count]
-  (let [socket (open port)]</p>
-
-<pre><code>(while true
-  (case (receive-message socket)
-    :sheep-in (swap! count + 1)
-    :sheep-out (swap! count - 1)))))
-</code></pre>
-
-<p>;; in the repl</p>
-
-<p>(def state
-  {:count-a (atom 0)
-   :count-b (atom 0)})</p>
-
-<p>(run-counter 1081 (state :count-a))
-(run-counter 1082 (state :count-b))</p>
-
-<p>@(state :count-a) ;; check the number of sheep</p>
-
-<p>(run-counter 1083 (state :count-a)) ;; share sheep with 1081
-```</p>
-
-<p>This is a kind of pseudo-global state. We can easily examine any application state in the repl but functions can only modify state this is passed to them directly. All we need now is to monitor changes to the state.</p>
-
-<p>``` clj
-(defn run-counter [port count]
-  (let [socket (open port)]</p>
-
-<pre><code>(while true
-  (case (receive-message socket)
-    :sheep-in (swap! count + 1)
-    :sheep-out (swap! count - 1)))))
-</code></pre>
-
-<p>(def state
-  (atom {:count-a 0</p>
-
-<pre><code>     :count-b 0}))
-</code></pre>
-
-<p>(run-counter 1081 (subatom state :count-a))
-(run-counter 1082 (subatom state :count-b))
-```</p>
-
-<p><code>subatom</code> is not a clojure function, but it shows up regularly in clojure libraries (eg my <a href="https://github.com/jamii/bigatom">bigatom</a> is a simple, self-contained implementation). All it does is create a view on the original atom. This approximates a mutable tree while still allowing immutable snapshots.</p>
-
-<p>``` clj
-(def x (atom {:foo {:bar 0}}))</p>
-
-<p>(def y (subatom x :foo :bar))</p>
-
-<p>@y ;; => 0</p>
-
-<p>(swap! y inc) ;; => 1</p>
-
-<p>@x ;; => {:foo {:bar 1}}
-```</p>
-
-<p>Now we can record changes and explore them programatically. Suppose that sheep pen 1082 is actually inside sheep pen 1081. If everything is working correctly, we should have the invariant <code>(&gt; (:count-a @state) (:count-b @state))</code>. Most of the time this is indeed the case, but once in a blue moon an unhappy customer reports that the invariant is broken.</p>
-
-<p>Luckily, as modern programmers we can simply query the clients state history to find out what happened.</p>
-
-<p>``` clj
-(def history
-  (atom [[(time) @state]]))</p>
-
-<p>(add-watch state history (fn [_ _ new-state] (swap! history conj [(time) new-state])))</p>
-
-<p>(drop-while
-  (fn [[time state]]</p>
-
-<pre><code>(&gt; (:count-a state) (:count-b state)))
-</code></pre>
-
-<p>  @history)
-```</p>
-
-<p>This is a trivial example, but this kind of ability to debug programmatically is potentially very valuable.</p>
-
-<h2>Real world use</h2>
-
-<p>Removing hidden state does not have to be a binary change. The more you move in that direction the more of the benefits you will gain.</p>
-
-<p>The project that convinced me was a prototype betting exchange written in clojure. Although I relied on mutable collections (and thus lost the ablity to record history easily) I used <a href="https://github.com/prismatic/plumbing">Graph</a> to wire components together.</p>
-
-<p>``` clj
-(def log
-  {:stream (fnk [log-file] (java.io.FileOutputStream. log-file))
-   :channel (fnk [stream] (.getChannel stream))
-   :writer (fnk [stream] (clojure.java.io/writer stream))})</p>
-
-<p>(def server
-  {:log log
-   :queue (fnk [batch-size] (java.util.concurrent.ArrayBlockingQueue. batch-size))
-   :server (fnk [queue frame port] (network/receive-events queue frame port))
-   :state (fnk [init-state] (atom init-state))
-   :persistor (fnk [state queue [:log channel writer] handler batch-size]</p>
-
-<pre><code>               (future-loop (persistence/handle-events state queue channel writer handler batch-size)))})
-</code></pre>
-
-<p>(defnk client [frame port]
-  (lamina/wait-for-result (tcp/tcp-client {:host &ldquo;localhost&rdquo; :port port :frame frame})))</p>
-
-<p>;; wiring for throughput test
-(def load
-  {:client client
-   :send-count (fnk [] (atom 0))
-   :recv-count load/recv-count
-   :counter (fnk [recv-count] (future (load/counter-loop recv-count @recv-count)))
-   :loader (fnk [client send-count recv-count rate-limit]</p>
-
-<pre><code>            (future (load/loader-loop client send-count recv-count rate-limit)))})
-</code></pre>
-
-<p>;; wiring for latency test
-(def measure
-  {:client client
-   :measurer (fnk [client] (future (load/measurer-loop client)))})
-```</p>
-
-<p>With explicit names for all state, dependency injection is easy. When I start a component I can swap out the network implementation for testing or compare different implementations of the event handler etc.</p>
-
-<p>``` clj
-  (def s ((graph/eager-compile server)</p>
-
-<pre><code>      {:port 19997
-       :frame etf-frame
-       :init-state load/init-state
-       :handler exchange/handle-event
-       :log-file "test-out"
-       :batch-size 1000}))
-</code></pre>
-
-<p>```</p>
-
-<p>Creating a component returns a nested map of all the state in all the subcomponenets. I can poke around inside the state whilst debugging. A little snippet I often used polls the queue size and prints to the console whenever it is full.</p>
-
-<p>``` clj
-(future
-  (while true</p>
-
-<pre><code>(when (&gt;= (.size (:queue s)) (:batch-size s))
-  (println "Full at" (time)))))
-</code></pre>
-
-<p>```</p>
-
-<p>Uniform access to all state makes it easy to write generic functions to eg view the entire object graph or shutdown every component.</p>
-
-<p>```
-(defprotocol Poke
-  (poke [this]))</p>
-
-<p>(extend-protocol Poke
-  java.util.concurrent.Future
-  (poke [this] (deref this 0 :pending-future))
-  clojure.lang.Atom
-  (poke [this] @this))</p>
-
-<p>(defn poke-all [form]
-  (if (satisfies? Poke form)</p>
-
-<pre><code>(walk identity poke-all (poke form))
-(walk identity poke-all form)))
-</code></pre>
-
-<p>(defprotocol Kill
-  (kill [this]))</p>
-
-<p>(extend-protocol Kill
-  clojure.lang.Fn
-  (kill [this] (this))
-  java.util.concurrent.Future
-  (kill [this] (future-cancel this)))</p>
-
-<p>(defn kill-all [form]
-  (walk #(if (satisfies? Kill %) (kill %) %) kill-all form))
-```</p>
-
-<p>The difference in productivity compared to the old actor-based version was incredible.</p>
-
-<h2>Examples</h2>
-
-<p><a href="http://boom.cs.berkeley.edu/">Overlog</a> makes use of this idea by reflecting many runtime events into in-process tables. My favourite <a href="http://db.cs.berkeley.edu/papers/eurosys10-boom.pdf">paper</a> describes using streaming queries on these tables for programmable profiling, monitoring and even distributed debugging.</p>
-
-<p><a href="https://github.com/swannodette/om">Om</a> uses cursors similarly to the way I use subatoms here, to manage relative names within the state tree. David Nolen&rsquo;s <a href="http://swannodette.github.io/">blog</a> has some excellent examples of using this global state to enable application-wide undo and syncing state without modifying application code.</p>
-
-<p>The <a href="http://facebook.github.io/react/blog/2014/01/02/react-chrome-developer-tools.html">React devtools</a> allow you to click on an element on the page and display the state of the component that created that element.  A trivial extension in Om would be to display the past states and for each state change show the event and handler that caused that change. Together with the ability to programmatically access state and history this could lead to a beautiful debugging experience.</p>
-
-<p>&ldquo;Why is this box here? Ah, it comes from component Foo. The state of component Foo is messed up. When did that happen? Ah, it was caused by event handler Bar firing with these arguments.&rdquo; How long would that same chain of reasoning take you with println debugging? In a language with tighter tool integration it should be possible to just directly drop into the debugger at that point in history and replay the events.</p>
-
-<h2>Summary</h2>
-
-<p>Interaction with running programs (live coding, debugging, monitoring, hot code reloading etc) is greatly aided by several design principles:</p>
-
-<ul>
-<li>All state can be queried using some uniform api.</li>
-<li>Every item of state has a unique and predictable name by which it can be identified.</li>
-<li>Access to state can be restricted and controlled.</li>
-<li>Changes to state can be monitored.</li>
-<li>State is separate from code.</li>
-</ul>
-
-
-<p>These principles are well understood in database systems and in ops in general.</p>
-
-<p>The same principles are not applied in the small by most programmers and are not encouraged by most languages.</p>
-
-<p>Several examples exist of using these principles to quickly produce simple, powerful programs.</p>
-
-<p>Most of our questions about code are questions about time, state and causality. Our existing tools do not lend much support in answering those questions. Following these principles makes it easier to develop better tools.</p>
-
-<p>I would also speculate that a large part of the <a href="http://www.youtube.com/watch?v=ayPD0U_FO4Y">frustration</a> that people experience with computers is a result of opaque abstractions which prevent users from being able to connect cause and effect when the machine misbehaves.</p>
 ]]></content>
   </entry>
   
