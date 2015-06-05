@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-06-05T00:08:49-07:00</updated>
+  <updated>2015-06-05T00:38:00-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -308,8 +308,6 @@
 
 <p>Doesn&rsquo;t matter that much. I got used to it.</p>
 
-<p>There is a hint of object-orientation in that one can write <code>foo.bar(x, y, z)</code> and it desugars to something like <code>bar(foo, x, y, z)</code>. If it was only sugar I would be happy enough, but it also has non-trivial interactions with namespaces, trait dispatch, auto-deref and auto-borrow which I will go into below. There is a whole pile of intertwined design decisions here that have been made for totally valid ergonomic reasons but give rise to some interactions that make me nervous.</p>
-
 <h2>Namespaces</h2>
 
 <p>There are effectively three kinds of namespaces.</p>
@@ -407,7 +405,7 @@
 
 <h2>Auto-deref</h2>
 
-<p>Self types are further privileged. Suppose we have:</p>
+<p>Method calls are not as simple as they look at first. Suppose we have:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
