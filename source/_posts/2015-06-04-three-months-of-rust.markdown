@@ -262,33 +262,7 @@ OCaml leans entirely the other way. Code is very readable and maintainable becau
 
 Rust has very similar capabilities to haskell but (so far) abuses them less often. There are only a few cases so far where I felt lost in types - [rust-websocket](http://cyderize.github.io/rust-websocket/doc/websocket/index.html) being the biggest offender.
 
-Traits have different syntax for the distinguished `self` argument and I never get it right. Nor am I totally sure what the tradeoffs are between having a `self` argument and not. You can put constraints directly on `self` but for other arguments you must use a `where` clause:
-
-``` rust
-trait Foo<B> {
-  fn foo(self, B)
-}
-
-fn do_stuff<A: Foo<B>, B>(a: A, b: B) { .. }
-
-trait Foo<A, B> {
-  fn(a: A, b: B)
-}
-
-fn do_stuff<A,B>(a: A, b: B) where Foo<A, B> { .. }
-```
-
-Some kinds of constraints [cannot be used in where clauses](https://github.com/rust-lang/rfcs/blob/master/text/0135-where.md), so I *believe* the former is strictly more powerful.
-
-It also affect associated types:
-
-``` rust
-fn next_path<N: Iterator>(nibbles: &mut N) -> u32 where <N as Iterator>::Item = u8
-
-fn next_path<N: Iterator<Item=u8>>(nibbles: &mut N) -> u32
-```
-
-At the time I wrote that code, only the latter version worked. Which means that `Iterator` *has* to have chosen to use a self type for this function to be written. It looks like there may be cases where choosing the wrong argument to promote to `self` can prevent me from writing certain constraints?
+EDIT The section here on constraints was completely wrong and has been removed - see the [discussion](https://news.ycombinator.com/item?id=9664017) that corrected me.
 
 ## Auto-deref
 
