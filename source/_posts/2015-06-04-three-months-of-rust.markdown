@@ -16,9 +16,9 @@ C can run in the browser via Emscripten but the available evidence suggests that
 
 Rust is an unknown. It provides control over memory layout, has a community with a strong focus on safety and *may* support Emscripten in the future. It also promises a minimum of [footguns](http://www.urbandictionary.com/define.php?term=footgun&defid=7493319), which is an attractive feature after many months of javascript and ArrayBuffers. Our initial experiments were promising, so we decided that in the next version of Eve we would write the query planner and runtime in Rust.
 
-There are a number of things that made this much less risky than it sounds. First, the query planner is on the way to being bootstrapped and the remaining runtime is only a few thousand lines of code. Most of the development time is spent experimenting with different language semantics and evaluation strategies, rather than building up a large codebase that would tie us to Rust. Second, we have two escape hatches if Rust doesn't work out. We can use the FFI to gradually port components to C, or we can use the websocket interface to the editor to gradually port components to javascript.
-
 ("You should look at language X!". We did, and then we decided to use Rust. We can still be friends.)
+
+There are a number of things that made this much less risky than it sounds. First, the query planner is on the way to being bootstrapped and the remaining runtime is only a few thousand lines of code. Most of the development time is spent experimenting with different language semantics and evaluation strategies, rather than building up a large codebase that would tie us to Rust. Second, we have two escape hatches if Rust doesn't work out. We can use the FFI to gradually port components to C, or we can use the websocket interface to the editor to gradually port components to javascript.
 
 So here is what I think after three months of working with Rust full-time. TLDR: mostly impressive, a few worrying quirks, probably the best option for us right now.
 
