@@ -39,7 +39,7 @@ What actually constitutes a reward probably varies from person to person. For so
 
 ## Lack of a plan
 
-There are lot of ways my momentum can break down: I can't figure out how to solve some problem, I can't decide what to do, I don't know where to start etc. What they all have in common is that nothing is happening, there is no clear next step and I just wallow in the quicksand of indecision. The way I've learnt to deal with this is to have pre-planned procedures that get triggered when I notice one of those failure modes.
+There are lot of ways my momentum can break down: I can't figure out how to solve some problem, I can't decide what to do, I don't know where to start etc. What they all have in common is that nothing is happening, there is no clear next step and I just wallow in the quicksand of indecision. This can go on for weeks. The way I've learnt to deal with this is to have pre-planned procedures that get triggered when I notice one of those failure modes.
 
 If I can't figure out how to solve some problem:
 
