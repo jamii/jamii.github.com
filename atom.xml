@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-06-05T00:38:00-07:00</updated>
+  <updated>2015-09-22T22:12:29-07:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,88 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Motivating the monkey]]></title>
+    <link href="http://scattered-thoughts.net/blog/2015/09/22/motivating-the-monkey/"/>
+    <updated>2015-09-22T22:00:00-07:00</updated>
+    <id>http://scattered-thoughts.net/blog/2015/09/22/motivating-the-monkey</id>
+    <content type="html"><![CDATA[<p>I struggle a lot with motivation. This is probably not an unfamiliar story &ndash; there is some exciting project I want to work on but every time I try to get started my mind just shies away and reaches for the reddit refresh button.</p>
+
+<p>There is a lot of advice on the subject. Some of the advice is basic sanity maintenance like getting regular exercise, nurturing your social life, eating healthily and taking time out. This is sensible advice. Other advice revolves around shoring up motivation through blocking websites, setting timers, tracking goals etc. I find this kind of advice unhelpful.</p>
+
+<p>The reason it&rsquo;s unhelpful is that procrastination is fundamentally a <a href="http://mindingourway.com/not-yet-gods/">monkey-brain</a> problem and that these are all human-brain solutions &ndash; bandaids over a gaping wound.</p>
+
+<p>Rather than wrestle with willpower I&rsquo;ve found it much more useful to directly attack the underlying problems. The two main problems that I suffer from are lack of rewards and lack of a plan.</p>
+
+<h2>Lack of rewards</h2>
+
+<p>Not big rewards, like a meaningful project or high status or good salary or lots of perks. The monkey-brain is not into complex cause-effect chains or long-term consequences. It only cares about here and now. If every time I look at an editor I feel stressed and tired and nothing pleasant happens <em>immediately afterwards</em> then the monkey-brain will just refuse to look at the editor anymore. Procrastination sets in.</p>
+
+<p>Some projects are easy to sell to the monkey-brain. If I&rsquo;m doing optimisation work then I get to run benchmarks. Sometimes I run a benchmark and the numbers have gotten bigger! Monkey-brain is really into frequent, unpredictable rewards so it lets me work on optimisation for hours on end without needing distraction.</p>
+
+<p>Other projects just need better planning. A common trap I used to fall into was to start a project where the todo list looks like:</p>
+
+<ul>
+<li>Do hard thing A</li>
+<li>Do hard thing B</li>
+<li>&hellip;</li>
+<li>Do hard thing Y</li>
+<li>Do hard thing Z</li>
+<li>Shiny exciting results!</li>
+</ul>
+
+
+<p>Usually I make it as far as hard thing C before the monkey-brain decides that this sucks and we should go eat icecream instead.</p>
+
+<p>These days when I plan projects I try to front-load the shiny. For example, when working on Imp I could have broken up the work by subsystem: write the runtime, write the compiler, write the parser, write the repl. But the exciting, motivating part is getting to play with the repl and that wouldn&rsquo;t have happened until right at the end. Instead I broke it up by feature: get inputs working, get joins working, get functions working etc so that every chunk of work results in a new toys to play with.</p>
+
+<p>Some projects really are just a grind and the only way to avoid burnout is to mix in other rewards. If I have to spend weeks refactoring some gnarly legacy code, I will also take time out to work on little projects that I can finish easily, just to make sure that the monkey-brain doesn&rsquo;t get the impression that programming sucks in general.</p>
+
+<p>What actually constitutes a reward probably varies from person to person. For some people, the satisfaction of seeing clean code checked in or a suite of tests passing might be enough. For me, the only reliable rewards are numbers getting bigger or new toys to play with, so I have to make sure that those happen.</p>
+
+<h2>Lack of a plan</h2>
+
+<p>There are lot of ways my momentum can break down: I can&rsquo;t figure out how to solve some problem, I can&rsquo;t decide what to do, I don&rsquo;t know where to start etc. What they all have in common is that nothing is happening, there is no clear next step and I just wallow in the quicksand of indecision. The way I&rsquo;ve learnt to deal with this is to have pre-planned procedures that get triggered when I notice one of those failure modes.</p>
+
+<p>If I can&rsquo;t figure out how to solve some problem:</p>
+
+<ul>
+<li>Write down the problem in as much detail as possible.</li>
+<li>Write down what exactly would constitute a solution.</li>
+<li>Write down why I need to solve this problem and why I can&rsquo;t just do something simpler.</li>
+<li>Write down a list of examples and try to solve each one by hand.</li>
+<li>Write down any problems other people have solved that seem related. See if the solutions can be adapted.</li>
+<li>Write down problems that are similar but easier. Try to solve those.</li>
+<li>Open up <a href="http://www.amazon.com/How-Solve-It-Mathematical-Princeton/dp/069111966X">How To Solve It</a> and try each of the heuristics.</li>
+<li>Explain all of the above to someone else.</li>
+</ul>
+
+
+<p>If I can&rsquo;t decide what to do:</p>
+
+<ul>
+<li>Write down the problem.</li>
+<li>Write down the criteria by which I should judge each option.</li>
+<li>Write down all the options I can think of.</li>
+<li>Write down the pros and cons of each.</li>
+<li>If possible, go do something else instead.</li>
+<li>Otherwise, start a 30 minute timer and at the end pick the least bad option still on the list.</li>
+</ul>
+
+
+<p>If I don&rsquo;t know where to start:</p>
+
+<ul>
+<li>List all the things that need to happen, in time order.</li>
+<li>If the first thing on the list is something I can do, do it.</li>
+<li>Otherwise, take the first thing on the list and break it down into smaller steps.</li>
+</ul>
+
+
+<p>The key thing about all of these is that they generate momentum. As long as I am systematically attacking a problem I will get somewhere. The failure mode to avoid is just circling around on the same thoughts again and again until the monkey-brain freaks out about the lack of progress and calls for icecream and cat videos.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Three months of Rust]]></title>
@@ -4011,343 +4093,6 @@ take another pass at this next year.</p></blockquote>
 
 
 <p>This eliminates the annoyingly noticeable gc pauses.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Optimising texsearch]]></title>
-    <link href="http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/"/>
-    <updated>2010-12-08T06:16:00-08:00</updated>
-    <id>http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/texsearch">Texsearch</a> is a search engine for LaTeX formulae. It forms part of the backend for <a href="http://latexsearch.com">latexsearch.com</a> which indexes the entire Springer corpus. It is also crazy slow, until today.</p>
-
-<!--more-->
-
-
-<p>Intuitively, when searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.</p>
-
-<p>Texsearch uses <a href="http://plastex.sourceforge.net/">PlasTeX</a> to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2<sup>63</sup> possible elements.</p>
-
-<p>At the core of texsearch is a search algorithm which performs approximate searches over the search corpus. Specifically, given a search term S and a search radius R we want to return all corpus terms T such that the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> between S and some substring of T is less than R. This is a common problem in bioinformatics and NLP and there is a <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.7225&amp;rep=rep1&amp;type=pdf">substantial amount of research</a> on how to solve this efficiently. I have been through a range of different algorithms in previous iterations of texsearch and have only recently achieved reasonable performance (mean search time is now ~300ms for a corpus of 1.5m documents). The code is available <a href="https://github.com/jamii/texsearch">here</a>.</p>
-
-<p>We define the distance from latexL to latexR as the minimum Levenshtein distance between latexL and any substring of latexR. With this definition we can specify the results of the search algorithm more simply as returning all corpus terms with distance R of S.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">distance</span> <span class="n">latexL</span> <span class="n">latexR</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">maxl</span><span class="o">,</span> <span class="n">maxr</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">latexL</span><span class="o">,</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">latexR</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">maxl</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span>
-</span><span class='line'>  <span class="k">if</span> <span class="n">maxr</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">maxl</span> <span class="k">else</span>
-</span><span class='line'>  <span class="c">(* cache.(l).(r) is the distance between latexL[l to maxl] and latexR[r to maxr] *)</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">cache</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make_matrix</span> <span class="o">(</span><span class="n">maxl</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">(</span><span class="n">maxr</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="mi">0</span> <span class="k">in</span>
-</span><span class='line'>  <span class="c">(* Must match everything on the left *)</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="o">=</span> <span class="n">maxl</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">maxr</span><span class="o">)</span> <span class="o">&lt;-</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">maxr</span><span class="o">)</span>
-</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="c">(* General matching *)</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">l</span> <span class="o">=</span> <span class="n">maxl</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">1</span> <span class="k">do</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">r</span> <span class="o">=</span> <span class="n">maxr</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
-</span><span class='line'>      <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">r</span><span class="o">)</span> <span class="o">&lt;-</span>
-</span><span class='line'>          <span class="n">minimum</span>
-</span><span class='line'>            <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>            <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">))</span>
-</span><span class='line'>            <span class="o">((</span><span class="n">abs</span> <span class="o">(</span><span class="n">compare</span> <span class="n">latexL</span><span class="o">.(</span><span class="n">l</span><span class="o">)</span> <span class="n">latexR</span><span class="o">.(</span><span class="n">r</span><span class="o">)))</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="n">l</span><span class="o">+</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>  <span class="k">done</span> <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="c">(* Non-matches on the right dont count until left starts matching *)</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">r</span> <span class="o">=</span> <span class="n">maxr</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">downto</span> <span class="mi">0</span> <span class="k">do</span>
-</span><span class='line'>    <span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="n">r</span><span class="o">)</span> <span class="o">&lt;-</span>
-</span><span class='line'>        <span class="n">minimum</span>
-</span><span class='line'>          <span class="o">(</span><span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>          <span class="o">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">))</span>
-</span><span class='line'>          <span class="o">((</span><span class="n">abs</span> <span class="o">(</span><span class="n">compare</span> <span class="n">latexL</span><span class="o">.(</span><span class="mi">0</span><span class="o">)</span> <span class="n">latexR</span><span class="o">.(</span><span class="n">r</span><span class="o">)))</span> <span class="o">+</span> <span class="n">cache</span><span class="o">.(</span><span class="mi">1</span><span class="o">).(</span><span class="n">r</span><span class="o">+</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>  <span class="k">done</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">cache</span><span class="o">.(</span><span class="mi">0</span><span class="o">).(</span><span class="mi">0</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The search algorithm is built around a <a href="http://en.wikipedia.org/wiki/Suffix_array">suffix array</a> presenting the following interface:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">val</span> <span class="n">create</span> <span class="o">:</span> <span class="kt">unit</span> <span class="o">-&gt;</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span>
-</span><span class='line'><span class="k">val</span> <span class="n">add</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
-</span><span class='line'><span class="k">val</span> <span class="n">prepare</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">val</span> <span class="n">delete</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="kt">unit</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">val</span> <span class="n">find_exact</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
-</span><span class='line'><span class="k">val</span> <span class="n">find_approx</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">float</span> <span class="o">-&gt;</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
-</span><span class='line'><span class="k">val</span> <span class="n">find_query</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="kt">float</span> <span class="o">-&gt;</span> <span class="nn">Query</span><span class="p">.</span><span class="n">t</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="kt">int</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span><span class="o">)</span> <span class="kt">list</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers &ndash; the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">id</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'><span class="k">type</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="n">id</span> <span class="o">*</span> <span class="n">pos</span><span class="o">)</span> <span class="kt">array</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">create</span> <span class="bp">()</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">create</span> <span class="bp">()</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">next_id</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="o">;</span> <span class="kt">array</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make</span> <span class="mi">0</span> <span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">unsorted</span> <span class="o">=</span> <span class="bp">[]</span><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The suffix array is built in a completely naive way. We just throw all the suffixes into a list and sort it. There are much more efficient methods known but this is fast enough, especially since we do updates offline. The building is separated into two functions to make incremental updates easier.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">add</span> <span class="n">sa</span> <span class="n">latexs</span> <span class="o">=</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="o">&lt;-</span> <span class="n">latexs</span> <span class="o">@</span> <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">insert</span> <span class="n">sa</span> <span class="o">(</span><span class="n">opaque</span><span class="o">,</span> <span class="n">latex</span><span class="o">)</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">id</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="n">next_id</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">next_id</span> <span class="o">&lt;-</span> <span class="n">id</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">DynArray</span><span class="p">.</span><span class="n">add</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">opaque</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">DynArray</span><span class="p">.</span><span class="n">add</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">latex</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">id</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">prepare</span> <span class="n">sa</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="n">insert</span> <span class="n">sa</span><span class="o">)</span> <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">new_suffixes</span> <span class="o">=</span> <span class="nn">Util</span><span class="p">.</span><span class="n">concat_map</span> <span class="o">(</span><span class="n">suffixes</span> <span class="n">sa</span><span class="o">)</span> <span class="n">ids</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">cmp</span> <span class="o">=</span> <span class="n">compare_suffix</span> <span class="n">sa</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="kt">array</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">of_list</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">merge</span> <span class="n">cmp</span> <span class="o">(</span><span class="nn">List</span><span class="p">.</span><span class="n">fast_sort</span> <span class="n">cmp</span> <span class="n">new_suffixes</span><span class="o">)</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">to_list</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">))</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="n">unsorted</span> <span class="o">&lt;-</span> <span class="bp">[]</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="kt">array</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in gather_exact (better name, anyone?), where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then find_exact runs through the HashSet and looks up the matching opaques.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="c">(* binary search *)</span>
-</span><span class='line'><span class="k">let</span> <span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="c">(* find beginning of region *)</span>
-</span><span class='line'>  <span class="c">(* lo &lt; latex *)</span>
-</span><span class='line'>  <span class="c">(* hi &gt;= latex *)</span>
-</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">narrow</span> <span class="n">lo</span> <span class="n">hi</span> <span class="o">=</span>
-</span><span class='line'>    <span class="k">let</span> <span class="n">mid</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">+</span> <span class="o">((</span><span class="n">hi</span><span class="o">-</span><span class="n">lo</span><span class="o">)</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span> <span class="k">then</span> <span class="n">hi</span> <span class="k">else</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">leq</span> <span class="n">sa</span> <span class="n">latex</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">.(</span><span class="n">mid</span><span class="o">)</span>
-</span><span class='line'>    <span class="k">then</span> <span class="n">narrow</span> <span class="n">lo</span> <span class="n">mid</span>
-</span><span class='line'>    <span class="k">else</span> <span class="n">narrow</span> <span class="n">mid</span> <span class="n">hi</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">n</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">length</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="k">rec</span> <span class="n">traverse</span> <span class="n">index</span> <span class="o">=</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="n">n</span> <span class="k">then</span> <span class="bp">()</span> <span class="k">else</span>
-</span><span class='line'>    <span class="k">let</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span> <span class="o">=</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">.(</span><span class="n">index</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">is_prefix</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span>
-</span><span class='line'>    <span class="k">then</span>
-</span><span class='line'>      <span class="k">begin</span>
-</span><span class='line'>  <span class="nn">Hashset</span><span class="p">.</span><span class="n">add</span> <span class="n">ids</span> <span class="n">id</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">traverse</span> <span class="o">(</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="o">)</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">else</span> <span class="bp">()</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">traverse</span> <span class="o">(</span><span class="n">narrow</span> <span class="o">(-</span><span class="mi">1</span><span class="o">)</span> <span class="o">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">exact_match</span> <span class="n">sa</span> <span class="n">id</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">find_exact</span> <span class="n">sa</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">create</span> <span class="mi">0</span> <span class="k">in</span>
-</span><span class='line'>  <span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span> <span class="n">latex</span><span class="o">;</span>
-</span><span class='line'>  <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="n">exact_match</span> <span class="n">sa</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now for the clever part &ndash; approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">k</span> <span class="o">=</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">cutoff</span> <span class="n">precision</span> <span class="n">latex</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">create</span> <span class="mi">0</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">List</span><span class="p">.</span><span class="n">iter</span> <span class="o">(</span><span class="n">gather_exact</span> <span class="n">ids</span> <span class="n">sa</span><span class="o">)</span> <span class="o">(</span><span class="nn">Latex</span><span class="p">.</span><span class="n">fragments</span> <span class="n">latex</span> <span class="n">k</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">ids</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">approx_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latexL</span> <span class="n">id</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">latexR</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">match</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">similar</span> <span class="n">precision</span> <span class="n">latexL</span> <span class="n">latexR</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Some</span> <span class="n">dist</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">let</span> <span class="n">opaque</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>      <span class="nc">Some</span> <span class="o">(</span><span class="n">dist</span><span class="o">,</span> <span class="n">opaque</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nc">None</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">find_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">Util</span><span class="p">.</span><span class="n">filter_map</span> <span class="o">(</span><span class="n">approx_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We can also extend this to allow boolean queries.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="k">rec</span> <span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">match</span> <span class="n">query</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">Latex</span> <span class="o">(</span><span class="n">latex</span><span class="o">,</span> <span class="o">_)</span> <span class="o">-&gt;</span> <span class="n">gather_approx</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">latex</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">And</span> <span class="o">(</span><span class="n">query1</span><span class="o">,</span> <span class="n">query2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">inter</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query1</span><span class="o">)</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query2</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nn">Query</span><span class="p">.</span><span class="nc">Or</span> <span class="o">(</span><span class="n">query1</span><span class="o">,</span> <span class="n">query2</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nn">Hashset</span><span class="p">.</span><span class="n">union</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query1</span><span class="o">)</span> <span class="o">(</span><span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query2</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">query_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="n">id</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">latexR</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">latexs</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">match</span> <span class="nn">Query</span><span class="p">.</span><span class="n">similar</span> <span class="n">precision</span> <span class="n">query</span> <span class="n">latexR</span> <span class="k">with</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">Some</span> <span class="n">dist</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="k">let</span> <span class="n">opaque</span> <span class="o">=</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">get</span> <span class="n">sa</span><span class="o">.</span><span class="n">opaques</span> <span class="n">id</span> <span class="k">in</span>
-</span><span class='line'>      <span class="nc">Some</span> <span class="o">(</span><span class="n">dist</span><span class="o">,</span> <span class="n">opaque</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span>
-</span><span class='line'>      <span class="nc">None</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">find_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">ids</span> <span class="o">=</span> <span class="n">gather_query</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span> <span class="k">in</span>
-</span><span class='line'>  <span class="nn">Util</span><span class="p">.</span><span class="n">filter_map</span> <span class="o">(</span><span class="n">query_match</span> <span class="n">sa</span> <span class="n">precision</span> <span class="n">query</span><span class="o">)</span> <span class="o">(</span><span class="nn">Hashset</span><span class="p">.</span><span class="n">to_list</span> <span class="n">ids</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This is a lot simpler than my previous approach, which required some uncomfortable reasoning about overlapping regions in quasi-metric spaces.</p>
-
-<p>It is instructive to compare texsearch with other math search engines. Texsearch is effectively a brute force solution that gave us an ok search engine search engine with minimal risk. It has minimal understanding of LaTeX and no understanding of the structure of the formulae it searches in. <a href="http://uniquation.com/en/">Uniquation</a> accepts only a small (but widely used) subset of LaTeX but understands the structure of the equation itself and so can infer scope and perform variable substitution when searching. I am not sure yet how much content they are indexing or how well they handle searching within full LaTeX content but hopefully this approach can scale up to big corpuses. <a href="http://haskell.org/hoogle/">Hoogle</a> is a search engine for haskell types which can handle even more sophisticated equivalences than uniquation thanks to its specialised domain. <a href="https://trac.kwarc.info/arXMLiv/">ArXMLiv</a> is developing tools for inferring semantic information from LaTeX content in order to convert it to Semantic MathML, which is much easier for search engines to handle.</p>
-
-<p>So, in summary, LaTeX is a pain in the ass.</p>
 ]]></content>
   </entry>
   

@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Blog Archive - Scattered Thoughts</title>
+  <title>Motivating the monkey - Scattered Thoughts</title>
   <meta name="author" content="Jamie Brandon">
 
   
-  <meta name="description" content="Blog Archive 2015 Motivating the monkey Three months of Rust Scaling down 2014 Humans should learn maths Imperative thinking and the making of &hellip;">
+  <meta name="description" content="I struggle a lot with motivation. This is probably not an unfamiliar story &ndash; there is some exciting project I want to work on but every time I &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://scattered-thoughts.net/blog/archives">
+  <link rel="canonical" href="http://scattered-thoughts.net/blog/2015/09/22/motivating-the-monkey">
   <link href="/favicon.ico" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
@@ -73,194 +73,93 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Blog Archive</h1>
+    
+      
+        <h1 class="entry-title">Motivating the monkey</h1>
+      
+    
   </header>
-  
-  <div id="blog-archives">
 
 
+<div class="entry-content"><p>I struggle a lot with motivation. This is probably not an unfamiliar story &ndash; there is some exciting project I want to work on but every time I try to get started my mind just shies away and reaches for the reddit refresh button.</p>
 
-  
-  <h2>2015</h2>
+<p>There is a lot of advice on the subject. Some of the advice is basic sanity maintenance like getting regular exercise, nurturing your social life, eating healthily and taking time out. This is sensible advice. Other advice revolves around shoring up motivation through blocking websites, setting timers, tracking goals etc. I find this kind of advice unhelpful.</p>
 
-<article>
-  <h1><a href="/blog/2015/09/22/motivating-the-monkey/">Motivating the monkey</a></h1>
+<p>The reason it&rsquo;s unhelpful is that procrastination is fundamentally a <a href="http://mindingourway.com/not-yet-gods/">monkey-brain</a> problem and that these are all human-brain solutions &ndash; bandaids over a gaping wound.</p>
 
-</article>
+<p>Rather than wrestle with willpower I&rsquo;ve found it much more useful to directly attack the underlying problems. The two main problems that I suffer from are lack of rewards and lack of a plan.</p>
 
+<h2>Lack of rewards</h2>
 
+<p>Not big rewards, like a meaningful project or high status or good salary or lots of perks. The monkey-brain is not into complex cause-effect chains or long-term consequences. It only cares about here and now. If every time I look at an editor I feel stressed and tired and nothing pleasant happens <em>immediately afterwards</em> then the monkey-brain will just refuse to look at the editor anymore. Procrastination sets in.</p>
 
-<article>
-  <h1><a href="/blog/2015/06/04/three-months-of-rust/">Three months of Rust</a></h1>
+<p>Some projects are easy to sell to the monkey-brain. If I&rsquo;m doing optimisation work then I get to run benchmarks. Sometimes I run a benchmark and the numbers have gotten bigger! Monkey-brain is really into frequent, unpredictable rewards so it lets me work on optimisation for hours on end without needing distraction.</p>
 
-</article>
+<p>Other projects just need better planning. A common trap I used to fall into was to start a project where the todo list looks like:</p>
 
+<ul>
+<li>Do hard thing A</li>
+<li>Do hard thing B</li>
+<li>&hellip;</li>
+<li>Do hard thing Y</li>
+<li>Do hard thing Z</li>
+<li>Shiny exciting results!</li>
+</ul>
 
 
-<article>
-  <h1><a href="/blog/2015/02/09/scaling-down/">Scaling down</a></h1>
+<p>Usually I make it as far as hard thing C before the monkey-brain decides that this sucks and we should go eat icecream instead.</p>
 
-</article>
+<p>These days when I plan projects I try to front-load the shiny. For example, when working on Imp I could have broken up the work by subsystem: write the runtime, write the compiler, write the parser, write the repl. But the exciting, motivating part is getting to play with the repl and that wouldn&rsquo;t have happened until right at the end. Instead I broke it up by feature: get inputs working, get joins working, get functions working etc so that every chunk of work results in a new toys to play with.</p>
 
+<p>Some projects really are just a grind and the only way to avoid burnout is to mix in other rewards. If I have to spend weeks refactoring some gnarly legacy code, I will also take time out to work on little projects that I can finish easily, just to make sure that the monkey-brain doesn&rsquo;t get the impression that programming sucks in general.</p>
 
+<p>What actually constitutes a reward probably varies from person to person. For some people, the satisfaction of seeing clean code checked in or a suite of tests passing might be enough. For me, the only reliable rewards are numbers getting bigger or new toys to play with, so I have to make sure that those happen.</p>
 
-  
-  <h2>2014</h2>
+<h2>Lack of a plan</h2>
 
-<article>
-  <h1><a href="/blog/2014/11/15/humans-should-learn-maths/">Humans should learn maths</a></h1>
+<p>There are lot of ways my momentum can break down: I can&rsquo;t figure out how to solve some problem, I can&rsquo;t decide what to do, I don&rsquo;t know where to start etc. What they all have in common is that nothing is happening, there is no clear next step and I just wallow in the quicksand of indecision. The way I&rsquo;ve learnt to deal with this is to have pre-planned procedures that get triggered when I notice one of those failure modes.</p>
 
-</article>
+<p>If I can&rsquo;t figure out how to solve some problem:</p>
 
+<ul>
+<li>Write down the problem in as much detail as possible.</li>
+<li>Write down what exactly would constitute a solution.</li>
+<li>Write down why I need to solve this problem and why I can&rsquo;t just do something simpler.</li>
+<li>Write down a list of examples and try to solve each one by hand.</li>
+<li>Write down any problems other people have solved that seem related. See if the solutions can be adapted.</li>
+<li>Write down problems that are similar but easier. Try to solve those.</li>
+<li>Open up <a href="http://www.amazon.com/How-Solve-It-Mathematical-Princeton/dp/069111966X">How To Solve It</a> and try each of the heuristics.</li>
+<li>Explain all of the above to someone else.</li>
+</ul>
 
 
-<article>
-  <h1><a href="/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/">Imperative thinking and the making of sandwiches</a></h1>
+<p>If I can&rsquo;t decide what to do:</p>
 
-</article>
+<ul>
+<li>Write down the problem.</li>
+<li>Write down the criteria by which I should judge each option.</li>
+<li>Write down all the options I can think of.</li>
+<li>Write down the pros and cons of each.</li>
+<li>If possible, go do something else instead.</li>
+<li>Otherwise, start a 30 minute timer and at the end pick the least bad option still on the list.</li>
+</ul>
 
 
+<p>If I don&rsquo;t know where to start:</p>
 
-<article>
-  <h1><a href="/blog/2014/05/17/pain-we-forgot/">Pain we forgot</a></h1>
+<ul>
+<li>List all the things that need to happen, in time order.</li>
+<li>If the first thing on the list is something I can do, do it.</li>
+<li>Otherwise, take the first thing on the list and break it down into smaller steps.</li>
+</ul>
 
-</article>
 
-
-
-<article>
-  <h1><a href="/blog/2014/02/17/local-state-is-harmful/">Local state is harmful</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2014/01/27/were-not-even-trying/">We&#8217;re not even trying</a></h1>
-
-</article>
-
-
-
-  
-  <h2>2013</h2>
-
-<article>
-  <h1><a href="/blog/2013/12/12/no-more-bullshit/">No more bullshit</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2013/11/24/hugo-a-go-go-optimisation/">Hugo-a-go-go: optimisation</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2013/10/06/hugo-a-go-go/">Hugo-a-go-go</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2013/05/21/flowing-faster-external-memory/">External memory</a></h1>
-
-</article>
-
-
-
-  
-  <h2>2012</h2>
-
-<article>
-  <h1><a href="/blog/2012/12/19/search-trees-and-core-dot-logic/">Search trees and core.logic</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2012/12/04/strucjure-motivation/">Strucjure: motivation</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2012/12/02/hacker-school/">Hacker School</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2012/10/25/strucjure-reading-the-readme/">Strucjure: reading the readme</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2012/08/16/causal-ordering/">Causal ordering</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2012/01/03/binmaps-compressed-bitmaps/">Binmaps: compressed bitmaps</a></h1>
-
-</article>
-
-
-
-  
-  <h2>2011</h2>
-
-<article>
-  <h1><a href="/blog/2011/07/10/dial-a-stranger/">Dial-a-stranger</a></h1>
-
-</article>
-
-
-
-  
-  <h2>2010</h2>
-
-<article>
-  <h1><a href="/blog/2010/12/19/optimising-texsearch-memory-usage/">Optimising texsearch: memory usage</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2010/12/08/optimising-texsearch/">Optimising texsearch</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2010/07/30/smarkets-api-documentation/">Smarkets API documentation</a></h1>
-
-</article>
-
-
-
-<article>
-  <h1><a href="/blog/2010/05/19/examining-scampy/">Examining scampy</a></h1>
-
-</article>
-
+<p>The key thing about all of these is that they generate momentum. As long as I am systematically attacking a problem I will get somewhere. The failure mode to avoid is just circling around on the same thoughts again and again until the monkey-brain freaks out about the lack of progress and calls for icecream and cat videos.</p>
 </div>
+
 
 </article>
 </div>
