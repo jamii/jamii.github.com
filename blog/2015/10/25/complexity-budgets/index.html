@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Scattered Thoughts</title>
+  <title>Complexity budgets - Scattered Thoughts</title>
   <meta name="author" content="Jamie Brandon">
 
   
-  <meta name="description" content="Complexity budgets Motivating the monkey Three months of Rust Scaling down Humans should learn maths Imperative thinking and the making of &hellip;">
+  <meta name="description" content="I notice a tendency to make individual engineering decisions by maximising &lsquo;goodness&rsquo;. Patch X makes the code more complex, but it adds a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://scattered-thoughts.net">
+  <link rel="canonical" href="http://scattered-thoughts.net/blog/2015/10/25/complexity-budgets">
   <link href="/favicon.ico" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Scattered Thoughts" type="application/atom+xml">
@@ -72,130 +72,35 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div id="blog-archives">
-  <article class="hentry" role="article">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
     
-    <article>
-      <h1><a href="/blog/2015/10/25/complexity-budgets/">Complexity budgets</a></h1>
+      
+        <h1 class="entry-title">Complexity budgets</h1>
+      
+    
+  </header>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2015/09/22/motivating-the-monkey/">Motivating the monkey</a></h1>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2015/06/04/three-months-of-rust/">Three months of Rust</a></h1>
+<div class="entry-content"><p>I notice a tendency to make individual engineering decisions by maximising &lsquo;goodness&rsquo;. Patch X makes the code more complex, but it adds a new feature or increases performance or makes debugging easier. We add up the goodness points, subtract the badness points and if the result is more than zero it&rsquo;s a good patch.</p>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2015/02/09/scaling-down/">Scaling down</a></h1>
+<p>Unfortunately, complexity does not add up linearly. The total cost of a set of features is not just the sum of the cost of each feature. Complexity limits how much of the system can fit into the heads of the developers, and in doing so breeds more complexity. Every time you are forced to do something ugly in one place because of existing ugliness in another place you are feeling this cost.</p>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2014/11/15/humans-should-learn-maths/">Humans should learn maths</a></h1>
+<p>Worse, there are cliffs in the cost. As soon as a particular subsystem cannot fit into the head of a single developer there are huge additional overheads for communication. Opportunities for improvements or simplification are missed because no one person can see all the parts of the problem. N engineers working on a system that they all understand will crush N engineers working on a system that they each understand part of.</p>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/">Imperative thinking and the making of sandwiches</a></h1>
+<p>Modularity, indirection and abstraction are not panaceas for this problem. In most cases they reduce local complexity at the cost of global complexity. This is a decision that should be consciously weighed in each case rather than assumed to be an unquestionable win. The failure mode here is huge codebases where every component is so simple that it barely does anything at all, and the process of just finding and piecing together the actual logic consumes all available mental resources.</p>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2014/05/17/pain-we-forgot/">Pain we forgot</a></h1>
+<p>For any given team, there is a point past which they can no longer collectively understand the system. This creates opportunity costs &ndash; spending complexity in one place means you cannot spend it elsewhere. Any new change must have it&rsquo;s benefits weighed against the precious cognitive limits of the team. Try to spend you limited complexity budget in places that give <a href="http://permalink.gmane.org/gmane.culture.people.kragen.thinking/202">good value for money</a>.</p>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2014/02/17/local-state-is-harmful/">Local state is harmful</a></h1>
+<p>This is hard to do well, because complexity has so many ways to sneak in without being noticed. The trick is to carefully separate out <a href="http://shaffner.us/cs/papers/tarpit.pdf">essential complexity</a> from the morass of assumptions, routines and path dependencies that make up our habitual solution space. Look at the information that must go into the system and the information that must come out. Figure out how fast that needs to happen and find out what your hardware is capable of. Don&rsquo;t start coming up with solutions until you have actually <a href="http://lesswrong.com/lw/ka/hold_off_on_proposing_solutions/">thought about the problem</a>.</p>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2014/01/27/were-not-even-trying/">We&#8217;re not even trying</a></h1>
+<p>After careful consideration you may well end up with a traditional solution and that&rsquo;s fine. But if the first thing you do when given a problem is to pull out your favourite solution then you are throwing away your budget without a fight.</p>
+</div>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2013/12/12/no-more-bullshit/">No more bullshit</a></h1>
 
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2013/11/24/hugo-a-go-go-optimisation/">Hugo-a-go-go: optimisation</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2013/10/06/hugo-a-go-go/">Hugo-a-go-go</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2013/05/21/flowing-faster-external-memory/">External memory</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2012/12/19/search-trees-and-core-dot-logic/">Search trees and core.logic</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2012/12/04/strucjure-motivation/">Strucjure: motivation</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2012/12/02/hacker-school/">Hacker School</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2012/10/25/strucjure-reading-the-readme/">Strucjure: reading the readme</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2012/08/16/causal-ordering/">Causal ordering</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2012/01/03/binmaps-compressed-bitmaps/">Binmaps: compressed bitmaps</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2011/07/10/dial-a-stranger/">Dial-a-stranger</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2010/12/19/optimising-texsearch-memory-usage/">Optimising texsearch: memory usage</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2010/12/08/optimising-texsearch/">Optimising texsearch</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2010/07/30/smarkets-api-documentation/">Smarkets API documentation</a></h1>
-
-    </article>
-    
-    <article>
-      <h1><a href="/blog/2010/05/19/examining-scampy/">Examining scampy</a></h1>
-
-    </article>
-    
-  </article>
+</article>
 </div>
 
     </div>

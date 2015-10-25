@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-09-22T22:19:07-07:00</updated>
+  <updated>2015-10-25T16:54:12+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -14,9 +14,30 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Complexity budgets]]></title>
+    <link href="http://scattered-thoughts.net/blog/2015/10/25/complexity-budgets/"/>
+    <updated>2015-10-25T16:46:00+00:00</updated>
+    <id>http://scattered-thoughts.net/blog/2015/10/25/complexity-budgets</id>
+    <content type="html"><![CDATA[<p>I notice a tendency to make individual engineering decisions by maximising &lsquo;goodness&rsquo;. Patch X makes the code more complex, but it adds a new feature or increases performance or makes debugging easier. We add up the goodness points, subtract the badness points and if the result is more than zero it&rsquo;s a good patch.</p>
+
+<p>Unfortunately, complexity does not add up linearly. The total cost of a set of features is not just the sum of the cost of each feature. Complexity limits how much of the system can fit into the heads of the developers, and in doing so breeds more complexity. Every time you are forced to do something ugly in one place because of existing ugliness in another place you are feeling this cost.</p>
+
+<p>Worse, there are cliffs in the cost. As soon as a particular subsystem cannot fit into the head of a single developer there are huge additional overheads for communication. Opportunities for improvements or simplification are missed because no one person can see all the parts of the problem. N engineers working on a system that they all understand will crush N engineers working on a system that they each understand part of.</p>
+
+<p>Modularity, indirection and abstraction are not panaceas for this problem. In most cases they reduce local complexity at the cost of global complexity. This is a decision that should be consciously weighed in each case rather than assumed to be an unquestionable win. The failure mode here is huge codebases where every component is so simple that it barely does anything at all, and the process of just finding and piecing together the actual logic consumes all available mental resources.</p>
+
+<p>For any given team, there is a point past which they can no longer collectively understand the system. This creates opportunity costs &ndash; spending complexity in one place means you cannot spend it elsewhere. Any new change must have it&rsquo;s benefits weighed against the precious cognitive limits of the team. Try to spend you limited complexity budget in places that give <a href="http://permalink.gmane.org/gmane.culture.people.kragen.thinking/202">good value for money</a>.</p>
+
+<p>This is hard to do well, because complexity has so many ways to sneak in without being noticed. The trick is to carefully separate out <a href="http://shaffner.us/cs/papers/tarpit.pdf">essential complexity</a> from the morass of assumptions, routines and path dependencies that make up our habitual solution space. Look at the information that must go into the system and the information that must come out. Figure out how fast that needs to happen and find out what your hardware is capable of. Don&rsquo;t start coming up with solutions until you have actually <a href="http://lesswrong.com/lw/ka/hold_off_on_proposing_solutions/">thought about the problem</a>.</p>
+
+<p>After careful consideration you may well end up with a traditional solution and that&rsquo;s fine. But if the first thing you do when given a problem is to pull out your favourite solution then you are throwing away your budget without a fight.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Motivating the monkey]]></title>
     <link href="http://scattered-thoughts.net/blog/2015/09/22/motivating-the-monkey/"/>
-    <updated>2015-09-22T22:00:00-07:00</updated>
+    <updated>2015-09-22T22:00:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2015/09/22/motivating-the-monkey</id>
     <content type="html"><![CDATA[<p>I struggle a lot with motivation. This is probably not an unfamiliar story &ndash; there is some exciting project I want to work on but every time I try to get started my mind just shies away and reaches for the reddit refresh button.</p>
 
@@ -98,7 +119,7 @@
   <entry>
     <title type="html"><![CDATA[Three months of Rust]]></title>
     <link href="http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust/"/>
-    <updated>2015-06-04T16:30:00-07:00</updated>
+    <updated>2015-06-04T16:30:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust</id>
     <content type="html"><![CDATA[<p>I work on <a href="http://incidentalcomplexity.com/">Eve</a>, a functional-relational programming language and environment. Since the Eve editor has to run in a browser we built the first few versions entirely in javascript. This has been pretty painful, so a little over three months ago we started looking at other options.</p>
 
@@ -593,7 +614,7 @@
   <entry>
     <title type="html"><![CDATA[Scaling down]]></title>
     <link href="http://scattered-thoughts.net/blog/2015/02/09/scaling-down/"/>
-    <updated>2015-02-09T13:42:00-08:00</updated>
+    <updated>2015-02-09T13:42:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2015/02/09/scaling-down</id>
     <content type="html"><![CDATA[<p>The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How deeply can I customise this editor? More code, more data, more people, more machines.</p>
 
@@ -638,7 +659,7 @@
   <entry>
     <title type="html"><![CDATA[Humans should learn maths]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths/"/>
-    <updated>2014-11-15T14:19:00-08:00</updated>
+    <updated>2014-11-15T14:19:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths</id>
     <content type="html"><![CDATA[<p>In the history of humanity there have been three major inventions that have enabled people to think in entirely new ways. They allow us to learn more, think bigger thoughts and solve harder problems. They are:</p>
 
@@ -766,7 +787,7 @@
   <entry>
     <title type="html"><![CDATA[Imperative thinking and the making of sandwiches]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/"/>
-    <updated>2014-07-21T14:37:00-07:00</updated>
+    <updated>2014-07-21T14:37:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches</id>
     <content type="html"><![CDATA[<p>People regularly tell me that imperative programming is the natural form of programming because &lsquo;people think imperatively&rsquo;. I can see where they are coming from. Why, just the other day I found myself saying, &ldquo;Hey Chris, I&rsquo;m hungry. I need you to walk into the kitchen, open the cupboard, take out a bag of bread, open the bag, remove a slice of bread, place it on a plate&hellip;&rdquo; Unfortunately, I hadn&rsquo;t specified where to find the plate so at this point Chris threw a null pointer exception and died.</p>
 
@@ -806,7 +827,7 @@
   <entry>
     <title type="html"><![CDATA[Pain we forgot]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot/"/>
-    <updated>2014-05-17T09:54:00-07:00</updated>
+    <updated>2014-05-17T09:54:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot</id>
     <content type="html"><![CDATA[<p>Much of the pain in programming is taken for granted. After years of repetition it fades into the background and is forgotten. The first step in making programming easier is to be concious of what makes it hard. So let&rsquo;s put ourselves in the shoes of a smart but inexperienced end user trying to build, test and maintain a simple application.</p>
 
@@ -933,7 +954,7 @@
   <entry>
     <title type="html"><![CDATA[Local state is harmful]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/"/>
-    <updated>2014-02-17T05:02:00-08:00</updated>
+    <updated>2014-02-17T05:02:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful</id>
     <content type="html"><![CDATA[<p>Don&rsquo;t lynch me just yet :)</p>
 
@@ -1442,7 +1463,7 @@
   <entry>
     <title type="html"><![CDATA[We're not even trying]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/01/27/were-not-even-trying/"/>
-    <updated>2014-01-27T00:31:00-08:00</updated>
+    <updated>2014-01-27T00:31:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/01/27/were-not-even-trying</id>
     <content type="html"><![CDATA[<p>Light Table has a feature called <a href="http://www.youtube.com/watch?v=d8-b6QEN-rk">watches</a>, where you select an expression to watch and behind the scenes the editor wraps that expression in some code that sends the results back to the editor every time the expression is executed. You can also write custom watches that wrap the selected expression however you like. For example, this watch displays the time the expression took to execute.</p>
 
@@ -1538,7 +1559,7 @@
   <entry>
     <title type="html"><![CDATA[No more bullshit]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/12/12/no-more-bullshit/"/>
-    <updated>2013-12-12T01:28:00-08:00</updated>
+    <updated>2013-12-12T01:28:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/12/12/no-more-bullshit</id>
     <content type="html"><![CDATA[<p>We are doing programming wrong. We all know it. Sure, if you sweat and scrub and shine and polish and pray to the gods of TDD you can get stuff done, but in the back of your mind you will always hear Zed Shaw&rsquo;s voice whispering <a href="http://www.youtube.com/watch?v=4qJMR_Dbxow">&ldquo;This is bullshit!&rdquo;</a>. We cannot build the world on a foundation of bullshit.</p>
 
@@ -1560,7 +1581,7 @@
   <entry>
     <title type="html"><![CDATA[Hugo-a-go-go: optimisation]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/"/>
-    <updated>2013-11-24T04:43:00-08:00</updated>
+    <updated>2013-11-24T04:43:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation</id>
     <content type="html"><![CDATA[<p>After a little optimisation work <a href="https://github.com/jamii/hugo-a-go-go/">hugo</a> now manages to play out ~12k games per second on a 9x9 board. Besides fixing the two incorrect optimisations I made during the last minutes of the competition, the main wins were changing the board representation and carefully inspecting the compiler output to eliminate unneccesary work. A lot of the things I discovered are generally applicable to calculation-heavy, cpu-bound cljs code (with all the usual disclaimers about profiling and premature optimsation).</p>
 
@@ -1887,7 +1908,7 @@
   <entry>
     <title type="html"><![CDATA[Hugo-a-go-go]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go/"/>
-    <updated>2013-10-06T13:22:00-07:00</updated>
+    <updated>2013-10-06T13:22:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go</id>
     <content type="html"><![CDATA[<p>For the <a href="http://clojurecup.com/">2013 Clojure Cup</a> myself and <a href="http://www.thattommyhall.com/">Tom Hall</a> wrote a <a href="http://en.wikipedia.org/wiki/Go_%28game%29">go</a> AI in clojurescript, inspired by <a href="https://github.com/ztellman/pushkin">pushkin</a>. The source is <a href="https://github.com/jamii/hugo-a-go-go/">here</a> and it can currently be played on the <a href="http://hugoagogo.clojurecup.com/">clojure cup site</a> (only tested in chrome).</p>
 
@@ -2328,7 +2349,7 @@
   <entry>
     <title type="html"><![CDATA[External memory]]></title>
     <link href="http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/"/>
-    <updated>2013-05-21T20:43:00-07:00</updated>
+    <updated>2013-05-21T20:43:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory</id>
     <content type="html"><![CDATA[<p> What work I do that is worthwhile happens in the few hours of flow I manage to achieve every week. A million different things break that flow every day. I suspect that a large part of achieving flow is keeping the current problem in working memory. To improve my chances I can improve my working memory, offload parts of the problem to the computer or prevent context switches. I&rsquo;m on my own with the first option, but a better development environment can help with the latter two.</p>
 
@@ -2358,7 +2379,7 @@
   <entry>
     <title type="html"><![CDATA[Search trees and core.logic]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/"/>
-    <updated>2012-12-19T20:32:00-08:00</updated>
+    <updated>2012-12-19T20:32:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic</id>
     <content type="html"><![CDATA[<p>I mentioned in an <a href="http://scattered-thoughts.net/blog/2012/12/02/hacker-school/">earlier post</a> that I had spent some time working on <a href="https://github.com/jamii/shackles">shackles</a>, an extensible <a href="http://en.wikipedia.org/wiki/Constraint_programming">constraint solver</a> based on <a href="http://www.gecode.org/">gecode</a> with extensions for <a href="http://en.wikipedia.org/wiki/Logic_programming">logic programming</a>. I eventually gave up working on shackles in favor of using <a href="https://github.com/clojure/core.logic">core.logic</a> which is much more mature and has actual maintainers. Last week David Nolen (the author of core.logic) was visiting Hacker School so I decided to poke around inside core.logic and see what could be brought over from shackles. The <a href="https://github.com/clojure/core.logic/pull/13">first chunk of work</a> adds fair conjunction, user-configurable search and a parallel solver.</p>
 
@@ -2549,7 +2570,7 @@
   <entry>
     <title type="html"><![CDATA[Strucjure: motivation]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/"/>
-    <updated>2012-12-04T02:31:00-08:00</updated>
+    <updated>2012-12-04T02:31:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation</id>
     <content type="html"><![CDATA[<p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I&rsquo;m going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
 
@@ -3222,7 +3243,7 @@ take another pass at this next year.</p></blockquote>
   <entry>
     <title type="html"><![CDATA[Hacker School]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/12/02/hacker-school/"/>
-    <updated>2012-12-02T01:16:00-08:00</updated>
+    <updated>2012-12-02T01:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/12/02/hacker-school</id>
     <content type="html"><![CDATA[<p>I&rsquo;ve spent the last ten weeks or so at <a href="https://www.hackerschool.com/">Hacker School</a>. It&rsquo;s something like a writer&rsquo;s retreat for programmers. Unlike a traditional school there is very little structure and the focus is on project-based learning. In order to make the most of this environment, it&rsquo;s important to be clear exactly what your goals are.</p>
 
@@ -3292,7 +3313,7 @@ take another pass at this next year.</p></blockquote>
   <entry>
     <title type="html"><![CDATA[Strucjure: reading the readme]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/"/>
-    <updated>2012-10-25T19:37:00-07:00</updated>
+    <updated>2012-10-25T19:37:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme</id>
     <content type="html"><![CDATA[<p>I just released <a href="https://github.com/jamii/strucjure">strucjure</a>, a clojure library and DSL for parsing and pattern matching based on <a href="http://lambda-the-ultimate.org/node/2477">Ometa</a>.</p>
 
@@ -3607,7 +3628,7 @@ take another pass at this next year.</p></blockquote>
   <entry>
     <title type="html"><![CDATA[Causal ordering]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/08/16/causal-ordering/"/>
-    <updated>2012-08-16T05:16:00-07:00</updated>
+    <updated>2012-08-16T05:16:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/08/16/causal-ordering</id>
     <content type="html"><![CDATA[<p>Causal ordering is a vital tool for thinking about distributed systems. Once you understand it, many other concepts become much simpler.</p>
 
@@ -3697,7 +3718,7 @@ take another pass at this next year.</p></blockquote>
   <entry>
     <title type="html"><![CDATA[Binmaps: compressed bitmaps]]></title>
     <link href="http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/"/>
-    <updated>2012-01-03T06:16:00-08:00</updated>
+    <updated>2012-01-03T06:16:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps</id>
     <content type="html"><![CDATA[<p>Lately I&rsquo;ve been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
 
@@ -3967,7 +3988,7 @@ take another pass at this next year.</p></blockquote>
   <entry>
     <title type="html"><![CDATA[Dial-a-stranger]]></title>
     <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
-    <updated>2011-07-10T06:16:00-07:00</updated>
+    <updated>2011-07-10T06:16:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
     <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&rsquo;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
 
@@ -3981,118 +4002,6 @@ take another pass at this next year.</p></blockquote>
 <p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
 
 <p>I&rsquo;m not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Optimising texsearch: memory usage]]></title>
-    <link href="http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage/"/>
-    <updated>2010-12-19T06:16:00-08:00</updated>
-    <id>http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage</id>
-    <content type="html"><![CDATA[<p>In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
-
-<!--more-->
-
-
-<p>The main data structure looks like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">deleted</span> <span class="o">:</span> <span class="kt">bool</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="o">(</span><span class="n">id</span> <span class="o">*</span> <span class="n">pos</span><span class="o">)</span> <span class="kt">array</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The array field is responsible for the vast majority of the memory usage. Each cell in the array contains a pointer to a tuple containing two integers for a total of 4 words per suffix. The types id and pos are both small integers so if we pack them into a single unboxed integer we can reduce this to 1 word per suffix. We have a new module suffix.ml with some simple bit-munging:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="n">id</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'><span class="k">type</span> <span class="n">pos</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">type</span> <span class="n">t</span> <span class="o">=</span> <span class="kt">int</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">pack_size</span> <span class="o">=</span> <span class="o">(</span><span class="nn">Sys</span><span class="p">.</span><span class="n">word_size</span> <span class="o">/</span> <span class="mi">2</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span class='line'><span class="k">let</span> <span class="n">max_size</span> <span class="o">=</span> <span class="mi">1</span> <span class="ow">lsl</span> <span class="n">pack_size</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">exception</span> <span class="nc">Invalid_suffix</span> <span class="k">of</span> <span class="n">id</span> <span class="o">*</span> <span class="n">pos</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">pack</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">id</span> <span class="o">&gt;=</span> <span class="n">max_size</span><span class="o">)</span>
-</span><span class='line'>  <span class="o">||</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">||</span> <span class="o">(</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="n">max_size</span><span class="o">)</span>
-</span><span class='line'>  <span class="k">then</span> <span class="k">raise</span> <span class="o">(</span><span class="nc">Invalid_suffix</span> <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">))</span>
-</span><span class='line'>  <span class="k">else</span> <span class="n">pos</span> <span class="ow">lor</span> <span class="o">(</span><span class="n">id</span> <span class="ow">lsl</span> <span class="n">pack_size</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">let</span> <span class="n">unpack</span> <span class="n">suffix</span> <span class="o">=</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">id</span> <span class="o">=</span> <span class="n">suffix</span> <span class="n">lsr</span> <span class="n">pack_size</span> <span class="k">in</span>
-</span><span class='line'>  <span class="k">let</span> <span class="n">pos</span> <span class="o">=</span> <span class="n">suffix</span> <span class="ow">land</span> <span class="o">(</span><span class="n">max_size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="k">in</span>
-</span><span class='line'>  <span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">pos</span><span class="o">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Notice how confusing infix functions are in ocaml.</p>
-
-<p>The suffix array type becomes:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">type</span> <span class="k">&#39;</span><span class="n">a</span> <span class="n">t</span> <span class="o">=</span>
-</span><span class='line'>  <span class="o">{</span> <span class="n">latexs</span> <span class="o">:</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">opaques</span> <span class="o">:</span> <span class="k">&#39;</span><span class="n">a</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="n">deleted</span> <span class="o">:</span> <span class="kt">bool</span> <span class="nn">DynArray</span><span class="p">.</span><span class="n">t</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">next_id</span> <span class="o">:</span> <span class="n">id</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="kt">array</span> <span class="o">:</span> <span class="nn">Suffix</span><span class="p">.</span><span class="n">t</span> <span class="kt">array</span>
-</span><span class='line'>  <span class="o">;</span> <span class="k">mutable</span> <span class="n">unsorted</span> <span class="o">:</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="nn">Latex</span><span class="p">.</span><span class="n">t</span><span class="o">)</span> <span class="kt">list</span> <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>With this change the memory usage drops down to 1.4 gb. The mean search time also improves. It seems that having fewer cache misses makes up for the extra computation involved in unpacking the suffixes.</p>
-
-<p>Now that the array field is a single block it is easy to move it out of the heap entirely so the gc never has to scan it.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='ocaml'><span class='line'><span class="k">let</span> <span class="n">ancientify</span> <span class="n">sa</span> <span class="o">=</span>
-</span><span class='line'>  <span class="n">sa</span><span class="o">.</span><span class="kt">array</span> <span class="o">&lt;-</span> <span class="nn">Ancient</span><span class="p">.</span><span class="n">follow</span> <span class="o">(</span><span class="nn">Ancient</span><span class="p">.</span><span class="n">mark</span> <span class="n">sa</span><span class="o">.</span><span class="kt">array</span><span class="o">);</span>
-</span><span class='line'>  <span class="nn">Gc</span><span class="p">.</span><span class="n">full_major</span> <span class="bp">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This eliminates the annoyingly noticeable gc pauses.</p>
 ]]></content>
   </entry>
   

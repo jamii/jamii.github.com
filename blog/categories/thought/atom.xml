@@ -4,7 +4,7 @@
   <title><![CDATA[Category: thought | Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/blog/categories/thought/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-09-22T22:19:07-07:00</updated>
+  <updated>2015-10-25T16:54:12+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Three months of Rust]]></title>
     <link href="http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust/"/>
-    <updated>2015-06-04T16:30:00-07:00</updated>
+    <updated>2015-06-04T16:30:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust</id>
     <content type="html"><![CDATA[<p>I work on <a href="http://incidentalcomplexity.com/">Eve</a>, a functional-relational programming language and environment. Since the Eve editor has to run in a browser we built the first few versions entirely in javascript. This has been pretty painful, so a little over three months ago we started looking at other options.</p>
 
@@ -383,7 +383,7 @@ impl ToOwned for str {
   <entry>
     <title type="html"><![CDATA[Scaling down]]></title>
     <link href="http://scattered-thoughts.net/blog/2015/02/09/scaling-down/"/>
-    <updated>2015-02-09T13:42:00-08:00</updated>
+    <updated>2015-02-09T13:42:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2015/02/09/scaling-down</id>
     <content type="html"><![CDATA[<p>The programming world is obsessed with scaling up. How many million lines of code can we maintain? How many petabytes of data can we process? How deeply can I customise this editor? More code, more data, more people, more machines.</p>
 
@@ -428,7 +428,7 @@ impl ToOwned for str {
   <entry>
     <title type="html"><![CDATA[Humans should learn maths]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths/"/>
-    <updated>2014-11-15T14:19:00-08:00</updated>
+    <updated>2014-11-15T14:19:00+00:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths</id>
     <content type="html"><![CDATA[<p>In the history of humanity there have been three major inventions that have enabled people to think in entirely new ways. They allow us to learn more, think bigger thoughts and solve harder problems. They are:</p>
 
@@ -556,7 +556,7 @@ impl ToOwned for str {
   <entry>
     <title type="html"><![CDATA[Imperative thinking and the making of sandwiches]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/"/>
-    <updated>2014-07-21T14:37:00-07:00</updated>
+    <updated>2014-07-21T14:37:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches</id>
     <content type="html"><![CDATA[<p>People regularly tell me that imperative programming is the natural form of programming because &lsquo;people think imperatively&rsquo;. I can see where they are coming from. Why, just the other day I found myself saying, &ldquo;Hey Chris, I&rsquo;m hungry. I need you to walk into the kitchen, open the cupboard, take out a bag of bread, open the bag, remove a slice of bread, place it on a plate&hellip;&rdquo; Unfortunately, I hadn&rsquo;t specified where to find the plate so at this point Chris threw a null pointer exception and died.</p>
 
@@ -596,7 +596,7 @@ impl ToOwned for str {
   <entry>
     <title type="html"><![CDATA[Pain we forgot]]></title>
     <link href="http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot/"/>
-    <updated>2014-05-17T09:54:00-07:00</updated>
+    <updated>2014-05-17T09:54:00+01:00</updated>
     <id>http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot</id>
     <content type="html"><![CDATA[<p>Much of the pain in programming is taken for granted. After years of repetition it fades into the background and is forgotten. The first step in making programming easier is to be concious of what makes it hard. So let&rsquo;s put ourselves in the shoes of a smart but inexperienced end user trying to build, test and maintain a simple application.</p>
 

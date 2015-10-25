@@ -2,110 +2,114 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://scattered-thoughts.net/blog/2010/05/19/examining-scampy/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2010/07/30/smarkets-api-documentation/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://scattered-thoughts.net/blog/2010/12/19/optimising-texsearch-memory-usage/
         </loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2012/01/03/binmaps-compressed-bitmaps/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2012/08/16/causal-ordering/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2012/10/25/strucjure-reading-the-readme/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2012/12/02/hacker-school/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/05/21/flowing-faster-external-memory/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/10/06/hugo-a-go-go/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/11/24/hugo-a-go-go-optimisation/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2013/12/12/no-more-bullshit/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2014/01/27/were-not-even-trying/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2014/02/17/local-state-is-harmful/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2014/05/17/pain-we-forgot/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://scattered-thoughts.net/blog/2014/07/21/imperative-thinking-and-the-making-of-sandwiches/
         </loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2014/11/15/humans-should-learn-maths/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2015/02/09/scaling-down/</loc>
-        <lastmod>2015-06-04T22:54:01-07:00</lastmod>
+        <lastmod>2015-06-05T06:54:01+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust/</loc>
-        <lastmod>2015-06-05T00:37:31-07:00</lastmod>
+        <lastmod>2015-06-05T08:37:31+01:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/2015/09/22/motivating-the-monkey/</loc>
-        <lastmod>2015-09-22T22:18:49-07:00</lastmod>
+        <lastmod>2015-09-23T06:19:22+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://scattered-thoughts.net/blog/2015/10/25/complexity-budgets/</loc>
+        <lastmod>2015-10-25T16:52:50+00:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/blog/archives/</loc>
-        <lastmod>2015-09-22T22:18:49-07:00</lastmod>
+        <lastmod>2015-10-25T16:52:50+00:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/robots.txt</loc>
-        <lastmod>2015-03-25T20:43:13-07:00</lastmod>
+        <lastmod>2015-03-26T03:43:13+00:00</lastmod>
     </url>
     <url>
         <loc>http://scattered-thoughts.net/</loc>
-        <lastmod>2015-09-22T22:18:49-07:00</lastmod>
+        <lastmod>2015-10-25T16:52:50+00:00</lastmod>
     </url>
 </urlset>
