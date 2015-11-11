@@ -4,7 +4,7 @@
   <title><![CDATA[Scattered Thoughts]]></title>
   <link href="http://scattered-thoughts.net/atom.xml" rel="self"/>
   <link href="http://scattered-thoughts.net/"/>
-  <updated>2015-10-26T18:35:16+00:00</updated>
+  <updated>2015-11-11T01:49:15+00:00</updated>
   <id>http://scattered-thoughts.net/</id>
   <author>
     <name><![CDATA[Jamie Brandon]]></name>
@@ -12,6 +12,30 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Should not]]></title>
+    <link href="http://scattered-thoughts.net/blog/2015/11/11/should-not/"/>
+    <updated>2015-11-11T01:30:00+00:00</updated>
+    <id>http://scattered-thoughts.net/blog/2015/11/11/should-not</id>
+    <content type="html"><![CDATA[<blockquote><p>modal verb (3rd sing. should)</p>
+
+<ol>
+<li>Used to indicate obligation, duty, or correctness, typically when criticizing someone’s actions</li>
+</ol>
+</blockquote>
+
+<p><strong>Should</strong> is a dangerous word. You should break up large functions. You should separate concerns. You should remove repetition. You should encapsulate your data. <strong>Should</strong> replaces the weighing of tradeoffs with a moral imperative. It insists on always doing the &lsquo;right thing&rsquo;, as if every question had a simple answer if you would only listen.</p>
+
+<p><strong>Should</strong> is especially dangerous for beginners, who hear it from their elders with all the weight of a religious commandment, and pass it down the same way. This is how ideas mutate from rule of thumb to guideline to inviolable law to invisible custom, until even questioning them is a trigger for derision.</p>
+
+<p><a href="http://lesswrong.com/lw/nu/taboo_your_words/">Taboo the word</a>. Keeping asking why and don&rsquo;t stop until you get to something you actually care about. Don&rsquo;t confuse the means with the ends. You write code to solve a problem, to learn something new or to express yourself. Indirection, modularity, abstraction and tests are merely tools whose sole virtue is in whether they help you reach your goal.</p>
+
+<p>Some long functions are <a href="http://number-none.com/blow/john_carmack_on_inlined_code.html">easier to read when left alone</a>. Some concerns <a href="http://www.slideshare.net/floydophone/react-preso-v2#19">cannot be cleanly separated</a>. Repetition is <a href="http://mollyrocket.com/casey/stream_0020.html#Complexity">sometimes the lesser evil</a> and <a href="https://www.youtube.com/watch?feature=player_detailpage&amp;v=rI8tNMsozo0#t=1773">encapsulation isn&rsquo;t free</a>.</p>
+
+<p>Don&rsquo;t blindly apply tools without stopping to question whether they fit the task at hand. And certainly don&rsquo;t let the shame of &lsquo;bad code&rsquo; prevent you from using your own best judgement about the problems you face.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Complexity budgets]]></title>
@@ -3982,26 +4006,6 @@ take another pass at this next year.</p></blockquote>
 <p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn&rsquo;t suggest using it without some serious testing.</p>
 
 <p>Overall I&rsquo;m not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dial-a-stranger]]></title>
-    <link href="http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger/"/>
-    <updated>2011-07-10T06:16:00+01:00</updated>
-    <id>http://scattered-thoughts.net/blog/2011/07/10/dial-a-stranger</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/jamii/dial-a-stranger">This spawnfest entry</a> is inspired by traveling. I love the idea behind sites like chatroulette and omegle but if I had an internet connection I wouldn&rsquo;t be bored enough to use them. I want a version I can use entirely over the phone network to while away the hours spent stuck in airports and train stations.</p>
-
-<!--more-->
-
-
-<p>I&rsquo;ve built a quick proof of concept using twilio. Dial +1 (650) 763-8833 and you will be put on hold. As soon as there are two people on hold they will be linked together into a conference call.</p>
-
-<p>This isn&rsquo;t a great solution, since you have to sit around and wait for the next person to arrive. Perhaps a better method would be to have users register by SMS and then make outbound calls to both users once a connection is ready.</p>
-
-<p>I also hooked up a chat bot to the SMS api. Eliza is ready and waiting on +1 (650) 763-8782 to listen to your problems and ask vague questions.</p>
-
-<p>I&rsquo;m not sure where to go with this. I have a vague idea that it could be turned into a game but the details elude me.</p>
 ]]></content>
   </entry>
   
