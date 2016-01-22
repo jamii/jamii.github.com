@@ -8,7 +8,7 @@ I left [Eve](http://witheve.com/).
 
 After being consumed for so long by a single project it's hard to know what to do next. I'm sure that whatever thoughts I have right now are far too narrow and railroaded compared to the actual possibilities, so what follows is just thinking out loud.
 
-Over the last two years I learned more than I ever expected to know about logic languages, relational databases and progressive systems, to the point of being able to do novel work in the field. Whether or not I use that knowledge again in future, it's the first time I've reached that depth in any field. More importantly, it's the first time I've properly come to grips with the idea that even relatively small investments of time/effort/organization can multiply into massive outcomes when steadily applied. One hour of reading per day for two years adds up to a lot of papers. I'm pretty excited to see what I could do with a more deliberate effort.
+Over the last two years I learned more than I ever expected to know about logic languages, relational databases and progressive systems, to the point of being able to do novel work in the field. Whether or not I use that knowledge again in future, it's the first time I've reached that depth in any field. More importantly, it's the first time I've properly come to grips with the idea that even relatively small investments of time/effort/organization can multiply into massive outcomes when steadily applied. One hour of reading per day for two years adds up to a lot of papers. I'm pretty excited to see what I could do with a more deliberate effort. (EDIT: My first deliberate effort is in progress [here](https://github.com/jamii/notes/).)
 
 I also learned a lot about managing research, mostly after being burned by my repeated mistakes. I've become much more reliant on empirical testing and on trying to falsify ideas early. I learned to keep a [project diary](https://github.com/jamii/imp/blob/master/diary.md) to track what I've done, why I did it, how it turned out and how long I spent doing it. I learned to set concrete goals in advance and stop as soon as they are met rather than eagerly jump down every little rabbit hole.
 
@@ -24,7 +24,7 @@ My general interest is still in improving/augmenting human intelligence. I saw a
 
 The obvious choice of field is somewhere in the nexus around cognitive science / decision science / human error / behavioral economics. In addition to being a fresh source of problems, it's something that has captured my interest for years and also one of the more likely paths towards improving intelligence in it's own right.
 
-A reasonable attack would be to move back to London and pick up a part-time programming job to fund part-time study. Going back to school is not the only way to learn, but I think I would benefit from being surrounded by other students.
+A reasonable attack would be to move back to London (quitting derailed my US visa) and pick up a part-time programming job to fund part-time study. Going back to school is not the only way to learn, but I think I would benefit from being surrounded by other students.
 
 As for the job, part-time work is hard to find so I may not be able to be too picky. The ideal would be something that is producing immediate value rather than another moonshot. Being London, the most likely case is I end up in a hedge fund and content myself with [earning to give](https://80000hours.org/articles/earning-to-give/). Being a programmer is pretty cushy.
 
