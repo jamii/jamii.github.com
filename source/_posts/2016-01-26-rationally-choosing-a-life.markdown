@@ -10,7 +10,7 @@ Having made myself unemployed and uprooted, I now need to make some decisions ab
 
 I'm publishing this because I've seen very few concrete examples of in-the-wild rational decision making. I don't particularly expect this to be a shining example of such, but it is at least *an* example :)
 
-The inputs to a rational decision are instrumental goals. Rationality has nothing to say about what those goals should be, only how to effectively pursue them. My goals are to be happy, excited and useful.
+The inputs to a rational decision are terminal goals. Rationality has nothing to say about what those goals should be, only how to effectively pursue them. My goals are to be happy, excited and useful.
 
 To make a good decision I have to explore the search space, make predictions about the outcome of each option, evaluate how well that outcome matches my goals and then pick the best outcome. So, the likely reasons for making poor decisions are:
 
