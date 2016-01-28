@@ -103,7 +103,7 @@ __Purpose__ (and rationality)
 * What is the process for making decisions towards that goal? (eg is it based on evidence? is there any attempt to avoid bias?)
 * Are there pressures towards / risks of instrumentally irrational decisions? (eg publish-or-perish, pointy-haired boss)
 
-When answering these, I want to focus on the [outside view](http://www.mckinsey.com/insights/strategy/daniel_kahneman_beware_the_inside_view) and limit the impact of [self-reporting](http://www.sciencebrainwaves.com/the-dangers-of-self-report/), [motivated recall](https://www.researchgate.net/publication/264332643) and [reference group effects](https://en.wikipedia.org/wiki/Reference_group). For example, rather than asking 'do people get to choose their own projects' I could ask 'of the people I met today, which of them are currently working on a project that they chose'. This leads to more accurate answers and
+When answering these, I want to focus on the [outside view](http://www.mckinsey.com/insights/strategy/daniel_kahneman_beware_the_inside_view) and limit the impact of [self-reporting](http://www.sciencebrainwaves.com/the-dangers-of-self-report/), [motivated recall](https://www.researchgate.net/publication/264332643) and [reference group effects](https://en.wikipedia.org/wiki/Reference_group). For example, rather than asking 'do people get to choose their own projects' I could ask 'of the people I met today, which of them are currently working on a project that they chose'. In theory this will lead to more accurate answers.
 
 I'm not going to attempt to make some kind of scoring system - I'm using this structure mainly to ensure that I actually pay attention to all of the important areas.
 
