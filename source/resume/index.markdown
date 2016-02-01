@@ -23,6 +23,8 @@ footer: true
 
 * Invited as a resident at the Recurse Center.
 
+* Helped release Light Table as an open-source project.
+
 ## Consultant
 ### May 2009 – Nov 2013
 
