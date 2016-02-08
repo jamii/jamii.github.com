@@ -34,7 +34,7 @@ Highlighted projects:
 
 * Built a prototype replacement for the core trading engine at the Smarkets betting exchange: 10x less code, 40x better throughput, 10x better 99% latency.
 
-* Built a LaTeX aware search engine to power latexsearch.com. Covers the entire Springer library - a corpus of >8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
+* Built a LaTeX aware search engine to power latexsearch.com. Covers the entire Springer library - more than 8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
 
 ## Student at Recurse Center
 ### Oct 2012 – Dec 2012
