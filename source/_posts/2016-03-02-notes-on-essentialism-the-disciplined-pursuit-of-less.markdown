@@ -54,9 +54,9 @@ For a book about essentialism, it has an awful lot of filler. All the best advic
 
 Schedule regular periods of time to think, whether that's a day every month to think about your life or ten minutes every hour to plan your work. Put it in your calender, use a pomodoro timer, whatever. During those periods:
 
-* Remind yourself of your 'essential intent' - the concrete, completable, inspirational goal that takes priority over everything else.
-* Reflect on how you spent the last period and whether that was the *best* way to make progress towards the goal.
-* Decide how to spend the next period of time.
-* Have a cup of tea. Look out the window. Don't check your email.
+* __Remind__ yourself of your 'essential intent' - the concrete, completable, inspirational goal that takes priority over everything else.
+* __Reflect__ on how you spent the last period and whether that was the *best* way to make progress towards the goal.
+* __Decide__ how to spend the next period of time.
+* Have a cup of __tea__. Look out the window. Don't check your email.
 
 That's it. Being explicit about goals and making time to reflect and correct course is 90% of this book. The rest is noise. Not worthless, but not worthwhile enough to spend time reading.
