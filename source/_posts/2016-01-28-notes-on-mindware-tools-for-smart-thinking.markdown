@@ -236,7 +236,7 @@ Rough SD percentiles for normal dist (one side): 34% 14% 2% 0.1%
 
 __Need some sort of intuitive Bayesian update. If a meal from a restaurant is heavenly, your posterior estimate of the mean meal from that restaurant should go up, but not all the way up to the meal itself, and the difference between meal value and size of update is larger as the meal gets more extreme. Declining returns from deliciousness on beliefs :)__
 
-Surprising stats. Odds of an American aged 25-60 being in top 1% income in a given year > 0.110. Odds of same for 6 consecutive years are 0.006. Income is much more variable than we think, especially at the high end. Similarly, while many people are on welfare at any one time, few people are on welfare for many consecutive years.
+Surprising stats. Odds of an American aged 25-60 being in top 1% annual income at least once in their life > 0.110. Odds of same for 6 consecutive years are 0.006. Income is much more variable than we think, especially at the high end. Similarly, while many people are on welfare at any one time, few people are on welfare for many consecutive years.
 
 Summary:
 
