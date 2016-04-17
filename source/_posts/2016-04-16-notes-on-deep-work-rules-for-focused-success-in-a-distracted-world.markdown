@@ -6,6 +6,8 @@ comments: true
 categories:
 ---
 
+http://smile.amazon.com/dp/B00X47ZVXM/
+
 __Given the authors credentials, I would read all of the brain science in this book at the level of newspaper reporting - interesting, but wants expert confirmation. However the conclusions they draw from that science are, in my anecdotal experience, self-evident, so the book is still valuable.__
 
 ## Deep work is valuable
