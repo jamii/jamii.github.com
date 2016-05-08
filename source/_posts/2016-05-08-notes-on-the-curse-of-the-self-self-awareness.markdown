@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Notes on 'The Curse of the Self: Self-Awareness"
+title: "Notes on 'The Curse of the Self: Self-Awareness, Egotism, and the Quality of Human Life'"
 date: 2016-05-08 13:37
 comments: true
 categories:
