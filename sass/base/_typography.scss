@@ -8,11 +8,6 @@ $heading-font-family: "Fjalla One", "Georgia", "Helvetica Neue", Arial, NanumBar
 $header-title-font-family: $heading-font-family !default;
 $header-subtitle-font-family: $serif !default;
 
-.heading {
-  font-family: $heading-font-family;
-}
-.sans { font-family: $sans; }
-.serif { font-family: $serif; }
 .mono { font-family: $mono; }
 
 body > header h1 {
