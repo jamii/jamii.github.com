@@ -90,11 +90,11 @@ Depending on how long ago you broke up with maths, you may need to brush up on t
 
 You won't live long enough to learn more than a tiny fraction of all there is to know. Ideas have costs in the time it takes to learn them, the amount of maintenance required to remember them and the amount of effort it takes to apply them. Prefer ideas that have a high power-to-cost ratio. Some of my personal favourites:
 
-* __Randomised algorithms__ are often faster, simpler and easier to understand than the best deterministic algorithms. [The Power of Two Random Choices](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.8277) gives a laundry list of important applications for one simple idea. [Probability and Computing](www.amazon.com/Probability-Computing-Randomized-Algorithms-Probabilistic/dp/0521835402/) covers the entire field from the absolute basics of probability to the most sophisticated modern applications.
+* __Randomised algorithms__ are often faster, simpler and easier to understand than the best deterministic algorithms. [The Power of Two Random Choices](http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.25.8277) gives a laundry list of important applications for one simple idea. [Probability and Computing](http://www.amazon.com/Probability-Computing-Randomized-Algorithms-Probabilistic/dp/0521835402/) covers the entire field from the absolute basics of probability to the most sophisticated modern applications.
 
 * __Entropy__ is a very simple concept that governs compression and error-correcting codes, without which modern communications would be impossible. [A Mathematical Theory of Communication](http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf) managed to lay the foundations for an entire field whilst still being readable by anyone with a basic knowledge of probability.
 
-* __The possible-worlds model__ is a powerful way to reason about distributed algorithms. [Using Reasoning about Knowledge to Analyze Distributed Systems](www.cs.cornell.edu/home/halpern/papers/usingrak.pdf) introduces the model and shows how it simplifies reasoning about a variety of famous algorithms and impossibility proofs.
+* __The possible-worlds model__ is a powerful way to reason about distributed algorithms. [Using Reasoning about Knowledge to Analyze Distributed Systems](http://www.cs.cornell.edu/home/halpern/papers/usingrak.pdf) introduces the model and shows how it simplifies reasoning about a variety of famous algorithms and impossibility proofs.
 
 * __Denotational design__ is a technique for designing composable abstractions. While it is commonly used, the only explicit description I have encountered is in [Denotational design with type class morphisms](http://conal.net/papers/type-class-morphisms/). For a real world example see [Constraint Propagation - Models, Techniques, Implementation](http://www.gecode.org/papers/Tack_PhD_2009.pdf) which smoothly transitions from a simple mathematical model of finite-domain constraints to one of the faster constraint solvers in the world.
 
@@ -107,4 +107,3 @@ Play around. Don't limit yourself to learning 'official' theory - discover and i
 Teach somebody. The best way to really understand something is to try and explain it to someone else.
 
 Enjoy yourself. Life is too short not to.
-
