@@ -340,4 +340,4 @@ __The overall case that intelligence is more mutable than generally believed see
 
 __The chapter 'Raising your child's intelligence... and your own' did not in fact discuss raising intelligence in adults. Come to think of it, I don't think there was any discussion in the entire book of whether intelligence is mutable in adults.__
 
-__I am certainly convinced now that much more research into early life interventions is warranted. If the examples here aren't just cherry-picked flukes then the potential knock-on benefits for society are huge.__
+__I am certainly convinced now that much more research into early life interventions is warranted. If the examples here aren't just cherry-picked flukes then the potential knock-on benefits for society far outweigh the costs.__
