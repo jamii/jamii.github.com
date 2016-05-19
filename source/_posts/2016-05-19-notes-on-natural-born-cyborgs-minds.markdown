@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Notes on 'Natural-Born Cyborgs: Minds"
+title: "Notes on 'Natural-Born Cyborgs: Minds, Technologies, and the Future of Human Intelligence'"
 date: 2016-05-19 12:28
 comments: true
 categories: 
