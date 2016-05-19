@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Rationally choosing a life"
+title: "Rationally choosing a life: part I"
 date: 2016-01-26 14:42
 comments: true
 categories:
