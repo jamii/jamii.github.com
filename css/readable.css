@@ -1,0 +1,161 @@
+body {
+  padding: 0px 64px 64px 64px;
+  color: #333333;
+  background-color: #ffffff;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+@media (max-width: 785px) {
+  body {
+    padding: 0px 32px 64px 32px;
+  }
+}
+
+.container {
+  max-width: 30em;
+  margin: 0 auto;
+  font-size: 20px;
+}
+
+body blockquote {
+  border-left: 2px solid #333333 !important;
+}
+
+article {
+  font-size: 1em;
+  line-height: 1.6em;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 800;
+  font-family: Helvetica,sans-serif;
+}
+
+h1 {
+  font-size: 1.6em;
+  line-height: 1.25em;
+}
+
+h2 {
+  font-size: 1.2em;
+  line-height: 1.51em;
+}
+
+h3 {
+  font-size: 1em;
+  line-height: 1.66em;
+}
+
+a {
+  text-decoration: underline;
+  font-weight: normal;
+}
+
+a,
+a:visited,
+a:hover,
+a:active {
+  color: #0085a1;
+}
+
+* {
+  max-width: 100%;
+  height: auto;
+}
+
+p,
+code,
+pre,
+blockquote,
+figure,
+.wp-caption {
+  margin: -10px -10px 20px -10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+p > img:only-child,
+p > a:only-child > img:only-child,
+.wp-caption img,
+figure img {
+  display: block;
+}
+
+img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.caption,
+.wp-caption-text,
+figcaption {
+  font-size: 0.9em;
+  line-height: 1.48em;
+  font-style: italic;
+}
+
+code,
+pre {
+  white-space: pre;
+  overflow-x:scroll
+}
+
+blockquote {
+  padding: 0;
+  padding-left: 16px;
+}
+
+ul,
+ol {
+  padding: 0;
+}
+
+ul {
+  padding-left: 30px;
+  list-style: disc;
+}
+
+ol {
+  padding-left: 30px;
+  list-style: decimal;
+}
+
+.post-link {
+  padding-bottom: 10px;
+}
+.post-link a {
+  text-decoration: none;
+  color: #333333;
+}
+.post-link a:focus,
+.post-link a:hover {
+  color: #0085a1;
+}
+.post-link .post-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+nav {
+  margin: 42px 0 42px 0;
+}
+nav ul {
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  vertical-align: middle;
+}
+nav li {
+  display: inline;
+}
+nav a,
+nav a:visited {
+  text-decoration: none;
+  color: #333333;
+}
+nav a:focus,
+nav a:hover {
+  color: #0085a1;
+}

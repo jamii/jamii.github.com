@@ -2,14 +2,11 @@
 layout: base
 ---
 
-{% include header.html type="post" %}
-
 <div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <article role="main" class="blog-post">
-	      {{ content }}
-	    </article>
-    </div>
-  </div>
+  <header>
+    <h1>{% if page.title %}{{ page.title }}{% else %}<br/>{% endif %}</h1>
+  </header>
+  <article role="main">
+    {{ content }}
+  </article>
 </div>

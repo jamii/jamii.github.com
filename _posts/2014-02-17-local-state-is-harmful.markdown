@@ -263,7 +263,7 @@ Creating a component returns a nested map of all the state in all the subcompone
 
 Uniform access to all state makes it easy to write generic functions to eg view the entire object graph or shutdown every component.
 
-```
+``` clj
 (defprotocol Poke
   (poke [this]))
 
@@ -322,4 +322,3 @@ Several examples exist of using these principles to quickly produce simple, powe
 Most of our questions about code are questions about time, state and causality. Our existing tools do not lend much support in answering those questions. Following these principles makes it easier to develop better tools.
 
 I would also speculate that a large part of the [frustration](http://www.youtube.com/watch?v=ayPD0U_FO4Y) that people experience with computers is a result of opaque abstractions which prevent users from being able to connect cause and effect when the machine misbehaves.
-
