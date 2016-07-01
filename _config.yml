@@ -70,3 +70,6 @@ prose:
           element: "checkbox"
           label: "Publish"
           help: "Check to publish post, uncheck to hide."
+
+sass:
+  style: compressed
