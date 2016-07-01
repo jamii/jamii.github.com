@@ -1,14 +1,9 @@
-.bundle
-.DS_Store
+# project
+_site
 .sass-cache
-.gist-cache
-.pygments-cache
-_deploy
-public
-sass.old
-source.old
-source/_stash
-source/_includes/screen.css
-vendor
-node_modules
-source/stylesheets/screen.css
+.vagrant
+
+# general
+.DS_Store
+Thumbs.db
+ehthumbs.db

@@ -1,0 +1,156 @@
+@import url("pygment_highlights.css");
+
+body {
+  font-family: 'Lora', 'Times New Roman', serif;
+  font-size: 18px;
+  color: #404040;
+  position: relative;
+  background: #FFF;
+}
+p {
+  line-height: 1.5;
+  margin: 30px 0;
+}
+p a {
+  /* text-decoration: underline */
+  color: #008AFF;
+}
+h1,h2,h3,h4,h5,h6 {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 800;
+}
+a {
+  color: #008AFF;
+}
+a:hover,
+a:focus {
+  color: #0085a1;
+}
+blockquote {
+  color: #808080;
+  font-style: italic;
+}
+blockquote p:first-child {
+  margin-top: 0;
+}
+hr.small {
+  max-width: 100px;
+  margin: 15px auto;
+  border-width: 4px;
+  border-color: inherit;
+  border-radius: 3px;
+}
+
+::-moz-selection {
+  color: white;
+  text-shadow: none;
+  background: #0085a1;
+}
+::selection {
+  color: white;
+  text-shadow: none;
+  background: #0085a1;
+}
+img::selection {
+  color: white;
+  background: transparent;
+}
+img::-moz-selection {
+  color: white;
+  background: transparent;
+}
+
+img {
+  max-width: 100%;
+}
+
+.navbar-custom {
+  background: white;
+  border-bottom: 0px;
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.navbar-custom .nav li {
+  float: left;
+}
+.navbar-custom .nav li a {
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.navbar-custom .navbar-brand,
+.navbar-custom .nav li a {
+  font-weight: 800;
+  color: #404040;
+}
+.navbar-custom .navbar-brand:hover,
+.navbar-custom .navbar-brand:focus ,
+.navbar-custom .nav li a:hover,
+.navbar-custom .nav li a:focus {
+  color: #0085a1;
+}
+
+.post-preview {
+  padding: 10px 0;
+  border-bottom: 0px;
+}
+.post-preview a {
+  text-decoration: none;
+  color: #404040;
+}
+.post-preview a:focus,
+.post-preview a:hover {
+  text-decoration: none;
+  color: #0085a1;
+}
+.post-preview .post-title {
+  margin: 0;
+  font-size: 18px;
+}
+.post-preview .post-entry {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.caption {
+  text-align: center;
+  font-size: 14px;
+  padding: 10px;
+  font-style: italic;
+  margin: 0;
+  display: block;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+table {
+  padding: 0;
+}
+table tr {
+  border-top: 1px solid #cccccc;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+table tr th {
+  font-weight: bold;
+  border: 1px solid #cccccc;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+table tr td {
+  border: 1px solid #cccccc;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+table tr th :first-child,
+table tr td :first-child {
+  margin-top: 0;
+}
+table tr th :last-child,
+table tr td :last-child {
+  margin-bottom: 0;
+}
