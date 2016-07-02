@@ -4,6 +4,7 @@ title: "Smarkets API documentation"
 date: 2010-07-30 06:16
 comments: true
 categories: project
+redirect_from: one/1280/511009/453845
 ---
 
 I want to write a little about the documentation system I wrote for the smarkets API. The main concern I had with the documentation was that it would be incorrect or become out of sync with the code, especially since I didn't really understand the system when I started documenting it. To prevent this I built a couple of documentation tools that have paid for themselves many times over.

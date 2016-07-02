@@ -10,7 +10,7 @@ Don't lynch me just yet :)
 
 <!--more-->
 
-Picture a tradiional webapp. We have a number of stateless workers connected to a stateful, relational database. This is a setup with a number of excellent properties:
+Picture a traditional webapp. We have a bunch of stateless workers connected to a stateful, relational database. This is a setup with a number of excellent properties:
 
 * All state can be queried using a uniform api - SQL. This enables flexible ad-hoc exploration of the application state as well as generic UIs like [django admin](https://docs.djangoproject.com/en/dev/ref/contrib/admin/)
 * Every item of state has a unique and predictable name by which it can be identified - a unique key in the table.

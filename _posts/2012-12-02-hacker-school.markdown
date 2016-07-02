@@ -10,7 +10,7 @@ I've spent the last ten weeks or so at [Hacker School](https://www.hackerschool.
 
 <!--more-->
 
-So here is my goal - to create better tools for the problems I regularly encounter. My focus is on building distributed systems and p2p networks but I suspect that these tools will be generally useful. When working as a freelancer I am necessarily constrained to using proven ideas and techniques because the risk assumed is not mine. Hacker School is a chance for me to explore some more far-out ideas. These ideas are drawn primarily from two places: the [Viewpoint Research Institute](http://vpri.org/) and the [Berkeley Order Of Magnitude](boom.cs.berkeley.edu/) project.
+So here is my goal - to create better tools for the problems I regularly encounter. My focus is on building distributed systems and p2p networks but I suspect that these tools will be generally useful. When working as a freelancer I am necessarily constrained to using proven ideas and techniques because the risk assumed is not mine. Hacker School is a chance for me to explore some more far-out ideas. These ideas are drawn primarily from two places: the [Viewpoint Research Institute](http://vpri.org/) and the [Berkeley Order Of Magnitude](http://boom.cs.berkeley.edu/) project.
 
 ## Viewpoint Research Institute
 

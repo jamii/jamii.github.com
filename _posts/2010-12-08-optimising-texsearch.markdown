@@ -4,6 +4,7 @@ title: "Optimising texsearch"
 date: 2010-12-08 06:16
 comments: true
 categories: project
+redirect_from: one/1291/799313/731344
 ---
 
 [Texsearch](https://github.com/jamii/texsearch) is a search engine for LaTeX formulae. It forms part of the backend for [latexsearch.com](http://latexsearch.com) which indexes the entire Springer corpus. It is also crazy slow, until today.
