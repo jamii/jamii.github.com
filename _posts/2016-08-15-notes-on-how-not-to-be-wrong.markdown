@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Notes on 'How Not To Be Wrong'"
+title: "Notes on 'How Not To Be Wrong: The Power of Mathematical Thinking'"
 date: 2016-08-15 17:00
 comments: true
 categories: 
