@@ -6,11 +6,11 @@ comments: true
 categories: 
 ---
 
-https://smile.amazon.com/Good-They-Cant-Ignore-You/dp/1455509124/
+<https://smile.amazon.com/Good-They-Cant-Ignore-You/dp/1455509124/>
+
+(Author of [Study Hacks](http://calnewport.com/blog/) and professor of CS at Georgetown.)
 
 How do people end up loving what they do? Counterpoint to 'follow your passion'. 
-
-Author of [Study Hacks](http://calnewport.com/blog/) and professor of CS at Georgetown. 
 
 'Rules':
 

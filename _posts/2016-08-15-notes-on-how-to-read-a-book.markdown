@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-https://smile.amazon.com/How-Read-Book-Touchstone-book-ebook/dp/B004PYDAPE
+<https://smile.amazon.com/How-Read-Book-Touchstone-book-ebook/dp/B004PYDAPE>
 
 Reading well is a skill, one that most people have not developed.
 

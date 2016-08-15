@@ -6,7 +6,7 @@ comments: true
 categories: 
 ---
 
-https://smile.amazon.com/gp/product/B00G3L6JQ4/
+<https://smile.amazon.com/gp/product/B00G3L6JQ4/>
 
 Not so much notes as a glowing recommendation. There's nothing new in here if you already have a mathematical background, but it's a beautiful example of how to actually ground mathematics in real-world examples. It's very probability/statistics heavy, which I much prefer to the existing triangle-heavy school syllabus. All the ideas are introduced using concrete, realistic examples.
 

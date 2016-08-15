@@ -6,7 +6,9 @@ comments: true
 categories: 
 ---
 
-https://smile.amazon.com/gp/product/184767769X Business writer. 
+<https://smile.amazon.com/gp/product/184767769X>
+
+(Business writer.)
 
 Early theories of behaviour, both in psychology and economics, based around extrinsic motivation - carrot and stick. Assume that people need oversight and external pressure to work, would otherwise slack off. 
 
