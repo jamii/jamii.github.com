@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Notes on 'So Good They Can't Ignore You: Why Skills Trump Passion in the Quest for Work You Love'"
-date: 2016-06-17 17:00
+date: 2016-08-15 17:00
 comments: true
 categories: 
 ---

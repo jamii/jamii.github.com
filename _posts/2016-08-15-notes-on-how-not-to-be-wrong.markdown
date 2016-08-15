@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Notes on 'How Not To Be Wrong'"
-date: 2016-06-17 17:00
+date: 2016-08-15 17:00
 comments: true
 categories: 
 ---

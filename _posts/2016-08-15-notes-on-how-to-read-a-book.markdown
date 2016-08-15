@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Notes on 'How To Read a Book'"
-date: 2016-06-17 17:00
+date: 2016-08-15 16:59
 comments: true
 categories: 
 ---
