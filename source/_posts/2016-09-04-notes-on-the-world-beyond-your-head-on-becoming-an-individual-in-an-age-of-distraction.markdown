@@ -1,7 +1,9 @@
 ---
-layout: "post"
-title: "Notes on 'The World Beyond Your Head: On Becoming an Individual in an Age of Distraction'"
-date: "2016-08-25 01:47"
+layout: post
+title: >-
+  Notes on 'The World Beyond Your Head: On Becoming an Individual in an Age of
+  Distraction'
+date: '2016-09-04 12:46'
 ---
 
 <https://smile.amazon.com/gp/product/B00O0G1A6S/>
@@ -199,6 +201,6 @@ __I really wanted to like this book.__
 
 __I can follow along as far as the link between skill, agency and individuality. Reminds me of [making beliefs pay rent in anticipated experience](http://lesswrong.com/lw/i3/making_beliefs_pay_rent_in_anticipated_experiences/), in that developing real skill requires engaging with some external reality (although not necessarily one as 'real' as the author might like - developing extreme skill at, say, Starcraft is just as challenging as anything else). Reality is a thing that can be understood, predicted and manipulated, and learning to do so in any particular domain grants new agency.__ 
 
-__But, ironically, most of the ideas in the book do not produce anticipated experience, and are not concrete enough to be falsified. I admittedly didn't engage with every part of the book, but in the earlier parts where I made a strong effort to understand the author I kept running into confusions of terms. Ideas were connected by an appealing aesthetic similarity that wasn't grounded in actual prediction or observation. The book is too attached to the representations and abstractions it's using and forgets to map them back to reality to check that it's still working.__
+__But, ironically, most of the ideas in the book do not produce anticipated experience, and are not concrete enough to be falsified. I admittedly didn't engage with every part of the book, but in the earlier parts where I made a strong effort to understand the author I kept running into confusions of terms. Ideas were connected by an appealing aesthetic similarity that wasn't grounded in actual prediction or observation. The book is too attached to the representations and abstractions it's using and forgets to map them back to reality to check that they still work.__
 
 __Worse, most of the argument is just disguised moralizing. Eg 'authentic' is used to mean direct or immediate, but later takes on a tone of moral value. Who wants to have inauthentic experiences? Around the middle the language becomes downright insulting and it devolves into a get-off-my-lawn. Disappointing.__
