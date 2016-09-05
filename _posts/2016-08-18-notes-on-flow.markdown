@@ -98,7 +98,7 @@ Rules for being autotelic:
 * pay attention to what is happening
 * learn to enjoy immediate experience
 
-> Few things are sadder than encountering a person who knows exactly what he should dod, yet cannot muster enough energy to do it.
+> Few things are sadder than encountering a person who knows exactly what he should do, yet cannot muster enough energy to do it.
 
 Paradox of choice wrt to lifestyle, goals, purpose.
 
