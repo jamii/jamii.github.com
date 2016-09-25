@@ -320,10 +320,72 @@ Students preferred to memorize rules rather than practice with Jape. No other re
 
 10 science teachers. Five problems in Word, where knowledge of underlying implementation would allow easy solution. 
 
-Most subjects resorted to trial and error, and out-loud gave incorrect explanations of underlying mechanics. 
+Most subjects resorted to trial and error, and out-loud gave incorrect explanations of underlying mechanics. No attempts to falsify their models.
 
 Proposes that experiments in programming would produce similar results. 
 
-__Wonder if this relates to confirmation bias - people don't tend to try to falsify their mental models.__
-
 ### 2000
+
+[Uncovering effects of programming paradigms: Errors in two spreadsheet systems](http://www.ppig.org/sites/default/files/2000-PPIG-12th-tukiainen.pdf)
+
+Want to see if changing naming scheme in spreadsheets from individual cells to named blocks of cells changes the kinds of errors that users make. 154 1st year undergrads, various subjects. Four different spreadsheet tasks, given in various orders. Compared Excel vs Basset (home-grown system). Errors are categorised by author.
+
+Lower number of errors for some tasks, higher for others. No clear numbers for categories.
+
+[Tools for observing study behaviour](http://www.ppig.org/sites/default/files/2000-PPIG-12th-thomas.pdf)
+
+Tool for recording student interactions with a Smalltalk environment. 
+
+[The influence of the psychology of programming on a language design: Project status report](http://www.ppig.org/sites/default/files/2000-PPIG-12th-pane.pdf)
+
+Developed a language based on review of past psychology of programming results. Experimented with different forumulations of boolean queries. Found confusion over 'AND', precedence/grouping and users totally ignoring parens.
+
+[The effect of programming language on error rates of novice programmers](http://www.ppig.org/sites/default/files/2000-PPIG-12th-mciver.pdf)
+
+GRAIL vs LOGO. 26 1st year undergrads, no experience. Similar exercises for both groups, but not identical. 
+
+Fewer errors for GRAIL. Difference larger for syntax errors than for logic errors. Presumably graded by author.
+
+[Some problems of programming in robotics](http://www.ppig.org/sites/default/files/2000-PPIG-12th-bilotta.pdf)
+
+Theorising about how to teach robotics to children.
+
+[Programmer education in Arts and Humanities course degree](http://www.ppig.org/sites/default/files/2000-PPIG-12th-gabriele.pdf)
+
+Questionnaire given to 14 students. Self-reported background / computer use. Programming quiz. 
+
+Structured interview given to ? students assessing learning style, development process. 
+
+Concludes that sample is too small to say anything of interest.
+
+[On the use of functional and interactional approaches for the analysis of technical review meetings](http://www.ppig.org/sites/default/files/2000-PPIG-12th-dastous.pdf)
+
+Transcribed 7 design meetings. Cut up into speech acts, classified according to coding scheme developed *during analysis*. Classifies into 5 kinds of exchanges, using unclear methodology. 
+
+[How do people check polymorphic types?](http://www.ppig.org/sites/default/files/2000-PPIG-12th-yang.pdf)
+
+Questions: 34 what is the type of this, 34 why is this an error. 6 subjects, all of whom at least post-grad. Video categorised by the methods subjects used to answer, unclear methodology. 
+
+[How a visualization tool can be used: Evaluating a tool in a research & development project](http://www.ppig.org/sites/default/files/2000-PPIG-12th-lattu.pdf)
+
+Jeliot - animations for understanding algorithms. 
+
+Programming intro w/ 564 undergrads, didn't regularly use Jeliot. Short programming course w/ 37 high school students, course based around Jeliot. Semi-structured interviews for small numbers of students in each group, not explained how they were selected.
+
+Rejected by group 1 lecturer because of library issues. Students found UI confusing. 
+
+[Gotos Considered Harmful and Other Programmers' Taboos](http://www.ppig.org/sites/default/files/2000-PPIG-12th-marshall.pdf)
+
+Discusses how taboos spread socially. Argues that all the notable taboos are about crossing abstraction boundaries. 
+
+[Expertise and the comprehension of object-oriented programs](http://www.ppig.org/sites/default/files/2000-PPIG-12th-davies.pdf)
+
+16 novices. 16 experts. Showed a program for 2 or 10 seconds. Asked 5 comprehension questions. Experts perform better in both 2s and 10s cases. Data- and control- flow questions benefit from 10s more than function, operation and state questions.
+
+[Experiences with novices: The importance of graphical representations in supporting mental mode](http://www.ppig.org/sites/default/files/2000-PPIG-12th-george.pdf)
+
+Trying to teach beginners the mental representation of recursion used by experts. 
+
+49 students taught to use a diagrammatic representation of recursive programs. Test mental model by giving a list of possible solutions and asking which ones work correctly. Students who were tested with diagrams made fewer errors than students who tested with diagrams ie model was learned but failed to transfer to normal code.
+
+[Cognitive Dimensions: An experience report](http://www.ppig.org/sites/default/files/2000-PPIG-12th-kutar.pdf)
