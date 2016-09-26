@@ -33,7 +33,7 @@ General adaptability is lower in adults, but still high enough to reach expert l
 * Skeleton is fixed by adulthood. Eg ballet turnout has to be trained as young child. 
 * IQ is correlated with early success in chess and go, but not with expert performance (ie IQ gives contributes but is dominated in the long run by training)
 * Average IQ for scientists is higher than general population, but beyond that does not correlate with career success eg Nobel prize winners have average IQs for their field
-* __From another source - beginner vs expert climbers have similar distribution of body shapes, but expert vs world-class climbers show significant differences in eg tendon placement in the arms.__
+* __From [another source](https://books.google.de/books?id=5p7Y-oOnLe4C&lpg=PA216&vq=insertion%20point&pg=PA10#v=snippet&q=genetic&f=false) - beginner vs expert-but-not-world-class climbers have similar anthropometrics, but there is reasonable speculation that the pulling strength world-class climbers depends on lucky tendon placement.__
 
 Brain physically changes. London cabbies, mathematicians, glider pilots, musicians, divers display measurable increases in sizes of certain parts of the brain.
 
