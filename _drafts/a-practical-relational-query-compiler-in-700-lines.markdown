@@ -28,7 +28,7 @@ So I have employed a cunning solution to the problem of query planning - I don't
 
 Using GenericJoin reduces the entire planning problem to choosing the variable ordering, and it turns out that picking a not-terrible variable ordering by hand tends to be pretty easy. (And not-terrible is definitely the goal - I don't care so much if I don't get the best possible query plan every time, so long as I'm not getting the 7-orders-of-magnitude failures.)
 
-Take a simple query, such as:
+Take a simple SQL query:
 
 ``` sql
 SELECT MIN(mc.note) AS production_note,
