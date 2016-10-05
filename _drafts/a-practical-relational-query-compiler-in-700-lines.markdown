@@ -70,7 +70,7 @@ We can write this in Imp's awful-but-temporary syntax as:
 end
 ```
 
-Wherever a variable is repeated in more than one field this indicates a join. The compiler simply walks through the query and lists the variables in the order they are mentioned - `it, mi, t, title, production_year, mc, ct, note` - and emits code to run GenericJoin in that order. 
+Where repeating a variable in multiple places indicates a join on those fields. The compiler simply walks through the query and lists the variables in the order they are mentioned - `it, mi, t, title, production_year, mc, ct, note` - and emits code to run GenericJoin in that order. 
 
 GenericJoin is basically a backtracking search algorithm. That means that the time taken to execute this query is, to a first approximation, proportional to the number of values of `it` that fit the query, plus the number of values of `it, mi` that fit the query, plus the number of values of `it, mi, t` etc. In addition, aside from a constant setup cost, the query only allocates memory to store the final results. That's a mental model that I can work with.
 
