@@ -12,7 +12,7 @@ But the people who made those systems are pretty smart. If there was a way to so
 
 IO, transactions and write-concurrency [make up much of the code and runtime](http://nms.csail.mit.edu/~stavros/pubs/OLTP_sigmod08.pdf) in a typical database. So I built a single-writer, in-memory database and used immutable data-structures rather than undoing from a transaction log.
 
-SQL is a [large and complex language](https://mariadb.com/kb/en/sql-99/). Instead of building a entire language from scratch, I embedded a query language in [Julia](http://julialang.org/) and got the type system, data layout, memory management and standard library for free.
+SQL is a [large and complex language](https://mariadb.com/kb/en/sql-99/). Instead of building a entire language from scratch, I embedded a query language in [Julia](http://julialang.org/) and got the parser, type system, data layout, memory management and standard library for free.
 
 Rather than implementing an interpreter over a stable of query operators, I generate and compile a single instance of [GenericJoin](https://arxiv.org/pdf/1310.3314.pdf) per query, relying on JIT [codegen](http://docs.julialang.org/en/release-0.5/manual/metaprogramming/#generated-functions) and [specialization](https://arxiv.org/pdf/1209.5145v1.pdf) to remove the overheads of running in a dynamic language.
 
