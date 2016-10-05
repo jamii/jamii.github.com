@@ -18,7 +18,7 @@ Rather than implementing an interpreter over a stable of query operators, I gene
 
 So far none of this is particularly novel. One can barely move these days without stepping on a [new](http://hyper-db.de/) [in-memory](http://www.memsql.com/) [database](https://en.wikipedia.org/wiki/VoltDB). [LINQ](https://en.wikipedia.org/wiki/Language_Integrated_Query) has brought in-language queries firmly into the mainstream. [LogicBlox](http://www.logicblox.com/) and [EmptyHeaded](https://github.com/HazyResearch/EmptyHeaded) have demonstrated the practicality of the new multi-join algorithms. Research projects such as [LegoBase](http://www.vldb.org/pvldb/vol7/p853-klonatos.pdf) show the potential of high-level code generation.
 
-But I haven't talked about query planning yet. LegoBase delegates planning to an existing commercial database. EmptyHeaded expects to touch entire tables and so can get away with entropic bounds, but this doesn't cut it for OLTP queries. 
+But I haven't talked about query planning yet. LegoBase delegates planning to an existing commercial database, which is cheating. EmptyHeaded expects to touch entire tables and so can get away with entropic bounds, but this doesn't cut it for OLTP queries. 
 
 Production-quality OLTP databases employ [complex heuristic planners](http://www.neilconway.org/talks/optimizer/optimizer.pdf) which use statistical summaries of the database to estimate the costs of various possible query plans. Despite many, many programmer-years of tuning these planners still [occasionally barf out a 7-orders-of-magnitude mistake](http://db.cs.berkeley.edu/cs286/papers/queryopt-sigmodblog2014.pdf). 
 
