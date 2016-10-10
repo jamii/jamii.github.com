@@ -568,7 +568,7 @@ However, even the the current version, in all its grotesque splendor, is only [3
 
 ## Planning
 
-Earlier, the query compiler was magically handed a variable ordering with no explanation. Different variable orderings can produce vastly different performance. In the running example above we choose to search from `"Heavy Metal Classic"` and following the joins down to `artist_name`. If we had instead decided to start from `artist_name` and finish at `"Heavy Metal Classic"` we would have enumerated every single artist-track-album-playlist combination, before filtering the results down to the heavy metal playlist. That would be a disaster. 
+Earlier, the query compiler was magically handed a variable ordering with no explanation. Different variable orderings can produce vastly different performance. In the running example above we choose to search from `"Heavy Metal Classic"` and following the joins down to `artist_name`. If we had instead decided to start from `artist_name` and finish at `"Heavy Metal Classic"` we would have enumerated every single artist-track-album-playlist combination before filtering the results down to the heavy metal playlist. That would be a disaster. 
 
 Traditional OLTP databases employ [complex heuristic query planners](http://www.neilconway.org/talks/optimizer/optimizer.pdf) which use statistical summaries of the database to estimate the costs of various possible query plans. Even if I was capable of building such a planner by myself, the [opacity](http://s3-ap-southeast-1.amazonaws.com/erbuc/files/3eda2d05-9e83-48bd-948d-e61516be43df.pdf) and [fragility](http://web.eecs.umich.edu/~mozafari/php/data/uploads/sigmod_2015.pdf) of those systems would wreck my performance mental model.
 
@@ -576,7 +576,7 @@ Another problem is that many of the uses I have in mind for Imp require compilin
 
 So I have employed a cunning solution to the problem of automatic query planning - I don't do it.
 
-Using Triejoin reduces the entire planning problem to choosing the variable ordering, and it turns out that picking a not-terrible variable ordering by hand tends is not too hard. (And not-terrible is definitely the goal - I don't care so much if I don't get the best possible query plan every time, so long as I'm not getting the 7-orders-of-magnitude failures.)
+Using Leapfrog Triejoin (or any of it's [many](https://arxiv.org/abs/1504.04044) [cousins](http://dl.acm.org/citation.cfm?id=2764946)) reduces the entire planning problem to choosing the variable ordering, and it turns out that picking a not-terrible variable ordering by hand tends is not too hard. (And not-terrible is definitely the goal - I don't care so much if I don't pick the best possible query plan, so long as I'm not picking the 7-orders-of-magnitude disasters.)
 
 The compiler simply takes the variables in the order they are first mentioned (with constants moved to the top). The programmer can change the variable ordering by reordering the lines of the query. Reordering the lines can only change the performance of the query, not the results, so we still have a clean separation between the query logic and the execution plan and it's still much less work than writing out the imperative code by hand.
 
