@@ -203,7 +203,7 @@ All of this leads to a simple mental model for performance. The total amount of 
 
 At least, that seems simple to me after a few hours of writing queries. The benchmarks later test how well I'm able to actually reason about performance using this mental model.
 
-## Queries (in reality)
+## Queries (in practice)
     
 The description above was somewhat simplified. There are a number of additional optimizations and workarounds to be added before the benchmarks begin.
 
