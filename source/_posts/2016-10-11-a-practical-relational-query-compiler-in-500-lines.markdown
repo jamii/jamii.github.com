@@ -298,7 +298,7 @@ Earlier we assumed the query compiler was given an order in which to explore the
 
 Different variable orderings can produce vastly different performance. The example query started at `playlist_id` and finished at `artist_name`. If it had instead started at `artist_name` and finished at `playlist_id` it would have enumerated every single artist-track-album-playlist combination before filtering the results down to the heavy metal playlist. That would be a disaster. 
 
-Traditional OLTP databases employ [complex heuristic query planners](http://www.neilconway.org/talks/optimizer/optimizer.pdf) which use statistical summaries of the database to estimate the costs of various possible query plans. Making these reliable requires many programmer-years of careful tuning and even then, they still occasionally fumble an [order of magnitude or seven](http://db.cs.berkeley.edu/cs286/papers/queryopt-sigmodblog2014.pdf). 
+Traditional OLTP databases employ [complex heuristic query planners](http://www.neilconway.org/talks/optimizer/optimizer.pdf) which use statistical summaries of the database to estimate the costs of various possible query plans. Making these reliable requires many programmer-years of careful tuning and even then they still occasionally fumble an [order of magnitude or seven](http://db.cs.berkeley.edu/cs286/papers/queryopt-sigmodblog2014.pdf). 
 
 Even if I was capable of building such a planner by myself, I would have to sacrifice my goal of *predictable* performance.
 
