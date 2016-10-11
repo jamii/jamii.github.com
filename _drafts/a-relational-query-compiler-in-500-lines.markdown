@@ -629,7 +629,7 @@ You can find the dataset [here](http://homepages.cwi.nl/%7Eboncz/job/imdb.tgz), 
 
 The full results are [here](https://docs.google.com/spreadsheets/d/1X3kBUYrTZSBfUPzJ2DLtdjp97rcPBE-AKner5KUzScc/edit?usp=sharing). 
 
-![Bar chart of results](img/job-graph.png)
+![Bar chart of results](/img/job-graph.png)
 
 Examining the outlying [queries](https://gist.github.com/jamii/c36a0036503be18834a2127ba4e2e02c) and [their plans](https://explain.depesz.com/s/R628) my judgment is that, contrary to their claims of innocence, the author deliberately crafted them to confuse Postgres with cross-constraint correlations. Many of the queries contain correlations that might realistically come up (eg between `company.country_code = "[jp]"` and `name.name LIKE "%Yu%"`) but the worst outliers have silly redundant constraints.
 
