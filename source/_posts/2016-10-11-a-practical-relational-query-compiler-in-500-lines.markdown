@@ -66,7 +66,7 @@ That's all thats needed to support queries. The [remaining 150 lines](https://gi
 Let's take a simple SQL query.
 
 ``` sql
-SELECT artist.name
+SELECT track.name, artist.name
 FROM playlist, playlist_track, track, album, artist
 WHERE playlist.name = 'Heavy Metal Classic'
   AND playlist.id = playlist_track.playlist
