@@ -374,3 +374,5 @@ There are three things that I think are worth taking away from this experiment:
 3. Automatic query planning might not be essential for every use-case. It certainly makes sense for interactive usage, and for cases where you are splicing user input into a query. But in cases where the queries are fixed and you have a rough idea of what the data looks like, it's possible to gain many of the benefits of a query compiler without the opacity of a full query planner.
 
 I have a plenty more ideas for the query compiler and language, but I think for the next month or two I'm going to switch focus to the other side of Imp - building interactive GUIs on top of relations and views.
+
+_Thanks to Lindsey Kuper and Joe Edelman for comments, and to Michael Malis for advice on tuning Postgres._
