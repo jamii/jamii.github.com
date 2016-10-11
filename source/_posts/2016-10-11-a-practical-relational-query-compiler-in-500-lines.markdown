@@ -1,7 +1,7 @@
 ---
-layout: "post"
-title: "A relational query compiler in 500 lines of code"
-date: "2016-09-16 16:20"
+layout: post
+title: A practical relational query compiler in 500 lines of code
+date: '2016-10-11 20:02'
 ---
 
 [Imp](https://github.com/jamii/imp/) needed a relational database that is easy to modify and extend but fast enough to power real applications. 
