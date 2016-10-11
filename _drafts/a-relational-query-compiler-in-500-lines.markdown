@@ -627,7 +627,11 @@ You can find the dataset [here](http://homepages.cwi.nl/%7Eboncz/job/imdb.tgz), 
 * I run Postgres queries with `EXPLAIN (ANALYZE, BUFFERS)` and fail the benchmark if any query has a buffer miss i.e. all reported times are for fully buffered data.
 * Yes, I ran `VACUUM` and `ANALYZE` before benchmarking.
 
-The full results are [here](https://docs.google.com/spreadsheets/d/1X3kBUYrTZSBfUPzJ2DLtdjp97rcPBE-AKner5KUzScc/edit?usp=sharing). On 12 queries Imp is 1.0-6.3x slower than Postgres. On 100 queries Imp is faster than Postgres, usually by 1-10x but with a few outliers of up to 867x. Examining the outlying [queries](https://gist.github.com/jamii/c36a0036503be18834a2127ba4e2e02c) and [their plans](https://explain.depesz.com/s/R628) my judgment is that, contrary to their claims of innocence, the author deliberately crafted them to confuse Postgres with cross-constraint correlations. Many of the queries contain correlations that might realistically come up (eg between `company.country_code = "[jp]"` and `name.name LIKE "%Yu%"`) but the worst outliers have silly redundant constraints.
+The full results are [here](https://docs.google.com/spreadsheets/d/1X3kBUYrTZSBfUPzJ2DLtdjp97rcPBE-AKner5KUzScc/edit?usp=sharing). 
+
+<iframe src="https://docs.google.com/spreadsheets/d/1X3kBUYrTZSBfUPzJ2DLtdjp97rcPBE-AKner5KUzScc/pubhtml?gid=1683406048&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+
+Examining the outlying [queries](https://gist.github.com/jamii/c36a0036503be18834a2127ba4e2e02c) and [their plans](https://explain.depesz.com/s/R628) my judgment is that, contrary to their claims of innocence, the author deliberately crafted them to confuse Postgres with cross-constraint correlations. Many of the queries contain correlations that might realistically come up (eg between `company.country_code = "[jp]"` and `name.name LIKE "%Yu%"`) but the worst outliers have silly redundant constraints.
 
 My interpretation of the results is that, by omitting most of the features that Postgres provides Imp manages a large constant-factor performance advantage, which it then uses to cushion the impact of naive query planning. Exactly how much cushioning is going on is hard to tell from such an uncontrolled experiment. A useful follow-up would be to extract variable orderings from [LogicBlox](http://www.logicblox.com/), which uses the same join algorithm, and run them in Imp to see how much performance a commercial-quality planner buys. 
 
