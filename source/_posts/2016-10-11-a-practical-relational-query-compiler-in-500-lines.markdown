@@ -4,7 +4,7 @@ title: A practical relational query compiler in 500 lines of code
 date: '2016-10-11 20:02'
 ---
 
-[Imp](https://github.com/jamii/imp/) needed a relational database that is easy to modify and extend but fast enough to power real applications. 
+[Imp](https://github.com/jamii/imp/) needed a relational database that is simple to modify and extend but fast enough to power real applications. 
 
 Relational databases are usually complicated beasts. Even SQLite, a relatively lightweight database, is [116,000 lines of code](https://www.sqlite.org/testing.html). It's [btree implementation](http://www.sqlite.org/src/artifact/7a45743fb947c89b) alone is almost 10,000 lines, and the [core of the query plan interpreter](http://www.sqlite.org/src/artifact/f43aa96f2efe9bc8) is another 7000 lines. At 100 lines of correct code per day, that's half a year of work just for those two files.
 
