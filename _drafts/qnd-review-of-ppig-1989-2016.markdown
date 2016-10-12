@@ -389,3 +389,27 @@ Trying to teach beginners the mental representation of recursion used by experts
 49 students taught to use a diagrammatic representation of recursive programs. Test mental model by giving a list of possible solutions and asking which ones work correctly. Students who were tested with diagrams made fewer errors than students who tested with diagrams ie model was learned but failed to transfer to normal code.
 
 [Cognitive Dimensions: An experience report](http://www.ppig.org/sites/default/files/2000-PPIG-12th-kutar.pdf)
+
+Design of real-time temporal logic language using cognitive dimensions.
+
+[Cognitive Dimensions of Use Cases: Feedback from a student questionnaire](http://www.ppig.org/sites/default/files/2000-PPIG-12th-cox.pdf)
+
+Questionnaire on UML use cases, covering cognitive dimensions. 14 students.
+
+[An assessment of visual representations for the 'flow of control'](http://www.ppig.org/sites/default/files/2000-PPIG-12th-chattratichart.pdf)
+
+Testing whether to use arrows, lines or juxtaposition for control flow. 84 students. Given maze in each style and have to follow paths. Measured response time. Arrows were fastest and most accurate.
+
+[A framework for knowledge: Analysing high school students' understanding of data modelling](http://www.ppig.org/sites/default/files/2000-PPIG-12th-holmboe.pdf)
+
+How well are mental representations transmitted to students via verbal discussions? 3x groups of 7-9 high school students, oral interview + written questionnaire, questions on syllabus material.
+
+High school students suck at definitions. 
+
+[A Cognitive Dimensions view of the differences between designers and users of theorem proving assistants](http://www.ppig.org/sites/default/files/2000-PPIG-12th-kadoda.pdf)
+
+Questionnaire sent to users and designers of a prover assistant. Answers on numerical scale. Minor differences in responses between the two groups.
+
+[A Cognitive Dimensions questionnaire optimised for users](http://www.ppig.org/sites/default/files/2000-PPIG-12th-blackwell.pdf)
+
+Generalised CD questionnaire. Tested on users of various systems. Not clear whether this is useful.
