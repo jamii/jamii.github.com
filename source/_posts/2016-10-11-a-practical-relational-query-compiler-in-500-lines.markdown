@@ -343,7 +343,7 @@ This preserves the simple mental model and doesn't require much more work than w
 
 ## Benchmarks
 
-I translated 112 queries from the [Join Order Benchmark](http://www.vldb.org/pvldb/vol7/p853-klonatos.pdf) into Imp and benchmarked them against Postgres. 
+I translated 112 queries from the [Join Order Benchmark](http://www.vldb.org/pvldb/vol9/p204-leis.pdf) into Imp and benchmarked them against Postgres. 
 
 This is in no way intended to be a direct comparison to Postgres - the two systems are so wildly different on pretty much every axis. Instead, I'm using Postgres as the bar for 'fast enough'. If Imp can keep up with Postgres on a real dataset then it's fast enough to be interesting.
 

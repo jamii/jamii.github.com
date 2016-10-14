@@ -413,3 +413,41 @@ Questionnaire sent to users and designers of a prover assistant. Answers on nume
 [A Cognitive Dimensions questionnaire optimised for users](http://www.ppig.org/sites/default/files/2000-PPIG-12th-blackwell.pdf)
 
 Generalised CD questionnaire. Tested on users of various systems. Not clear whether this is useful.
+
+### 2001
+
+[Using a Graphical Design Tool for Formal Specification](http://www.ppig.org/sites/default/files/2001-PPIG-13th-snook.pdf)
+
+Adapt UML for formal specs. No evaluation.
+
+[The Usability of Formal Specification Representations](http://www.ppig.org/sites/default/files/2001-PPIG-13th-khazaei.pdf)
+
+51 students, 4 questions, each a choice of two implementations of simple problem. After four weeks of Z classes, given same set of questions described in Z.
+
+Claims strong shift in approach, but just eyeballing the numbers doesn't look like much.
+
+[The Science of Web-Programming](http://www.ppig.org/sites/default/files/2001-PPIG-13th-stone.pdf)
+
+Functional programming in templates. Maybe misunderstood, but seems incredibly trivial.
+
+[The Model Matters: Constructing and Reasoning with Heterarchical Structural Models](http://www.ppig.org/sites/default/files/2001-PPIG-13th-diaper.pdf)
+
+Compares 4 formal modeling methods. Evaluated directly by authors on a single example. Prefer tables over trees.
+
+[The Coach - Supporting students in the area of error reports](http://www.ppig.org/sites/default/files/2001-PPIG-13th-paine.pdf)
+
+Smalltalk env. Made a 'coach' with list of recent actions and error messages. No evaluation yet.
+
+[The Application of reflective Practitioner to Software Engineering](www.ppig.org/sites/default/files/2001-PPIG-13th-hazzan.pdf)
+
+Advocates for using this practice. Not totally clear on process or goal, but seems related to the problem of not begin able to teach implicit knowledge.
+
+[Team Performance Factors in Distributed Collaborative Software Development](http://www.ppig.org/sites/default/files/2001-PPIG-13th-hause.pdf)
+
+Comparing two teams of students, high vs low performance. Coded email and irc histories. 
+
+Concludes that communication is important.
+
+[Some Evidence for Graphical Readership, Paradigm Preference, and the Match-Mismatch Conjecture in Graphical Programs](http://www.ppig.org/sites/default/files/2001-PPIG-13th-chattratichart.pdf)
+
+Experiments with graphical languages.
