@@ -451,3 +451,70 @@ Concludes that communication is important.
 [Some Evidence for Graphical Readership, Paradigm Preference, and the Match-Mismatch Conjecture in Graphical Programs](http://www.ppig.org/sites/default/files/2001-PPIG-13th-chattratichart.pdf)
 
 Experiments with graphical languages.
+
+Different graphical layouts for programs. 21 students tested on comprehension of graphical vs textual. 60 students tested on comprehension of different graphical layouts. No main effect in either.
+
+Additional cognitive skills test, no correlation with main experiment.
+
+[Salvation for Bricoleurs](http://www.ppig.org/sites/default/files/2001-PPIG-13th-yeshno.pdf)
+
+Switching between RLT and LTR writing in Word is confusing. Gave students an explicit conceptual model. 
+
+Control group exam was under different conditions. Used to explain their better performance.
+
+[Research Agenda for Computer Science Education](http://www.ppig.org/sites/default/files/2001-PPIG-13th-holmboe.pdf)
+
+Argues for more empirical research in CSE.
+
+[Observations of student working practices in an online distance education learning environment in relation to time](http://www.ppig.org/sites/default/files/2001-PPIG-13th-logan.pdf)
+
+Patterns in working hours for remote learners in an OU course.
+
+[Native-End User Languages: A Design Framework](http://www.ppig.org/sites/default/files/2001-PPIG-13th-patil.pdf)
+
+Plans for end-user programming in languages other than English.
+
+[Long Term Comprehension of Software Systems: A Methodology for Study](http://www.ppig.org/sites/default/files/2001-PPIG-13th-douce.pdf)
+
+> there is little in a way of a conclusion, other than the common oft repeated call of, ‘we
+need to do more research in this area
+
+[Human and "human-like" type explanations](http://www.ppig.org/sites/default/files/2001-PPIG-13th-yang.pdf)
+
+Comparing human approach to explaining type errors to approach of authors' new type-checker. Coded by author, without explanation.
+
+[Evaluation of the Cognitive Dimensions Questionnaire and Some Thoughts about the Cognitive Dimensions of Spreadsheet Calculation](http://www.ppig.org/sites/default/files/2001-PPIG-13th-tukiainen.pdf)
+
+Gave (translation of) general CD questionnaire to 10 spreadsheet users. 
+
+[Evaluating a new programming language](http://www.ppig.org/sites/default/files/2001-PPIG-13th-clarke.pdf)
+
+CD questionnaire to evaluate new language, given to 5 professional programmers.
+
+[Designing a Programming Language for Home Automation](http://www.ppig.org/sites/default/files/2001-PPIG-13th-blackwell.pdf)
+
+Media Cubes. Physical cubes that correspond to (dataflow?) operators. Placed together to create program. Provides direct referencing eg place cube on tv to reference tv.
+
+Iota.HAN. ML / Pi-calc based language.
+
+[Cognitive Dimensions Profiles: A Cautionary Tale](http://www.ppig.org/sites/default/files/2001-PPIG-13th-britton.pdf)
+
+Ignoring some cognitive dimensions in analysis can lead to missing effects on those dimensions.
+
+[An Open-Source Analysis Schema for Identifying Software Comprehension Processes](http://www.ppig.org/sites/default/files/2001-PPIG-13th-obrien.pdf)
+
+Protocol for analyzing spoken transcripts to determine whether programmers are understanding a given program by comparing against preexisting domain knowledge or by recognizing patterns of code.
+
+[A Study of Human Solutions in eXtreme Programming](http://www.ppig.org/sites/default/files/2001-PPIG-13th-gittins.pdf)
+
+Mostly XP advocacy. Little in the way of actual numbers.
+
+[A phenomenographic view on the socio-cultural activity theory in research concerning university students' learning of computer science in an internationally distributed environment](http://www.ppig.org/sites/default/files/2001-PPIG-13th-berglund.pdf)
+
+Planned data collection from student projects.
+
+["It's just like the whole picture, but smaller": Expressions of gradualism, self-similarity, and other pre-conceptions while classifying recursive phenomena](http://www.ppig.org/sites/default/files/2001-PPIG-13th-levy.pdf)
+
+Studying language high-school students use.
+
+### 2002
