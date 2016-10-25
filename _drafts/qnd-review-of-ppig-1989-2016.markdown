@@ -518,3 +518,101 @@ Planned data collection from student projects.
 Studying language high-school students use.
 
 ### 2002
+
+[Shared Data or Message-Passing - A Human Factor in Technical Choices?](http://www.ppig.org/sites/default/files/2002-Sodan-Capretz-mbti.pdf)
+
+How do people choose between the two? Give parallel programming problems to students along with Myers-Brigg test. 
+
+Hugely forking paths. Only 0-3 students per MBTI / shared-mv-messaging intersection. 
+
+[What is Programming?](http://www.ppig.org/sites/default/files/2002-PPIG-14th-blackwell.pdf)
+
+Trying to define programming in light of rising end-users. 
+
+Ideas on difficulties - loss of direct manipulation, use of notation, abstraction.
+
+[Visualizing Roles of Variables to Novice Programmers](http://www.ppig.org/sites/default/files/2002-PPIG-14th-sajaniemi.pdf)
+
+Break variables into different types - constant, counter, control etc. Apply different graphics when visualizing program. 
+
+No evaluation.
+
+[The Roles Beacons Play in Comprehension for Novice and Expert Programmers](http://www.ppig.org/sites/default/files/2002-PPIG-14th-crosby.pdf)
+
+45 students. Given single line, judge how likely it is to have come from a binary search. Ratings(?) influenced by expertise.
+
+30 students. Given single line, map it to one of three algorithms. Unclear results.
+
+19 students. Shown algorithm and asked to comprehend/memorize (under eyetracker). Then given comprehension test. Divide sections of code into categories, normalize time in each category by screen area. Experienced group focused more on 'complex' category.
+
+[The Misplaced Comma: Programmers' Tales and Traditions](http://www.ppig.org/sites/default/files/2002-PPIG-14th-marshall.pdf)
+
+Speculation on programmer folklore.
+
+[Softening the Complexity of Intelligent Systems Programming](http://www.ppig.org/sites/default/files/2002-PPIG-14th-lynch.pdf)
+
+Students struggle surprisingly with symbolic systems. May be caused by overhead of manipulating data-structures. Suggest pattern-matching support in language to help.
+
+[Revitalising Old Thoughts: Class diagrams in Light of the Early Wittgenstein](http://www.ppig.org/sites/default/files/2002-PPIG-14th-holmboe.pdf)
+
+...
+
+[Programming Aptitude Testing as a Prediction of Learning to Program](http://www.ppig.org/sites/default/files/2002-PPIG-14th-tukiainen.pdf)
+
+33 students. No significant correlation between VB course final exam grade and high-school grades or SAT grades. Huoman programming aptitude test explains 25% of final grade. 
+
+[Patterns for HCI and Cognitive Dimensions: Two Halves of the Same Story?](http://www.ppig.org/sites/default/files/2002-PPIG-14th-fincher.pdf)
+
+HCI researcher compares pattern languages to cognitive dimensions. 
+
+[On Concurrency in Educational Software Authoring Systems](http://www.ppig.org/sites/default/files/2002-PPIG-14th-mostrom.pdf)
+
+Educators given animations of systems and asked to describe how they work. 
+
+No coding or statistical analysis. 
+
+Inexperienced subjects tended to describe each entity until influenced by external event. Suggests describing systems in terms of individual behaviors and cross-entity conditions for behavior change. 
+
+[Modelling Software Organisations](http://www.ppig.org/sites/default/files/2002-PPIG-14th-hales_0.pdf)
+
+Proposes agent-based modeling of software organizations. 
+
+[Making the Analogy: Alternative Delivery Techniques for First Year Programming Courses](http://www.ppig.org/sites/default/files/2002-PPIG-14th-dunican.pdf)
+
+Anecdotal reports from lecturer of first-year programming course.
+
+3 main problems. Students have no prior exposure to computational thinking, or even basic logic. No familiar experience to compare most programming concepts to. Unused to rigid syntax rules.  
+
+Suggests several analogies for use in teaching.
+
+[Learning Styles in Distance Education Students Learning to Program](http://www.ppig.org/sites/default/files/2002-PPIG-14th-logan.pdf)
+
+Distance learning students. Given questionnaire to assess learning style. 
+
+Many forks. Significant gender differences. 
+
+[HASTI: A Lightweight Framework for Cognitive Reengineering Analysis](http://www.ppig.org/sites/default/files/2002-PPIG-14th-walenstein.pdf)
+
+Presents simple computational model of human cognition. Suggests studying software tools in terms of how their use maps onto this model.
+
+[Evaluating Languages and Environments for Novice Programmers](http://www.ppig.org/sites/default/files/2002-PPIG-14th-mciver.pdf)
+
+Common-sense ideas for comparing languages and IDEs.
+
+[Dimension Driven Re-Design - Applying Systematic Dimensional Analysis](http://www.ppig.org/sites/default/files/2002-PPIG-14th-roast.pdf)
+
+Unclear. Map language spec into this tool and automatically compute CDs?
+
+[Class Libraries: A Challenge for Programming Usability Research](http://www.ppig.org/sites/default/files/2002-PPIG-14th-rodden.pdf)
+
+Library design should be treated as a usability problem.
+
+[A Study of Usability of Z Formalism Based on Cognitive Dimensions](http://www.ppig.org/sites/default/files/2002-PPIG-14th-triffitt.pdf)
+
+CD questionnaire given to students in Z course reveals many issues, too many to list here.
+
+[A Comparison of Empirical Study and Cognitive Dimensions Analysis in the Evaluation of UML Diagrams](http://www.ppig.org/sites/default/files/2002-PPIG-14th-kutar.pdf)
+
+Two different notations for UML diagrams. CD analysis favours one. Multiple-choice exam given to students shows no significant difference.
+
+### 2003
