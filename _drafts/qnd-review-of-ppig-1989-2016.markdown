@@ -616,3 +616,101 @@ CD questionnaire given to students in Z course reveals many issues, too many to 
 Two different notations for UML diagrams. CD analysis favours one. Multiple-choice exam given to students shows no significant difference.
 
 ### 2003
+
+[A development study of cogntive problems in learning to program](http://www.ppig.org/sites/default/files/2003-PPIG-15th-tucker.pdf)
+
+Anecdotal reports from programming course.
+
+Students can often give the correct code without understanding how it works. Often mislearn concepts, while making the correct noises.
+
+[An ethnography of XP practice](http://www.ppig.org/sites/default/files/2003-PPIG-15th-sharp-robinson.pdf)
+
+Very similar to previous paper.
+
+[Applying Cognitive load theory to computer science education](http://www.ppig.org/sites/default/files/2003-PPIG-15th-shaffer.pdf)
+
+Ideas for how to reduce cognitive load when teaching programming.
+
+[Characterising software comprehension for programmers in practice](http://www.ppig.org/sites/default/files/2003-PPIG-15th-buckley.pdf)
+
+Empirical studies of programmers tend to take place in very artificial settings. Plans to study programmers in-situ.
+
+[Cognitive Dimensions of tangible programming techniques](http://www.ppig.org/sites/default/files/2003-PPIG-15th-blackwell.pdf)
+
+At lexical level TUIs provide no advantage - too small a vocabulary, no established conventional symbols, no significant improvement in interaction speed or recall.
+
+At syntactic level - more possible kinds of relationships (position, orientation, proximity...), input-only interface (eg no undo).
+
+[Cognitive Dimensions questionnaire applied to visual languages evaluation - a case study](http://www.ppig.org/sites/default/files/2003-PPIG-15th-bobkowska.pdf)
+
+CD questionnaire given to 2(!) subjects. Both were critical of the questionnaire. 
+
+[Does the empirical evidence support visualisation?](http://www.ppig.org/sites/default/files/2003-PPIG-15th-oshea_0.pdf)
+
+Brief survey finds mixed support for visualization in programming tools.
+
+[First results of an experiment on using roles of variables in teaching](http://www.ppig.org/sites/default/files/2003-PPIG-15th-kuittinen.pdf)
+
+Categorize variables into one of 10 roles. 
+
+Taught 80 students with a) normal methods b) variable roles c) variable roles + animated simulator which shows roles. 
+
+Conclusion is confusing - raw data looks to me like roles group did worse in their final exam, but author claims that poor grading was the cause.
+
+[Investigating the influence of structure of user performance with UML interaction diagrams](http://www.ppig.org/sites/default/files/2003-PPIG-15th-kutar.pdf)
+
+Tries again with the two different UML notation. Three different studies show no difference in performance.
+
+[Java Debugging strategies in multi-representational environments](http://www.ppig.org/sites/default/files/2003-PPIG-15th-romero.pdf)
+
+Java debugger with ghetto eye-tracking. 49 novice students. Given spec and test cases, then given 10 mins in debugger to fix program. 
+
+Numbers are in a different paper. This one only discusses verbalizations from 2 subjects.
+
+Subjects started by reading code almost top-to-bottom. Debugging switched between forward and backward reasoning.
+
+[Little Languages for Little Robots](http://www.ppig.org/sites/default/files/2003-PPIG-15th-jadud.pdf)
+
+Teaching language design by working with students to build a language for programming Mindstorms robots.
+
+[Software Effort Estimation: unstructured group discussion as a method to reduce individual biasis](http://www.ppig.org/sites/default/files/2003-PPIG-15th-molokken.pdf)
+
+Groups of programmers produce less over-optimistic estimates than individual programmers (effect size 1.25).
+
+Seems similar to proposed mechanism in Superforecasters - if estimate is ideal time + list of things-that-might-go-wrong, then compiling things-that-might-go-wrong from whole group should provide better coverage.
+
+[Some parallels between empirical software engineering and research in human computer interaction](http://www.ppig.org/sites/default/files/2003-PPIG-15th-segal.pdf)
+
+Current experiments in psych-prog do not inform practice. HCI faced similar criticism in previous decades and changed focus from lab experiments to field studies. 
+
+[Team coordination through externalised mental imagery](http://www.ppig.org/sites/default/files/2003-PPIG-15th-petre.pdf)
+
+Several observed cases of mental imagery originating in one dev and spreading throughout an entire team. 
+
+[Tensions in the adoption and evolution of software quality management systems](http://www.ppig.org/sites/default/files/2003-PPIG-15th-sharp.pdf)
+
+4 companies. (4?) quality managers. Semi-structured interviews on department structure, history, responsibilities, practices. 
+
+Not clear what the conclusions are.
+
+[Towards authentic measures of program comprehension](http://www.ppig.org/sites/default/files/2003-PPIG-15th-good.pdf)
+
+Scheme for grading student explanations of programs.
+
+[Using cognitive dimensions to compare prototyping techniques](http://www.ppig.org/sites/default/files/2003-PPIG-15th-dearden.pdf)
+
+CD analysis suggests that existing categorization of prototyping tools into lo- and hi-fidelity is not enough. 
+
+Identifies 4 key activities: authoring, validation, implementation, confirmation. Not clear how these relate to categorization.
+
+[Using laddering and on-line self-report to elicit design rationale for software](http://www.ppig.org/sites/default/files/2003-PPIG-15th-sherlock.pdf)
+
+Design rationale may not be available as explicit, conscious, verbalizable knowledge. 
+
+Authors elicit rationale from students designing web pages using real-time self-reporting and laddering. (Laddering seems similar to root-cause analysis, but for exploring knowledge rather than causes).
+
+[Using the cognitive dimensions framework to measure the usability of a class library](http://www.ppig.org/sites/default/files/2003-PPIG-15th-clarke.pdf)
+
+Suggests a variant CD specifically designed for evaluating libraries.
+
+### 2004
