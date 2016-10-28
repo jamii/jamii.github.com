@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Vive Experiments
+title: Vive experiments
 date: '2016-10-28 16:58'
 ---
 
