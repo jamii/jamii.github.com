@@ -8,7 +8,7 @@ date: '2016-11-05 17:19'
 
 <https://smile.amazon.com/dp/B009AUYSWM/>
 
-2010. Authors are: prof of learning tech, founder of maritime software company, founder of educational software company.
+Published 2010. Authors are: prof of learning tech, founder of maritime software company, founder of educational software company.
 
 Two systems for decision-making: hot associative recall of similar situations / analogous situations / stories / proverbs etc vs cold calculation. Authors strongly put down cold system, without any real references or actual arguments. Reminiscent of [Blink](https://smile.amazon.com/Blink-Power-Thinking-Without-ebook/dp/B000PAAH3K/) in it's unbounded enthusiasm for the power of intuition. 
 
