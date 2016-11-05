@@ -1,7 +1,9 @@
 ---
-layout: "post"
-title: "Notes on 'The Future of Decision Making: How Revolutionary Software Can Improve the Ability to Decide'"
-date: "2016-11-05 16:58"
+layout: post
+title: >-
+  Notes on 'The Future of Decision Making: How Revolutionary Software Can
+  Improve the Ability to Decide'
+date: '2016-11-05 17:19'
 ---
 
 <https://smile.amazon.com/dp/B009AUYSWM/>
