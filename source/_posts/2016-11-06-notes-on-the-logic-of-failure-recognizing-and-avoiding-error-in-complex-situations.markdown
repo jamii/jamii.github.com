@@ -62,5 +62,5 @@ Efficiency diversity - if planning all the way to the goal is infeasible, focus 
 __I didn't really like the structuring of the book. Can we categorize these problems more helpfully?__
 
 * __Setting goals. Recognizing implicit goals, tradeoffs between goals, opportunity costs. Prioritization.__
-* __Ability to build/understand models. Most people have no experience of modeling even simple dynamical systems. Concepts like rates of change, feedback loops, phase spaces etc need to be learned and practiced.__
+* __Ability to build/understand models. Most people have no experience of modeling even simple dynamical systems. Concepts like rates of change, feedback loops, phase spaces etc need to be learned and practiced. Control trajectory, not position.__
 * __Tendency to build/update models. Failure to recognize complexity. Psychological obstacles to recognizing mistakes and reacting to them. Tendency towards bad explanations.__
