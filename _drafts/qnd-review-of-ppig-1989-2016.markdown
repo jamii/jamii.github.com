@@ -806,3 +806,135 @@ Coding scheme for program summaries shows ~80% agreement between 3 users. Sugges
 63 students. Record full source code every time they hit compile. More than half of errors accounted for by missing semicolons, misspelled variables, missing brackets, illegal start of expression, misspelled class. Majority of recompiles after error take place within 20s. Vast majority of recompiles after success take place after > 5 minutes. 
 
 ### 2005 
+
+[A Framework for Evaluating Qualitative Research Methods in Computer Programming Education](http://www.ppig.org/sites/default/files/2005-PPIG-17th-dunican.pdf)
+
+'Grounded Theory'. Framework for guiding qualitative research.
+
+[Attitudes Toward Computers, the Introductory Course and Recruiting New Majors: Preliminary Results](www.ppig.org/sites/default/files/2005-PPIG-17th-farkas.pdf)
+
+Computer literacy course. Computer Attitude Scale questionnaire. Attitudes became increasingly negative over the duration of the course.
+
+[Attuning: A Social and Technical Study of Artist-Programmer Collaborations](http://www.ppig.org/sites/default/files/2005-PPIG-17th-turner.pdf)
+
+Interviews with 4 programmers and 2 artists. Conclusions unclear.
+
+[Concretising Computational Abstractions: What works, what doesn't, and what is lost](http://www.ppig.org/sites/default/files/2005-PPIG-17th-kahn.pdf)
+
+ToonTalk. No body. 
+
+[Effects of Experience on Gaze Behavior during Program Animation](http://www.ppig.org/sites/default/files/2005-PPIG-17th-bednarik.pdf)
+
+18 high-school students in undergrad programming course. Animate three short programs. Comprehension task. Gaze-tracking.
+
+No significant variation in behaviour wrt experience.
+
+[Factors Affecting the Perceived Effectiveness of Pair Programming in Higher Education](http://www.ppig.org/sites/default/files/2005-PPIG-17th-chaparro.pdf)
+
+58 students pair-programming. Observation, questionnaires, semi-structure interviews, field notes. 
+
+Differences in skill level affect collaboration. Debugging tasks reported as particularly tiring / unenjoyable.
+
+[Graphical Visualisations and Debugging: A Detailed Process Analysis](http://www.ppig.org/sites/default/files/2005-PPIG-17th-romero.pdf)
+
+29 undergrads. 1 modification task, 1 comprehension task, 6 debugging tasks. 
+
+Forking paths. Questionable interpretations of results.
+
+[Introducing #Dasher, A Continuous Gesture IDE](http://www.ppig.org/sites/default/files/2005-PPIG-17th-church.pdf)
+
+Language model for writing C# with Dasher. No evaluation.
+
+[Mining Qualitative Behavioral Data from Quantitative Data: A Case Study from the Gender HCI Project](http://www.ppig.org/sites/default/files/2005-PPIG-17th-beckwith.pdf)
+
+27 male and 24 female subjects. Self-efficacy questionnaire. Spreadsheet with extensions for testing. 2 spreadsheets with bugs. 
+
+Female subjects had lower self-efficacy about debugging ability. Less likely to use new debugging features, although no difference in learning time. Introduced more new bugs, but also correlates highly with use of new debugging features.
+
+[Pair Programming: When and Why it Works](http://www.ppig.org/sites/default/files/2005-PPIG-17th-chong.pdf)
+
+Ethnographic study of pair programming at two companies. No results yet.
+
+[PP2SS - From the Psychology of Programming to Social Software](http://www.ppig.org/sites/default/files/2005-PPIG-17th-eisenstadt.pdf)
+
+No body.
+
+[Preliminary Study to Empirically Investigate the Comprehensibility of Requirements Specifications](http://www.ppig.org/sites/default/files/2005-PPIG-17th-carew.pdf)
+
+Pilot to study whether Java implementation of Irish electoral system is easier to understand than the legal language.
+
+8 software eng postgrads. Comprehension questionnaire. Java group scored worse and expressed more confusion and frustration in talk-aloud.
+
+[Psychometric Assessment of Computing Undergraduates](http://www.ppig.org/sites/default/files/2005-PPIG-17th-ivins.pdf)
+
+Aptitude Profile Test Series (sounds like an IQ test) administered to 34 students. Correlates 0.4 with exam results.
+
+Demographic survey of 197 students. Country of birth and first language significantly affecte exam results - non-english students fare worse. 
+
+APTS and demographic survey of 80 students. Students with prior experience in programming fared better. APTS correlates 0.3-0.4 with exam results.
+
+Notes sample bias - students that volunteered are much more motivated than those that didn't.
+
+[Rating Expertise in Collaborative Software Development](http://www.ppig.org/sites/default/files/2005-PPIG-17th-bryant.pdf)
+
+45 pair programmers asked to rate ability and experience for themselves and for peers. Unclear results.
+
+[Representation-Oriented Software Development: A Cognitive Approach to Software Engineering](http://www.ppig.org/sites/default/files/2005-PPIG-17th-sung.pdf)
+
+Deja vu. Published effectively the same paper a few years earlier.
+
+[Roles of Variables in Experts' Programming Knowledge](http://www.ppig.org/sites/default/files/2005-PPIG-17th-sajaniemi.pdf)
+
+13 professional programmers asked to sort variables into groups based on similarity. Claims that grouping agrees with roles, but not clearly falsifiable.
+
+[Short-Term Effects of Graphical versus Textual Visualisation of Variables on Program Perception](http://www.ppig.org/sites/default/files/2005-PPIG-17th-nevalainen.pdf)
+
+12 students. Field-dependency test. Taught variable roles. Visualisation of pascal program, asked to write program summaries. Questionnaire about tools.
+
+Unconvincing analysis.
+
+[Sidebrain: A Sidekick for the Programmer's Brain](http://www.ppig.org/sites/default/files/2005-PPIG-17th-sturdy.pdf)
+
+Tool that records stack of open tasks, notes and queue of pending tasks.
+
+(Particularly interesting, because I made a similar tool for myself but didn't use it for very long.)
+
+No evaluation.
+
+[Software Authoring as Design Conversation](http://www.ppig.org/sites/default/files/2005-PPIG-17th-woodcock.pdf)
+
+Talk-aloud of subjects working on sheep-dog game. No real results yet.
+
+[The influence of Intra-Team Relationships on the Systems Development Process: A Theoretical Framework of Intra-Group Dynamics](http://www.ppig.org/sites/default/files/2005-PPIG-17th-rosen.pdf)
+
+Proposes framework for studying social dynamics in teams. 
+
+[The Influence of Motivation and Comfort-Level on Learning to Program](http://www.ppig.org/sites/default/files/2005-PPIG-17th-bergin.pdf)
+
+57 students. Motivated Strategies For Learning Questionnaire. Modified version of Rosenberg Self-esteem questionnaire. Modified version of Computer Programming Self-Efficacy Scale.
+
+Samples test scores were representative of whole class.
+
+Intrinsic motivation and self-efficacy both correlated with performance at ~0.5.
+
+[The Programming Language as a Musical Instrument](http://www.ppig.org/sites/default/files/2005-PPIG-17th-blackwell.pdf)
+
+Argues that live coding is an interesting topic for PPIG.
+
+[The Psychology of Invention in Computer Science](http://www.ppig.org/sites/default/files/2005-PPIG-17th-leach.pdf)
+
+Mines existing published interviews with famous computer scientists for quotes on creativity.
+
+[The Role of Source Code within Program Summaries describing Maintenance Activities](http://www.ppig.org/sites/default/files/2005-PPIG-17th-oshea.pdf)
+
+Studying code excerpts from Java mailing lists. Couldn't reject the null hypothesis. Not sure I understand the null hypothesis anyway.
+
+[Theoretical Considerations on Navigating Codespace with Spatial Cognition](http://www.ppig.org/sites/default/files/2005-PPIG-17th-cox.pdf)
+
+Plans to study whether mental models of code build on existing spatial navigation strategies.
+
+[Using Roles of Variables in Teaching: Effects on Program Construction](http://www.ppig.org/sites/default/files/2005-PPIG-17th-byckling.pdf)
+
+20 students. Group 1 taught traditionally. Group 2 taught using roles. Group 3 taught using roles and animator. Only group 3 had any students who successfully completed programming task.
+
+### 2006
