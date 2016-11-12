@@ -714,3 +714,95 @@ Authors elicit rationale from students designing web pages using real-time self-
 Suggests a variant CD specifically designed for evaluating libraries.
 
 ### 2004
+
+[Roles of variables and strategic programming knowledge](http://www.ppig.org/sites/default/files/2004-PPIG-16th-byckling-doc.pdf)
+
+Variable roles again. No new results.
+
+[Programming without code: a work in-progress paper](http://www.ppig.org/sites/default/files/2004-PPIG-16th-brand_0.pdf)
+
+Proposal for natural language programming for kids.
+
+[Extreme programming: all of the elegance but none of the models?](http://www.ppig.org/sites/default/files/2004-PPIG-16th-bryant-doc.pdf)
+
+Plans for studying extreme programming. 
+
+[XP: Taking the psychology of programming to the eXtreme](http://www.ppig.org/sites/default/files/2004-PPIG-16th-bryant.pdf)
+
+Review of previous XP studies. 
+
+[Visual attention and representation switching in Java program debugging: a study using eye movement tracking](http://www.ppig.org/sites/default/files/2004-PPIG-16th-bednarik.pdf)
+
+Same as previous paper, but with a real eye-tracker this time. Similar results.
+
+[Understanding our students: incorporating the results of several experiments into a student learning environment](http://www.ppig.org/sites/default/files/2004-PPIG-16th-ratcliffe.pdf)
+
+Collaborative IDE for teaching. Anonymous group work was popular.
+
+[Towards the development of a cognitive model of programming: a software engineering proposal](http://www.ppig.org/sites/default/files/2004-PPIG-16th-traynor.pdf)
+
+Proposes teaching system that tracks students weaknesses down to the level of individual concepts. (Not unlike Khan academy).
+
+[PicoVis: a dynamic visualisation tool for simulating a Bluetooth communication environment enhancing student understanding](http://www.ppig.org/sites/default/files/2004-PPIG-16th-doyle.pdf)
+
+Bluetooth network simulation for teaching. No evaluation.
+
+[Metaphors we program by](http://www.ppig.org/sites/default/files/2004-PPIG-16th-douce.pdf)
+
+Many examples of metaphorical language used by devs.
+
+[Learning object-oriented programming](http://www.ppig.org/sites/default/files/2004-PPIG-16th-kaasboll.pdf)
+
+Anecdotal observation of students. Students were reluctant to draw object diagrams before coding. Instructor didn't approve of their modelling choices. 
+
+[Learning and using formal language](http://www.ppig.org/sites/default/files/2004-PPIG-16th-cox.pdf)
+
+36 psych students, later 64 vaguely-sourced adults. Tested on 'does regex match string' and 'make a regex to match this class'. Exposure to former doesn't improve performance in latter (but only 6 questions per person?).
+
+[Investigating patterns and task type correlations in open source mailing lists for programmer comprehension](http://www.ppig.org/sites/default/files/2004-PPIG-16th-oshea.pdf)
+
+Collected program snippets from Java mailing lists (mostly from bug reports and patches). Don't really follow the results.
+
+[Factors affecting course outcomes in introductory programming](http://www.ppig.org/sites/default/files/2004-PPIG-16th-wiedenbeck.pdf)
+
+75 students. Computer Programming Self-Efficacy Scale questionnaire. Program comprehension test. Program recall test. Weak correlations between self-efficacy at end of course and test scores. 
+
+[Evaluating algorithm animation for concurrent systems: a comprehension-based approach](http://www.ppig.org/sites/default/files/2004-PPIG-16th-hughes.pdf)
+
+Proposes evaluating understanding of concurrent systems with a particular talk-aloud protocol and coding system.
+
+[Dynamic rich-data capture and analysis of debugging processes](http://www.ppig.org/sites/default/files/2004-PPIG-16th-romero.pdf)
+
+Proposes using restricted focus viewer and other recording methods.
+
+[Design diagrams for multi-agent systems](http://www.ppig.org/sites/default/files/2004-PPIG-16th-lynch.pdf)
+
+Proposes an extension of UML to handle multiple agents.
+
+[CORBAview: a visualisation tool to aid in the understanding of CORBA-based distributed applications](http://www.ppig.org/sites/default/files/2004-PPIG-16th-ryan.pdf)
+
+Visualisation tool for CORBA. Records events, allows replay. No evaluation.
+
+[Comparison of three eye tracking devices in psychology of programming research](http://www.ppig.org/sites/default/files/2004-PPIG-16th-nevalainen.pdf)
+
+3 commercial eye-trackers. 12 subjects given program comprehension tests. Head-mounted device took longer to setup and was less accurate but allowed subjects to move around.
+
+[Aspects of cognitive style and programming](http://www.ppig.org/sites/default/files/2004-PPIG-16th-mancy.pdf)
+
+~150 students. Modified Witkin field-dependency test. Digit span test for working memory. Correlation to exam results 0.1-0.2 for working memory, 0.2-0.4 for field-independency.
+
+(Would effect of field-independency be explained away by spatial IQ?)
+
+[An Inter-Rater Reliability Analysis of Good's Program Summary Analysis Scheme](http://www.ppig.org/sites/default/files/2004-PPIG-16th-byckling.pdf)
+
+Coding scheme for program summaries shows ~80% agreement between 3 users. Suggests refinements to the scheme to reduce differences. 
+
+[An Examination of E-Commerce Homepage Design Guidelines by Measuring Eye Movements](http://www.ppig.org/sites/default/files/2004-PPIG-16th-tzanidou.pdf)
+
+11 subjects visit ecommerce pagers under eye-tracker. Self-reported data agreed with eye-tracker - users look at top-left or top-middle first.
+
+[A first look at novice compilation behavior using BlueJ](http://www.ppig.org/sites/default/files/2004-PPIG-16th-jadud.pdf)
+
+63 students. Record full source code every time they hit compile. More than half of errors accounted for by missing semicolons, misspelled variables, missing brackets, illegal start of expression, misspelled class. Majority of recompiles after error take place within 20s. Vast majority of recompiles after success take place after > 5 minutes. 
+
+### 2005 
