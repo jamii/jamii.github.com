@@ -1029,4 +1029,28 @@ Argues OSS communities need to be studied more.
 
 Survey of existing work on XP and pairing.
 
+[Agile Stories: Agile Systems and Narrative Research](http://www.ppig.org/sites/default/files/2006-Hunt.pdf)
+
+Anecdote about a programmer with poor communication skills.
+
+[A gentle overview of software visualisation](http://www.ppig.org/sites/default/files/2006-Petre.pdf)
+
+Does what it says on the tin.
+
+[Challenges, Motivations, and Success Factors in the Creation of Hurricane Katrina "Person Locator" Web Sites](http://www.ppig.org/sites/default/files/2006-PPIG-18th-scaffidi.pdf)
+
+Interviewed team leaders of 6 person locator websites. None looked for existing sites or teams before starting. All resisted aggregators combining their content.
+
+[An Experiment on the Effects of Program Code Highlighting on Visual Search for Local Patterns](http://www.ppig.org/sites/default/files/2006-PPIG-18th-hakala.pdf)
+
+21 students. Asked to find various program fragments. Two syntax highlighting schemes had no significant effect vs black-on-white control.
+
+[Abstraction levels in editing programs](http://www.ppig.org/sites/default/files/2006-PPIG-18th-sturdy.pdf)
+
+Comparing structured editing to text editing. No results yet. 
+
+[A Competence Model for Object-Interaction in Introductory Programming](http://www.ppig.org/sites/default/files/2006-PPIG-18th-bennedsen.pdf)
+
+Proposes hierarchy of understanding for OOP execution model. 125 students given questionnaire followed by test. Results appear to agree with hierarchy, but some questionable change to data before analysis. 
+
 ### 2007
