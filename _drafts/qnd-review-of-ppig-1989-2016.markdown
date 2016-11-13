@@ -938,3 +938,95 @@ Plans to study whether mental models of code build on existing spatial navigatio
 20 students. Group 1 taught traditionally. Group 2 taught using roles. Group 3 taught using roles and animator. Only group 3 had any students who successfully completed programming task.
 
 ### 2006
+
+[Cognitive Perspectives on the Role of Naming in Computer Programs](http://www.ppig.org/sites/default/files/2006-PPIG-18th-liblit.pdf)
+
+Unsurprising observations on names.
+
+[Comparing API Design Choices with Usability Studies: A Case Study and Future Directions](http://www.ppig.org/sites/default/files/2006-PPIG-18th-stylos.pdf)
+
+Plans to study general principles of api design rather than just specific apis.
+
+[Empirically Refining a Model of Programmers' Information-Seeking Behavior during Software Maintenance](http://www.ppig.org/sites/default/files/2006-PPIG-18th-buckley.pdf)
+
+2 programmers talk-aloud at work. Try to generalize from this a model of how programmers look for information.
+
+[Initial Experiences of Using Grounded Theory Research in Computer Programming Education](http://www.ppig.org/sites/default/files/2006-PPIG-18th-dunican.pdf)
+
+Still talking about grounded theory without yet reporting any results.
+
+[Metaphors we Program By: Space, Action and Society in Java](http://www.ppig.org/sites/default/files/2006-PPIG-18th-blackwell.pdf)
+
+Studying spatial and social metaphors in javadocs. Don't see any actual examples, just graphs.
+
+[Program Visualization: Comparing Eye-Tracking Patterns with Comprehension Summaries](http://www.ppig.org/sites/default/files/2006-PPIG-18th-bednarik.pdf)
+
+Does gaze predict comprehension? Highly forking, no strong signal.
+
+[Reading as an Ordinary and Available Skill in Computer Programming](http://www.ppig.org/sites/default/files/2006-PPIG-18th-rooksby.pdf)
+
+Ethnographic studies at software company. I don't really know how to summarize this, but it was interesting.
+
+READ
+
+[Stories from the Mobile Workplace: An Emerging Narrative Ethnography](http://www.ppig.org/sites/default/files/2006-PPIG-18th-hunt.pdf)
+
+Ethnographic study. No real information.
+
+[Subsetability as a New Cognitive Dimension?](http://www.ppig.org/sites/default/files/2006-PPIG-18th-dondero.pdf)
+
+Studying programming environments by the extent to which one can make useful programs without leaving various subsets of features.
+
+Demonstrates that eg hello world in C or Java involves a large subset of the language features.
+
+Arrange feature subsets as a lattice and examine what can be done in each subset.
+
+[Teaching Programming: Going beyond "Objects First"](http://www.ppig.org/sites/default/files/2006-PPIG-18th-sajaniemi.pdf)
+
+Object-first teaching leads to students who can't code for-loops. Proposes variable-first teaching - start with teaching variable roles and control flow.
+
+[Testing Programming Aptitude](http://www.ppig.org/sites/default/files/2006-PPIG-18th-dehnadi.pdf)
+
+Previous study noted that consistency of mental model in early tests was predictive of long-term success in programming courses. Criticized for being too vague to replicate. Introduces a new marking scheme that doesn't require marker judgment.
+
+[The Development Designer Perspective](http://www.ppig.org/sites/default/files/2006-PPIG-18th-white.pdf)
+
+15 devs and product managers interviewed on design decision process. Little input from professional designers during process. Main factor in decisions was consistency with existing design.
+
+[The Effect of Using Problem-Solving Tutors on the Self-Confidence of Students](http://www.ppig.org/sites/default/files/2006-PPIG-18th-kumar.pdf)
+
+Tutor program combines explanation with multiple-choice tests. Improvement in test results after use was significant but effect size is small.
+
+[Threshold for the Introduction of Programming: Providing Learners with a Simple Computer Model](http://www.ppig.org/sites/default/files/2006-PPIG-18th-khalife.pdf)
+
+Somewhat unclear. Talks about 'threhold concepts' - concepts that once learnt change the way the student views computing. Then presents a simplified model of a computer.
+
+[Towards understanding Source and Configuration Management tools as a method of introducing learners to the culture of software development](http://www.ppig.org/sites/default/files/2006-PPIG-18th-delaney.pdf)
+
+Proposes vocab for discussing scm in terms of Vygotskyian model. I don't actually see any vocab though.
+
+[Users' participation to the design process in a Free Open Source Software online community](http://www.ppig.org/sites/default/files/2006-PPIG-18th-barcellini.pdf)
+
+Studies Python Enhancement Proposals. Interviewed 10 active python community members. No obvious conclusions.
+
+[Why Don't They Do What We Want Them to Do](http://www.ppig.org/sites/default/files/2006-PPIG-18th-schwarz.pdf)
+
+Interviewed (all 60?) students. Asked why they didn't use state diagrams for their concurrent systems homework.
+
+Students who used state diagrams did better on their homework.
+
+Widespread reports that state diagrams take too much effort.
+
+[Collaboration in mature XP teams](http://www.ppig.org/sites/default/files/2006-Sharp.pdf)
+
+Ethnographic study of XP team. Nothing surprising.
+
+[Open source software communities: current issues](http://www.ppig.org/sites/default/files/2006-Detienne.pdf)
+
+Argues OSS communities need to be studied more.
+
+[XP and Pair Programming practices](http://www.ppig.org/sites/default/files/2006-Bryant.pdf)
+
+Survey of existing work on XP and pairing.
+
+### 2007
