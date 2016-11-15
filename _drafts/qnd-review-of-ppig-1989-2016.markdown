@@ -1054,3 +1054,383 @@ Comparing structured editing to text editing. No results yet.
 Proposes hierarchy of understanding for OOP execution model. 125 students given questionnaire followed by test. Results appear to agree with hierarchy, but some questionable change to data before analysis. 
 
 ### 2007
+
+[Usability Assessment of a UML-based Formal Modelling Method](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Razali.pdf)
+
+Model that combines UML and B. Compared to B alone. 41 students assigned comprehension and modification tasks. UML-B scored higher.
+
+10 students given CD questionnaire on UML-B.
+
+[The Learning of Recursive Algorithms from a Psychogenetic Perspective](http://www.ppig.org/sites/default/files/2007-PPIG-19th-daRosa.pdf)
+
+Give students recursive definition of a language, ask them various questions about it and then ask them to write various recursive functions on the language.
+
+Talks up the benefits of this approach but it's not clear to me from a quick reading what the difference is.
+
+[Student Attitude Towards Automatic and Manual Exercise and Evaluation Systems](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Tokola.pdf)
+
+Survey given to 455 students with 23% reply rate. Students trust automated systems more. Worried that human contact would be reduced.
+
+[SQ Minus EQ can Predict Programming Aptitude](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Wray.pdf)
+
+19 students given Autism Research Centres EQ and SQ tests. Both correlate with programming test (.44, -.45, p~=.05), combined score correlates more (.67, p=.002). (Combined score also known to correlate with autism spectrum).
+
+Suggested explanation is that high SQ-EQ makes students more likely to rack up hours messing with computers.
+
+[Spatial Ability and Learning to Program](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Jones.pdf)
+
+49 students in MSc IT. Mental rotation test correlates with success at 0.48. Acknowledges that students with high spatial ability are known to be more likely to pick engineering courses.
+
+[Problem Solving in Programming](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Gomes.pdf)
+
+Argues that students struggly in programming because they lack basic problem solving skills ala Polya. Propses tool that nudges students through the basic process eg making them list what data is known and what unknowns need to be solved.
+
+[Moods and Programmers' Performance](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Khan.pdf)
+
+Make 72 programmers watch short video clips before debugging test. Small effect on arousal axis, but poor power.
+
+[Introducing Learning into Automatic Program Comprehension](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Gerdt.pdf)
+
+Use machine learning for understanding programs. Example of extracting variable roles. Not clear what the learning algorithm is or how it's applied.
+
+[From Procedures to Objects: What Have We (Not) Done?](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Sajaniemi.pdf)
+
+Procedural to OO has been a big shift for teaching. Can't assume that psych results will carry over.
+
+Some of the that is claims are totally unstudied seem to have been published in previous PPIG papers. 
+
+[Expert strategies for dealing with complex and intractable problems](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Petre.pdf)
+
+In-field observation and interviews of 10 programmers working on large complex problems. No body.
+
+[Example of Using Narratives in Teaching Programming: Roles of Variables](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Timcenko.pdf)
+
+Anecdotal observations of teaching kids to program using narratives and variable roles - placing kids in the role of a particular variable and playing out live.
+
+[ESCAPE Meta Modelling in Software Engineering: When Premature Commitment is Useful in Representations](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Buckley.pdf)
+
+Advocates for process of explicitly stating models and (manually or automatically) looking for contradictions in reality to refine the model.
+
+Main example is software tool for expressing explicit models of how software operates. User maps model to code. Tool shows where system violates their model eg calls between two components that don't have a dependency in the model. 
+
+READ
+
+[Assisting Concept Location in Software Comprehension](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Cleary.pdf)
+
+Code search that is aware of documentation? Too much jargon, no idea what the tool actually does.
+
+[Analysing and Interpreting Quantitative Eye-Tracking Data in Studies of Programming: Phases of Debugging with Multiple Representations](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Bednarik.pdf)
+
+Eye-tracking data is hard to analyze. Complex tasks, difficult to map into simple components for hypothesis testing.
+
+Broke previous data into small chunks and looked at trends over time and switching patterns between activities. 
+
+[An Experiment on the Effects of Engagement and Representation in Program Animation Perception](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Nevalainen.pdf)
+
+PlanAni again. 24 students. Two tests under eye-tracking - 1) predict variable values 2) choose inputs to produce particular values.
+
+Various numbers produced but no idea what they were actually trying to find out.
+
+[An Experiential Report on the Limitations of Experimentation as a Means of Empirical Investigation](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Exton.pdf)
+
+Failed experiment. Subject sampling/participation messed up by other commitments. Much of the data is missing because subjects didn't get around to writing it down. Two groups behaved so differently in collaborative stage as to be effectively different experiments.
+
+[A Roles-Based Approach to Variable-Oriented Programming](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Sorva.pdf)
+
+Proposes language design to focus on variable roles.
+
+[A multidimensional framework for analysing collaborative design: emergence and balance of roles](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Detienne.pdf)
+
+No body.
+
+[A Coding Scheme Development Methodology Using Grounded Theory for Qualitative Analysis of Pair Programming](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Salinger.pdf)
+
+Attempting to use GT initially failed. Transcription of recording was impractical so directly annotated the video. Overwhelmed by possible choice of features because they had no actual goal. 
+
+Suggests choosing feature categories before starting coding, using structured names for concepts, making a UML model for results, pair coding.
+
+[A Categorization of Novice Programmers: A Cluster Analysis Study](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Lahtinen.pdf)
+
+Want to be able to group students by current skill level for better targeted teaching.
+
+Give a test to 254 students that follows Blooms Taxonomy. Cluster students by results - observed non-linear skill progression.
+
+### 2008
+
+[XP Team Psychology - An Inside View](http://www.ppig.org/sites/default/files/2008-PPIG-20th-lechner.pdf)
+
+[What Happens During Pair Programming](http://www.ppig.org/sites/default/files/2008-PPIG-20th-salinger.pdf)
+
+[Using Mapping Studies in Software Engineering](http://www.ppig.org/sites/default/files/2008-PPIG-20th-budgen.pdf)
+
+[Towards a Computer Interaction-Based Mood Measure Instrument](http://www.ppig.org/sites/default/files/2008-PPIG-20th-kahn.pdf)
+
+[Thinking about Thinking in Objects: Methods, Findings and Implications from a Psychological Perspective](http://www.ppig.org/sites/default/files/2008-PPIG-20th-exton.pdf)
+
+[The Stores Model of Code Cognition](http://www.ppig.org/sites/default/files/2008-PPIG-20th-douce.pdf)
+
+[The Importance of Cognitive and Usability Elements in Designing Software Visualization Tools](http://www.ppig.org/sites/default/files/2008-PPIG-20th-carneiro.pdf)
+
+[The Abstract is an Enemy: Alternative Perspectives to Computational Thinking](http://www.ppig.org/sites/default/files/2008-PPIG-20th-blackwell.pdf)
+
+[Structured Text Modification Using Guided Inference](http://www.ppig.org/sites/default/files/2008-PPIG-20th-church.pdf)
+
+[Scientists and Software Engineers: A Tale of Two Cultures](http://www.ppig.org/sites/default/files/2008-PPIG-20th-segal.pdf)
+
+[Observing Open Source Programmers' Information Seeking](http://www.ppig.org/sites/default/files/2008-PPIG-20th-sharif.pdf)
+
+[MBTI Personality Type and Student Code Comprehension Skill](http://www.ppig.org/sites/default/files/2008-PPIG-20th-greathead.pdf)
+
+[Intuition in Software Development Revisited](http://www.ppig.org/sites/default/files/2008-PPIG-20th-beynon.pdf)
+
+[Integrating Extreme Programming and User-Centered Design](http://www.ppig.org/sites/default/files/2008-PPIG-20th-hussain.pdf)
+
+[An MCL Algorithm Based Technique for Comprehending Spreadsheets](http://www.ppig.org/sites/default/files/2008-PPIG-20th-kankuzi.pdf)
+
+[A Study of Visualization in Introductory Programming](http://www.ppig.org/sites/default/files/2008-PPIG-20th-kasurinen.pdf)
+
+[A Loop is a Compression](http://www.ppig.org/sites/default/files/2008-PPIG-20th-milner.pdf)
+
+[A Longitudinal Study of Depth of Inheritance and its Effects on Programmer Maintenance Effort](http://www.ppig.org/sites/default/files/2008-PPIG-20th-creegan.pdf)
+
+[A Lightweight Systematic Literature Review of Studies about the Use of Pair Programming to Teach Introductory Programming](http://www.ppig.org/sites/default/files/2008-PPIG-20th-turner.pdf)
+
+[A Comparison Between Student and Professional Pair Programmers](http://www.ppig.org/sites/default/files/2008-PPIG-20th-plonka.pdf)
+
+### 2009 
+
+[Using computerized procedures for testing and training abstract comparative relations](http://www.ppig.org/sites/default/files/2009-PPIG-21st-vitale.pdf)
+
+[Good Programmers: Nature or Nurture? (The bed of Procrustes)](http://www.ppig.org/sites/default/files/2009-PPIG-21st-exton.pdf)
+
+[Types of Cooperation Episodes in Side-by-Side Programming](http://www.ppig.org/sites/default/files/2009-PPIG-21st-prechelt.pdf)
+
+[Software Architects: A Different Type of Software Practitioner](http://www.ppig.org/sites/default/files/2009-PPIG-21st-downey.pdf)
+
+[Mining Programming Language Vocabularies from Source Code](http://www.ppig.org/sites/default/files/2009-PPIG-21st-delorey.pdf)
+
+[Meta-analysis of the effect of consistency on success in early learning of programming](http://www.ppig.org/sites/default/files/2009-PPIG-21st-dehnadi_0.pdf)
+
+[Initial Exploration of Eye Movements in Collaborative Work: Case Pair Programming](http://www.ppig.org/sites/default/files/2009-PPIG-21st-pietinen.pdf)
+
+[Further Observation of Open Source Programmers’ Information Seeking](http://www.ppig.org/sites/default/files/2009-PPIG-21st-sharif.pdf)
+
+[Examining the Structural Features of Systems Developed in C++ and Java](http://www.ppig.org/sites/default/files/2009-PPIG-21st-english.pdf)
+
+[Design Requirements for an Architecture Consistency Tool](http://www.ppig.org/sites/default/files/2009-PPIG-21st-rosik.pdf)
+
+[Concrete Thoughts on Abstraction](http://www.ppig.org/sites/default/files/2009-PPIG-21st-nicholson.pdf)
+
+[Computer Code as a Medium for Human Communication: Are Programming Languages Improving?](http://www.ppig.org/sites/default/files/2009-PPIG-21st-dubochet.pdf)
+
+[Communication in Testing: Improvements for Testing Management](http://www.ppig.org/sites/default/files/2009-PPIG-21st-paakkonen.pdf)
+
+[Cognitive levels and Software Maintenance Sub-tasks](http://www.ppig.org/sites/default/files/2009-PPIG-21st-kelly.pdf)
+
+[Can Named Ranges Improve the Debugging Performance of Novice Spreadsheet Users?](http://www.ppig.org/sites/default/files/2009-PPIG-21st-mckeever.pdf)
+
+[An Evaluation of inline source code browsing](http://www.ppig.org/sites/default/files/2009-PPIG-21st-desmond.pdf)
+
+[A Course Dedicated to Developing Algorithmic Problem Solving Skills - Design and Experiment](http://www.ppig.org/sites/default/files/2009-PPIG-21st-muller.pdf)
+
+### 2010
+
+[A Cognitive Neuroscience Perspective on Memory for Programming Tasks](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Parnin.pdf)
+
+[A Logical Mind, not a Programming Mind: Psychology of a Professional End-User](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Blackwell.pdf)
+
+[Bricolage Programming in the Creative Arts](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-McLean.pdf)
+
+[Characterizing Comprehension of Concurrency Concepts](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Li.pdf)
+
+[Confirmation Bias in Software Development and Testing: An Analysis of the Effects of Company Size, Experience and Reasoning Skills](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Calikli.pdf)
+
+[Empirically-Observed End-User Programming Behaviors in Yahoo! Pipes](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Dinmore.pdf)
+
+[Enhancing Comprehension by Using Random Access Memory (RAM) Diagrams in Teaching Programming: Class Experiment](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Mselle.pdf)
+
+[Enhancing User-Centredness in Agile Teams: A Study on Programmer's Values for a better Understanding on how to Position Usability Methods in XP](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Leitner.pdf)
+
+[Evaluating Scratch to Introduce Younger Schoolchildren to Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Wilson.pdf)
+
+[Liveness in Notation Use: From Music to Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Church.pdf)
+
+[Perceived Self-Efficacy and APIs](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Daughtry.pdf)
+
+[Project Kick-off with Distributed Pair Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Rosen.pdf)
+
+[Students’ Early Attitudes and Possible Misconceptions about Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Moffat.pdf)
+
+[Teaching Novice Programmers Programming Wisdom](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Kaplan.pdf)
+
+[The Construction of the Concept of Binary Search Algorithm](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-daRosa.pdf)
+
+[The use of MBTI in Software Engineering](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Sach.pdf)
+
+[Usability Requirements of User Interface Tools](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Letondal.pdf)
+
+### 2011
+
+[Study attitudes and behaviour of CS1 students – two realities](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Ambrosio.pdf)
+
+[The cognitive dimensions questionnaire: adapting for non-expert users](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Kutar.pdf)
+
+[The influence of class structure on program comprehension](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Alardawi.pdf)
+
+[The programming-like-analysis of a innovative media tool](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Roast.pdf)
+
+[Understanding program complexity: an approach for study](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Douce.pdf)
+
+[Useful but tedious: An evaluation of mobile spreadsheets](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Flood.pdf)
+
+[User configurable machine vision for mobiles](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Stead.pdf)
+
+[Using formal logic to define the grammar for memory transfer language (MTL) on the mould of register transfer language (RTL) and high level languages](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Mselle.pdf)
+
+[What makes software engineers go that extra mile?](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Sach.pdf)
+
+[Why PPIG matters beyond the P](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Church.pdf)
+
+[Systematically Improving Software Reliability: Considering Human Errors of Software Practitioners](http://www.ppig.org/sites/default/files/PPIG2011_DC_Fuqun.pdf)
+
+[A case study on the usability of NXT-G programming language](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Nguyen.pdf)
+
+[An empirical study of the influence of OCL on early learners](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Khazei.pdf)
+
+[Automatic algorithm recognition based on programming schemas](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Taherkhani.pdf)
+
+[Class participation and shyness: affect and learning to program](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Rimmer.pdf)
+
+[Evaluation of multimedia stream processing modeling language from the perspective of cognitive dimensions](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Bobowska.pdf)
+
+[Investigation of qualitative human oracle costs](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Afshan.pdf)
+
+[Measurement and visualisation of software timing properties](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Merriam.pdf)
+
+[On the cognitive foundations of modularity](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Monteiro.pdf)
+
+[Origins of poor code readability](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Saha.pdf)
+
+[Programming with the user in mind](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Alexandron.pdf)
+
+[Robot dance: edutainment or engaging learning](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Martin.pdf)
+
+[Self-Reporting emotional experiences in computing lab sessions: an emotional regulation perspective](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Good.pdf)
+
+### 2012
+
+[A Field Experiment on Gamiﬁcation of Code Quality in Agile Development](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Prause.pdf)
+
+[A Study about Students’ Knowledge of Inductive Structures](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Rosa.pdf)
+
+[Computer Anxiety and the Big Five](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Crabbe.pdf)
+
+[Conducting Field Studies in Software Engineering: An Experience Report](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Yates.pdf)
+
+[Evaluating application programming interfaces as communication artefacts](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Afonso.pdf)
+
+[Evaluation of Subject-Specific Heuristics for Initial Learning Environments: A Pilot Study](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Mckay.pdf)
+
+[Exploring the design of compiler feedback](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Raffaillac.pdf)
+
+[Gaze Evidence for Different Activities in Program Understanding](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Sharma.pdf)
+
+[In search of practitioner perspectives on ‘good code’](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Ollis.pdf)
+
+[Investigating the role of programmers’ peripheral vision: a gaze-contingent tool and an experiment proposal](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Bednarik.pdf)
+
+[Learning Programming by using Memory Transfer Language (MTL) without the Intervention of an Instructor](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Mselle.pdf)
+
+[Observing Mental Models in Novice Programmers](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Bornat.pdf)
+
+[Schema Detection and Beacon-Based Classiﬁcation for Algorithm Recognition](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Taherkhani.pdf)
+
+[Sketching by Programming in the Choreographic Language Agent](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Church.pdf)
+
+[Some Reflections on Knowledge Representation in the Semantic Web](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Kirby.pdf)
+
+[Teaching Novices Programming Using a Robot Simulator: Case Study Protocol](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Major.pdf)
+
+[Thrashing, Tolerating and Compromising in Software Development](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Lopez.pdf)
+
+### 2013
+
+[Using meta-ethnography to synthesize research: A worked example of the relations between personality and software team processes](http://www.ppig.org/sites/default/files/2013-daSilva-Capretz-ESEM.pdf)
+
+### 2014
+
+[Applying Educational Data Mining to the Study of the Novice Programmer, within a Neo-Piagetian Theoretical Perspective](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Ahadi.pdf)
+
+[Google Sheets v Microsoft Excel: A Comparison of the Behaviour and Performance of Spreadsheet Users](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Mernagh.pdf)
+
+[Neo-Piagetian Theory and the Novice Programmer](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Teague.pdf)
+
+[Self-explaining from Videos as a Methodology for Learning Programming](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Aureliano.pdf)
+
+[A case of computational thinking: The subtle effect of hidden dependencies on the user experience of version control](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Church.pdf)
+
+[A cognitive dimensions analysis of interaction design for algorithmic composition software](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Bellingham.pdf)
+
+[Activation and the Comprehension of Indirect Anaphors in Source Code](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Lohmeier.pdf)
+
+[Affective Learning with Online Software Tutors for Programming](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Kumar.pdf)
+
+[Blinded by their Plight: Tracing and the Preoperational Programmer](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Teague-Lister.pdf)
+
+[Cognitive Flexibility and Programming Performance](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Leinikka.pdf)
+
+[Concept Vocabularies in Programmer Sociolects](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Rice2.pdf)
+
+[Developing Coding Schemes for Program Comprehension using Eye Movements](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Busjahn.pdf)
+
+[Educational Programming Languages: The Motivation to Learn with Sonic Pi](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Sinclair.pdf)
+
+[Evaluation of a Live Visual Constraint Language with Professional Artists](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Williams.pdf)
+
+[Exploring Core Cognitive Skills of Computational Thinking](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Ambrosio.pdf)
+
+[Exploring Creative Learning for the Internet of Things era](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Blackwell.pdf)
+
+[Exploring Problem Solving Paths in a Java Programming Course](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Hosseini.pdf)
+
+[Falling Behind Early and Staying Behind When Learning to Program](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Ahadi-Lister_0.pdf)
+
+[Ghosts of programming past, present and yet to come](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Boyatt.pdf)
+
+[Learning Syntax as Notational Expertise when using DrawBridge](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Stead.pdf)
+
+[Linking Linguistics and Programming: How to start?](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Rice1.pdf)
+
+[Nonvisual Visual Programming](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Lewis.pdf)
+
+[Reasoning about Complexity - Software Models as External Representations](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Lynch.pdf)
+
+[The Object-Relational impedance mismatch from a cognitive point of view](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Benvenuti.pdf)
+
+### 2015
+
+[An empirical investigation of code completion usage by professional software developers](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Marasoiu.pdf)
+
+[Analysing Java Identifier Names in the Wild](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Butler.pdf)
+
+[Confidence, command, complexity: metamodels for structured interaction with machine intelligence](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Sarkar-2.pdf)
+
+[Evaluation of Mental Workload and Familiarity in Human Computer Interaction with Integrated Development Environments using Single-Channel EEG](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Rostami.pdf)
+
+[Harmonious Authorship from Different Representations](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Basman.pdf)
+
+[Improving Readability of Automatically Generated Unit Tests](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Daka.pdf)
+
+[Intuitive NUIs for Speech Editing of Structured Content](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Isaac.pdf)
+
+[Tales from the Workshops: A sequence of vignettes, episodes, observations, and reflections on many years of trying to teach people programming](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Winder.pdf)
+
+[The construction of knowledge of basic algorithms and data structures by novice learners](http://www.ppig.org/sites/default/files/2015-PPIG-26th-daRosa.pdf)
+
+[The dream of a lifetime: an opportunity to shape how our children learn computing](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Peyton.pdf)
+
+[The impact of syntax colouring on program comprehension](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Sarkar.pdf)
+
+[The impact of Syntax Highlighting in Sonic Pi](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Dimitri.pdf)
+
+[Understanding code quality for introductory courses](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Stegeman.pdf)
