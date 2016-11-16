@@ -8,6 +8,12 @@ Only papers whose pdf is available from <http://www.ppig.org/library/paper>
 
 Title/link. Methodology. Conclusion. Read?
 
+opinionated
+
+next time less complete
+
+undirected data gathering. noise mining.
+
 ### 1989
 
 ### 1990 
@@ -1243,37 +1249,85 @@ Testing out systematic lit review with 1 student. Seems to work.
 
 [Using computerized procedures for testing and training abstract comparative relations](http://www.ppig.org/sites/default/files/2009-PPIG-21st-vitale.pdf)
 
+Subjects given two comparisons eg A>B and B>C and have to report what mapping from A,B,C to small,medium,large can be deduced. Success rates between 50% and 100% depending on class of problem.
+
+10 subjects. Three sessions. Small but significant increase in performance over time.
+
+10 subjects. Replaced middle session with 'training session' - same interface but explains answers. Near 100% success rates on last session.
+
 [Good Programmers: Nature or Nurture? (The bed of Procrustes)](http://www.ppig.org/sites/default/files/2009-PPIG-21st-exton.pdf)
+
+General discussion of nature vs nurture as it pertains to psychometrics. Doesn't really say anything specific about programming.
 
 [Types of Cooperation Episodes in Side-by-Side Programming](http://www.ppig.org/sites/default/files/2009-PPIG-21st-prechelt.pdf)
 
+Observation of 10 grad students learning Java. GT concepts again. 
+
 [Software Architects: A Different Type of Software Practitioner](http://www.ppig.org/sites/default/files/2009-PPIG-21st-downey.pdf)
+
+Interviewed software architects about projects. Found that they weren't really focused on the projects so the interviews were pointless.
 
 [Mining Programming Language Vocabularies from Source Code](http://www.ppig.org/sites/default/files/2009-PPIG-21st-delorey.pdf)
 
+Text-mining JDK. Doesn't seem to have any new results from their past paper.
+
 [Meta-analysis of the effect of consistency on success in early learning of programming](http://www.ppig.org/sites/default/files/2009-PPIG-21st-dehnadi_0.pdf)
+
+6 attempted replications of consistent-mental-model-predicts-programming-ability experiment. 
+
+First failure had too very high pass rates - almost all of the students were consistent. Second failure was a test given after the course - expect that a programming course should teach students to pass the test (this objection doesn't actually seem to me to make sense).
+
+Improved protocol, detailed in previous paper.
+
+Next four replications from author and collaborators. All seem to be somewhat successful. 
 
 [Initial Exploration of Eye Movements in Collaborative Work: Case Pair Programming](http://www.ppig.org/sites/default/files/2009-PPIG-21st-pietinen.pdf)
 
+Eye-tracking during pair programming. Method and results are not really clear.
+
 [Further Observation of Open Source Programmers’ Information Seeking](http://www.ppig.org/sites/default/files/2009-PPIG-21st-sharif.pdf)
+
+Yet more mailing list mining. Low response rate. No other interesting observations.
 
 [Examining the Structural Features of Systems Developed in C++ and Java](http://www.ppig.org/sites/default/files/2009-PPIG-21st-english.pdf)
 
+10 C++ and 10 Java projects out of top 100 sourceforge downloads. Conclusions seem to be far too strong given the metrics examined eg low number of protected methods -> not enough use of information hiding.
+
 [Design Requirements for an Architecture Consistency Tool](http://www.ppig.org/sites/default/files/2009-PPIG-21st-rosik.pdf)
+
+Reflexion modeling for fighting architectural drift. 2 year longitudinal study at IBM Dublin. Discovered many violations of the model, but they generally weren't removed. Designed a CI version of the tool to catch violations as they happen.
 
 [Concrete Thoughts on Abstraction](http://www.ppig.org/sites/default/files/2009-PPIG-21st-nicholson.pdf)
 
+Tries to break effective use of abstraction down into subskills.
+
 [Computer Code as a Medium for Human Communication: Are Programming Languages Improving?](http://www.ppig.org/sites/default/files/2009-PPIG-21st-dubochet.pdf)
+
+12 subjects given code comprehension task in either Java or Scala under eye-tracker. The dense Scala code was more quickly understood.
 
 [Communication in Testing: Improvements for Testing Management](http://www.ppig.org/sites/default/files/2009-PPIG-21st-paakkonen.pdf)
 
+Survey answered by 23/60 professionals in single company. Reported poor overall visibility of test state, poor coordination between departments.
+
 [Cognitive levels and Software Maintenance Sub-tasks](http://www.ppig.org/sites/default/files/2009-PPIG-21st-kelly.pdf)
+
+6 professionals talk-aloud in maintenance tasks at work. Tries to code utterances into Bloom taxonomy. Not clear what they are looking for.
 
 [Can Named Ranges Improve the Debugging Performance of Novice Spreadsheet Users?](http://www.ppig.org/sites/default/files/2009-PPIG-21st-mckeever.pdf)
 
+21 students asked to debug spreadsheet that uses named ranges. Uses previous experiment as control. Worse performance than control. 
+
+Tries to justify use of separate control by comparing error distribution to control group in a different (and properly randomized) experiment.
+
 [An Evaluation of inline source code browsing](http://www.ppig.org/sites/default/files/2009-PPIG-21st-desmond.pdf)
 
+Tool opens source code inline instead of jumping to different file.
+
+7 subjects given various comprehension tasks. 14% faster with inline. No significance test.
+
 [A Course Dedicated to Developing Algorithmic Problem Solving Skills - Design and Experiment](http://www.ppig.org/sites/default/files/2009-PPIG-21st-muller.pdf)
+
+Problem-solving course. Students reportedly approve. No other evaluation.
 
 ### 2010
 
