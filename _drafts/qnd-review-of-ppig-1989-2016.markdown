@@ -1333,37 +1333,81 @@ Problem-solving course. Students reportedly approve. No other evaluation.
 
 [A Cognitive Neuroscience Perspective on Memory for Programming Tasks](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Parnin.pdf)
 
+Basic overview of memory models.
+
 [A Logical Mind, not a Programming Mind: Psychology of a Professional End-User](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Blackwell.pdf)
+
+Case study - 3 years, electronic patient record system in ICU. Customised in the field by users. Hired a professional programmer for 5 days to contrast their mental model with users. 
+
+Modifications made live with little version control tooling. Users willing to make long-term learning efforts, but only when there is a clear need/payoff. Not interested in understanding for it's own sake.
+
+Programmer spent a lot of time trying to teach inheritance and talking about OOPy models of cars. Users completely exasperated at this apparent waste of time.
 
 [Bricolage Programming in the Creative Arts](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-McLean.pdf)
 
+Philosophizing. 
+
 [Characterizing Comprehension of Concurrency Concepts](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Li.pdf)
+
+UML diagrams for concurrency. 15 students given comprehension test on concurrent system. Miscomprehensions are tangled chains of mistakes. Tries to categorize them by semantic level at which they occur.
 
 [Confirmation Bias in Software Development and Testing: An Analysis of the Effects of Company Size, Experience and Reasoning Skills](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Calikli.pdf)
 
+Tendency to write tests that confirm hypotheses rather than refute them.
+
+88 subjects drawn from 4 companies and from grad school. Watson's rule discovery task and selection task. Students did better. Don't see a control for IQ or similar.
+
 [Empirically-Observed End-User Programming Behaviors in Yahoo! Pipes](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Dinmore.pdf)
+
+Mined 30k pipes. Most pipes are DAGs (ie no use of looping constructs). Most pipes use a small subset of the available constructs. Most pipes are hardwired - number of exposed parameters fits exponential distribution. 
 
 [Enhancing Comprehension by Using Random Access Memory (RAM) Diagrams in Teaching Programming: Class Experiment](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Mselle.pdf)
 
+39 students in control group taught with trace tables. 61 students taught with diagrams of memory layout. Different teachers. (Numbers suggest not randomly assigned?).
+
+Simple programming exam. Tiny but significant effect size.
+
 [Enhancing User-Centredness in Agile Teams: A Study on Programmer's Values for a better Understanding on how to Position Usability Methods in XP](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Leitner.pdf)
+
+Interviewing XP programmers to determine their goals. No attempt to determine reliability or validity of their methods. 
 
 [Evaluating Scratch to Introduce Younger Schoolchildren to Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Wilson.pdf)
 
+Case study with Scratch. Given LOGO test at middle and end - small improvement. Main upside is more enthusiasm, less frustration (compared to?).
+
 [Liveness in Notation Use: From Music to Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Church.pdf)
+
+Breaks liveness into levels. Compares different tasks in programming and music. 
+
+Neat diagrams of feedback loops in various systems.
 
 [Perceived Self-Efficacy and APIs](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Daughtry.pdf)
 
+Designed self-efficacy questionnaire for APIs. Don't understand their attempt to prove that the test is reliable. They note that their other experiments have terrible power. 
+
 [Project Kick-off with Distributed Pair Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Rosen.pdf)
+
+Case study of distributed pair programming. Small number of sessions, small number of subjects.
 
 [Students’ Early Attitudes and Possible Misconceptions about Programming](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Moffat.pdf)
 
+Ask students about recollections of efficacy at various points in time. Results are confused.
+
 [Teaching Novice Programmers Programming Wisdom](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Kaplan.pdf)
+
+List of heuristics novices might benefit from.
 
 [The Construction of the Concept of Binary Search Algorithm](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-daRosa.pdf)
 
+Teaching binary search. Same as previous paper, I can't figure out what the contribution is.
+
 [The use of MBTI in Software Engineering](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Sach.pdf)
 
+Looks at previous studies of distribution of MBTI types in devs.
+
 [Usability Requirements of User Interface Tools](http://www.ppig.org/sites/default/files/2010-PPIG-22nd-Letondal.pdf)
+
+Programming interactive apps is hard. Proposed advances from academia have not taken off. Big list of properties that make interactive software different to purely computational software.
 
 ### 2011
 
