@@ -1159,43 +1159,85 @@ Give a test to 254 students that follows Blooms Taxonomy. Cluster students by re
 
 [XP Team Psychology - An Inside View](http://www.ppig.org/sites/default/files/2008-PPIG-20th-lechner.pdf)
 
+Anecdotal report from team of PhD students using XP. 
+
 [What Happens During Pair Programming](http://www.ppig.org/sites/default/files/2008-PPIG-20th-salinger.pdf)
+
+GT concepts for pair programming.
 
 [Using Mapping Studies in Software Engineering](http://www.ppig.org/sites/default/files/2008-PPIG-20th-budgen.pdf)
 
+Several examples of mapping studies. Notes that coverage is low, both in the mapping studies themselves and in the areas they address.
+
 [Towards a Computer Interaction-Based Mood Measure Instrument](http://www.ppig.org/sites/default/files/2008-PPIG-20th-kahn.pdf)
+
+Trying to determine mood from mouse and keyboard logs. Analysis is awful.
 
 [Thinking about Thinking in Objects: Methods, Findings and Implications from a Psychological Perspective](http://www.ppig.org/sites/default/files/2008-PPIG-20th-exton.pdf)
 
+OOPy folks argue that thinking in terms of objects is innate. Relates various psych findings that don't seem to actually be related to OOP objects. Confusion over the word.
+
 [The Stores Model of Code Cognition](http://www.ppig.org/sites/default/files/2008-PPIG-20th-douce.pdf)
+
+Models code cognition in terms of various memory types.
 
 [The Importance of Cognitive and Usability Elements in Designing Software Visualization Tools](http://www.ppig.org/sites/default/files/2008-PPIG-20th-carneiro.pdf)
 
+Designing software with multiple views. Not strongly justified.
+
 [The Abstract is an Enemy: Alternative Perspectives to Computational Thinking](http://www.ppig.org/sites/default/files/2008-PPIG-20th-blackwell.pdf)
+
+Reality is messy, has to be abstracted away to fit in tidy computers. What could go wrong?
+
+Not very convincing examples.
 
 [Structured Text Modification Using Guided Inference](http://www.ppig.org/sites/default/files/2008-PPIG-20th-church.pdf)
 
+Tools that infers regexes from positive/negative examples. Evaluation with 6 subjects vs manual editing with Word and vs manual rename with Adobe Bridge. Large effect size. 
+
 [Scientists and Software Engineers: A Tale of Two Cultures](http://www.ppig.org/sites/default/files/2008-PPIG-20th-segal.pdf)
+
+Culture clashes between devs and scientists, especially in waterfall style dev.
 
 [Observing Open Source Programmers' Information Seeking](http://www.ppig.org/sites/default/files/2008-PPIG-20th-sharif.pdf)
 
+More mailing list data-mining. Conclusions are banal.
+
 [MBTI Personality Type and Student Code Comprehension Skill](http://www.ppig.org/sites/default/files/2008-PPIG-20th-greathead.pdf)
+
+74 students take MBTI test and code comprehension test. Introversion slightly predicts success.
 
 [Intuition in Software Development Revisited](http://www.ppig.org/sites/default/files/2008-PPIG-20th-beynon.pdf)
 
+Philosophizing.
+
 [Integrating Extreme Programming and User-Centered Design](http://www.ppig.org/sites/default/files/2008-PPIG-20th-hussain.pdf)
+
+Largely seems to be about integrating mock-ups and end-user testing into XP workflow.
 
 [An MCL Algorithm Based Technique for Comprehending Spreadsheets](http://www.ppig.org/sites/default/files/2008-PPIG-20th-kankuzi.pdf)
 
+Using Markov Clustering to try to retrieve logical cell blocks. Minimal evaluation.
+
 [A Study of Visualization in Introductory Programming](http://www.ppig.org/sites/default/files/2008-PPIG-20th-kasurinen.pdf)
+
+LOGO clone. Slight improvement in course participation in same year.
 
 [A Loop is a Compression](http://www.ppig.org/sites/default/files/2008-PPIG-20th-milner.pdf)
 
+Suggests that loops are hard because there is not a 1-1 mapping between text and execution.
+
 [A Longitudinal Study of Depth of Inheritance and its Effects on Programmer Maintenance Effort](http://www.ppig.org/sites/default/files/2008-PPIG-20th-creegan.pdf)
+
+Data-mining Eclipse repo. Inheritance depth did not predict refactorings.
 
 [A Lightweight Systematic Literature Review of Studies about the Use of Pair Programming to Teach Introductory Programming](http://www.ppig.org/sites/default/files/2008-PPIG-20th-turner.pdf)
 
+Testing out systematic lit review with 1 student. Seems to work. 
+
 [A Comparison Between Student and Professional Pair Programmers](http://www.ppig.org/sites/default/files/2008-PPIG-20th-plonka.pdf)
+
+10 students and 6 professionals recorded pair programming. Significant differences in their behavior mean that past studies on students probably can't be extrapolated.
 
 ### 2009 
 
