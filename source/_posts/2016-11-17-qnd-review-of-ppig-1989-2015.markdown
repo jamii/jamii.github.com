@@ -1,6 +1,6 @@
 ---
 layout: post
-title: QnD review of PPIG 1989-2015
+title: Quick and dirty review of Psychology of Programming Interest Group 1989-2015
 date: '2016-11-17 23:59'
 ---
 
