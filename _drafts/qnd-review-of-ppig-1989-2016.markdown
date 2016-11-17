@@ -1723,26 +1723,56 @@ Trying to tease out what people in various domains mean by 'object' by showing t
 
 [An empirical investigation of code completion usage by professional software developers](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Marasoiu.pdf)
 
+6 devs, first given programming task and then later asked to narrate the recording. Code completion used for checking method names, api exploration, catching bugs (eg if completion list looks wrong, look for bugs in code leading up this line).
+
 [Analysing Java Identifier Names in the Wild](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Butler.pdf)
+
+Mining names in 60 java projects. Not sure what the point is.
 
 [Confidence, command, complexity: metamodels for structured interaction with machine intelligence](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Sarkar-2.pdf)
 
+Properties that need to be exposed in end-user machine learning tools. How sure is the answer, how well does the program understand the domain, how complex was the method used to arrive at the answer.
+
 [Evaluation of Mental Workload and Familiarity in Human Computer Interaction with Integrated Development Environments using Single-Channel EEG](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Rostami.pdf)
+
+Using EEG to measure cognitive load. Not clear how useful it is compared to just asking.
 
 [Harmonious Authorship from Different Representations](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Basman.pdf)
 
+Describes a programming model meant to allow many different editing representations. Without either examples or formal specs it's hard to understand how it's intended to work.
+
 [Improving Readability of Automatically Generated Unit Tests](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Daka.pdf)
+
+Trains a readability model for tests. Outperforms generic readability models. Develop optimization process that produces average readability improvement of 1.9%. 
 
 [Intuitive NUIs for Speech Editing of Structured Content](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Isaac.pdf)
 
+Proposed redesign of speech-controlled tool for writing math formulae (which is a weird idea in the first place - even between humans face-to-face there is a still a preference for writing formulae). 
+
 [Tales from the Workshops: A sequence of vignettes, episodes, observations, and reflections on many years of trying to teach people programming](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Winder.pdf)
+
+Hard to find small problems - even experienced programmers can't do as much as they think in 40 min class.
+
+Adults struggle to learn because afraid of / unwilling to make mistakes. 
 
 [The construction of knowledge of basic algorithms and data structures by novice learners](http://www.ppig.org/sites/default/files/2015-PPIG-26th-daRosa.pdf)
 
+Again, where is the content.
+
 [The dream of a lifetime: an opportunity to shape how our children learn computing](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Peyton.pdf)
+
+Ideas > tech. Computational thinking > programming. Progress in new UK curriculum.
 
 [The impact of syntax colouring on program comprehension](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Sarkar.pdf)
 
+10 subjects under eye-tracker. Mental execution task. Syntax highlighting reduces completion time. Stats are a bit suspect.
+
+Notably, under syntax highlighting there are much fewer fixations on keywords. (Maybe colour enables peripheral vision?)
+
 [The impact of Syntax Highlighting in Sonic Pi](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Dimitri.pdf)
 
+10 subjects. Writing and debugging tasks. Significantly faster completion with syntax highlighting (looks like ~25% faster, weird lack of numbers in this section). Programming and musical experience have no significant effect.
+
 [Understanding code quality for introductory courses](http://www.ppig.org/sites/default/files/2015-PPIG-26th-Stegeman.pdf)
+
+How to teach students about quality of code. Not much here yet, all looking forward to future work.
