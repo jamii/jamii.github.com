@@ -1413,49 +1413,107 @@ Programming interactive apps is hard. Proposed advances from academia have not t
 
 [Study attitudes and behaviour of CS1 students – two realities](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Ambrosio.pdf)
 
+IACHE inventory given to 72 high school students in Brazil and 258 in Portugal. No conclusive differences between the two. 
+
 [The cognitive dimensions questionnaire: adapting for non-expert users](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Kutar.pdf)
+
+Specializing CD questionnaire to POS software.
 
 [The influence of class structure on program comprehension](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Alardawi.pdf)
 
+211 undergrads from 3 schools. Comprehension test on OOPy and non-OOPy programs in VB and Java. Students given non-OOPy did worse, but looking at the graph the only major difference is in the 'Class' category of questions, which seems like an obvious conclusion?
+
 [The programming-like-analysis of a innovative media tool](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Roast.pdf)
+
+Media designers often need to reuse 'code' eg designing same dvd menu for many different markets. Presents a tool that separates style from content.
 
 [Understanding program complexity: an approach for study](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Douce.pdf)
 
+Proposes trying to relate eye-tracker data to complexity metrics. 
+
 [Useful but tedious: An evaluation of mobile spreadsheets](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Flood.pdf)
+
+Subjects asked to query or edit typical office spreadsheets on a phone. Problems with cell selection, character selection, inconsistency between platforms, having to focus on keyboard while editing.
 
 [User configurable machine vision for mobiles](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Stead.pdf)
 
+Software that lets users train classifier on their own visual syntax, map properties of syntax to synth inputs and then play music by pointing the camera at notation. 
+
+Many usability complaints.
+
 [Using formal logic to define the grammar for memory transfer language (MTL) on the mould of register transfer language (RTL) and high level languages](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Mselle.pdf)
+
+Proposes a sort of high-level virtual machine with visualization + replay as a teaching tool.
 
 [What makes software engineers go that extra mile?](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Sach.pdf)
 
+Interviews with 13 professionals. Motivated by the work itself, and the aesthetics for their code. Demotivated by external obstacles to producing satisfying code. 
+
 [Why PPIG matters beyond the P](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Church.pdf)
+
+No body
 
 [Systematically Improving Software Reliability: Considering Human Errors of Software Practitioners](http://www.ppig.org/sites/default/files/PPIG2011_DC_Fuqun.pdf)
 
+CS should borrow ideas from human error research.
+
 [A case study on the usability of NXT-G programming language](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Nguyen.pdf)
+
+12 students of various ages. Even experienced programmers struggled with the tasks. Loop blocks confused most subjects. 
 
 [An empirical study of the influence of OCL on early learners](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Khazei.pdf)
 
+36 students taught an OOPy UML. When asked to choose between two models, more preference for simple models when expressed as UML vs informal.
+
 [Automatic algorithm recognition based on programming schemas](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Taherkhani.pdf)
+
+Classifier for sort algorithms with 87% accuracy on student submissions. Wants to improve it so it can give automatic feedback to students.
+
+(One of the MIT MOOCs uses a semi-interactive classifier to help grade and give feedback on the huge number of student submissions, so it's plausible in practice.)
 
 [Class participation and shyness: affect and learning to program](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Rimmer.pdf)
 
+CS students are often shy, and report difficulties with asking questions in class or asking for help from tutors.
+
 [Evaluation of multimedia stream processing modeling language from the perspective of cognitive dimensions](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Bobowska.pdf)
+
+Applying CD to design to a language.
 
 [Investigation of qualitative human oracle costs](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Afshan.pdf)
 
+Make generative testing map to more concrete natural inputs where appropriate eg random names rather than random strings. No evaluation yet.
+
 [Measurement and visualisation of software timing properties](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Merriam.pdf)
+
+Timing visualisation tool for hard real-time. Proposes researching such.
 
 [On the cognitive foundations of modularity](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Monteiro.pdf)
 
+Trying to relate OOP to cognitive uses of abstraction, I think? 
+
 [Origins of poor code readability](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Saha.pdf)
+
+Speculates on reasons for poor code. Nothing surprising.
 
 [Programming with the user in mind](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Alexandron.pdf)
 
+Live Sequence Charts. Seems like programming in terms of user stories. 
+
+Interviews with students suggest that it leads them to view the system from the outside rather than from the inside.
+
 [Robot dance: edutainment or engaging learning](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Martin.pdf)
 
+Single session outreach. 135 school students in total. 
+
+Pre/post programming tests show improvements in most areas, but suspicious that it had to be broken down into areas to isolate the negative area.
+
+Focus on knowledge seems weird for outreach anyway, would have expected them to survey attitudes.
+
 [Self-Reporting emotional experiences in computing lab sessions: an emotional regulation perspective](http://www.ppig.org/sites/default/files/2011-PPIG-23rd-Good.pdf)
+
+Students report emotional state in class either via desktop widget or via a hand-held ball gadget thing. Students liked the ball as a fidget toy and as a signaling mechanism.
+
+I kind of want one.
 
 ### 2012
 
