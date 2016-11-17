@@ -1,24 +1,28 @@
 ---
-layout: "post"
-title: "QnD review of PPIG 1989-2015"
-date: "2016-09-04 13:04"
+layout: post
+title: QnD review of PPIG 1989-2015
+date: '2016-11-17 23:59'
 ---
 
-Inspired by [Ji Yi's homework assignment](http://www.slideshare.net/yijisoo/qndreview-read-100-chi-papers-in-7-hours) I decided to try to skim all 360-odd papers in the [Psychology of Programming Interest Group archives](http://www.ppig.org/library/paper). 
+Inspired by Ji Yi's [homework assignment](http://www.slideshare.net/yijisoo/qndreview-read-100-chi-papers-in-7-hours), I decided to skim all 360-odd papers in the Psychology of Programming Interest Group [archives](http://www.ppig.org/library/paper). 
 
-Yi reports his students taking ~10 hours to skim 100 papers over a single weekend. His students are clearly way more disciplined than I am. I dragged it out for months, it was brutal. Towards the end I did finally get up to about 50 papers a day, so if I do this again for other journals I'll probably just take a random sample of 50 papers and try to do the whole lot in one go.
+Yi reports his students taking ~10 hours to skim 100 papers over a single weekend. His students are clearly way more disciplined than I am. I dragged it out for months. It was brutal. 
+
+Towards the end I did finally get up to about 50 papers a day, so if I do this again for other journals I'll probably just take a random sample of 50 papers and try to do the whole lot in one go.
 
 What did I learn?
 
 Not a great deal about the psychology of programming itself. For the most part the field doesn't feel like a stumbling progression towards enlightenment, but just plain stumbling. 
 
-Here are some common failure modes I noticed:
+Here are some common failure modes that frustrated me:
 
-* Plain bad science, especially in the early years where a lot of the experiments are 'my pet project vs the world' and somehow the pet project always comes out looking good. My favorite example has a graph where [the control group are clearly performing better](/img/imp-codegen.png), and the author explains this away, saying it's because the control group were cheating, and in the conclusion of the paper declares the treatment a success. 
+* Plain bad science, especially in the early years where a lot of the experiments are 'my pet project vs the world' and somehow the pet project always comes out looking good. My favorite example has a graph where [the control group are clearly performing better](/img/control.png), and the author explains this away, saying it's because the control group were cheating, and in the conclusion of the paper declares the treatment a success. And it was published!
 
 * Failing to validate instruments. In particular, a lot of papers that involve coding qualitative data didn't bother to have two people code the data independently to check for agreement.
 
-* Pointless hypotheses. For example, one paper had programmers read programs under an eye-tracker and found a significant difference in the gaze patterns between the more experienced group and the less experienced group. So what? There's no suggestions as to what it means or how it can be used or under what conditions it's expected to be replicable. These papers typically end with "further research is required" and then no further research materializes. 
+* 'We have to do some science, and this is science'. Many of the experiments are from the start clearly incapable of answering the original question. I realize that getting good data for these subjects is hard, but the opportunity cost still stings. Do a different experiment!
+
+* Theoryless science. For example, one paper had programmers read programs under an eye-tracker and found there was a significant difference in the gaze patterns between the more experienced group and the less experienced group. So what? There's no suggestions as to what it means or how it can be used or under what conditions it's expected to be replicable. These papers typically end with "further research is required" and then no further research materializes. 
 
 The last point is often detectable right at the beginning. If I read the description of the experiment and I can't even make up an interesting result, that's not a good sign.
 
@@ -36,9 +40,11 @@ Much of this reminds me of [Feynman's stories about rat experiments](http://calt
 
 > ...his papers are not referred to, because he didn’t discover anything about the rats. In fact, he discovered all the things you have to do to discover something about rats. 
 
-What are the things we have to discover before we can discover things about programming?
+What are the things we have to discover before we can discover things about programming? I have no idea.
 
 Anyway, here are the full notes. They're highly opinionated and I made no attempt to be fair to the authors. If I said something mean about your research, don't worry - I barely read it anyway :)
+
+### 1989
 
 ### 1990 
 
