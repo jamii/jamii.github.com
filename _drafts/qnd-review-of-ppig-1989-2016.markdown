@@ -1609,51 +1609,115 @@ Not totally clear on what meta-ethnography entails. Description is surprisingly 
 
 [Applying Educational Data Mining to the Study of the Novice Programmer, within a Neo-Piagetian Theoretical Perspective](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Ahadi.pdf)
 
+Proposed data-collection PhD project.
+
 [Google Sheets v Microsoft Excel: A Comparison of the Behaviour and Performance of Spreadsheet Users](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Mernagh.pdf)
+
+Biz students given spreadsheet tasks. Text and number entry was faster in google sheets, eyeballed at about 2/3 mean time. Formula entry faster in Excel.
+
+Kind of a pointless comparison.
 
 [Neo-Piagetian Theory and the Novice Programmer](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Teague.pdf)
 
+No new results in here.
+
 [Self-explaining from Videos as a Methodology for Learning Programming](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Aureliano.pdf)
+
+Proposed PhD project.
 
 [A case of computational thinking: The subtle effect of hidden dependencies on the user experience of version control](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Church.pdf)
 
+Interviews with devs at Google and Autodesk on their use of VCS. Common themes: high understanding of concepts, ritualized interaction staying with narrow paths, signs of fear and uncertainty. (Slapping down the oft repeated assertion that git is only confusing if you don't understand the underlying model).
+
+Speculates that dependencies on undisplayed state (eg staging area, current branch) and premature commitment (eg many operations are potentially destructive to the working tree) are the main culprits, which is why existing guis don't alleviate the problem.
+
 [A cognitive dimensions analysis of interaction design for algorithmic composition software](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Bellingham.pdf)
+
+Suggests representation of time as the most problematic area.
 
 [Activation and the Comprehension of Indirect Anaphors in Source Code](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Lohmeier.pdf)
 
+Proposed experiment.
+
 [Affective Learning with Online Software Tutors for Programming](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Kumar.pdf)
+
+Two online tutors. >2000 students from 56 schools. Affective learning questionnaire - no significant interactions with gender, race or subject. Male students and caucasian/asian students scored better on pre-tests for arithmetic tutor. Non-CS students improved more between pre- and post-test.
 
 [Blinded by their Plight: Tracing and the Preoperational Programmer](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Teague-Lister.pdf)
 
+Ask students to trace code, and what the code is supposed to do. Identifies a group of students who can trace code and can't explain it. In talk-aloud, these students struggle to move from concrete value to abstract sets. 
+
+(Implies that laddering up is a additional skill on top of execution models.)
+
 [Cognitive Flexibility and Programming Performance](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Leinikka.pdf)
+
+298 subjects. Task-switching test. Results comparable to similar published tests.
+
+65 students with some experience + 45 novices. Significant correlation between task switching test score and average grade at -.34, but no significant correlation with final exam grade or credits received.
 
 [Concept Vocabularies in Programmer Sociolects](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Rice2.pdf)
 
+40 C++ samples from 14 students. Extract identifiers. No correlation between years of experience and number of not-in-stdlib concepts.
+
 [Developing Coding Schemes for Program Comprehension using Eye Movements](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Busjahn.pdf)
+
+We don't know how to interpret all this eye-tracking data. Proposes a scheme for developing coding schemes for eye-tracking data.
 
 [Educational Programming Languages: The Motivation to Learn with Sonic Pi](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Sinclair.pdf)
 
+12 novices. Given tutorials on either Sonic Pi or Kids Ruby. Questionnaire on motivation and background. Sonic Pi users typed more, recalled more commands. No notable differences in qualitative questions.
+
 [Evaluation of a Live Visual Constraint Language with Professional Artists](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Williams.pdf)
+
+Anecdotal reports. Not summarizable. 
 
 [Exploring Core Cognitive Skills of Computational Thinking](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Ambrosio.pdf)
 
+Looking for tests that predict computational thinking. Tried D.48 (abstraction, relation, analagy), spatial reasoning test, GATB (arithmetic reasoning and tool matching subsets only).
+
+12 students. Used raw test scores only. Sample too small to obtain significant results, but D.48 and spatial reasoning show correlations ~.5 with exam grades. 
+
 [Exploring Creative Learning for the Internet of Things era](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Blackwell.pdf)
+
+Project helping 5 artists work with RPi. Frustration with setup cost and lack of portability. 
 
 [Exploring Problem Solving Paths in a Java Programming Course](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Hosseini.pdf)
 
+101 students in intro course with 100 assignments, broken into 170 tasks. Automated test system collects snapshots every time it is run.
+
+Majority of students build programs up incrementally and pass tests one by one. 
+
 [Falling Behind Early and Staying Behind When Learning to Program](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Ahadi-Lister_0.pdf)
+
+Similar consistent-model test. 360 students at 2 unis. High and significant correlations with eventual grades. 
 
 [Ghosts of programming past, present and yet to come](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Boyatt.pdf)
 
+Live programming, computers as personal expression. 
+
 [Learning Syntax as Notational Expertise when using DrawBridge](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Stead.pdf)
+
+Programming environment that supports both direct manipulation, block editing and raw text editing.
+
+21 school students. Taught in 4 groups, each introducing interactions in different orders. Pre/post-test of syntax knowledge.
+
+Analysis is confusing, but conclusion suggests that introducing block editing before text editing was beneficial.
 
 [Linking Linguistics and Programming: How to start?](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Rice1.pdf)
 
+Sociolinguistics? Demonstrates that natural language approaches don't carry over directly. 
+
 [Nonvisual Visual Programming](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Lewis.pdf)
+
+Noodle, a VPL for blind children. Work in progress.
 
 [Reasoning about Complexity - Software Models as External Representations](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Lynch.pdf)
 
+Distributed cognition. Anecdotal reports from users of NetLogo.
+
 [The Object-Relational impedance mismatch from a cognitive point of view](http://www.ppig.org/sites/default/files/2014-PPIG-25th-Benvenuti.pdf)
+
+Trying to tease out what people in various domains mean by 'object' by showing them tables of data and asking how many objects are in view. 
 
 ### 2015
 
