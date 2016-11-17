@@ -1519,37 +1519,83 @@ I kind of want one.
 
 [A Field Experiment on Gamiﬁcation of Code Quality in Agile Development](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Prause.pdf)
 
+Tool that assigns reputation to code, and then to programmers based on their interaction history with that code.
+
+Past experiments found correlations of .64 and .88 with actual reputation (from surveying peers?).
+
+Field study in postgrad lab. Does not appear to increase actual code quality. Students reported perception of unfairness and opacity. Reputation score not seen as a high priority.
+
 [A Study about Students’ Knowledge of Inductive Structures](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Rosa.pdf)
+
+Piaget strikes again. Still have no idea what I'm supposed to be learning from these stories.
 
 [Computer Anxiety and the Big Five](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Crabbe.pdf)
 
+Computer Anxiety Rating Scale and five-factor personality test given to >100 biz students. Agreeableness and emotional stablity negatively correlated with computer anxiety, explaining 38% of variance.
+
 [Conducting Field Studies in Software Engineering: An Experience Report](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Yates.pdf)
+
+Common problems with field studies. Some are surprising, eg the need for extension cables.
 
 [Evaluating application programming interfaces as communication artefacts](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Afonso.pdf)
 
+Not clear.
+
 [Evaluation of Subject-Specific Heuristics for Initial Learning Environments: A Pilot Study](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Mckay.pdf)
+
+Proposes list of qualities to bear in mind when designing learning environments. 
+
+Gave either old list or new list to 9 students and ask them to do usability reviews. No clear conclusions.
 
 [Exploring the design of compiler feedback](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Raffaillac.pdf)
 
+Prototype compilers that give feedback on possible performance problems. Hard to evaluate because users mostly disabled the popups.
+
 [Gaze Evidence for Different Activities in Program Understanding](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Sharma.pdf)
+
+Pair programming under eye-tracking. Different gaze patterns between experts and novices. 
 
 [In search of practitioner perspectives on ‘good code’](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Ollis.pdf)
 
+Software craftmanship.
+
 [Investigating the role of programmers’ peripheral vision: a gaze-contingent tool and an experiment proposal](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Bednarik.pdf)
+
+Proposes testing whether restricted focus tools alter programmers behavior.
 
 [Learning Programming by using Memory Transfer Language (MTL) without the Intervention of an Instructor](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Mselle.pdf)
 
+92 students get normal instructor. 14 volunteer students get MTL tool instead. Course score very slightly higher for volunteers.
+
 [Observing Mental Models in Novice Programmers](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Bornat.pdf)
+
+Adjusted consistent-model test for online testing. 
+
+126 high school students in UK. Almost a third scored highly, mostly with an underlying model of parallel execution of lines. Post-test interviews confirmed the models recognized by the test by were accurate. Students who were labeled unrecognized reported multiple models, switching models partway or 'shrug'.  
+
+92 undergrad students in Mexico. Around half marked algorithmic, similar to original experiment. 
+
+Interviews used to refine questions and marking scheme for future tests.
 
 [Schema Detection and Beacon-Based Classiﬁcation for Algorithm Recognition](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Taherkhani.pdf)
 
+Expanding their algorithm classifier. On 222 implementations from textbooks and webpages, gets 94% accuracy.
+
 [Sketching by Programming in the Choreographic Language Agent](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Church.pdf)
+
+Interesting. Not sure what to summarize. 
 
 [Some Reflections on Knowledge Representation in the Semantic Web](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Kirby.pdf)
 
+Semantic web ontologies organized around strict hierarchies. Probably not a good map to human knowledge.
+
 [Teaching Novices Programming Using a Robot Simulator: Case Study Protocol](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Major.pdf)
 
+Planning to use virtual robots for teaching.
+
 [Thrashing, Tolerating and Compromising in Software Development](http://www.ppig.org/sites/default/files/2012-PPIG-24th-Lopez.pdf)
+
+Interviews with 7 devs from a single (academic?) institution. Tries to categorize response to errors. Thrashing - undirected, random. Tolerating - just ignore the error. Compromising - hack something together for the sake of progress. 
 
 ### 2013
 
