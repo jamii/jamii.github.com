@@ -1599,7 +1599,11 @@ Interviews with 7 devs from a single (academic?) institution. Tries to categoriz
 
 ### 2013
 
+I don't know why there is only one paper listed for 2013.
+
 [Using meta-ethnography to synthesize research: A worked example of the relations between personality and software team processes](http://www.ppig.org/sites/default/files/2013-daSilva-Capretz-ESEM.pdf)
+
+Not totally clear on what meta-ethnography entails. Description is surprisingly similar to the research process described in How To Read A Book.
 
 ### 2014
 
