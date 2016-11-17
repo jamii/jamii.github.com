@@ -1,20 +1,44 @@
 ---
 layout: "post"
-title: "QnD review of PPIG 1989-2016"
+title: "QnD review of PPIG 1989-2015"
 date: "2016-09-04 13:04"
 ---
 
-Only papers whose pdf is available from <http://www.ppig.org/library/paper>
+Inspired by [Ji Yi's homework assignment](http://www.slideshare.net/yijisoo/qndreview-read-100-chi-papers-in-7-hours) I decided to try to skim all 360-odd papers in the [Psychology of Programming Interest Group archives](http://www.ppig.org/library/paper). 
 
-Title/link. Methodology. Conclusion. Read?
+Yi reports his students taking ~10 hours to skim 100 papers over a single weekend. His students are clearly way more disciplined than I am. I dragged it out for months, it was brutal. Towards the end I did finally get up to about 50 papers a day, so if I do this again for other journals I'll probably just take a random sample of 50 papers and try to do the whole lot in one go.
 
-opinionated
+What did I learn?
 
-next time less complete
+Not a great deal about the psychology of programming itself. For the most part the field doesn't feel like a stumbling progression towards enlightenment, but just plain stumbling. 
 
-undirected data gathering. noise mining.
+Here are some common failure modes I noticed:
 
-### 1989
+* Plain bad science, especially in the early years where a lot of the experiments are 'my pet project vs the world' and somehow the pet project always comes out looking good. My favorite example has a graph where [the control group are clearly performing better](/img/imp-codegen.png), and the author explains this away, saying it's because the control group were cheating, and in the conclusion of the paper declares the treatment a success. 
+
+* Failing to validate instruments. In particular, a lot of papers that involve coding qualitative data didn't bother to have two people code the data independently to check for agreement.
+
+* Pointless hypotheses. For example, one paper had programmers read programs under an eye-tracker and found a significant difference in the gaze patterns between the more experienced group and the less experienced group. So what? There's no suggestions as to what it means or how it can be used or under what conditions it's expected to be replicable. These papers typically end with "further research is required" and then no further research materializes. 
+
+The last point is often detectable right at the beginning. If I read the description of the experiment and I can't even make up an interesting result, that's not a good sign.
+
+There were also a lot of papers that read like "I found this in a book, we should apply it to programming". I don't know if it's fair to call that a failure mode, but I rarely found anything enlightening in these and most of them were not followed up with papers where they actually apply the idea.
+
+On the positive side:
+
+* There are a ton of negative results. PPIG seems to be totally willing to publish failed experiments, which is awesome.
+
+* Things get better over time. Somewhere around the mid-2010s I started finding papers that actually seemed like results. The series of papers on testing whether students form consistent models is a particular highlight - it starts with an interesting correlation, then some failed replications, then refinements of the test, then some successful replications, then more refinements, then combining it with interviews to test validity. It's not sexy, but it does seem to be actual progress towards a reliable measure of one specific leak in the education pipeline.
+
+I have a sort of vague idea that most of this work is just attacking things at too high a level. Programming is a big, diverse, complex skill and we don't really understand really basic subskills yet, or even know how to break it down into subskills. Without that it's impossible to know whether it makes sense to extrapolate any one set of results. If barely trained students benefit from syntax highlighting, does that mean professional programmers will? Or programmers in other languages? Or programmers dealing with programs longer than 50 lines? We have no idea.
+
+Much of this reminds me of [Feynman's stories about rat experiments](http://calteches.library.caltech.edu/51/2/CargoCult.htm). 
+
+> ...his papers are not referred to, because he didn’t discover anything about the rats. In fact, he discovered all the things you have to do to discover something about rats. 
+
+What are the things we have to discover before we can discover things about programming?
+
+Anyway, here are the full notes. They're highly opinionated and I made no attempt to be fair to the authors. If I said something mean about your research, don't worry - I barely read it anyway :)
 
 ### 1990 
 
@@ -77,8 +101,6 @@ Experiment 1. Have to program while speaking strings of digits - strains working
 Experiment 2. Write a program using a program that doesn't allow lines to be edited after hitting enter. Experts produce more errors than novices in this environment. 
 
 Suggests that experts don't develop more working memory, but instead switch to strategies that use external memory more. 
-
-READ
 
 [Some thoughts on designing an intelligent system for discovery programming](http://www.ppig.org/sites/default/files/1992-PPIG-4th-Ramadhan_0.pdf)
 
@@ -281,8 +303,6 @@ Students liked having no textual syntax. Found it easier to understand Hank mode
 32 c programmers. 32 spreadsheet programmers. Checking whether programmers build mental models based on control flow or data flow. Used recognition task with priming to see whether recognition is improved by primes nearby in control flow or nearby in data flow. Not clear what language the test program was in or how distance is judged in each model.
 
 Interpretation of results is not clear to me.
-
-READ
 
 [Investment of attention as an analytic approach to cognitive dimensions](http://www.ppig.org/sites/default/files/1999-PPIG-11th-blackwell_0.pdf) 
 
@@ -973,8 +993,6 @@ Does gaze predict comprehension? Highly forking, no strong signal.
 
 Ethnographic studies at software company. I don't really know how to summarize this, but it was interesting.
 
-READ
-
 [Stories from the Mobile Workplace: An Emerging Narrative Ethnography](http://www.ppig.org/sites/default/files/2006-PPIG-18th-hunt.pdf)
 
 Ethnographic study. No real information.
@@ -1118,8 +1136,6 @@ Anecdotal observations of teaching kids to program using narratives and variable
 Advocates for process of explicitly stating models and (manually or automatically) looking for contradictions in reality to refine the model.
 
 Main example is software tool for expressing explicit models of how software operates. User maps model to code. Tool shows where system violates their model eg calls between two components that don't have a dependency in the model. 
-
-READ
 
 [Assisting Concept Location in Software Comprehension](http://www.ppig.org/sites/default/files/2007-PPIG-19th-Cleary.pdf)
 
