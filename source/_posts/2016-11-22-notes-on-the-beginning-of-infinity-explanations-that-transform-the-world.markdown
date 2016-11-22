@@ -110,7 +110,7 @@ __Seems unnecessary to invoke staticness. Mentioned early that prehistoric human
 
 Against Diamonds theory of Eurasian dominance based on geography, climate, available plants and animals etc. Argues that it was the fact that the transition to a dynamic society that led to the knowledge to take advantage of local resources. 
 
-## Summary
+## Thoughts
 
 __Much of it is thought-provoking. Some of it seems obviously wrong. But the key ideas are really well argued:__
 
