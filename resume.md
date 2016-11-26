@@ -27,6 +27,8 @@ footer: true
 
 * Helped release Light Table as an open-source project.
 
+* On the program committee for [Future of Programming Workshop](http://www.future-programming.org/2015/call.html)
+
 ## Consultant
 
 #### May 2009 – Nov 2013
