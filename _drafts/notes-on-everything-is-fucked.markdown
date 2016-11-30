@@ -46,3 +46,25 @@ Suggestions for improvement:
 * Maybe backpedal a little on publish-or-perish?
 * Maybe study the crud factor in various domains?
 * Accept that some theories cannot currently be tested by the means we have at our disposal, and stop wasting taxpayer money pretending to test them.
+
+## [Things I have learned (so far)](http://moityca.com.br/pdfs/Cohen_1990.pdf)
+
+Use fewer variables. With eg MRA the number of hypthesis tests is at least the product of the number of dependent and independent variables. 
+
+Drop non-significant significant figures. 
+
+Visualize your data. Not all data is normal. Many summary variables are incredibly sensitive to a few outliers. 
+
+Simple models (eg using unit weights for linear regression) are less prone to overfitting.
+
+Don't throw away information eg reducing continuous variables like IQ to categories like dumb/average/smart.
+
+Recounts the progression from Fisherian null-hypothesis tests to power analysis.
+
+Authors meta-analysis of contemporary papers finds most are underpowered.
+
+Report effect sizes and uncertainty intervals foremost, rather than p-values.
+
+Run power analysis when planning your experiment. Can it actually detect an effect of the size you expect?
+
+New stats ideas take a long time to percolate through the scientific body.
