@@ -4,7 +4,7 @@ title: "Notes on 'Everything is fucked'"
 date: "2016-11-30 17:18"
 ---
 
-Sanjay Srivastava posted a syllabus for a course called [Everything is fucked](https://hardsci.wordpress.com/2016/08/11/everything-is-fucked-the-syllabus/). The course itself is a joke, but the reading list seems worthwhile.
+Sanjay Srivastava posted a syllabus for a course called [Everything is fucked](https://hardsci.wordpress.com/2016/08/11/everything-is-fucked-the-syllabus/). The course itself is a joke but it has an interesting reading list.
 
 ## [Why summaries of research on psychological theories are often uninterpretable](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.392.6447&rep=rep1&type=pdf)
 
@@ -94,3 +94,9 @@ Demonstrates that the Bayes factor does not vary wildly between different reason
 Alternatives may be subjective, but would be subject to review as much as anything else. __Seems a somewhat weak defence - no idea how to review alternatives. Am I not incentivized to pick the most extreme alternative effect size I can get away with?__
 
 Re: arguments for effect size estimates. All of the above still works given interval null hypotheses. Estimation of effect size doesn't tell us how to weigh evidence for competing theories. Estimation is not model-free - different models produce different best estimates for the same sample. In a Bayesian mindset, our degree of prior belief in the null hypothesis should weight our estimate towards zero.
+
+## Structural equations with latent variables
+
+Skipped - didn't want to buy the book.
+
+## [Yes, but what’s the mechanism?(don’t expect an easy answer)](http://www2.psych.ubc.ca/~schaller/528Readings/BullockGreenHa2010.pdf)
