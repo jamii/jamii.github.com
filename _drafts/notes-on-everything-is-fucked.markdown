@@ -68,3 +68,29 @@ Report effect sizes and uncertainty intervals foremost, rather than p-values.
 Run power analysis when planning your experiment. Can it actually detect an effect of the size you expect?
 
 New stats ideas take a long time to percolate through the scientific body.
+
+## [Is there a free lunch in inference?](http://pcl.missouri.edu/sites/default/files/freeLunch_0.pdf)
+
+Free lunch in null-hypothesis significance testing - don't need to fully specify the alternate hypothesis to reject the null hypothesis. 
+
+'If A, probably not B. B, therefore probably not A.' NOT VALID in general eg 'If Sally is American, she is probably not a congressperson. Sally is a congressperson, therefore she is probably not American.'
+
+Call a procedure consistent if it converges to the correct decision as the sample size increases. NHST is not consistent - with a cutoff of p=0.05 the rejection rate for a true hypothesis converges to 5% as the sample size increases.
+
+Suppose we set $$\alpha_N = min(0.05, \beta_N)$$, so that the rejection rate converges to 0 as the sample size increases. This requires knowing $$\beta_N$$ which requires specifying an effect size for the alternate hypothesis.
+
+Another way to look at this. In NHST the observed effect size needed to reject the null hypothesis converges to zero. With the above procedure, it converges to half the hypothesized effect size.
+
+All similar consistent frequentist procedures that have been proposed have the same property - they must specify an alternative hypothesis.
+
+(Confidence intervals are also inconsistent, for the same reason)
+
+Explanation of Bayesian update of a parametric model. Bayesian update is consistent, but also requires specifying an alternative through the prior distribution on the parameter.
+
+Credible intervals - use 95% inner percentile of prior distribution. Does not satisfy Bayes rule - evidence might concentrate belief from other areas into a tight 95% interval even when the Bayes factor for the null hypothesis is 1.
+
+Demonstrates that the Bayes factor does not vary wildly between different reasonable priors.
+
+Alternatives may be subjective, but would be subject to review as much as anything else. __Seems a somewhat weak defence - no idea how to review alternatives. Am I not incentivized to pick the most extreme alternative effect size I can get away with?__
+
+Re: arguments for effect size estimates. All of the above still works given interval null hypotheses. Estimation of effect size doesn't tell us how to weigh evidence for competing theories. Estimation is not model-free - different models produce different best estimates for the same sample. In a Bayesian mindset, our degree of prior belief in the null hypothesis should weight our estimate towards zero.
