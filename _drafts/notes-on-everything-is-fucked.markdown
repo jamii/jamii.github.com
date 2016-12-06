@@ -141,3 +141,26 @@ __Notably, in a randomized experiment the expected covariate effect is the same 
 The actual size of the bias can be pretty large for reasonable parameters. 
 
 The authors use Monte Carlo simulations to test many different scenarios, and find that of the 4 methods for correcting this bias the Errors In Variables model was most effective. __Does this depend on the generated data? You could certainly produce bad results for any given method by just generating data that violates it's assumptions.__
+
+[Statistically controlling for confounding constructs is harder than you think](http://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0152719&type=printable)
+
+__The problem above has a name - residual confounding!__ TODO
+
+Incremental validity - is X useful for predicting Y even after controlling for A,B and C?
+
+Same problem as above - imperfect measures produce imperfect controls. Type I error results.
+
+> The intuitive explanation for this is that measurement unreliability makes it easier for the regression model to confuse the direct and indirect paths (i.e., to apportion variance in the outcome incorrectly between the various predictors).
+
+Error rate peaks when reliability is ~0.5, not at 0. __I think this is because they set the reliability for both the controlled variable and the independent variable at the same time, so at 0 both are totally random and there is no correlation at all with the dependent variable.__
+
+Similarly structured arguments that have similar problems:
+
+* Argument for separable constructs eg if two intelligence tests both predict performance even while controlling for each other, we argue that they are measuring separate attributes. Could both be noisy measurements of the same attribute.
+* Argument for improved measurement eg if in a regression on an old test and a new test, only the new test is significant, we argue that the new test is a strict improvement on the old. Not even valid logic and produces poorly (and weirdly) calibrated errors. __I'm not totally clear on why this is wrong - the explanation is very brief.__
+
+Structured Equation Modelling incorporates an estimate of measurement error into the regression. Can perturb the estimates to see how sensitive the results are. Shows that as the reliability estimate is reduced, the standard error of the estimator grows.
+
+Under realistic settings (low direct contribution, unreliable measures) the sample sizes required for reasonable power with SEM are huge.
+
+## [Is the replicability crisis overblown? Three arguments examined](http://pps.sagepub.com.sci-hub.cc/content/7/6/531.abstract)
