@@ -199,3 +199,25 @@ Replication success is predicted better by strength of original evidence than by
 __Worth noting that this doesn't fix most of the stats problems already discussed either. This is only addresses the effects of publication bias and low power. Real situation may be even worse.__
 
 ## [Comment on “Estimating the reproducibility of psychological science.”](http://science.sciencemag.org/content/sci/351/6277/1037.2.full.pdf)
+
+Objections:
+
+1. OSC drew samples from different populations to original experiments. (Gives only 3 examples).
+2. OSC used different procedures from original experiments. (Gives only 3 examples, but they seem pretty clearly different).
+3. Picking random experiments from Many Labs Project as 'original' find a 35% failure rate without any chance of publication bias
+4. Using OSCs methods with MLP data, get replication rate of 35%. But using MLPs pooling method get 85%.
+5. Only 69% of OSC authors reported endorsing original experimental protocol. Endorsers had 59.7% success rate, non-endorsers had 15.4%. Possible experimenter bias against replication? __Or maybe the experimenters are just good judges of which experiments suck? Original paper noted that 'surprise' was anti-correlated with replication.__
+
+__1 and 2 seem pretty weak - fair odds that the original results were interpreted very generally, so the fact that small changes to the protocol result in failed replication indicates at least a lack of external validity.__
+
+## [Response to Comment on “Estimating the reproducibility of psychological science](http://datacolada.org/wp-content/uploads/2016/03/5322-Nosek-response.pdf)
+
+Half of the 'failures' in this comparison had larger effect sizes than the original, compared to only 5% of the OSC replications.
+
+Variation between replications in MLP was highest for largest effects and lowest for smallest effects. Replication failures in OSC were more common for small effects.
+
+MLP had high replication rate but ad-hoc selection procedure for papers. Later project by same group had only 30% replication rate.
+
+Of the six examples of different experiment design, three were endorsed by the original experimenters and the fourth was a succesful replication.
+
+Maybe the experimenters are just good judges of which experiments suck. Surprise was anti-correlated with replication success. __Yay, validation of my paper-reading skills!__
