@@ -174,3 +174,28 @@ Argument 2: conceptual replications are good enough. Publication bias - failed c
 Argument 3: science self-corrects eventually. Notes that median times for failed replication attempt is only 4 years after original, so not much attempt at correcting enshrined mistakes. Subargument is that old mistakes are abandoned rather than explicitly discredited, but how does one distinguish between a subject that is abandoned and one that is simply mature? Certainly many old subjects that are taught in textbooks etc but not actively studied today. Eg Amgen Corp tried to replicate 53 landmark studies with only 11% success rate.
 
 ## [Estimating the reproducibility of psychological science](http://www.spelab.org/uploads/2/7/8/4/27842457/open_science_collaboration_2015.pdf)
+
+> We conducted replications of 100 experimental and correlational studies published in three psychology journals using high-powered designs and original materials when available.
+
+Previous reports about poor replication rates lacked clear methods, selection etc. Methods for this project are detailed in excruciating detail. Highlights:
+
+* Selection from a limited but replenished pool of papers, to balance good experiment-team matches against controlling selection bias.
+* Checklists for various processes
+* Each team shared data publicly for independent re-analysis by a different analyst
+* Covered multiple journals and disciplines
+
+How to measure replication? Many options:
+
+* Is new result significant and in same direction? Unfairly penalizes results close to the cutoff. 35/97 fail.
+* Is old effect size withing 95% CI of new effect size? Doesn't penalize replications which don't produce strong results. 43/73 fail. 
+* Directly compare effect sizes. 82/99 had larger old effects. Mean ratio is ~0.5.
+* Combine results from both. Retains publication bias of old, but may correct for any unknown bias in new. 24/75 had 95% CIs containing 0. 
+* Subjective judgment of team. 61/100 fail.
+
+23/49 experiments testing main/simple effects had significant replications, but only 8/27 experiments testing interaction effects.
+
+Replication success is predicted better by strength of original evidence than by characteristics of the experiment or replication team.
+
+__Worth noting that this doesn't fix most of the stats problems already discussed either. This is only addresses the effects of publication bias and low power. Real situation may be even worse.__
+
+## [Comment on “Estimating the reproducibility of psychological science.”](http://science.sciencemag.org/content/sci/351/6277/1037.2.full.pdf)
