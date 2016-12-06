@@ -100,3 +100,32 @@ Re: arguments for effect size estimates. All of the above still works given inte
 Skipped - didn't want to buy the book.
 
 ## [Yes, but what’s the mechanism?(don’t expect an easy answer)](http://www2.psych.ubc.ca/~schaller/528Readings/BullockGreenHa2010.pdf)
+
+Randomized experiments reveal causation, but not mechanisms. Want to be able to determine mediating variables. Typical approach is to use this model:
+
+$$
+M_i = \alpha_1 + aX_i + e_i1
+Y_i = \alpha_2 + cX_i + e_i2
+Y_i = \alpha_3 + dX_i + bM_i + e_i3
+$$
+
+X affects M and Y, and M affects Y. We want to know how much X affects Y directly ($$d$$) vs indirectly through M ($$ab$$).
+
+The estimator used converges to:
+
+$$
+estimate(b) = b + cov(e_1, e_3) / var(e_1)
+estimate(d) = d - a(cov(e_1, e_3) / var(e_1))
+$$
+
+Problem 1: if $$e_1$$ and $$e_3$$ are correlated then the estimator is biased. In practice this nearly always happens because $$e_1$$ and $$e_3$$ are the dumping ground for all the other mediating variables. So we must also randomize M somehow.
+
+Problem 2: the procedure we use to control M must not also affect other mediating variables, otherwise $$e_1$$ and $$e_3$$ will be correlated again. We have to rule out all other causal pathways between X and Y.
+
+Problem 3: changing M while holding X constant is philosophically weird, because the model says that X affects M. Worse, we typically can't measure M directly because it's some internal mental state. We ought to at least test many different interventions that aim to change M and see if they all produce similar estimates.
+
+Problem 4: we assume $$a$$, $$b$$, $$c$$ and $$d$$ are constant. If they vary per subject, the estimator is giving us $$mean(a) mean(b)$$ when what we care about is $$mean(ab)$$. We should look for in-group differences to attempt to catch this.
+
+__I think the core problem here is that we can't distinguish between a bad model and missing variables. The same problem is more obvious in a simple linear regression between X and Y. If we get a large error term, we could conclude that X and Y are not strongly related. Or we could conclude that the relation is not well modeled by a linear function. All the problems above are hard to detect because they just get swallowed by the error terms.__
+
+## [Using analysis of covariance (ANCOVA) with fallible covariates](http://www.hermanaguinis.com/PM2011.pdf)
