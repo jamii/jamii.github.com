@@ -129,3 +129,15 @@ Problem 4: we assume $$a$$, $$b$$, $$c$$ and $$d$$ are constant. If they vary pe
 __I think the core problem here is that we can't distinguish between a bad model and missing variables. The same problem is more obvious in a simple linear regression between X and Y. If we get a large error term, we could conclude that X and Y are not strongly related. Or we could conclude that the relation is not well modeled by a linear function. All the problems above are hard to detect because they just get swallowed by the error terms.__
 
 ## [Using analysis of covariance (ANCOVA) with fallible covariates](http://www.hermanaguinis.com/PM2011.pdf)
+
+Multiple regression analysis. Want to measure relationship between dependent and independent variable while controlling for other known factors.
+
+If the mean covariate effect differs between the control and treatment group AND the measurement of the covariates is not perfectly reliable, then ANCOVA is biased towards Type I errors. 
+
+__There are no examples to concretize the math here. Let's say we want to know if traders are more likely than the average person to buy a fancy car, controlling for wealth. Suppose our measure for wealth is totally unreliable ie just a random number and we run a very high-powered experiment. Then if wealth has any effect, it will be attributed instead to being a trader because our random-number-generator measure of wealth does not explain the effect.__
+
+__Notably, in a randomized experiment the expected covariate effect is the same for both groups and so this specific bias doesn't exist, although measurement error would still presumably screw up mediation analysis in a similar fashion.__
+
+The actual size of the bias can be pretty large for reasonable parameters. 
+
+The authors use Monte Carlo simulations to test many different scenarios, and find that of the 4 methods for correcting this bias the Errors In Variables model was most effective. __Does this depend on the generated data? You could certainly produce bad results for any given method by just generating data that violates it's assumptions.__
