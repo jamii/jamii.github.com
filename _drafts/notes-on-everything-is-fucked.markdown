@@ -163,4 +163,12 @@ Structured Equation Modelling incorporates an estimate of measurement error into
 
 Under realistic settings (low direct contribution, unreliable measures) the sample sizes required for reasonable power with SEM are huge.
 
-## [Is the replicability crisis overblown? Three arguments examined](http://pps.sagepub.com.sci-hub.cc/content/7/6/531.abstract)
+## [Is the replicability crisis overblown? Three arguments examined.](http://pps.sagepub.com.sci-hub.cc/content/7/6/531.abstract)
+
+Counters to common arguments against the replicability crisis.
+
+Argument 1: setting alpha to 5% means the false positive rate is about 5%, which is reasonable. __Apparently not a strawman - many people haven't been paying attention.__ Some back-of-the-envelope math with publication bias, forking paths and priors on theories being correct is enough to counter this.
+
+Argument 2: conceptual replications are good enough. Publication bias - failed conceptual replications are likely to lead to adjusting experiments rather than publication. And if published, would not likely be seen as falsifying the original theory. __Bad explanations strike again.__ Also produces moving targets (eg cold fusion) where direct replication fails but conceptual replication succeeds, and supporters demand failed replications of new improved experiments.
+
+Argument 3: science self-corrects eventually. Notes that median times for failed replication attempt is only 4 years after original, so not much attempt at correcting enshrined mistakes. Subargument is that old mistakes are abandoned rather than explicitly discredited, but how does one distinguish between a subject that is abandoned and one that is simply mature? Certainly many old subjects that are taught in textbooks etc but not actively studied today. Eg Amgen Corp tried to replicate 53 landmark studies with only 11% success rate.
