@@ -212,6 +212,8 @@ __1 and 2 seem pretty weak - fair odds that the original results were interprete
 
 ## [Response to Comment on “Estimating the reproducibility of psychological science](http://datacolada.org/wp-content/uploads/2016/03/5322-Nosek-response.pdf)
 
+__Not in the original list, added on a whim.__
+
 Half of the 'failures' in this comparison had larger effect sizes than the original, compared to only 5% of the OSC replications.
 
 Variation between replications in MLP was highest for largest effects and lowest for smallest effects. Replication failures in OSC were more common for small effects.
@@ -220,4 +222,28 @@ MLP had high replication rate but ad-hoc selection procedure for papers. Later p
 
 Of the six examples of different experiment design, three were endorsed by the original experimenters and the fourth was a succesful replication.
 
-Maybe the experimenters are just good judges of which experiments suck. Surprise was anti-correlated with replication success. __Yay, validation of my paper-reading skills!__
+Maybe the experimenters are just good judges of which experiments suck? Surprise was anti-correlated with replication success. __Yay, validation of my paper-reading skills!__
+
+## [Is psychology suffering from a replication crisis? What does “failure to replicate” really mean?](http://sci-hub.cc/10.1037/a0039400)
+
+If publication bias causes over-estimates of effect sizes, then power analysis for replications based on that effect size is likely to overestimate power, leading to Type II errors.
+
+__Didn't OSC mention that experiments with large effect sizes were more likely to be replicated?__
+
+Predictive power analysis takes into account a confidence interval on the estimated effect size. Tends to predict much lower power, because effect size -> power is not a linear function. Can result in surprisingly large sample sizes for adequately powered replication attempts.
+
+Suppose we manage a high-powered replication and don't obtain a significant result. Usually interpreted as casting doubt on the original experiment and supporting the null hypothesis.
+
+Frequentist approach - see how tight the CI is around 0. __This method was criticized in one of the earlier papers as inconsistent.__
+
+Bayesian method 1 - look at the inner 95% of the posterior. __Also inconsistent.__
+
+Bayesian method 2 - look at the Bayes Factor. (This requires that the alternative hypothesis has a specified effect size).
+
+Differing effect sizes in conceptual replications don't necessarily require explaining, the difference might not be significant anyway.
+
+Examples of cases where many low-powered experiments all had CIs contain 0, but their combined data did not.
+
+__Arguments here don't seem to address the other results in OSC eg lower effect sizes.__
+
+__Seems to be really focused on decision procedure for accepting the literal null hypothesis. Can we just estimate the effect size instead, and if it looks small decide we don't care?__
