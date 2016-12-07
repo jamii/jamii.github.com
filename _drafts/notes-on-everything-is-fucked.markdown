@@ -142,7 +142,7 @@ The actual size of the bias can be pretty large for reasonable parameters.
 
 The authors use Monte Carlo simulations to test many different scenarios, and find that of the 4 methods for correcting this bias the Errors In Variables model was most effective. __Does this depend on the generated data? You could certainly produce bad results for any given method by just generating data that violates it's assumptions.__
 
-[Statistically controlling for confounding constructs is harder than you think](http://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0152719&type=printable)
+## [Statistically controlling for confounding constructs is harder than you think](http://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0152719&type=printable)
 
 __The problem above has a name - residual confounding!__ TODO
 
@@ -247,3 +247,23 @@ Examples of cases where many low-powered experiments all had CIs contain 0, but 
 __Arguments here don't seem to address the other results in OSC eg lower effect sizes.__
 
 __Seems to be really focused on decision procedure for accepting the literal null hypothesis. Can we just estimate the effect size instead, and if it looks small decide we don't care?__
+
+## [Negative results are disappearing from most disciplines and countries](http://link.springer.com.sci-hub.cc/article/10.1007/s11192-011-0494-7)
+
+Sampled 4656 at random from 10800 journals published between 1990 and 2007. 
+
+Increase in positive results from 70% in 1990 to 86% in 2007. Looks very roughly linear. 
+
+Controlling for discipline, domain, methodology, country and single vs multiple results has little effect.
+
+Space science and neuroscience show slight decline over the years. __Doesn't that contradict the previous statement?__
+
+Strongest increases in medicine/pharmacy area. 
+
+__Graphs for individual subjects are really noisy.__
+
+Hypotheses:
+
+* Theories are more likely to be true. Perhaps publish-or-perish makes scientists play it safe and only test theories they are confident in.
+* Statistical power has increased, so discovery of true relationships increases. Cites evidence against this.
+* Publication bias causes negative results to be published less, or turned into positive results by post-hoc analysis, or buried in papers with at least one positive result.
