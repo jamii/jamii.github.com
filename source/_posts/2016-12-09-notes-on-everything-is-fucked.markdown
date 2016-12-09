@@ -1,7 +1,7 @@
 ---
-layout: "post"
-title: "Notes on 'Everything is fucked'"
-date: "2016-11-30 17:18"
+layout: post
+title: Notes on 'Everything is fucked'
+date: '2016-12-09 04:02'
 ---
 
 Sanjay Srivastava posted a syllabus for a course called [Everything is fucked](https://hardsci.wordpress.com/2016/08/11/everything-is-fucked-the-syllabus/). The course itself is intended as a joke, but the reading list seemed interesting.
