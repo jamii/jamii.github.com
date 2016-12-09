@@ -4,7 +4,7 @@ title: "Notes on 'Everything is fucked'"
 date: "2016-11-30 17:18"
 ---
 
-Sanjay Srivastava posted a syllabus for a course called [Everything is fucked](https://hardsci.wordpress.com/2016/08/11/everything-is-fucked-the-syllabus/). The course itself is a joke but it has an interesting reading list.
+Sanjay Srivastava posted a syllabus for a course called [Everything is fucked](https://hardsci.wordpress.com/2016/08/11/everything-is-fucked-the-syllabus/). The course itself is intended as a joke, but the reading list seemed interesting.
 
 ## [Why summaries of research on psychological theories are often uninterpretable](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.392.6447&rep=rep1&type=pdf)
 
@@ -331,7 +331,7 @@ Things that won't work:
 
 Things that might work:
 
-* Paradigm-driver research - making small, controlled changes to established methods rather than designing each experiment from scratch. Builds replication into work that also finds publishable new results. __Not really clear how this fixes the problem.__
+* Paradigm-driven research - making small, controlled changes to established methods rather than designing each experiment from scratch. Builds replication into work that also finds publishable new results. __Not really clear how this fixes the problem.__
 * Author, reviewer and editor checklists. Effective nudge towards good practices eg reporting effect sizes.
 * Challenge the mindset. Based on anecdotal data, the author suspects that publish-or-perish is actually not as strong as force as young postgrads are led to believe.
 * Crowd-sourcing replications eg OSC. Helps with limited resources. __But the total resource pool is still the same. This just redistributes effort. Not necessarily a bad thing, but not a clear win either.__
