@@ -343,3 +343,7 @@ Ideal:
 * Release all data so it can be independently analyzed
 * Publish methodology in sufficient detail for accurate replication. Eg publish videos of experimental procedure.
 * Record and publish workflow in real-time in a non-revocable manner. Registered experiments are just the start.
+
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
