@@ -267,3 +267,79 @@ Hypotheses:
 * Theories are more likely to be true. Perhaps publish-or-perish makes scientists play it safe and only test theories they are confident in.
 * Statistical power has increased, so discovery of true relationships increases. Cites evidence against this.
 * Publication bias causes negative results to be published less, or turned into positive results by post-hoc analysis, or buried in papers with at least one positive result.
+
+## [Why most published research findings are false](http://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.0020124&type=printable)
+
+Create a simple model that calculates prior odds of a published result being correct. Plug in reasonable numbers for various fields and see that posterior odds are miniscule.
+
+__Main contributor is low prior odds of a given hypothesis being correct - what if we take into account exploratory and pilot studies that are used to select hypotheses for the actual published findings?__
+
+If prior odds are very low, large effect sizes and small p-values are, counter-intuitively, more likely to be caused by bias than by true results.
+
+__Interesting to think about specificity of hypotheses. Imagine a measure over the field of possible hypotheses. Given a blank slate, we should prefer to run experiments that test large swathes of the space. Testing a small, specific part of the space would be premature.__
+
+Can run high-powered, low-bias experiments on established findings as a way to estimate prior odds and bias for a given field.
+
+## [Bias-Correction Techniques Alone Cannot Determine Whether Ego Depletion is Different from Zero](https://poseidon01.ssrn.com/delivery.php?ID=335074111074015067108111125095104073109017024072035030106079023111120085009067083107037033035060058099112005015102025098125100062066043049061127117119003094102012067086029023124124089098082119066106099030080031028106126118072071073030113002024117009091&EXT=pdf)
+
+Smaller sample sizes should lead to more variance in measured effect size but around the same true center. If experiments with smaller sample sizes in fact show larger effect sizes, we can use this as a measure of bias. Several techniques exist using this idea to correct for bias in meta-analysis.
+
+Conducted a range of simulations with different effect sizes, aiming to mimic conditions in social psychology.  Standard non-corrected meta-analysis performed worst. PET performed poorly. PEESE, Trim&Fill and Top10 each did well in certain regions and poorly in others.
+
+Recommends against using PET.
+
+Recommends using a variety of methods to check for agreement. 
+
+Probably better to focus on registered replications for reducing bias rather than trying to correct for it.
+
+## [Meta-analyses are no substitute for registered replications: a skeptical perspective on religious priming](http://journal.frontiersin.org/article/10.3389/fpsyg.2015.01365/full)
+
+Existing meta-analysis with Trim&Fill shows effect. Re-analysis with PET and PEESE shows no effect. Re-analysis with Bayesian Bias Correction shows effect. 
+
+Criticisms of original meta-analysis: 
+
+* Trim&Fill assumes bias is driven by low effect size - seems more likely to be driven by p<=0.05
+* Unclear selection method
+* Some relevant negative results seem to be missing, and there is a strong negative correlation between effect size and sample size in the selected papers
+* Didn't control for existing known moderators
+* Unlikely number of CIs in selected papers fall just above 0
+
+Notes that bias correction can only correct for certain simple kinds of bias eg withholding papers with low effect sizes. Can't possibly correct for eg systematic experimenter bias.
+
+## [The rules of the game called psychological science](http://pps.sagepub.com.sci-hub.cc/content/7/6/543.full.pdf+html)
+
+Treat publishing as a game. The many-small-studies strategy dominates the one-big-study strategy in fields where the effect sizes are small. 
+
+Simulates each strategy with different effect sizes. Compare funnel plots to published meta-analyses. 
+
+> We found indications of bias in nearly half of the psychological research lines we scrutinized
+
+__Somewhat unfocused paper. Not really sure what it's adding to the discussion.__
+
+## [Scientific utopia II. Restructuring incentives and practices to promote truth over publishability](http://pps.sagepub.com.sci-hub.cc/content/7/6/615.full.pdf+html)
+
+Incentive design.
+
+Notes that pharma labs attempt many more replications than academia, because they are incentivized to weed out false positives before they become expensive. 
+
+Things that won't work:
+
+* Creating journals for negative results will not work, because they will accrue no prestige. 
+* Decades of education and discussion have not changed behaviour.
+* Can't rely on peer review - too overworked and not enough information in the paper itself to catch most questionable practices.
+* Requiring replication before publishing results might work, but publishing is hard and slow enough as is. Might stifle creativity and put further pressure on researchers.
+
+Things that might work:
+
+* Paradigm-driver research - making small, controlled changes to established methods rather than designing each experiment from scratch. Builds replication into work that also finds publishable new results. __Not really clear how this fixes the problem.__
+* Author, reviewer and editor checklists. Effective nudge towards good practices eg reporting effect sizes.
+* Challenge the mindset. Based on anecdotal data, the author suspects that publish-or-perish is actually not as strong as force as young postgrads are led to believe.
+* Crowd-sourcing replications eg OSC. Helps with limited resources. __But the total resource pool is still the same. This just redistributes effort. Not necessarily a bad thing, but not a clear win either.__
+* Peer review based on soundness rather than perceived importance eg PLoS ONE. No need for page limits any more, can simply publish everything that meets the bar.
+* Post-publication review - decouple making results available from judging their quality.
+
+Ideal:
+
+* Release all data so it can be independently analyzed
+* Publish methodology in sufficient detail for accurate replication. Eg publish videos of experimental procedure.
+* Record and publish workflow in real-time in a non-revocable manner. Registered experiments are just the start.
