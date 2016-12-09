@@ -95,9 +95,9 @@ Alternatives may be subjective, but would be subject to review as much as anythi
 
 Re: arguments for effect size estimates. All of the above still works given interval null hypotheses. Estimation of effect size doesn't tell us how to weigh evidence for competing theories. Estimation is not model-free - different models produce different best estimates for the same sample. In a Bayesian mindset, our degree of prior belief in the null hypothesis should weight our estimate towards zero.
 
-## Structural equations with latent variables
+## [Structural equations with latent variables](http://eu.wiley.com/WileyCDA/WileyTitle/productCd-0471011711.html)
 
-Skipped - didn't want to buy the book.
+__Skipped - didn't want to buy the book.__
 
 ## [Yes, but what’s the mechanism?(don’t expect an easy answer)](http://www2.psych.ubc.ca/~schaller/528Readings/BullockGreenHa2010.pdf)
 
