@@ -12,7 +12,7 @@ __Author runs a business analytics company and is involved in economic/political
 
 __These notes are really sparse! There is a lot of interesting detail in the book.__
 
-### Structure of science
+## Structure of science
 
 __Much in common with The Beginning of Infinity. Induction doesn't work, competition between explanations etc.__
 
@@ -22,7 +22,7 @@ Branching hierarchy of paradigms, from broad trunks like falsification to narrow
 
 Science itself is a paradigm which has competitors - common sense, tradition etc. Each embodies implicit learned/evolved knowledge about the world and has different mechanisms that generate, change and select ideas.
 
-### Rise of randomized experiments
+## Rise of randomized experiments
 
 Forces against MRA and similar post-hoc analysis:
 
@@ -38,7 +38,7 @@ Meritful criticisms of randomized trials in medicine:
 * Holistic integration in human body - appropriate measure for any experiment should be entire life quality. Eg antibiotics might cure acute illnesses but increase long-term risk of chronic illness.
 * Assumption of generalizable response vs eg genetic variation in response to medication.
 
-### Fall of randomized experiments
+## Fall of randomized experiments
 
 Causal density - density of direct causal relationships between variables. __Crud factor = correlation. Causal density = causation. Can we distinguish them?__
 
@@ -66,7 +66,7 @@ Lacking a powerful compact theory, we resort to many specialized micro-theories.
 
 (Why does astronomy work? No ability to perform true experiments but: Low causal density. Low holistic integration. Universe is really big. Means that there are many good natural experiments. Also, much of the underlying laws are universal and can be separately tested in controlled experiments.)
 
-### Business
+## Business
 
 Describes the rise of experimental methods of business. 
 
@@ -90,7 +90,7 @@ Practical advice:
 
 Authors rule of thumb: experimental methods > experienced expert > non-experimental methods > inexperienced 'expert'
 
-### Politics
+## Politics
 
 Compared to medicine and business, social policy has a dearth of experiments. Discusses what decent work exists.
 
