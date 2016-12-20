@@ -11,7 +11,7 @@ footer: true
 
 #### Aug 2016 - today
 
-* Built a relational query compiler that outperforms Postgres on the Join Order Benchmark.
+* Built a relational query compiler that [outperforms Postgres](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) on the Join Order Benchmark.
 
 ## CTO at Eve
 
