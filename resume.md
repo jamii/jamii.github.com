@@ -7,6 +7,12 @@ sharing: true
 footer: true
 ---
 
+## Independent Researcher
+
+#### Aug 2016 - today
+
+* Built a relational query compiler that outperforms Postgres on the Join Order Benchmark.
+
 ## CTO at Eve
 
 #### Nov 2013 - Jan 2016
@@ -19,7 +25,7 @@ footer: true
 
 * Read >200 papers on databases, logic languages, query planners, incremental view maintenance, query provenance, spatial indexes to discover how to build a practical relational database without tens of man-years of effort.
 
-* Wrote the company blog, which saw ~100k views/year.
+* Wrote the company research blog, which saw ~100k views/year.
 
 * Spoke at the MIT Media Lab.
 
@@ -27,13 +33,13 @@ footer: true
 
 * Helped release Light Table as an open-source project.
 
-* On the program committee for the [Future of Programming Workshop](http://www.future-programming.org/2015/call.html)
+* Sat on the program committee for the [Future of Programming Workshop](http://www.future-programming.org/2015/call.html).
 
 ## Consultant
 
 #### May 2009 – Nov 2013
 
-Highlighted projects:
+Highlighted commercial projects:
 
 * Provided item-item article recommendations for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server.
 
@@ -41,27 +47,13 @@ Highlighted projects:
 
 * Built a LaTeX aware search engine to power latexsearch.com. Covers the entire Springer library - more than 8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
 
-## Student at Recurse Center
+Highlighted personal projects:
 
-#### Oct 2012 – Dec 2012
+* Built a clojure DSL for pattern matching and parsing using PEGs.
 
-* Built strucjure: a clojure DSL for pattern matching and parsing using PEGs.
-
-* Built concerto: a multi-user clojure REPL aimed at collaborative live-coding.
+* Built a multi-user clojure REPL for collaborative live-coding.
 
 * Extended the core.logic CLP solver with fair conjunction and a parallel solver.
-
-* Began droplet: a clojure DSL for specifying distributed systems, based on the Bloom language.
-
-## Intern at Jane Street Capital
-
-#### Jun 2012 – Aug 2012
-
-* Developed classification algorithms for a large financial dataset.
-
-* Developed a denotational semantics and accompanying tests for a distributed message queue.
-
-* Built trading bots for competitions on a mock exchange.
 
 ## MSc Computer Science at Oxford University
 
