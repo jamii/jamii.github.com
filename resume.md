@@ -17,7 +17,7 @@ footer: true
 
 #### Nov 2013 - Jan 2016
 
-* Together with the CEO built a prototype language/IDE which secured a $2.3m seed round from Andreessen Horowitz.
+* Together with the CEO built a language and IDE which secured a [$2.3m seed round](https://techcrunch.com/2014/10/01/eve-raises-2-3m-to-rethink-programming/) from Andreessen Horowitz.
 
 * Designed a live relational language based on temporal-logic extensions of datalog.
 
@@ -25,13 +25,13 @@ footer: true
 
 * Read >200 papers on databases, logic languages, query planners, incremental view maintenance, query provenance, spatial indexes to discover how to build a practical relational database without tens of man-years of effort.
 
-* Wrote the company research blog, which saw ~100k views/year.
+* Wrote the [company research blog](http://incidentalcomplexity.com/archive/), which saw ~100k views/year.
 
 * Spoke at the MIT Media Lab.
 
-* Invited as a resident at the Recurse Center.
+* Invited as a [resident](https://www.recurse.com/blog/68-a-small-step-in-a-new-direction) at the Recurse Center.
 
-* Helped release Light Table as an open-source project.
+* Helped [release Light Table](http://www.chris-granger.com/2014/01/07/light-table-is-open-source/) as an open-source project.
 
 * Sat on the program committee for the [Future of Programming Workshop](http://www.future-programming.org/2015/call.html).
 
@@ -41,7 +41,7 @@ footer: true
 
 Highlighted commercial projects:
 
-* Provided item-item article recommendations for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server.
+* Provided item-item article recommendations for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server. 
 
 * Built a prototype replacement for the core trading engine at the Smarkets betting exchange: 10x less code, 40x better throughput, 10x better 99% latency.
 
