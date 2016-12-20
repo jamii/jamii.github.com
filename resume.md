@@ -21,7 +21,7 @@ footer: true
 
 * Designed a live relational language based on temporal-logic extensions of datalog.
 
-* Built relational databases, query planners and bootstrapped compilers for a series of prototypes (demonstrated in https://youtu.be/VZQoAKJPbh8).
+* Built relational databases, query planners and bootstrapped compilers for a series of prototypes (demonstrated in <https://youtu.be/VZQoAKJPbh8>).
 
 * Read >200 papers on databases, logic languages, query planners, incremental view maintenance, query provenance, spatial indexes to discover how to build a practical relational database without tens of man-years of effort.
 
