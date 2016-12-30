@@ -59,7 +59,7 @@ Highlighted personal projects:
 
 * Studied randomized algorithms, probabilistic model checking, logics of multi-agent information flow, machine learning and intelligent systems.
 
-* Dissertation: Design and analysis of a gossip overlay.
+* Dissertation: [Design and analysis of a gossip overlay.](https://github.com/jamii/dissertation/blob/master/writeup/main.pdf)
 
 ## BA Mathematics at University of Cambridge
 
