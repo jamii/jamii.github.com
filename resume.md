@@ -19,7 +19,7 @@ footer: true
 
 * Together with the CEO built a language and IDE which secured a [$2.3m seed round](https://techcrunch.com/2014/10/01/eve-raises-2-3m-to-rethink-programming/) from Andreessen Horowitz.
 
-* Designed a live relational language based on temporal-logic extensions of datalog.
+* Created a live relational language based on temporal-logic extensions of datalog.
 
 * Built relational databases, query planners and bootstrapped compilers for a series of prototypes (demonstrated in <https://youtu.be/VZQoAKJPbh8>).
 
@@ -47,11 +47,11 @@ Highlighted commercial projects:
 
 Highlighted personal projects:
 
+* Extended the core.logic CLP solver with fair conjunction and a parallel solver.
+
 * Built a clojure DSL for pattern matching and parsing using PEGs.
 
 * Built a multi-user clojure REPL for collaborative live-coding.
-
-* Extended the core.logic CLP solver with fair conjunction and a parallel solver.
 
 ## MSc Computer Science at Oxford University
 
