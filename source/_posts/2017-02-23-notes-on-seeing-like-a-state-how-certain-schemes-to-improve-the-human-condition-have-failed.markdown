@@ -30,7 +30,7 @@ Examples:
 
 Create legibility by imposing simplified model onto a complex system. Again, not inherently a bad thing eg universal education, food and drug standards, herd immunity via compulsory vaccination, trade agreements that enable low-friction commerce etc.
 
-Becomes dangerous when we add ideology (blind to failure) and power (can overrule resistance). __[Most social interventions don't work](http://scattered-thoughts.net/blog/2016/12/13/notes-on-uncontrolled-the-surprising-payoff-of-trial-and-error-for-business-politics-and-society/), so intervention without feedback is very likely to be bad.__
+Becomes dangerous when we add ideology (blind to failure) and power (can overrule resistance). __Most social interventions [don't work](http://scattered-thoughts.net/blog/2016/12/13/notes-on-uncontrolled-the-surprising-payoff-of-trial-and-error-for-business-politics-and-society/), so intervention without feedback is very likely to be bad.__
 
 High modernism - scientism as a religion. Success of the scientific process in some domains created huge over-confidence in others (__cf [Uncontrolled](http://scattered-thoughts.net/blog/2016/12/13/notes-on-uncontrolled-the-surprising-payoff-of-trial-and-error-for-business-politics-and-society/) on how generalizing from small numbers of experiments fails in complex domains__). Wrapped up in ideas of Western and academic superiority - coming to teach the peasants what they are doing wrong, so any resistance to changes is interpreted as stubborn backwardness without merit. Glorifies simple generalizable laws and models, and discounts complex, locale-specific knowledge. Really into grand plans to rebuild society from scratch.
 
@@ -55,5 +55,3 @@ Examples of failed interventions:
 Contrasting metis and techne. Complex, implicit knowledge specific to a single locale vs simple, explicit rules that generalize across a wide variety of situations. Techne lends itself to economies of scale in creating, applying and teaching knowledge. Metis requires long experience which means that workers are not fungible; this is a roadblock to centralization and scaling eg craftsmen vs assembly lines. Led to overestimating the value of techne to the point of discounting metis entirely. 
 
 Closing section gives advice on avoiding such catastrophes, which is almost point for point the same as the advice in Uncontrolled. 
-
-__Uncontrolled is an excellent pairing for this book.__
