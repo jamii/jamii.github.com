@@ -8,7 +8,7 @@ date: '2017-02-23 18:04'
 
 <https://smile.amazon.com/dp/B00D8JJYWA>
 
-Some huge failures of social interventions. Why?
+Mid-century utopian visions resulted in some of the greatest tragedies in history. What went wrong?
 
 ### Legibility
 
