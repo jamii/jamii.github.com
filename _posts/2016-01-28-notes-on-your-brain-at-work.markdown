@@ -21,6 +21,7 @@ Each chapter starts with a story illustrating a poorly handled situation. Explai
 Goal is to work smarter, be more focused and productive, stay cool under pressure, reduce the lengths of meetings and influence other people.
 
 ### Problems and decisions
+
 ### The morning email overwhelm
 
 Prefrontal cortex. In evolutionary history, last major brain region to develop. Involved in setting goals, controlling impulses, imagining fictive scenes. "It's where we hold thoughts that are not being generated from external sources or from the senses."
