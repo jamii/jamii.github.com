@@ -40,7 +40,7 @@ To memorize information, you need to get if off the stage and into the audience.
 
 Inhibiting a thought - trying to stop an over-excited audience member from getting onto the stage - takes effort but is essential to saving the limited capacity of the stage.
 
-Effort = oxygen, glucose. Prefrontal cortex is a pig - can measure drop in blood sugar when active. Will shut off when out of resources. This is why you are easily distracted when tiredor hungry.
+Effort = oxygen, glucose. Prefrontal cortex is a pig - can measure drop in blood sugar when active. Will shut off when out of resources. This is why you are easily distracted when tired or hungry.
 
 (Basal ganglia - control routine actions. Highly efficient.)
 
