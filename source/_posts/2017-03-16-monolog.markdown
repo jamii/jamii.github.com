@@ -56,7 +56,7 @@ Clicking on the refresh button turns the todo into a current task.
 
 Other code snippets can annotate the entries with interpretations of their contents, such as parsing durations and times.
 
-``` cljs
+``` clj
 (doseq [message messages
         :when (nil? (@natty message))]
   (xhrio/send "/natty"
