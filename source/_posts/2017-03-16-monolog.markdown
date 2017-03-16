@@ -114,7 +114,7 @@ Finally, filters can produce task-specific views of the log, like uncompleted to
 
 ![](/img/monolog10.png)
 
-![](/img/monolog11.png)
+![](/img/monolog12.png)
 
 That's ~200 loc for the base functionality plus ~200 loc for a time tracker, todo list, experience sampler and even a little repl. Since the only mutable state is the log and it's only mutated by direct user actions, I can safely use [figwheel](https://github.com/bhauman/lein-figwheel) to live-update the app whenever I hit save in the code. Adding new apps usually only takes a couple of minutes from idea to live implementation.
 
