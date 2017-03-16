@@ -116,7 +116,7 @@ Finally, filters can produce task-specific views of the log, like uncompleted to
 
 ![](/img/monolog11.png)
 
-That's ~200 loc for the base functionality plus ~200 loc for a time tracker, todo list, experience sampler and even a little repl. Since the only mutable state is the log and that is only mutated by direct user actions, I can safely use [figwheel](https://github.com/bhauman/lein-figwheel) to live-update the app whenever I hit save in the code. Adding new apps usually only takes a couple of minutes from idea to live implementation.
+That's ~200 loc for the base functionality plus ~200 loc for a time tracker, todo list, experience sampler and even a little repl. Since the only mutable state is the log and it's only mutated by direct user actions, I can safely use [figwheel](https://github.com/bhauman/lein-figwheel) to live-update the app whenever I hit save in the code. Adding new apps usually only takes a couple of minutes from idea to live implementation.
 
 To be really useful though it needs to be a mobile app, and I never got around to figuring out to get the same live-coding experience that I get as a locally-served figwheel app. If I have to plug my phone in and run some build and deploy step it defeats a lot of the quick-and-hacky magic that I was aiming for. I'm sure it's doable though - maybe someone can suggest a nice approach?
 
