@@ -55,7 +55,7 @@ Clicking on the refresh button turns the todo into a current task.
 
 Other code snippets can annotate the entries with interpretations of their contents, such as parsing durations and times.
 
-``` cljs
+```cljs
 (doseq [message messages
         :when (nil? (@natty message))]
   (xhrio/send "/natty"
@@ -69,7 +69,7 @@ Other code snippets can annotate the entries with interpretations of their conte
 
 And another snippet uses the estimated durations of tasks to decide when to nudge the user about overrunning.
 
-``` cljs
+```cljs
 (when-let [last-task (first (for [task (reverse @tasks)
                                   :when task]
                               task))]
@@ -85,7 +85,7 @@ The nudge can be cleared by adding a new task or break.
 
 Nudges also work for experience sampling. Clicking on this experience sampling nudge partially fills out a new log entry.
 
-``` cljs
+```cljs
 (let [last-sample (first (for [sample (reverse @samples)
                                :when sample]
                            sample))]
@@ -97,14 +97,14 @@ Nudges also work for experience sampling. Clicking on this experience sampling n
 
 Finally, filters can produce task-specific views of the log, like uncompleted todos or chargeable hours.
 
-``` cljs
+```cljs
 (def filters
   {:all #(do true)
    :todo #(= :todo (@todos (:ix %)))
    :projectx #(contains (:contents %) "#projectx")})
 ```
 
-``` cljs
+```cljs
 (when (= :projectx @current-filter)
   [:div {:style {:font-weight "bold"
                   :text-align "center"
