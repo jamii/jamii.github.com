@@ -18,7 +18,7 @@ As it turns out, putting my time-tracker in a spreadsheet doesn't quite solve th
 
 The same goes for todo lists, [experience samplers](https://en.wikipedia.org/wiki/Experience_sampling_method), lab journals, quantified-self shenanigans etc. They all need to record when things happen and prompt actions from the user at specific times. 
 
-Which is all a leadup for presenting [Monolog](https://github.com/jamii/monolog): a semi-successful experiment in making a 90%-done UI for journal-like problems. 
+So I made [monolog](https://github.com/jamii/monolog): a semi-successful experiment in making a 90%-done UI for journal-like problems. 
 
 The core data model is a log of timestamped plain-text entries.
 
