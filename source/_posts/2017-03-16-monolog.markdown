@@ -1,0 +1,123 @@
+---
+layout: post
+title: Monolog
+date: '2017-03-16 14:57'
+---
+
+Suppose I want to track how I spend my day. There are plenty of existing time-tracking apps, but none of them were invented here.
+
+I could build an app from scratch. I would just need to write code for displaying entries, adding new entries, editing old entries, summarizing data, storing data, tracking changes...
+
+Or I could just dump it in a spreadsheet, add a few formulas and call it a day. 
+
+This is the real magic of spreadsheets - there is a large class of problems where just pasting the data into an editable grid provides 90% of the necessary interactions, and adding a few formulae and charts handles the remaining 10%. 
+
+And having noticed that, you have to also wonder if there are other classes of problems where a similar 90%-done UI paradigm might exist. 
+
+As it turns out, putting my time-tracker in a spreadsheet doesn't quite solve the problem, because the biggest problem I have with time-trackers is that I forget to use them. I want a time-tracker that can pop up a notification to ask me if I've really been writing a blog post for 27 hours or if I just forgot to check out.
+
+The same goes for todo lists, [experience samplers](https://en.wikipedia.org/wiki/Experience_sampling_method), lab journals, quantified-self shenanigans etc. They all need to record when things happen and prompt actions from the user at specific times. 
+
+Which is all a leadup for presenting [Monolog](https://github.com/jamii/monolog): a semi-successful experiment in making a 90%-done UI for journal-like problems. 
+
+The core data model is a log of timestamped plain-text entries.
+
+![](/img/monolog1.png)
+
+The entries and the timestamp are both editable.
+
+![](/img/monolog2.png)
+
+Snippets of code can annotate entries with arbitrary html.
+
+``` cljs
+(when (= :todo (@todos (:ix message)))
+  [:button {:style {:margin "0px 5px 0px 5px"
+                    :padding "0px 10px 0px 10px"}
+            :on-click #(log! {:contents (.replace (:contents message) "#todo" "#task")})}
+   "↻"])
+(when (= :todo (@todos (:ix message)))
+  [:button {:style {:margin "0px 5px 0px 5px"
+                    :padding "0px 10px 0px 10px"}
+          :on-click #(log! {:contents (str "#done #" (:ix message))})}
+   "✓"])
+```
+
+![](/img/monolog3.png)
+
+Clicking on the tick button marks the todo as done.
+
+![](/img/monolog4.png)
+
+Clicking on the refresh button turns the todo into a current task.
+
+![](/img/monolog5.png)
+
+Other code snippets can annotate the entries with interpretations of their contents, such as parsing durations and times.
+
+``` cljs
+(doseq [message messages
+        :when (nil? (@natty message))]
+  (xhrio/send "/natty"
+              #(swap! natty assoc message (read-string (-> % .-target .getResponseText)))
+              "POST"
+              (pr-str {:message message})
+              (structs/Map. #js {:Content-Type "application/edn"})))
+```
+
+![](/img/monolog6.png)
+
+And another snippet uses the estimated durations of tasks to decide when to nudge the user about overrunning.
+
+``` cljs
+(when-let [last-task (first (for [task (reverse @tasks)
+                                  :when task]
+                              task))]
+  (when (> (:duration last-task) (:estimate last-task))
+    [nudge-ui (str "Your last " (-> last-task :kind name) " is at " (:duration last-task) " / " (:estimate last-task) " mins! What are you up to?") "#task "]))
+```
+
+![](/img/monolog7.png)
+
+The nudge can be cleared by adding a new task or break.
+
+![](/img/monolog8.png)
+
+Nudges also work for experience sampling. Clicking on this experience sampling nudge partially fills out a new log entry.
+
+``` cljs
+(let [last-sample (first (for [sample (reverse @samples)
+                               :when sample]
+                           sample))]
+  (when (or (nil? last-sample) (> @now (:next-sample last-sample)))
+    [nudge-ui (str "It's sampling time!") (str "#sample  (next sample " (time->string (js/Date. (+ (.getTime @now) (* (js/Math.random) 1000 60 60 8)))) ")")
+```
+
+![](/img/monolog9.png)
+
+Finally, filters can produce task-specific views of the log, like uncompleted todos or chargeable hours.
+
+``` cljs
+(def filters
+  {:all #(do true)
+   :todo #(= :todo (@todos (:ix %)))
+   :projectx #(contains (:contents %) "#projectx")})
+```
+
+``` cljs
+(when (= :projectx @current-filter)
+  [:div {:style {:font-weight "bold"
+                  :text-align "center"
+                  :flex 1}}
+   (format "%.0f hours - £%.2f" (/ @projectx-minutes 60) (* (/ @projectx-minutes 60 6) 400))])
+```
+
+![](/img/monolog10.png)
+
+![](/img/monolog11.png)
+
+That's ~200 loc for the base functionality plus ~200 loc for a time tracker, todo list, experience sampler and even a little repl. Since the only mutable state is the log and that is only mutated by direct user actions, I can safely use [figwheel](https://github.com/bhauman/lein-figwheel) to live-update the app whenever I hit save in the code. Adding new apps usually only takes a couple of minutes from idea to live implementation.
+
+To be really useful though it needs to be a mobile app, and I never got around to figuring out to get the same live-coding experience that I get as a locally-served figwheel app. If I have to plug my phone in and run some build and deploy step it defeats a lot of the quick-and-hacky magic that I was aiming for. I'm sure it's doable though - maybe someone can suggest a nice approach?
+
+Anyway, I posted this mainly to illustrate this idea of a 90%-done UI and hopefully to prompt people to look at other classes of problems that might have good solutions. [SIEUFERD](http://people.csail.mit.edu/ebakke/sieuferd/index.html) is trying to do this for CRUD apps. [Camlistore](https://camlistore.org/) and co seem to want to do the same for unstructured data, but they don't provide much in the way of interaction. What else is out there?

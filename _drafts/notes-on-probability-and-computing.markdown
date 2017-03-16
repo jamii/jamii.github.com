@@ -14,6 +14,8 @@ Measures. Inclusion/exclusion principle. Independence. Conditional probability. 
 
 Algorithms with one-sided error can be amplified by running multiple times. 
 
+$1-x<=e^{-x}$ often useful when encountering $(1-p)^n$.
+
 ### 2. Discrete Random Variables and Expectation
 
 Random variables. Discrete - take on only countable number of values. Mutual independence. Expectation.
@@ -27,3 +29,5 @@ Conditional expectation. Law of total expectation: $E[Y] = E[E[Y|Z]]$.
 When $Im(X) \subset \mathbb{N}_0$ then $E[X] = \sum_{i=1}^\infty Pr(X \geq i)$ 
 
 Harmonic number $H(n) = \sum_{k=1}^n 1/k \in [\ln(n), \ln(n) + 1]$
+
+TODO 16b 
