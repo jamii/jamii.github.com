@@ -4,10 +4,6 @@ title: "Notes on 'Probability and Computing'"
 date: "2017-01-14 12:06"
 ---
 
-<script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
 ### 1. Events and Probability
 
 Measures. Inclusion/exclusion principle. Independence. Conditional probability. Principle of deferred decisions. Law of total probability. Bayes law.
@@ -31,3 +27,7 @@ When $Im(X) \subset \mathbb{N}_0$ then $E[X] = \sum_{i=1}^\infty Pr(X \geq i)$
 Harmonic number $H(n) = \sum_{k=1}^n 1/k \in [\ln(n), \ln(n) + 1]$
 
 TODO 16b 
+
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
