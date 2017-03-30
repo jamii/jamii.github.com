@@ -95,6 +95,8 @@ Can use multivariate linear regression to 'control' for effects of multiple vari
 
 Multicollinearity - when two predictor variables are strongly correlated, any linear combination of them will be equally plausible. Symptom is large spread and high covariance between posteriors for the two variables. 
 
+Non-indentifiability - when data and model structure do not allow estimating the value of a parameter. Multicollinearity is a special case.
+
 Residual - difference between observation and prediction.
 
 With multiple predictors, can no longer visualize predictions directly with a line + hpdi. Can use:
@@ -102,6 +104,8 @@ With multiple predictors, can no longer visualize predictions directly with a li
 * Predictor residual plots - use all but one predictor to model remaining predictor, then regress+plot residuals against outcome. Shows the unique contribution of that predictor. 
 * Counterfactual plots - simulate altering one variable while holding the others constant.
 * Posterior prediction plots - simulate and plot predicted outcome vs observed outcome, prediction error vs predictors, distribution of prediction error per case etc. __In prediction error vs predictors, if the model is accurate we expect to see normally distributed error independent of the predictor. Obvious patterns are an opportunity for a better model.__
+
+Model categorical variables by separating into indicator variables. 
 
 ## Polynomial regression
 
@@ -114,3 +118,7 @@ Recommends preprocessing data for polynomials, without justification eg `d$weigh
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
+
+##
+
+Post-treatment bias - any variable that is a causal consequence of the treatment being studied can screen off the inferred influence of the treatment. Nodel is asking the wrong question, so model comparison using information criteria or out-of-sample prediction quality can't help.
