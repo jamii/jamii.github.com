@@ -26,10 +26,10 @@ Vision uses environment as it's own best model - repeated saccades to retrieve d
 
 What does it mean to 'know' something:
 
-* "Do you know what colour that book is?" "Yes, <looks at book>, it's red"
-* "Do you know the time?" "Yes, <looks at watch>, it's 14:00"
-* "Do you know the capital of Argentina?" "Yes, <retrieves from long-term memory>, it's Buenos Aires"
-* "Do you know the capital of Argentina?" "Yes, <looks up on phone>, it's Buenos Aires"
+* "Do you know what colour that book is?" "Yes, (looks at book), it's red"
+* "Do you know the time?" "Yes, (looks at watch), it's 14:00"
+* "Do you know the capital of Argentina?" "Yes, (retrieves from long-term memory), it's Buenos Aires"
+* "Do you know the capital of Argentina?" "Yes, (looks up on phone), it's Buenos Aires"
 
 Can be said to 'know' something if it can be quickly and reliably retrieved, whether from the visual field, from a reliably tool (like a watch), from biological long-term memory or from a smartphone. The latter is currently high-latency and unreliable, but it's only a matter of degree and it will improve over time.
 
