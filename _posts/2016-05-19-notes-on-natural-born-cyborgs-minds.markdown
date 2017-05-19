@@ -31,7 +31,7 @@ What does it mean to 'know' something:
 * "Do you know the capital of Argentina?" "Yes, (retrieves from long-term memory), it's Buenos Aires"
 * "Do you know the capital of Argentina?" "Yes, (looks up on phone), it's Buenos Aires"
 
-Can be said to 'know' something if it can be quickly and reliably retrieved, whether from the visual field, from a reliably tool (like a watch), from biological long-term memory or from a smartphone. The latter is currently high-latency and unreliable, but it's only a matter of degree and it will improve over time.
+Can be said to 'know' something if it can be quickly and reliably retrieved, whether from the visual field, from a reliable tool (like a watch), from biological long-term memory or from a smartphone. The latter is currently high-latency and unreliable, but it's only a matter of degree and it will improve over time.
 
 (Human long-term memory can do interesting things like making connections in the background. Machine long-term memory can do interesting things like large-scale search, software agents, collaborative editing etc. No reason to see the former as 'real' memory just because it happens to come preinstalled.)
 
