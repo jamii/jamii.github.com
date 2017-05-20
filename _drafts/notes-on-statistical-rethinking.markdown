@@ -8,17 +8,17 @@ date: "2017-03-20 20:11"
 
 __Focuses on practical elements of modeling. Very skimpy on the math, but can get that elsewhere. Most of the value is in working through the exercises.__ 
 
-Book focuses on Bayesian data analysis, multilevel modelling and model comparison using information criteria.
+Book focuses on Bayesian data analysis, multilevel modeling and model comparison using information criteria.
 
-Hypothesis <-> model <-> data are many-many relationships. Naive falsification is a myth - multiple hypotheses might have models which predict the same data, and one hypothesis might have multiple models that each predict different data. Worse, most interesting hypotheses are probabalistic. Eg 80% of swans are white - how many black swans do we have to see to falsify? How many blurry photos of Nessie do we have to see to falsify the no-Nessie hypothesis?
+Hypothesis <-> model <-> data are many-many relationships. Naive falsification is a myth - multiple hypotheses might have models which predict the same data, and one hypothesis might have multiple models that each predict different data. Worse, most interesting hypotheses are probabilistic. Eg 80% of swans are white - how many black swans do we have to see to falsify? How many blurry photos of Nessie do we have to see to falsify the no-Nessie hypothesis?
 
 (NHST is not even naive falsification - it attempts to falsify the null hypothesis rather than the hypothesis in question. In many domains there is not even an obvious neutral hypothesis.)
 
 Clearly need to be able to reason about evidence/belief/confidence. Bayesian approach is defined by using probability for both observed frequencies and evidence/belief/confidence. __See [Jaynes](https://www.amazon.com/Probability-Theory-Principles-Elementary-Applications-ebook/dp/B00AKE1Q40/ref=mt_kindle?_encoding=UTF8&me=) for the canonical argument that probability is the right way to think about belief.__
 
-No free lunch. Bayesian inference always takes place within some model. Within the assumptions of the model being fitted, Bayaesian inference is optimal. BUT IT CANNOT TELL YOU IF YOUR MODEL IS CORRECT. Small world vs large world.
+No free lunch. Bayesian inference always takes place within some model. Within the assumptions of the model being fitted, Bayesian inference is optimal. BUT IT CANNOT TELL YOU IF YOUR MODEL IS CORRECT. Small world vs large world.
 
-Cute metaphor of statistical modelling tools as golems - immensely powerful but brutally unthinking. User is responsible for supplying all the wisdom and interpretation.
+Cute metaphor of statistical modeling tools as golems - immensely powerful but brutally unthinking. User is responsible for supplying all the wisdom and interpretation.
 
 Bayesian model consists of:
 
@@ -42,9 +42,9 @@ Book introduces three methods for conditioning on evidence:
 * Quadratic approximation: under reasonable assumptions the posterior is approximately Gaussian, so use hill-climbing to find peak (mean) and use numerical methods to approximate curvature near peak (variance).
 * Markov chain Monte Carlo: construct a Markov chain whose steady-state distribution is the posterior, sample repeatedly to approximate.
 
-Percentile intervals - what range of paramaters occupies central X% of mass. Highest posterior density interval - what is the smallest range of parameters that covers X% of mass. Usually similar. If they aren't, the distribution is weird and you should show the whole thing instead of summarizing it anyway.
+Percentile intervals - what range of parameters occupies central X% of mass. Highest posterior density interval - what is the smallest range of parameters that covers X% of mass. Usually similar. If they aren't, the distribution is weird and you should show the whole thing instead of summarizing it anyway.
 
-What if we need a point estimate? Choose a loss function appropriate to your decision problem, and choose the point estimate that minimises expected loss under the posterior distribution.
+What if we need a point estimate? Choose a loss function appropriate to your decision problem, and choose the point estimate that minimizes expected loss under the posterior distribution.
 
 MAP estimate - maximum a posteriori - parameter with highest density in posterior.
 
@@ -63,7 +63,7 @@ Model checking. Look at various summary statistics to check assumptions eg run l
 
 Epistemological assumption - about how to model the world. Ontological assumption - about the world. Projection fallacy - confusing the two. Eg model of height assumes that individual heights are IID. Not true for eg twins, but true enough to make the model useful.
 
-TODO de Finitte's theorem
+TODO de Finetti's theorem
 
 For Gaussian priors, can weigh confidence by $\sigma_{\text{post}} = 1 / \sqrt{N}$. So we are saying that we have $N = 1 / \sigma_{\text{prior}}^2$ prior observations centered around $\mu$. TODO double-check this
 
@@ -87,15 +87,15 @@ Model outcome as linear function of predictors plus Gaussian error.
 
 Why Gaussian? Gaussian distribution can originate from sum of similar-sized random variables or product of variables close to one ($(1+x)(1+y) \approx 1+x+y$), log of product of variables etc. TODO Also Gaussian is lowest entropy distribution if all we know is mean and variance.
 
-Posterior for variance parameter tends to have a long right tail, because we know it's non-negative. This makes the quadratic approximation suspect. Better to estimate $\log{\sigma}$ instead, which is closer to guassian. In general, using exponentials to constrain parameters to be positive, rather than using a one-sided prior, is a useful trick.
+Posterior for variance parameter tends to have a long right tail, because we know it's non-negative. This makes the quadratic approximation suspect. Better to estimate $\log{\sigma}$ instead, which is closer to Gaussian. In general, using exponentials to constrain parameters to be positive, rather than using a one-sided prior, is a useful trick.
 
-Handle catergorical variables by breaking down into indicator variables.
+Handle categorical variables by breaking down into indicator variables.
 
 Can use multivariate linear regression to 'control' for effects of multiple variables.
 
 Multicollinearity - when two predictor variables are strongly correlated, any linear combination of them will be equally plausible. Symptom is large spread and high covariance between posteriors for the two variables. 
 
-Non-indentifiability - when data and model structure do not allow estimating the value of a parameter. Multicollinearity is a special case.
+Non-identifiability - when data and model structure do not allow estimating the value of a parameter. Multicollinearity is a special case.
 
 Residual - difference between observation and prediction.
 
@@ -115,10 +115,44 @@ Not generally a good choice - hard to interpret and prone to overfitting. Better
 
 Recommends preprocessing data for polynomials, without justification eg `d$weight.s2 <- d$weight.s^2`.
 
+##
+
+Post-treatment bias - any variable that is a causal consequence of the treatment being studied can screen off the inferred influence of the treatment. Model is asking the wrong question, so model comparison using information criteria or out-of-sample prediction quality can't help.
+
+## Model comparison
+
+Under- vs over-fitting.
+
+Cross-validation - partition the data into training and test set. Test how sensitive the parameters are to the partitioning.
+
+For prediction tasks we can just choose models based on some cost function that matches the task. For scientific work we care about the model itself, so there is no clear cost function. KL-divergence from reality is a popular measure. __The use of KL-divergence is really poorly justified in this text.__ Can estimate this based on a finite number of samples from some repeatable process.
+
+__There is a section on deviance that I can't follow at all. Not remotely clear how out-of-sample deviance can be estimated in-sample with these assumptions.__
+
+__Discusses different information criterion, and the assumptions that they make, but without the derivations there is no way to make sense of the assumptions.__
+
+Akaike Information Criterion. Assumes flat priors, multivariate Gaussian posterior and sample size N >> parameters k.
+
+Deviance Information Criterion. 
+
+Widely Applicable Information Criterion. Assumes independent observations.
+
+Bayesian Information Criterion. Can be heavily influenced by choiceo of prior.
+
+Regularization - use strong priors to penalize models which we believe are unlikely.
+
+Uniformitarian assumption - future data are expected to come from the same process as past data, with a similar range of hidden parameters. Pretty hard to avoid. __Induction problem, basically.__
+
+Comparing models using information criteria only makes sense if both models are trained on the same data. Beware code that automatically drops missing data.
+
+Akaike weight - map WAIC to probability scale, normalize across models. Use to compare relative accuracy. No consensus on how to interpret these weights - Akaike says:
+
+> A model’s weight is an estimate of the probability that the model will make the best predictions on new data, conditional on the set of models considered.
+
+Model averaging - create an ensemble by summing Akaike weighted posteriors.
+
+With enough model generation and comparison, we can overfit again.
+
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
-
-##
-
-Post-treatment bias - any variable that is a causal consequence of the treatment being studied can screen off the inferred influence of the treatment. Nodel is asking the wrong question, so model comparison using information criteria or out-of-sample prediction quality can't help.
