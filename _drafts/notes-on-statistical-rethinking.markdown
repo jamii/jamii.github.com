@@ -137,6 +137,16 @@ Model averaging - create an ensemble by summing Akaike weighted posteriors.
 
 With enough model generation and comparison, we can overfit again.
 
+## Interactions
+
+For linear interactions, multiply predictors together in the model.
+
+Interactions are symmetric, so be sure to consider both interpretations.
+
+Really hard to interpret, so definitely have to plot predictions now. Can use multiple plots to view interaction effects - varying predictor A across plots and predictor B within plots.
+
+Centering data also becomes more important.
+
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
