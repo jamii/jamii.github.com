@@ -6,6 +6,8 @@ date: "2017-03-20 20:11"
 
 <https://smile.amazon.com/dp/1482253445>
 
+[Scratchpad](/code/rethink/r).
+
 __Focuses on practical elements of modeling. Very skimpy on the math, but can get that elsewhere. Most of the value is in working through the exercises.__ 
 
 Book focuses on Bayesian data analysis, multilevel modeling and model comparison using information criteria.
@@ -147,6 +149,24 @@ Really hard to interpret, so definitely have to plot predictions now. Can use mu
 
 Centering data also becomes more important.
 
+## MCMC
+
+Vague descriptions of how various MCMC algorithms work:
+
+* Gibbs sampling. Something something conjugate pairs. Imposes limits on which priors you can pick. Inefficient when number of parameters grows to hundreds or thousands.
+* Hamiltonian Monte Carlo. Uses derivatives to spend more time sampling regions with high curvature - when curvature is low we can just approximate by a plane. Requires continuous parameters. Requires tuning hyper-parameters but mostly automatable in practice.
+
+Rule of thumb - use four-ish short chains to check that fitting is well-behaved, then use one long chain for actual inference.
+
+Check that traces are stationary (same distribution over time) and well mixed (low correlation between adjacent points, no obvious patterns). Check that the estimated number of effective samples is high and that the potential scale reduction factor $\hat{R}$ converges to 1 (> 1.01 is suspicious).
+
+__Also simulate data from the model and check that inference recovers the original parameters.__
+
+Common failure modes:
+
+* Broad flat regions in posterior (often caused by flat priors). Causes erratic jumps to extreme values.
+* Non-identifiable parameters. 
+
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
+</script> 
