@@ -1365,3 +1365,45 @@ leg_right <- leg_prop*height +    # sim right leg as proportion + error
 rnorm( N , 0 , 0.02 )
 # combine into data frame
 d <- data.frame(height,leg_left,leg_right)
+
+m5.8s <- map2stan(
+  alist(
+    height ~ dnorm( mu , sigma ) ,
+    mu <- a + bl*leg_left + br*leg_right ,
+    a ~ dnorm( 10 , 100 ) ,
+    bl~dnorm(2,10),
+    br~dnorm(2,10),
+    sigma ~ dcauchy( 0 , 1 )
+    ) ,
+    data=d, chains=4,
+    start=list(a=10,bl=0,br=0,sigma=1) )
+    
+m5.8s2 <- map2stan(
+  alist(
+    height ~ dnorm( mu , sigma ) ,
+    mu <- a + bl*leg_left + br*leg_right ,
+    a ~ dnorm( 10 , 100 ) ,
+    bl~dnorm(2,10),
+    br ~ dnorm( 2 , 10 ) & T[0,] ,
+    sigma ~ dcauchy( 0 , 1 )
+    ) ,
+    data=d, chains=4,
+    start=list(a=10,bl=0,br=0,sigma=1) )
+    
+m5.8s3 <- map2stan(
+  alist(
+    height ~ dnorm( mu , sigma ) ,
+    mu <- a + bl*leg_left + br*leg_right ,
+    a ~ dnorm( 10 , 100 ) ,
+    bl~dnorm(2,10) & T[0,],
+    br ~ dnorm( 2 , 10 ) & T[0,] ,
+    sigma ~ dcauchy( 0 , 1 )
+    ) ,
+    data=d, chains=4,
+    start=list(a=10,bl=0,br=0,sigma=1) )
+    
+pairs(m5.8s)
+pairs(m5.8s2)
+pairs(m5.8s3)
+
+compare(m5.8s, m5.8s2, m5.8s3)
