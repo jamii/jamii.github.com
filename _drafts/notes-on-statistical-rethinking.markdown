@@ -6,7 +6,7 @@ date: "2017-03-20 20:11"
 
 <https://smile.amazon.com/dp/1482253445>
 
-[Scratchpad](/code/rethink/r).
+[Scratchpad](/code/rethink.r).
 
 __Focuses on practical elements of modeling. Very skimpy on the math, but can get that elsewhere. Most of the value is in working through the exercises.__ 
 
