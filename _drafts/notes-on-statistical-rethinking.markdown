@@ -165,7 +165,9 @@ __Also simulate data from the model and check that inference recovers the origin
 Common failure modes:
 
 * Broad flat regions in posterior (often caused by flat priors). Causes erratic jumps to extreme values.
-* Non-identifiable parameters. 
+* Non-identifiable parameters. Causes wandering traces.
+
+Both are usually fixed by adding weakly informative priors.
 
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
