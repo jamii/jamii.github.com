@@ -101,6 +101,8 @@ Polynomial regression - model outcome as polynomial of predictors plus Gaussian 
 
 ## Model comparison
 
+Can't judge significance by looking at marginal distributions of posterior - may be strong correlations between parameters. Eg may find that two parameters may both be centered around 0, but making one small makes the other large and vice versa. Safer to compare model with and model without parameter.
+
 __I found this section really hard to follow. Eventually realized that it's notational sloppiness - not clearly distinguishing between expectations under reality and expectations under observation, and lack of clear indices on sums. These notes are heavily supplemented by other sources.__
 
 Under- vs over-fitting.
@@ -168,6 +170,104 @@ Common failure modes:
 * Non-identifiable parameters. Causes wandering traces.
 
 Both are usually fixed by adding weakly informative priors.
+
+## Entropy
+
+When choosing priors and likelihood functions, prefer the distribution with the maximum entropy that fits the constraints. Because:
+
+* It adds the least additional information - can interpret this as making the fewest additional assumptions.
+* Many natural process produce maximum entropy distributions eg mean of IID variables. 
+* It tends to work well in practice.
+
+__Wikipedias [explanation](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy#The_Wallis_derivation) of the Wallis derivation was easier to understand than the book.__
+
+Bayesian updates can be seen as a special case of minimizing cross entropy. __Using the maximum entropy principle to justify minimizing cross-entropy is linguistically confusing. Think of it as minimizing information gain in both cases?.__
+
+__Found [a paper with the derivation](https://arxiv.org/pdf/physics/0608185.pdf) but I couldn't follow the notation after (32), so I worked through a really simple example instead:__
+
+__Suppose we have a biased coin and we believe the bias $\theta$ is one of $\{\frac{0}{3},\frac{1}{3},\frac{2}{3},\frac{1}{3}\}$ with equal probability. Then we toss the coin and get heads. All we know about the new joint distribution $P_\mathrm{new}(\theta, X)$ is that $P_\mathrm{new}(\theta, X=\mathrm{Tails}) = 0$. The distribution that minimizes $D_\mathrm{KL}(P_\mathrm{new}, P_\mathrm{old})$ subject to that constraint is $P_\mathrm{new}(\theta, X = \mathrm{Heads}) = (\frac{0}{6}, \frac{1}{6}, \frac{2}{6}, \frac{3}{6})$ which is the same as we get from Bayes rule.__
+
+Maximum entropy distributions given:
+
+* Fixed variance - Gaussian
+* Positive, fixed mean - exponential
+* Discrete, finite, fixed mean - binomial
+* Discrete, fixed mean - geometric
+
+[Full table](https://en.wikipedia.org/wiki/Maximum_entropy_probability_distribution#Other_examples)
+
+Histomancy - trying to choose distribution by looking at histograms of data. Doesn't work because distribution is for the residuals after the linear model and link function - can't see it in the original data.
+
+## Generalized Linear Models
+
+To use other distributions in a linear model we need to map the range of the linear model to the domain of the distribution parameters with a link function. 
+
+Logistic regression:
+
+$$
+\begin{align}
+y_i & \sim \mathrm{Binomial}(1, p_i) \\
+\log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i
+\end{align}
+$$
+
+Aggregated binomial regression:
+
+$$
+\begin{align}
+y_i & \sim \mathrm{Binomial}(n_i, p_i) \\
+\log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i
+\end{align}
+$$
+
+(To use WAIC, we need to disaggregate the aggregated binomial model to get individual points.)
+
+Poisson regression:
+
+$$
+\begin{align}
+y_i & \sim \mathrm{Poisson}(\lambda_i) \\
+\log{\lambda_i} & = \alpha + \beta x_i
+\end{align}
+$$
+
+If the measurement periods for each case differ, can separate $\lambda_i = \mu_i / \tau_i$:
+
+$$
+\begin{align}
+y_i & \sim \mathrm{Poisson}(\mu_i) \\
+\log{\mu_i} & = \log{\tau_i} + \alpha + \beta x_i
+\end{align}
+$$
+
+Deal with multiple outcome events either by normalizing multiple weights:
+
+$$
+\begin{align}
+y_i & \sim \mathrm{Multinomial}(n_i, p) \\
+p_i & = \frac{\exp{s_i}}{\sum_j \exp{s_k}} \\
+s_1 & = \alpha + \beta x_i \\
+s_2 & = \gamma y_i + \delta z_i \\
+s_3 & = \text{etc...}
+\end{align}
+$$
+
+Or by using multiple Poisson processes:
+
+$$
+\begin{align}
+y_i & \sim \mathrm{Poisson}(\lambda_i) \\
+\log{\lambda_1} & = \alpha + \beta x_i \\
+\log{\lambda_2} & = \gamma y_i + \delta z_i \\
+\log{\lambda_3} & = \text{etc...}
+\end{align}
+$$
+
+__(Presumably when total counts vary across cases, we should separate $\lambda_i = \mu_i / \tau_i$ again?)__
+
+Use sensitivity analysis to understand how choice of distribution and link function affect the results.
+
+Beware - information criterion can't compare models with different distributions, because the constant part of the deviance no longer cancels out in the difference.
 
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
