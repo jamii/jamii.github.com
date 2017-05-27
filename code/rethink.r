@@ -1407,3 +1407,22 @@ pairs(m5.8s2)
 pairs(m5.8s3)
 
 compare(m5.8s, m5.8s2, m5.8s3)
+
+library(rethinking)
+data(Kline)
+d <- Kline
+
+d$log_pop <- log(d$population)
+d$contact_high <- ifelse(d$contact=="high", 1, 0)
+
+m10.10 <- map( 
+  alist(
+    total_tools ~ dpois( lambda ), 
+    log(lambda) <- a + bp*log_pop +
+    bc*contact_high + bpc*contact_high*log_pop,
+    a ~ dnorm(0,100),
+    c(bp,bc,bpc) ~ dnorm(0,1)
+    ),
+    data=d )
+    
+plot(precis(m10.10))
