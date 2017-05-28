@@ -1426,3 +1426,220 @@ m10.10 <- map(
     data=d )
     
 plot(precis(m10.10))
+
+data(chimpanzees)
+d <- chimpanzees
+
+d2<-d
+d2$recipient <- NULL
+
+m1 <- map2stan(
+  alist(
+    pulled_left ~ dbinom( 1 , p ) ,
+    logit(p) <- a[actor] + (bp + bpC*condition)*prosoc_left ,
+    a[actor] ~ dnorm(0,10),
+    bp ~ dnorm(0,10), 
+    bpC ~ dnorm(0,10)
+    ) ,
+    data=d2 , chains=2 , iter=2500 , warmup=500 )
+    
+m2 <- map2stan(
+  alist(
+    pulled_left ~ dbinom( 1 , p ) , 
+    logit(p) <- a + bp*prosoc_left , 
+    a ~ dnorm(0,10) ,
+    bp ~ dnorm(0,10)
+    ) , 
+    data=d2 , chains=2 , iter=2500 , warmup=500  )
+    
+m3 <- map2stan(
+  alist(
+    pulled_left ~ dbinom( 1 , p ) ,
+    logit(p) <- a + (bp + bpC*condition)*prosoc_left ,
+    a ~ dnorm(0,10) , 
+    bp ~ dnorm(0,10) , 
+    bpC ~ dnorm(0,10)
+    ) , 
+    data=d2 , chains=2 , iter=2500 , warmup=500  )
+    
+compare(m1,m2,m3)
+    
+pairs(m)
+
+pairs(ms)
+
+library(MASS);data(eagles) 
+d <- eagles
+
+d$P_cat <- coerce_index(d$P)
+d$V_cat <- coerce_index(d$V)
+d$A_cat <- coerce_index(d$A)
+d$PA <- paste(d$P, d$A)
+d$PA_cat <- coerce_index(d$PA)
+
+m1 <- map2stan(
+  alist(
+    y ~ dbinom(n, p),
+    logit(p) <- a + bp*P_cat + bv*V_cat + ba*A_cat,
+    a ~ dnorm(0,10),
+    bp ~ dnorm(0,5),
+    bv ~ dnorm(0,5),
+    ba ~ dnorm(0,5)
+    ), data=d) 
+    
+pairs(m)
+
+paste(d$)
+
+s <- sim(m, data=d)
+s.mean <- apply(s, 2, mean)
+s.hpdi <- apply(s, 2, HPDI, prob=0.89)
+
+postcheck(m)
+
+m2 <- map2stan(
+  alist(
+    y ~ dbinom(n, p),
+    logit(p) <- a + bp*P_cat + bv*V_cat + ba*A_cat + bpa[PA_cat],
+    a ~ dnorm(0,10),
+    bp ~ dnorm(0,5),
+    bv ~ dnorm(0,5),
+    ba ~ dnorm(0,5),
+    bpa[PA_cat] ~ dnorm(0,5)
+    ), data=d) 
+    
+compare(m1, m2)
+
+postcheck(m2)
+
+pairs(m2)
+
+apply(extract.samples(m2), 2, mean)
+d
+coef(m2)
+
+m3 <- map2stan(
+  alist(
+    y ~ dbinom(n, p),
+    logit(p) <- a + bv*V_cat + bpa[PA_cat],
+    a ~ dnorm(0,10),
+    bv ~ dnorm(0,5),
+    bpa[PA_cat] ~ dnorm(0,5)
+    ), data=d) 
+
+postcheck(m3)
+
+pairs(m3)
+
+m4 <- map2stan(
+  alist(
+    y ~ dbinom(n, p),
+    logit(p) <- bv*V_cat + bpa[PA_cat],
+    bv ~ dnorm(0,5),
+    bpa[PA_cat] ~ dnorm(0,5)
+    ), data=d) 
+    
+compare(m1,m4)
+
+postcheck(m4)
+
+m5 <- map2stan(
+  alist(
+    y ~ dbinom(n, p),
+    logit(p) <- a + bp*P_cat + bv*V_cat + ba*A_cat + bpa*A_cat*P_cat,
+    a ~ dnorm(0,10),
+    bp ~ dnorm(0,5),
+    bv ~ dnorm(0,5),
+    ba ~ dnorm(0,5),
+    bpa ~ dnorm(0,5)
+    ), data=d) 
+    
+compare(m1,m5)
+
+compare(m1,m2,m3,m4,m5)
+
+postcheck(m5)
+
+data(salamanders)
+d <- salamanders
+dim(d)
+pairs(d)
+plot(PCTCOVER ~ log(FORESTAGE), d)
+
+m1 <- map2stan(
+  alist(
+    SALAMAN ~ dpois(l),
+    log(l) <- a + p * PCTCOVER,
+    a ~ dnorm(0, 100),
+    p ~ dnorm(0, 100)
+    ), data=d)
+    
+precis(m1)
+plot(m1)
+pairs(m1)
+    
+postcheck(m1)
+coef(m1)
+
+s <- sim(m1, data=d)
+d$pred <- apply(s, 2, mean)
+
+d$resid <- d$SALAMAN - d$pred
+
+pairs(d)
+
+
+cover_seq = seq(from=0, to=100, length.out=1000)
+ss <- sim(m1, data=data.frame(PCTCOVER=cover_seq), n=1000)
+plot(SALAMAN ~ PCTCOVER, d)
+lines(cover_seq, apply(ss, 2, mean))
+shade(apply(ss, 2, HPDI, prob=0.89), cover_seq)
+
+pairs(m1)
+
+pairs(d)
+
+m2 <- map2stan(
+  alist(
+    SALAMAN ~ dpois(l),
+    log(l) <- a + p * PCTCOVER + f * FORESTAGE,
+    a ~ dnorm(0, 10),
+    p ~ dnorm(0, 5),
+    f ~ dnorm(0, 5)
+    ), data=d, warmup=2000, iter=4000, chains=4)
+
+precis(m2)
+    
+plot(m2)
+
+d$log_FORESTAGE <- log(d$FORESTAGE + 1)
+d$log_FORESTAGE_s <- (d$log_FORESTAGE - mean(d$log_FORESTAGE)) / sd(d$log_FORESTAGE)
+
+m3 <- map2stan(
+  alist(
+    SALAMAN ~ dpois(l),
+    log(l) <- a + p * PCTCOVER + f * log_FORESTAGE_s,
+    a ~ dnorm(0, 10),
+    p ~ dnorm(0, 5),
+    f ~ dnorm(0, 5)
+    ), data=d, warmup=2000, iter=4000, chains=4)
+    
+plot(m3)
+
+d$pred3 <- apply(sim(m3, data=d), 2, mean)
+
+pairs(d)
+
+precis(m3)
+    
+compare(m1, m2)
+
+m3 <- map2stan(
+  alist(
+    SALAMAN ~ dpois(l),
+    log(l) <- a + p * PCTCOVER + f * log_FORESTAGE_s + pf * PCTCOVER * log_FORESTAGE,
+    a ~ dnorm(0, 10),
+    p ~ dnorm(0, 5),
+    f ~ dnorm(0, 5),
+    pf ~ dnorm(0, 5)
+    ), data=d, warmup=2000, iter=4000, chains=4)
