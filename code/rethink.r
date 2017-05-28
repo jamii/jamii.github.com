@@ -1642,4 +1642,6 @@ m3 <- map2stan(
     p ~ dnorm(0, 5),
     f ~ dnorm(0, 5),
     pf ~ dnorm(0, 5)
-    ), data=d, warmup=2000, iter=4000, chains=4)
+    ), data=d, warmup=2000, iter=4000, chains=4, start=list(a=1,p=1,f=1,pf=1))
+    
+plot(m3)
