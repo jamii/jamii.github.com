@@ -1645,3 +1645,341 @@ m3 <- map2stan(
     ), data=d, warmup=2000, iter=4000, chains=4, start=list(a=1,p=1,f=1,pf=1))
     
 plot(m3)
+
+library(rethinking)
+data(Trolley)
+d <- Trolley
+table(d$response)
+
+m1 <- map2stan(
+  alist(
+    response ~ dordlogit( phi , cutpoints ),
+    phi <- 0,
+    cutpoints ~ dnorm(0,10)
+    ) ,
+    data=list(response=d$response),
+    start=list(cutpoints=c(-2,-1,0,1,2,2.5)) , 
+    chains=2 , cores=2 )
+    
+stancode(m1)
+    
+plot(m1)
+
+s <- sim(m1, data=d)
+s.mean <- apply(s, 2, mean)
+s.hpdi <- apply(s, 2, HPDI, prob=0.89)
+
+    
+m2 <- map2stan(
+  alist(
+    response ~ dordlogit( phi , cutpoints ),
+    phi <- bA*action + bI*intention + bC*contact,
+    c(bA,bI,bC) ~ dnorm(0,10),
+    cutpoints ~ dnorm(0,10)
+    ) ,
+    data=list(response=d$response),
+    start=list(cutpoints=c(-2,-1,0,1,2,2.5)) , 
+    chains=2 , cores=2 )
+
+stancode(m11.2)
+
+library(rethinking) 
+data(UCBadmit)
+d <- UCBadmit
+d$dept_cat <- coerce_index(d$dept)
+m11.5 <- map2stan(
+  alist(
+    admit ~ dbetabinom(applications,pbar,theta), 
+    logit(pbar) <- a[dept_cat],
+    a[dept_cat] ~ dnorm(0,2), 
+    theta ~ dexp(1)
+    ), 
+    data=d,
+    constraints=list(theta="lower=0"), 
+    start=list(theta=3),
+    iter=4000 , warmup=1000 , chains=2 , cores=2 )
+    
+plot(m11.5)
+
+postcheck(m11.5)
+
+data(Hurricanes)
+d <- Hurricanes
+d$femininity_s <- (d$femininity - mean(d$femininity)) / sd(d$femininity)
+
+dens(d$femininity.s)
+
+d
+
+m0 <- map2stan(
+  alist(
+    deaths ~ dpois(l),
+    log(l) <- a,
+    a ~ dnorm(0, 10)
+    ), data=d)
+    
+m1 <- map2stan(
+  alist(
+    deaths ~ dpois(l),
+    log(l) <- a + bf * femininity_s,
+    a ~ dnorm(0, 10),
+    bf ~ dnorm(0, 10)
+    ), data=d)
+    
+pairs(m1)
+plot(compare(m0, m1))
+
+postcheck(m1)
+
+m2 <- map2stan(
+  alist(
+    deaths ~ dgampois(mu, theta),
+    log(mu) <- a + bf * femininity_s,
+    a ~ dnorm(0, 10),
+    bf ~ dnorm(0, 10),
+    theta ~ dexp(10)
+    ), data=d)
+    
+precis(m2)
+
+pairs(m2)
+
+d$min_pressure_s <- (d$min_pressure - mean(d$min_pressure)) / sd(d$min_pressure)
+d$damage_norm_s <- (d$damage_norm - mean(d$damage_norm)) / sd(d$damage_norm)
+d$log_damage_norm <- log(d$damage_norm)
+d$log_damage_norm_s <- (d$log_damage_norm - mean(d$log_damage_norm)) / sd(d$log_damage_norm)
+
+pairs(d)
+
+m3 <- map2stan(
+  alist(
+    deaths ~ dgampois(mu, theta),
+    log(mu) <- a + bd * damage_norm_s,
+    a ~ dnorm(0, 10),
+    bd ~ dnorm(0, 10),
+    theta ~ dexp(10)
+    ), data=d, chains=4, cores=4)
+    
+m4 <- map2stan(
+  alist(
+    deaths ~ dgampois(mu, theta),
+    log(mu) <- a + bd * log_damage_norm_s,
+    a ~ dnorm(0, 10),
+    bd ~ dnorm(0, 10),
+    theta ~ dexp(10)
+    ), data=d, chains=4, cores=4)
+    
+plot(m3)
+
+compare(m3, m4)
+
+dens(d$femininity)
+
+m5 <- map2stan(
+  alist(
+    deaths ~ dgampois(mu, theta),
+    log(mu) <- a + bd * log_damage_norm_s + bdf * log_damage_norm_s * femininity_s,
+    a ~ dnorm(0, 10),
+    bd ~ dnorm(0, 10),
+    bdf ~ dnorm(0, 10),
+    theta ~ dexp(10)
+    ), data=d, chains=4, cores=4)
+    
+plot(compare(m4, m5))
+      
+d_seq = seq(from=min(d$log_damage_norm_s), to=max(d$log_damage_norm_s), length.out=1000)
+s <- sim(m4, data=data.frame(log_damage_norm_s=d_seq))
+sf <- sim(m5, data=data.frame(femininity_s=1, log_damage_norm_s=d_seq))
+sm <- sim(m5, data=data.frame(femininity_s=-1.5, log_damage_norm_s=d_seq))
+plot(d$deaths ~ d$log_damage_norm_s)
+lines(d_seq, apply(s, 2, mean))
+lines(d_seq, apply(sf, 2, mean), col="pink")
+lines(d_seq, apply(sm, 2, mean), col="blue")
+
+postcheck(m4)
+
+postcheck(m3)
+
+precis(m3)
+
+pairs(d)
+
+d[59,]
+d[92,]
+
+data(Trolley)
+d <- Trolley
+d
+
+m0 <- map2stan(
+  alist(
+    response ~ dordlogit(phi, cutpoints),
+    phi <- 0,
+    cutpoints ~ dnorm(0, 10)
+    ), data=d, start=list(cutpoints=c(-2,-1,0,1,2,3)), chains=4, cores=4)
+    
+precis(m0, depth=2)
+
+hist(d$response)
+cumsum(table(d$response) / nrow(d))
+
+p_seq = seq(from=0, to=1, length.out=1000)
+pordlogit(p_seq, coef(m0), 0)
+
+m1 <- map2stan(
+  alist(
+    response ~ dordlogit(phi, cutpoints),
+    phi <- bc * contact + bm * male,
+    cutpoints ~ dnorm(0, 10),
+    bc ~ dnorm(0, 10),
+    bm ~ dnorm(0, 10)
+    ), data=d, start=list(cutpoints=c(-2,-1,0,1,2,3)), chains=4, cores=4)
+    
+plot(m1)
+    
+precis(m1, depth=2)
+    
+compare(m0, m1)
+
+hist(d[d$contact==0,]$response)
+hist(d[d$contact==1,]$response)
+
+m2 <- map2stan(
+  alist(
+    response ~ dordlogit(phi, cutpoints),
+    phi <- bc * contact + bm * male + bmc * male * contact,
+    cutpoints ~ dnorm(0, 10),
+    bc ~ dnorm(0, 10),
+    bm ~ dnorm(0, 10),
+    bmc ~ dnorm(0, 10)
+    ), data=d, start=list(cutpoints=c(-2,-1,0,1,2,3)), chains=4, cores=4)
+    
+plot(compare(m1, m2, WAIC=F))
+
+p <- cumsum(table(d[d$male==0 & d$contact==0,]$response) / nrow(d[d$male==0 & d$contact==0,]))
+pc <- cumsum(table(d[d$male==0 & d$contact==1,]$response) / nrow(d[d$male==0 & d$contact==1,]))
+pm <- cumsum(table(d[d$male==1 & d$contact==0,]$response) / nrow(d[d$male==1 & d$contact==0,]))
+pmc <- cumsum(table(d[d$male==1 & d$contact==1,]$response) / nrow(d[d$male==1 & d$contact==1,]))
+plot(1, type="n", xlab="", ylab="", xlim=c(0, 6), ylim=c(0, 1))
+points(p, col="red")
+points(pc, col="blue")
+points(pm, col="green")
+points(pmc)
+d[1,]
+s <- sim(m1, data=data.frame(male=c(0,0), contact=c(0,0), response=c(0,0)))
+p <- cumsum(table(s[,1]) / length(s[,1]))
+lines(p, col="red")
+s <- sim(m1, data=data.frame(male=c(0,0), contact=c(1,1), response=c(0,0)))
+p <- cumsum(table(s[,1]) / length(s[,1]))
+lines(p, col="blue")
+s <- sim(m1, data=data.frame(male=c(1,1), contact=c(0,0), response=c(0,0)))
+p <- cumsum(table(s[,1]) / length(s[,1]))
+lines(p, col="green")
+s <- sim(m1, data=data.frame(male=c(1,1), contact=c(1,1), response=c(0,0)))
+p <- cumsum(table(s[,1]) / length(s[,1]))
+lines(p, col="black")
+
+data(Fish)
+d <- Fish
+
+m0 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap,
+    log(l) <- al,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10)
+    ), data=d)
+    
+plot(m0)
+
+precis(m0)
+    
+logistic(0.27)
+
+exp(2.03)
+
+m1 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap,
+    log(l) <- log(hours) + al,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10)
+    ), data=d)
+    
+plot(m1)
+    
+plot(compare(m0, m1))
+
+m2 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap + bpl * livebait + bpc * camper,
+    log(l) <- log(hours) + al,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10),
+    bpl ~ dnorm(0, 10),
+    bpc ~ dnorm(0, 10)
+    ), data=d)
+    
+m3 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap + bpl * livebait + bpc * camper,
+    log(l) <- log(hours) + al + bll * livebait + blp * persons + blc * child,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10),
+    bpl ~ dnorm(0, 10),
+    bpc ~ dnorm(0, 10),
+    bll ~ dnorm(0, 10),
+    blp ~ dnorm(0, 10),
+    blc ~ dnorm(0, 10)
+    ), data=d)
+    
+precis(m3)
+    
+m4 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap + bpl * livebait,
+    log(l) <- log(hours) + al + bll * livebait + blp * persons + blc * child,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10),
+    bpl ~ dnorm(0, 10),
+    bpc ~ dnorm(0, 10),
+    bll ~ dnorm(0, 10),
+    blp ~ dnorm(0, 10),
+    blc ~ dnorm(0, 10)
+    ), data=d)
+    
+m5 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap,
+    log(l) <- log(hours) + al + bll * livebait + blp * persons + blc * child,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10),
+    bll ~ dnorm(0, 10),
+    blp ~ dnorm(0, 10),
+    blc ~ dnorm(0, 10)
+    ), data=d)
+    
+m6 <- map2stan(
+  alist(
+    fish_caught ~ dzipois(p, l),
+    logit(p) <- ap,
+    log(l) <- log(hours) + al + blp * persons + blc * child,
+    ap ~ dnorm(0, 10),
+    al ~ dnorm(0, 10),
+    blp ~ dnorm(0, 10),
+    blc ~ dnorm(0, 10)
+    ), data=d)
+    
+pairs(m5)
+    
+precis(m4)
+
+compare(m4, m5)
+
+precis(m1)

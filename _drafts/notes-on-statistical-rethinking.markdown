@@ -206,8 +206,8 @@ Logistic regression:
 
 $$
 \begin{align}
-y_i & \sim \mathrm{Binomial}(1, p_i) \\
-\log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i
+y_i & \sim \operatorname{Binomial}(1, p_i) \\
+\log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i && (\text{logit})
 \end{align}
 $$
 
@@ -215,7 +215,7 @@ Aggregated binomial regression:
 
 $$
 \begin{align}
-y_i & \sim \mathrm{Binomial}(n_i, p_i) \\
+y_i & \sim \operatorname{Binomial}(n_i, p_i) \\
 \log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i
 \end{align}
 $$
@@ -226,7 +226,7 @@ Poisson regression:
 
 $$
 \begin{align}
-y_i & \sim \mathrm{Poisson}(\lambda_i) \\
+y_i & \sim \operatorname{Poisson}(\lambda_i) \\
 \log{\lambda_i} & = \alpha + \beta x_i
 \end{align}
 $$
@@ -235,7 +235,7 @@ If the measurement periods for each case differ, can separate $\lambda_i = \mu_i
 
 $$
 \begin{align}
-y_i & \sim \mathrm{Poisson}(\mu_i) \\
+y_i & \sim \operatorname{Poisson}(\mu_i) \\
 \log{\mu_i} & = \log{\tau_i} + \alpha + \beta x_i
 \end{align}
 $$
@@ -244,8 +244,8 @@ Deal with multiple outcome events either by normalizing multiple weights:
 
 $$
 \begin{align}
-y_i & \sim \mathrm{Multinomial}(n_i, p) \\
-p_i & = \frac{\exp{s_i}}{\sum_j \exp{s_k}} \\
+y_i & \sim \operatorname{Multinomial}(n_i, p) \\
+p_i & = \frac{\exp{s_i}}{\sum_j \exp{s_j}} \\
 s_1 & = \alpha + \beta x_i \\
 s_2 & = \gamma y_i + \delta z_i \\
 s_3 & = \text{etc...}
@@ -256,7 +256,7 @@ Or by using multiple Poisson processes:
 
 $$
 \begin{align}
-y_i & \sim \mathrm{Poisson}(\lambda_i) \\
+y_i & \sim \operatorname{Poisson}(\lambda_i) \\
 \log{\lambda_1} & = \alpha + \beta x_i \\
 \log{\lambda_2} & = \gamma y_i + \delta z_i \\
 \log{\lambda_3} & = \text{etc...}
@@ -268,6 +268,48 @@ __(Presumably when total counts vary across cases, we should separate $\lambda_i
 Use sensitivity analysis to understand how choice of distribution and link function affect the results.
 
 Beware - information criterion can't compare models with different distributions, because the constant part of the deviance no longer cancels out in the difference.
+
+## Mixtures
+
+Use multiple distributions to model a mixture of causes.
+
+Ordered categorical model. Ordered categories such as ratings can't be treated just like counts because they may produce non-linear effects eg moving a rating from 1/5 to 2/5 may be a bigger change than moving from 3/5 to 4/5.
+
+$$
+\begin{align}
+y_i & \sim \operatorname{Ordered}(p_i) && \text{where $p_{i,k} = \operatorname{Pr}(y_i \le k)$} \\
+\log{\frac{p_{i,k}}{1-p_{i,k}}} & = \alpha_k - \phi_i \\
+\phi_i & = \beta_A A_i + \beta_I I_i + \beta_C C_i \\
+\end{align}
+$$
+
+__I think the idea here is that the $\alpha_k$ map the ratings onto a linear scale and then variation in each case is modeled by $\phi_i$. Not confident though.__
+
+Zero-inflated models. Sometimes there are multiple ways to get 0 eg maybe there really were no bacteria in this sample, or maybe we screwed up and sterilized it while inspecting it.
+
+Over-dispersion - when variance is higher than expected in the model results. May indicate missing predictors. Common strategies to deal with it include using a continuous mixture model or using multi-level models.
+
+Beta-binomial model - a continuous mixture model that estimates a different binomial parameter for each case. (Uses a beta distribution because there is a closed form solution for the likelihood function.)
+
+$$
+\begin{align}
+y_i & \sim \operatorname{Binomial}(n_i, \operatorname{Beta}(p_i, \theta))) \\
+\operatorname{logit}(p_i) & = \beta_A A_i + \beta_I I_i + \beta_C C_i \\
+\end{align}
+$$
+
+Negative-binomial / gamma-poisson model - a continuous mixture model that estimates a different poisson parameter for each case. (Uses a gamma distribution, again, to make the math easy).
+
+$$
+\begin{align}
+y_i & \sim \operatorname{Poisson}(\operatorname{Gamma}(\mu_i, \theta))) \\
+\log(\mu_i) & = \beta_A A_i + \beta_I I_i + \beta_C C_i \\
+\end{align}
+$$
+
+(Beta-binomial and negative-binomial effectively add a hidden parameter per case, so can't be aggregated or disaggregated without changing the structure of the inference which means they can't be compared with WAIC.)
+
+
 
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
