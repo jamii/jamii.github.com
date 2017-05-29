@@ -1947,7 +1947,6 @@ m4 <- map2stan(
     ap ~ dnorm(0, 10),
     al ~ dnorm(0, 10),
     bpl ~ dnorm(0, 10),
-    bpc ~ dnorm(0, 10),
     bll ~ dnorm(0, 10),
     blp ~ dnorm(0, 10),
     blc ~ dnorm(0, 10)
@@ -1964,7 +1963,7 @@ m5 <- map2stan(
     blp ~ dnorm(0, 10),
     blc ~ dnorm(0, 10)
     ), data=d)
-    
+        
 m6 <- map2stan(
   alist(
     fish_caught ~ dzipois(p, l),
@@ -1980,6 +1979,12 @@ pairs(m5)
     
 precis(m4)
 
-compare(m4, m5)
+compare(m3, m4, m5, m6)
 
 precis(m1)
+
+postcheck(m5)
+
+d[25,]
+
+d[89,]
