@@ -2164,6 +2164,29 @@ m1 <- map2stan(
     start=list(cutpoints=c(-2,-1,0,1,2,2.5)) , 
     chains=2 , cores=2 )
     
+d$story_id <- as.integer(as.factor(d$story))
+    
+m2 <- map2stan(
+  alist(
+    response ~ dordlogit( phi , cutpoints ),
+    phi <- a[uid] + b[story_id] + bA*action + bI*intention + bC*contact,
+    a[uid] ~ dnorm(0, sigma_u),
+    sigma_u ~ dcauchy(0, 1),
+    b[story_id] ~ dnorm(0, sigma_s),
+    sigma_s ~ dcauchy(0, 1),
+    c(bA,bI,bC) ~ dnorm(0,10),
+    cutpoints ~ dnorm(0,10)
+    ) ,
+    data=d,
+    start=list(cutpoints=c(-2,-1,0,1,2,2.5)) , 
+    chains=2 , cores=2 )
+    
 plot(m0)
 
 plot(m1)
+
+compare(m0, m1)
+
+plot(precis(m1, depth=2))
+
+compare(m0, m1, m2)
