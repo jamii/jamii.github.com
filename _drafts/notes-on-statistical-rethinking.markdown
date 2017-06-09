@@ -309,7 +309,36 @@ $$
 
 (Beta-binomial and negative-binomial effectively add a hidden parameter per case, so can't be aggregated or disaggregated without changing the structure of the inference which means they can't be compared with WAIC.)
 
+## Multilevel models
 
+Want to pool information between different groups, but only to the extent that the groups appear to be similar. So instead of inferring parameters independently for each group, model those parameters as being drawn from a common distribution.
+
+Eg single level:
+
+$$
+\begin{align}
+s_i & \sim \operatorname{Binomial}(n_i, p_i) \\
+\operatorname{logit}(p_i) & = \alpha_{\mathrm{TANK}[i]} \\
+\alpha_{\mathrm{TANK}} & \sim \operatorname{Normal}(0,5) \\
+\end{align}
+$$
+
+Eg multilevel:
+
+$$
+\begin{align}
+s_i & \sim \operatorname{Binomial}(n_i, p_i) \\
+\operatorname{logit}(p_i) & = \alpha_{\mathrm{TANK}[i]} \\
+\alpha_{\mathrm{TANK}} & \sim \operatorname{Normal}(\alpha,\sigma) \\
+\alpha & \sim \operatorname{Normal}(0,1) \\
+\sigma & \sim \operatorname{HalfCauchy}(0,1) \\
+\end{align}
+$$
+
+The higher level prior can end up much more strongly regularizing than one the user would set by hand, in which case the lower level estimates will tend to shrink towards the mean and the effective number of parameters in WAIC will be lower than the single level model.
+
+
+Can think of this as an adaptive tradeoff between complete pooling (ignore groups, treat all cases the same) and zero pooling (infer parameters for each group independently). In small groups, zero pooling risks overfitting. In large groups, complete pooling wastes valuable information. Partial pooling with a multilevel model smoothly trades off between the two across varying group sizes.
 
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">

@@ -1988,3 +1988,182 @@ postcheck(m5)
 d[25,]
 
 d[89,]
+
+library(rethinking)
+data(reedfrogs)
+d <- reedfrogs
+
+d$tank <- 1:nrow(d)
+d$pred_i <- coerce_index(d$pred)
+d$size_i <- coerce_index(d$size)
+
+m1 <- map2stan(
+  alist(
+    surv ~ dbinom( density , p ) , 
+    logit(p) <- a_tank[tank] ,
+    a_tank[tank] ~ dnorm( a , sigma ) ,
+    a ~ dnorm(0,1) , 
+    sigma ~ dcauchy(0,1)
+    ), data=d, iter=4000, chains=4)
+    
+plot(m1)
+precis(m1, depth=2)
+
+m2a <- map2stan(
+  alist(
+    surv ~ dbinom(density, p), 
+    logit(p) <- a + a_tank[tank] + a_pred * pred_i,
+    a ~ dnorm(0, 1),
+    a_tank[tank] ~ dnorm(0, sigma_t),
+    sigma_t ~ dcauchy(0, 1),
+    a_pred ~ dnorm(0, 1)
+    ), data=d, iter=4000, chains=4)
+    
+plot(m2a)    
+plot(precis(m2a, depth=2))
+    
+m2b <- map2stan(
+  alist(
+    surv ~ dbinom(density, p), 
+    logit(p) <- a + a_tank[tank] + a_size * size_i,
+    a ~ dnorm(0, 1),
+    a_tank[tank] ~ dnorm(0, sigma_t),
+    sigma_t ~ dcauchy(0, 1),
+    a_size ~ dnorm(0, 1)
+    ), data=d, iter=4000, chains=4)
+    
+plot(m2b)    
+plot(precis(m2b, depth=2))
+
+m2ab <- map2stan(
+  alist(
+    surv ~ dbinom(density, p), 
+    logit(p) <- a + a_tank[tank] + a_pred * pred_i + a_size * size_i,
+    a ~ dnorm(0, 1),
+    a_tank[tank] ~ dnorm(0, sigma_t),
+    sigma_t ~ dcauchy(0, 1),
+    a_pred ~ dnorm(0, 1),
+    a_size ~ dnorm(0, 1)
+    ), data=d, iter=4000, chains=4)
+        
+plot(m2ab)    
+plot(precis(m2ab, depth=2))
+
+m2c <- map2stan(
+  alist(
+    surv ~ dbinom(density, p), 
+    logit(p) <- a + a_tank[tank] + a_pred * pred_i + a_size * size_i + a_pred_size * pred_i * size_i,
+    a ~ dnorm(0, 1),
+    a_tank[tank] ~ dnorm(0, sigma_t),
+    sigma_t ~ dcauchy(0, 1),
+    a_pred ~ dnorm(0, 1),
+    a_size ~ dnorm(0, 1),
+    a_pred_size ~ dnorm(0, 1)
+    ), data=d, iter=4000, chains=4)
+        
+plot(m2c)    
+plot(precis(m2c, depth=2))
+
+compare(m1, m2a, m2b, m2ab, m2c)
+
+m1c <- map2stan(
+  alist(
+    surv ~ dbinom( density , p ) , 
+    logit(p) <- a_tank[tank] ,
+    a_tank[tank] ~ dcauchy(a, sigma) ,
+    a ~ dnorm(0,1) , 
+    sigma ~ dcauchy(0,1)
+    ), data=d, iter=4000, chains=4)
+    
+plot(m1c)
+plot(precis(m1c, depth=2))
+plot(precis(m1, depth=2))
+
+data(chimpanzees)
+d <- chimpanzees
+d$recipient <- NULL
+d$block_id <- d$block
+
+m1 <- map2stan(
+  alist(
+    pulled_left ~ dbinom( 1 , p ),
+    logit(p) <- a_actor[actor] + a_block[block_id] +
+    (bp + bpc*condition)*prosoc_left,
+    a_actor[actor] ~ dnorm( aa , sigma_actor ),
+    a_block[block_id] ~ dnorm( ab , sigma_block ), 
+    c(aa,ab,bp,bpc) ~ dnorm(0,10),
+    sigma_actor ~ dcauchy(0,1), 
+    sigma_block ~ dcauchy(0,1)
+    ) ,
+    data=d, warmup=1000 , iter=6000 , chains=4 , cores=3 )
+    
+plot(m1)
+pairs(m1)
+
+data(bangladesh)
+d <- bangladesh
+sort(unique(d$district))
+d$district_id <- as.integer(as.factor(d$district))
+sort(unique(d$district_id))
+
+d
+
+complete.cases(d)
+
+m0 <- map2stan(
+  alist(
+    use.contraception ~ dbinom(1, p),
+    logit(p) <- a_district_id[district_id],
+    a_district_id[district_id] ~ dnorm(0, 1)
+    ), data=d, chains=4, iter=4000, cores=4)
+
+m1 <- map2stan(
+  alist(
+    use.contraception ~ dbinom(1, p),
+    logit(p) <- a_district_id[district_id],
+    a_district_id[district_id] ~ dnorm(a, sigma_d),
+    a ~ dnorm(0, 1),
+    sigma_d ~ dcauchy(0, 1)
+    ), data=d, chains=4, iter=4000, cores=4)
+    
+plot(m0)
+plot(precis(m0, depth=2))
+
+plot(m1)
+plot(precis(m1, depth=2))
+
+compare(m0, m1)
+
+library(rethinking)
+data(Trolley)
+d <- Trolley
+
+m0 <- map2stan(
+  alist(
+    response ~ dordlogit( phi , cutpoints ),
+    phi <- bA*action + bI*intention + bC*contact,
+    c(bA,bI,bC) ~ dnorm(0,10),
+    cutpoints ~ dnorm(0,10)
+    ) ,
+    data=d,
+    start=list(cutpoints=c(-2,-1,0,1,2,2.5)) , 
+    chains=2 , cores=2 )
+
+d$uid <- as.integer(as.factor(d$id))
+    
+m1 <- map2stan(
+  alist(
+    response ~ dordlogit( phi , cutpoints ),
+    phi <- a[uid] + bA*action + bI*intention + bC*contact,
+    a[uid] ~ dnorm(0, sigma),
+    sigma ~ dcauchy(0, 1),
+    c(bA,bI,bC) ~ dnorm(0,10),
+    cutpoints ~ dnorm(0,10)
+    ) ,
+    data=d,
+    start=list(cutpoints=c(-2,-1,0,1,2,2.5)) , 
+    chains=2 , cores=2 )
+    
+plot(m0)
+
+plot(m1)
