@@ -8616,3 +8616,203 @@ set_body!(view, quote
   ]
 end)
 ```
+
+### 2017 Jun 12
+
+I missed a couple of entries, but nothing major.
+
+I put a couple of hundred todos in the Imp todomvc. Running all the logic takes ~1ms. Generating the UI takes ~200ms. Diffing the UI takes < 1ms. So I need to fix the generating step.
+
+It's a really dumb looping interpreter.
+
+``` julia
+function interpret_node(parent, node::QueryNode, bound_vars, state)
+  columns = state[node.table].columns
+  @assert length(node.vars) == length(columns)
+  for r in 1:length(columns[1])
+    if all((!(var in keys(bound_vars)) || (bound_vars[var] == columns[c][r]) for (c, var) in enumerate(node.vars)))
+      new_bound_vars = copy(bound_vars)
+      for (c, var) in enumerate(node.vars)
+        new_bound_vars[var] = columns[c][r]
+      end
+      for child in node.children
+        interpret_node(parent, child, new_bound_vars, state)
+      end
+    end
+  end
+end
+```
+
+Let's think about how this ought to work. The end result is really just a tree of query nodes - all the other node types become fixed html strings that depend only on their parent query node. (Ignore attributes for now). Query nodes don't really change - we only ever need to insert or delete them. We can generate a unique id for each instantiated query node by hashing it's name and variable values.
+
+Let's say we generate a bunch of views that do the joins and generate ids and html strings. Every time a node disappears from one of these views we delete the corresponding node in the dom. Every time a node appears, we insert it's string in the correct place in the dom. What is the correct place? We can include parent ids in the view. The path from parent to children is fixed. The only thing we need to figure out is the position in the list of children. If we look at the previous row in the view, it will either have the same parent, in which case it is our previous sibling, or a different parent, in which case we are the first child of our parent. If we process the changes top-down in the tree and first to last in each view, this should give us the correct insertion order.
+
+Let's gather up all the query nodes:
+
+``` julia
+function collect_query_nodes(node, query_nodes)
+  if typeof(node) == QueryNode
+    push!(query_nodes, node)
+  end
+  if typeof(node) in [QueryNode, FixedNode]
+    for child in node.children
+      collect_query_nodes(child, query_nodes)
+    end
+  end
+end
+```
+
+And for this plan to work, I guess we need to implicitly wrap the template in a `session(session)` query node.
+
+``` julia
+function compile_node(node)
+  wrapper = QueryNode(:session, [:session], [node])
+  query_nodes = []
+  collect_query_nodes(wrapper, query_nodes)
+  @show query_nodes
+end
+```
+
+And then for each query node we need an id and a parent id.
+
+``` julia
+type CompiledQueryNode
+  id::Symbol
+  parent_id::Symbol
+  query_node::QueryNode
+end
+
+function compile_query_nodes(parent_id, node, compiled_query_nodes)
+  if typeof(node) == QueryNode
+    id = Symbol("query_node_", hash((parent_id, node)))
+    compiled_query_node = CompiledQueryNode(id, parent_id, node)
+    push!(compiled_query_nodes, compiled_query_node)
+    for child in node.children
+      compile_query_nodes(id, child, compiled_query_nodes)
+    end
+  end
+  if typeof(node) == FixedNode
+    for child in node.children
+      compile_query_nodes(parent_id, child, compiled_query_nodes)
+    end
+  end
+end
+```
+
+And a function that takes bound vars and returns a html fragment.
+
+Ah, hang on, positioning doesn't work right with nested query nodes. Hmmm.... think about that later.
+
+The fragment function needs to take a chunk of template like:
+
+``` julia
+[li 
+  [div 
+    class="view" 
+    [input 
+      class="toggle" 
+      "type"="checkbox" 
+      checked(todo) do
+        checked="true"
+      end
+      onclick="toggle($todo)"
+    ] 
+    [label "$text" ondblclick="start_editing('$session', $todo)"]
+    [button class="destroy" onclick="delete_todo($todo)"]
+  ]
+]
+```
+
+And return a chunk of html generating code like:
+
+``` julia
+"""
+<li>
+  <div class="view">
+    <input class="toggle" type="checkbox" onclick="toggle($todo)">
+    </input>
+    <label "$text" ondblclick="start_editing('$session', $todo)">
+    </label>
+    <button class="destroy" onclick="delete_todo($todo)">
+    </button>
+  </div>
+</li>
+"""
+```
+
+Which I can then dump into the body of a function and eval. Running the existing interpreter on the template pretty much does that correctly, if I ignore all the variables.
+
+Eugh, no, that doesn't quite work because the $ gets escaped. Just have to do it by hand, I guess. Kinda gross:
+
+``` julia
+function generate_fragment(value::Union{String, Symbol}, fragment)
+  push!(fragment, string(value))
+end
+
+function generate_fragment(expr::StringExpr, fragment)
+  for value in expr.values
+    push!(fragment, value)
+  end
+end
+
+function generate_fragment(node::TextNode, fragment)
+  generate_fragment(node.text, fragment)
+end
+
+function generate_fragment(node::AttributeNode, fragment)
+  push!(fragment, " ")
+  generate_fragment(node.key, fragment)
+  push!(fragment, "=")
+  generate_fragment(node.val, fragment)
+end
+
+function generate_fragment(node::FixedNode, fragment)
+  push!(fragment, "<")
+  generate_fragment(node.tag, fragment)
+  for child in node.children
+    if typeof(child) == AttributeNode
+      generate_fragment(child, fragment)
+    end
+  end
+  push!(fragment, ">")
+  for child in node.children
+    if typeof(child) != AttributeNode
+      generate_fragment(child, fragment)
+    end
+  end
+  push!(fragment, "</")
+  generate_fragment(node.tag, fragment)
+  push!(fragment, ">")
+end
+
+function generate_fragment(node::QueryNode, fragment)
+  # TODO no html generated, but do we need to record the position or something? maybe put a dummy node in?
+end
+
+function concat_fragment(fragment)
+  new_fragment = Union{Symbol, String}[]
+  for value in fragment 
+    if isa(value, String) && (length(new_fragment) > 0) && isa(new_fragment[end], String)
+      new_fragment[end] = string(new_fragment[end], value)
+    else
+      push!(new_fragment, value)
+    end
+  end
+  new_fragment
+end
+
+function compile_fragment(id::Symbol, node::QueryNode, bound_vars::Vector{Symbol})
+  fragment = Union{Symbol, String}[]
+  for child in node.children
+    generate_fragment(child, fragment)
+  end
+  fragment = concat_fragment(fragment)
+  name = Symbol("fragment_", id)
+  fun = @eval function $(name)($(bound_vars...))
+    string($(fragment...))
+  end
+  (fragment, fun)
+end
+```
+
+Ok, now I have to think about positioning. Tomorrow?
