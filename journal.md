@@ -1,3 +1,12 @@
+---
+title: Journal
+layout: post
+date: 2016-01-29 19:40
+comments: true
+sharing: true
+footer: true
+---
+
 ### 2016 Jul 27
 
 I have a plan and it starts with some sorted arrays.
