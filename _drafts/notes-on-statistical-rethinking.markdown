@@ -4,6 +4,10 @@ title: "Notes on 'Statistical Rethinking'"
 date: "2017-03-20 20:11"
 ---
 
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script> 
+
 <https://smile.amazon.com/dp/1482253445>
 
 [Scratchpad](/code/rethink.r).
@@ -337,9 +341,4 @@ $$
 
 The higher level prior can end up much more strongly regularizing than one the user would set by hand, in which case the lower level estimates will tend to shrink towards the mean and the effective number of parameters in WAIC will be lower than the single level model.
 
-
 Can think of this as an adaptive tradeoff between complete pooling (ignore groups, treat all cases the same) and zero pooling (infer parameters for each group independently). In small groups, zero pooling risks overfitting. In large groups, complete pooling wastes valuable information. Partial pooling with a multilevel model smoothly trades off between the two across varying group sizes.
-
-<script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script> 

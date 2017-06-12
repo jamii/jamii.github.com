@@ -7,6 +7,10 @@ sharing: true
 footer: true
 ---
 
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script> 
+
 ### 2016 Jul 27
 
 I have a plan and it starts with some sorted arrays.
