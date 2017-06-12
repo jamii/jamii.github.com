@@ -2190,3 +2190,5 @@ compare(m0, m1)
 plot(precis(m1, depth=2))
 
 compare(m0, m1, m2)
+
+precis
