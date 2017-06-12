@@ -1,6 +1,6 @@
 ---
 title: Journal
-layout: post
+layout: page
 date: 2016-01-29 19:40
 comments: true
 sharing: true
@@ -5967,8 +5967,6 @@ This is really frustrating. I'm taking one big string and turning it into one bi
 It looks like the [fix](https://github.com/JuliaLang/julia/pull/18632) for this is pretty close to landing. Hopefully in the next month or two I get to stop complaining about this. Maybe I should just finish the JOB benchmarks with the code as it stands, and then come back to performance work later once it's less frustrating.
 
 For some reason JLD is now hanging when I try to save the columns. I tried Feather. which [crashed](https://github.com/JuliaStats/Feather.jl/issues/21). I tried HDF5 but now it's hanging before I even get to saving. Is my SSD dying? So frustrating.
-
-<break>
 
 I've spent 10 days now working on indexes. It feels like it's been a meandering and aimless slog. I think the reason for this is that I don't have a concrete problem to solve. I only wanted indexes at this point for a 'fair' comparison with sqlite so that I can write a progress report without feeling dishonest. 
 
