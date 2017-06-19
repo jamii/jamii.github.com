@@ -8944,7 +8944,7 @@ end
   end
   starts = vcat([0], cumsum(count))
   ix in eachindex(starts)
-  return start(child[ix]) => starts[ix]
+  return start(child[ix]) => start + starts[ix]
 end
 ```
 
