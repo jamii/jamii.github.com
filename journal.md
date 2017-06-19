@@ -8816,3 +8816,140 @@ end
 ```
 
 Ok, now I have to think about positioning. Tomorrow?
+
+### 2017 Jun 19
+
+I figured out why I'm having so much trouble making this incremental. There's really two steps involved. 
+
+We start off with a template:
+
+``` julia
+foo(w) do
+  [A
+    bar(w,x) do
+      baz(x,y) do
+        [B "$y"]
+      end
+      quux(x,z) do
+        [C "$z"]
+      end
+    end
+  ]
+end
+```
+
+And then fill the template with data:
+
+``` julia
+foo(1) do
+  [A
+    bar(1,1) do
+      baz(1,1) do
+        [B "1"]
+      end
+      baz(1,2) do
+        [B "2"]
+      end
+      baz(1,3) do
+        [B "3"]
+      end
+    end
+    bar(1,2) do
+      baz(2,1) do
+        [B "1"]
+      end
+      quux(2,1) do
+        [C "1"]
+      end
+    end
+  ]
+end
+```
+
+And finally flatten the query nodes to produce a DOM tree:
+
+``` julia
+[A
+  [B "1"]
+  [B "2"]
+  [B "3"]
+  [B "1"]
+  [C "1"]
+]
+```
+
+The flattening is a complicated interleaving of rows from the various relations. Before having a clear picture of these two steps in my mind I was conflating the flattened tree with the intermediate tree.
+
+The way to deal with this is to reify and incrementally maintain the intermediate state separately from the final state. 
+
+It's kind of fiddly, because we want to be able to write as much of the code as possible generically, rather than generating it all, but we don't have a good way to deal with tuples of varying lengths. So we'll generate code that handles the sorting and generates some kind of id for each tuple (probably a hash).
+
+``` julia
+@query begin 
+  foo(w)
+  id = id(1, w)
+  return foo_id(w) => id
+end
+
+@query begin
+  foo_id(w) => parent_id
+  id = id(2, w)
+  return A_id(w) => id
+  return parent(id) => parent_id
+  return position(id) => 1
+  return fragment(id) => "<A></A>"
+end
+
+@query begin
+  A_id(w) => parent_id
+  @query bar(w, xs)
+  i in eachindex(xs)
+  x = xs[i]
+  id = id(3, w, x)
+  return bar_id(w, x) => id
+  return parent(id) => parent_id
+  return position(id) => i
+end
+
+# etc...
+```
+ 
+And then we can do the flattening generically.
+
+``` julia
+@query begin
+  fragment(id) => _
+  return count(id) => 1
+end
+
+@query begin
+  !(fragment(id) => _)
+  @query begin
+    parent(id, child)
+    count(child) => count
+  end
+  return count(id) => sum(count)
+end
+
+@query begin
+  fragment(id) => _
+  return start(id) => 1
+end
+
+@fixpoint @query begin
+  start(id) => start
+  @query begin
+    parent(id) => child
+    count(id) => count
+  end
+  starts = vcat([0], cumsum(count))
+  ix in eachindex(starts)
+  return start(child[ix]) => starts[ix]
+end
+```
+
+The fixpoint there is not quite right, but you get the idea.
+
+I wonder what kind of data model + query compiler would allow writing all of the code generically, treating the template as pure data...
+ 
+  
