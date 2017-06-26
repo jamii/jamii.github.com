@@ -52,7 +52,7 @@ Power leaks - waste attention on ineffective habits.
 * Emotional reactions eg getting angry with yourself after falling.
 * Hoping and wishing eg I hope I onsight this, I wish this hold was better. Wasting attention on things that aren't under your control.
 
-> By wishing, you try to decrease your discomfort by escaping into a fantasy. This is a dreadful waste of power. Not only do you have power going into passive behavior, but you also cloud reality, impairing your ability to problem-solve. Remember that learning is the warrior’s goal. The holds are what they are. You need to think actively so that deliberate, effective actions follow. Instead of wasting power by wishing the hold was more positive, use that power to determine how to use the hold in the best way possible.
+> “I wish this hold was more positive” has no action quality to it. By wishing, you try to decrease your discomfort by escaping into a fantasy. This is a dreadful waste of power. Not only do you have power going into passive behavior, but you also cloud reality, impairing your ability to problem-solve. Remember that learning is the warrior’s goal. The holds are what they are. You need to think actively so that deliberate, effective actions follow. Instead of wasting power by wishing the hold was more positive, use that power to determine how to use the hold in the best way possible.
 
 Meditate.
 
