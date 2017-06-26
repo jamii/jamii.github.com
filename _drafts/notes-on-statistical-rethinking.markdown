@@ -342,3 +342,46 @@ $$
 The higher level prior can end up much more strongly regularizing than one the user would set by hand, in which case the lower level estimates will tend to shrink towards the mean and the effective number of parameters in WAIC will be lower than the single level model.
 
 Can think of this as an adaptive tradeoff between complete pooling (ignore groups, treat all cases the same) and zero pooling (infer parameters for each group independently). In small groups, zero pooling risks overfitting. In large groups, complete pooling wastes valuable information. Partial pooling with a multilevel model smoothly trades off between the two across varying group sizes.
+
+> Any batch of parameters with exchangeable index values can and probably should be pooled. (Exchangeable just means the index values have no true ordering, because they are arbitrary labels.)
+
+## Covariance
+
+Varying effects model. Can pool both intercepts and slopes in typical linear model. But intercepts and slopes might also covary, so rather than generating them separately we can model the covariance by drawing them from a joint distribution.
+
+$$
+\begin{align}
+W_i & \sim \operatorname{Normal}(\mu_i, \sigma) \\
+\mu_i & = \alpha_{\operatorname{CAFE}[i]} + \beta_{\operatorname{CAFE}[i]} A_i \\
+\begin{bmatrix} \alpha_{\mathrm{CAFE}} \\ \beta_{\mathrm{CAFE}} \end{bmatrix} & \sim \operatorname{MVNormal}(\begin{bmatrix} \alpha \\ \beta \end{bmatrix}, S) \\
+S & = \begin{pmatrix} \sigma_\alpha & 0 \\ 0 & \sigma_\beta \end{pmatrix} R \begin{pmatrix} \sigma_\alpha & 0 \\ 0 & \sigma_\beta \end{pmatrix} \\
+\alpha & \sim \operatorname{Normal}(0, 10) \\
+\beta & \sim \operatorname{Normal}(0, 10) \\
+\sigma & \sim \operatorname{HalfCauchy}(0, 1) \\
+\sigma_\alpha & \sim \operatorname{HalfCauchy}(0, 1) \\
+\sigma_\beta & \sim \operatorname{HalfCauchy}(0, 1) \\
+R & \sim \operatorname{LKJcorr(2)} \\
+\end{align}
+$$
+
+(Where $\operatorname{LKJcorr(\eta)}$ at $\eta = 1$ is a flat prior over all valid correlation matrices and at $\eta > 1$ is increasingly skeptical about strong correlations.)
+
+Non-centered parameterization - use adaptive priors that express only correlation, not covariance, and use linear model to rescale. Otherwise many HMC engines struggle with varying effects models.
+
+Gaussian process regression - handle continuous categories by building the covariance matrix from the distances between cases.
+
+$$
+\begin{align}
+T_i & \sim \operatorname{Poisson}(\lambda_i) \\
+\log{\lambda_i} & = \alpha + \gamma_{\operatorname{SOCIETY}[i]} + \beta_P \log{P_i} \\
+\gamma & \sim \operatorname{MVNormal}(0, K) \\
+K_{ij} & = \eta^2 \exp(- \rho^2 D_{ij}^2) + \delta_{ij} \sigma^2\\
+\alpha & \sim \operatorname{Normal}(0, 10) \\
+\beta_P & \sim \operatorname{Normal}(0, 1) \\
+\eta^2 & \sim \operatorname{HalfCauchy}(0, 1) \\
+\rho^2 & \sim \operatorname{HalfCauchy}(0, 1) \\
+\sigma^2 & \sim \operatorname{HalfCauchy}(0, 1) \\
+\end{align}
+$$
+
+(Where $D_{ij}$ is the distance matrix, $\rho$ governs the decline of correlation as distance increases, $\eta$ determines the maximum covariance between groups and $\sigma$ describes covariation between multiple observations from the same group.)

@@ -2192,3 +2192,110 @@ plot(precis(m1, depth=2))
 compare(m0, m1, m2)
 
 precis
+
+library(rethinking) 
+data(UCBadmit)
+d <- UCBadmit
+d$male <- ifelse( d$applicant.gender=="male" , 1 , 0 )
+d$dept_id <- coerce_index( d$dept )
+
+m13.2 <- map2stan(
+  alist(
+    admit ~ dbinom( applications , p ), 
+    logit(p) <- a_dept[dept_id] + bm*male,
+    a_dept[dept_id] ~ dnorm( a , sigma_dept ),
+    a ~ dnorm(0,10), 
+    bm ~ dnorm(0,1),
+    sigma_dept ~ dcauchy(0,2)
+    ) ,
+    data=d , warmup=500 , iter=4500 , chains=3 )
+    precis( m13.2 , depth=2 )
+
+m13.3 <- map2stan(
+  alist(
+    admit ~ dbinom( applications , p ), 
+    logit(p) <- a_dept[dept_id] + bm_dept[dept_id]*male,
+    c(a_dept,bm_dept)[dept_id] ~ dmvnorm2( c(a,bm) , sigma_dept , Rho ),
+    a ~ dnorm(0,10), 
+    bm ~ dnorm(0,1),
+    sigma_dept ~ dcauchy(0,2), 
+    Rho ~ dlkjcorr(2)
+    ) ,
+    data=d , warmup=1000 , iter=5000 , chains=4 , cores=3 )
+    
+plot( precis(m13.3,depth=2) )
+
+library(rethinking) 
+data(chimpanzees)
+d <- chimpanzees
+d$recipient <- NULL 
+d$block_id <- d$block
+
+m13.6 <- map2stan(
+  alist(
+    # likelihood
+    pulled_left ~ dbinom(1,p),
+    # linear models
+    logit(p) <- A + (BP + BPC*condition)*prosoc_left,
+    A <- a + a_actor[actor] + a_block[block_id],
+    BP <- bp + bp_actor[actor] + bp_block[block_id],
+    BPC <- bpc + bpc_actor[actor] + bpc_block[block_id],
+    # adaptive priors
+    c(a_actor,bp_actor,bpc_actor)[actor] ~ dmvnorm2(0,sigma_actor,Rho_actor),
+    c(a_block,bp_block,bpc_block)[block_id] ~ dmvnorm2(0,sigma_block,Rho_block),
+    # fixed priors
+    c(a,bp,bpc) ~ dnorm(0,1), 
+    sigma_actor ~ dcauchy(0,2), 
+    sigma_block ~ dcauchy(0,2), 
+    Rho_actor ~ dlkjcorr(4), 
+    Rho_block ~ dlkjcorr(4)
+    ) , data=d , iter=5000 , warmup=1000 , chains=3 , cores=3 )
+
+m13.6NC <- map2stan(
+  alist(
+    # likelihood
+    pulled_left ~ dbinom(1,p),
+    # linear models
+    logit(p) <- A + (BP + BPC*condition)*prosoc_left,
+    A <- a + a_actor[actor] + a_block[block_id],
+    BP <- bp + bp_actor[actor] + bp_block[block_id],
+    BPC <- bpc + bpc_actor[actor] + bpc_block[block_id],
+    # adaptive NON-CENTERED priors
+    c(a_actor,bp_actor,bpc_actor)[actor] ~ dmvnormNC(sigma_actor,Rho_actor),
+    c(a_block,bp_block,bpc_block)[block_id] ~ dmvnormNC(sigma_block,Rho_block),
+    # fixed priors
+    c(a,bp,bpc) ~ dnorm(0,1), 
+    sigma_actor ~ dcauchy(0,2), 
+    sigma_block ~ dcauchy(0,2), 
+    Rho_actor ~ dlkjcorr(4), 
+    Rho_block ~ dlkjcorr(4)
+    ) , data=d , iter=5000 , warmup=1000 , chains=3 , cores=3 )
+    
+stancode(m13.6NC)
+
+library(rethinking) 
+data(islandsDistMatrix)
+Dmat <- islandsDistMatrix
+round(Dmat,1)
+
+data(Kline2) # load the ordinary data, now with coordinates
+d <- Kline2
+d$society <- 1:10 # index observation
+
+m13.7 <- 
+map2stan(
+  alist(
+    total_tools ~ dpois(lambda),
+    log(lambda) <- a + g[society] + bp*logpop,
+    g[society] ~ GPL2( Dmat , etasq , rhosq , 0.01 ),
+    a ~ dnorm(0,10), 
+    bp ~ dnorm(0,1),
+    etasq ~ dcauchy(0,1), 
+    rhosq ~ dcauchy(0,1)
+    ),
+    data=list(
+      total_tools=d$total_tools, 
+      logpop=d$logpop,
+      society=d$society,
+      Dmat=islandsDistMatrix),
+      warmup=2000 , iter=1e4 , chains=4 )
