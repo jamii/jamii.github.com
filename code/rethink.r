@@ -1418,8 +1418,7 @@ d$contact_high <- ifelse(d$contact=="high", 1, 0)
 m10.10 <- map( 
   alist(
     total_tools ~ dpois( lambda ), 
-    log(lambda) <- a + bp*log_pop +
-    bc*contact_high + bpc*contact_high*log_pop,
+    log(lambda) <- a + bp*log_pop + bc*contact_high + bpc*contact_high*log_pop,
     a ~ dnorm(0,100),
     c(bp,bc,bpc) ~ dnorm(0,1)
     ),
@@ -2299,3 +2298,186 @@ map2stan(
       society=d$society,
       Dmat=islandsDistMatrix),
       warmup=2000 , iter=1e4 , chains=4 )
+
+library(rethinking)
+a <- 3.5 
+# average morning wait time
+b <- (-1) 
+# average difference afternoon wait time
+sigma_a <- 1        # std dev in intercepts
+sigma_b <- 0.5      # std dev in slopes
+rho <- (-0.75)
+Mu<-c(a,b)
+cov_ab <- sigma_a*sigma_b*rho
+Sigma <- matrix( c(sigma_a^2,cov_ab,cov_ab,sigma_b^2) , ncol=2 )
+sigmas <- c(sigma_a,sigma_b) # standard deviations
+Rho <- matrix( c(1,rho,rho,1) , nrow=2 ) # correlation matrix
+# now matrix multiply to get covariance matrix 
+Sigma <- diag(sigmas) %*% Rho %*% diag(sigmas)
+N_cafes <- 20
+library(MASS)
+set.seed(5) # used to replicate example
+vary_effects <- mvrnorm( N_cafes , Mu , Sigma )
+a_cafe <- vary_effects[,1] 
+b_cafe <- vary_effects[,2]
+plot( a_cafe , b_cafe , col=rangi2 , xlab="intercepts (a_cafe)" , ylab="slopes (b_cafe)" )
+# overlay population distribution 
+library(ellipse)
+for ( l in c(0.1,0.3,0.5,0.8,0.99) )
+lines(ellipse(Sigma,centre=Mu,level=l),col=col.alpha("black",0.2))
+N_visits <- 10
+afternoon <- rep(0:1,N_visits*N_cafes/2) 
+cafe_id <- rep( 1:N_cafes , each=N_visits )
+mu <- a_cafe[cafe_id] + b_cafe[cafe_id]*afternoon 
+sigma <- 0.5  # std dev within cafes
+wait <- rnorm( N_visits*N_cafes , mu , sigma )
+d <- data.frame( cafe=cafe_id , afternoon=afternoon , wait=wait )
+
+m13.1 <- map2stan(
+  alist(
+    wait ~ dnorm( mu , sigma ),
+    mu <- a_cafe[cafe] + b_cafe[cafe]*afternoon,
+    c(a_cafe,b_cafe)[cafe] ~ dmvnorm2(c(a,b),sigma_cafe,Rho),
+    a ~ dnorm(0,10),
+    b ~ dnorm(0,10),
+    sigma_cafe ~ dcauchy(0,2), 
+    sigma ~ dcauchy(0,2),
+    Rho ~ dlkjcorr(2)
+    ) , 
+    data=d ,
+    iter=5000 , warmup=2000 , chains=2 )
+    
+m13.1b <- map2stan(
+  alist(
+    wait ~ dnorm( mu , sigma ),
+    mu <- a_cafe[cafe] + b_cafe[cafe]*afternoon,
+    c(a_cafe,b_cafe)[cafe] ~ dmvnorm2(c(a,b),sigma_cafe,Rho),
+    a ~ dnorm(0,10),
+    b ~ dnorm(0,10),
+    sigma_cafe ~ dcauchy(0,2), 
+    sigma ~ dcauchy(0,2),
+    Rho ~ dlkjcorr(2)
+    ) , 
+    data=d ,
+    iter=5000 , warmup=2000 , chains=2 )
+
+plot(precis(m13.1, depth=2))
+    
+plot(precis(m13.1b, depth=2))
+
+
+m13.1c <- map2stan(
+  alist(
+    wait ~ dnorm( mu , sigma ),
+    mu <- a_cafe[cafe] + b_cafe[cafe]*afternoon,
+    a_cafe[cafe] ~ dnorm(a, sigma_a),
+    b_cafe[cafe] ~ dnorm(b, sigma_b),
+    sigma_a ~ dcauchy(0,1),
+    sigma_b ~ dcauchy(0,1),
+    a ~ dnorm(0,10),
+    b ~ dnorm(0,10),
+    sigma ~ dcauchy(0,1)
+    ) , 
+    data=d ,
+    iter=5000 , warmup=2000 , chains=2 )
+    
+plot(precis(m13.1c, depth=2))
+    
+compare(m13.1b, m13.1c)
+
+library(rethinking) 
+data(UCBadmit)
+d <- UCBadmit
+d$male <- ifelse( d$applicant.gender=="male" , 1 , 0 )
+d$dept_id <- coerce_index( d$dept )
+
+m13.3 <- map2stan(
+  alist(
+    admit ~ dbinom( applications , p ), 
+    logit(p) <- a_dept[dept_id] + bm_dept[dept_id]*male,
+    c(a_dept,bm_dept)[dept_id] ~ dmvnorm2( c(a,bm) , sigma_dept , Rho ),
+    a ~ dnorm(0,10), 
+    bm ~ dnorm(0,1),
+    sigma_dept ~ dcauchy(0,2), 
+    Rho ~ dlkjcorr(2)
+    ) ,
+    data=d , warmup=1000 , iter=5000 , chains=4 , cores=3 )
+    
+m13.3b <- map2stan(
+  alist(
+    admit ~ dbinom( applications , p ), 
+    logit(p) <- a + a_dept[dept_id] + (bm + bm_dept[dept_id])*male,
+    c(a_dept,bm_dept)[dept_id] ~ dmvnormNC(sigma_dept , Rho ),
+    a ~ dnorm(0,10), 
+    bm ~ dnorm(0,1),
+    sigma_dept ~ dcauchy(0,2), 
+    Rho ~ dlkjcorr(2)
+    ) ,
+    data=d , warmup=1000 , iter=5000 , chains=4 , cores=3 )
+    
+precis(m13.3b, depth=2)
+    
+compare(m13.3, m13.3b)
+
+library(rethinking)
+data(Kline)
+d <- Kline
+
+d$log_pop <- log(d$population)
+d$contact_high <- ifelse(d$contact=="high", 1, 0)
+
+m10.10 <- map( 
+  alist(
+    total_tools ~ dpois( lambda ), 
+    log(lambda) <- a + bp*log_pop + bc*contact_high + bpc*contact_high*log_pop,
+    a ~ dnorm(0,100),
+    c(bp,bc,bpc) ~ dnorm(0,1)
+    ),
+    data=d )
+    
+    library(rethinking) 
+    data(islandsDistMatrix)
+    Dmat <- islandsDistMatrix
+    round(Dmat,1)
+
+    data(Kline2) # load the ordinary data, now with coordinates
+    d <- Kline2
+    d$society <- 1:10 # index observation
+
+    m13.7 <- map2stan(
+      alist(
+        total_tools ~ dpois(lambda),
+        log(lambda) <- a + g[society] + bp*logpop,
+        g[society] ~ GPL2( Dmat , etasq , rhosq , 0.01 ),
+        a ~ dnorm(0,10), 
+        bp ~ dnorm(0,1),
+        etasq ~ dcauchy(0,1), 
+        rhosq ~ dcauchy(0,1)
+        ),
+        data=list(
+          total_tools=d$total_tools, 
+          logpop=d$logpop,
+          society=d$society,
+          Dmat=islandsDistMatrix),
+          warmup=2000 , iter=1e4 , chains=4 )
+
+compare(m10.10, m13.7)
+
+data(bangladesh)
+d <- bangladesh
+d$district_id <- as.integer(as.factor(d$district))
+
+m <- map2stan(
+  alist(
+    use.contraception ~ dbinom(1, p),
+    logit(p) <- a + a_district_id[district_id] + (bm + b_district_id[district_id])*urban,
+    c(a_district_id, b_district_id)[district_id] ~ dmvnormNC(sigma_district_id , Rho ),
+    a ~ dnorm(0,1), 
+    bm ~ dnorm(0,1),
+    sigma_district_id ~ dcauchy(0,2), 
+    Rho ~ dlkjcorr(2)
+    ),
+    data=d,
+      warmup=2000 , iter=2000 , chains=4 )
+      
+precis(m, depth=2)

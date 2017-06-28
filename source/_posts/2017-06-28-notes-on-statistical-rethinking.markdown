@@ -1,7 +1,7 @@
 ---
-layout: "post"
-title: "Notes on 'Statistical Rethinking'"
-date: "2017-03-20 20:11"
+layout: post
+title: Notes on 'Statistical Rethinking'
+date: '2017-06-28 21:11'
 ---
 
 <script type="text/javascript" async
@@ -91,7 +91,7 @@ Post-treatment bias - any variable that is a causal consequence of the treatment
 
 Model outcome as linear function of predictors plus Gaussian error. 
 
-Why Gaussian? Gaussian distribution can originate from sum of similar-sized random variables or product of variables close to one ($(1+x)(1+y) \approx 1+x+y$), log of product of variables etc. TODO Also Gaussian is lowest entropy distribution if all we know is mean and variance.
+Why Gaussian? Gaussian distribution can originate from sum of similar-sized random variables or product of variables close to one ($(1+x)(1+y) \approx 1+x+y$), log of product of variables etc. Also Gaussian is lowest entropy distribution if all we know is mean and variance.
 
 Handle categorical variables by separating into indicator variables.
 
@@ -385,3 +385,17 @@ K_{ij} & = \eta^2 \exp(- \rho^2 D_{ij}^2) + \delta_{ij} \sigma^2\\
 $$
 
 (Where $D_{ij}$ is the distance matrix, $\rho$ governs the decline of correlation as distance increases, $\eta$ determines the maximum covariance between groups and $\sigma$ describes covariation between multiple observations from the same group.)
+
+## Measurement error and missing data
+
+Measurement error can be modeled directly. 
+
+Imputation - filling in missing data.
+
+Missing Completely At Random imputation - assume missing fields are selected uniformly at random. Generative model pulls exact values from data where they exist and puts in a generic variable otherwise.
+
+## Thoughts
+
+__The combination of arbitrary generative models and model comparison makes far more sense to me than significance testing, which I never really wrapped my head around.__
+
+__I still don't know how to use Stan. I don't think the wrapper library in this book worked in my favor. Using R is a pain too. Maybe I should try out PyMC3.__
