@@ -6,11 +6,11 @@ date: '2017-06-28 21:11'
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  tex2jax: {inlineMath: [['$','$']]}
 });
 </script>
 <script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML">
 </script> 
 
 <https://smile.amazon.com/dp/1482253445>
@@ -213,64 +213,52 @@ To use other distributions in a linear model we need to map the range of the lin
 
 Logistic regression:
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Binomial}(1, p_i) \\
+y_i & \sim \operatorname{Binomial}(1, p_i) \cr
 \log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i && (\text{logit})
 \end{align}
-$$
 
 Aggregated binomial regression:
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Binomial}(n_i, p_i) \\
+y_i & \sim \operatorname{Binomial}(n_i, p_i) \cr
 \log{\frac{p_i}{1-p_i}} & = \alpha + \beta x_i
 \end{align}
-$$
 
 (To use WAIC, we need to disaggregate the aggregated binomial model to get individual points.)
 
 Poisson regression:
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Poisson}(\lambda_i) \\
+y_i & \sim \operatorname{Poisson}(\lambda_i) \cr
 \log{\lambda_i} & = \alpha + \beta x_i
 \end{align}
-$$
 
 If the measurement periods for each case differ, can separate $\lambda_i = \mu_i / \tau_i$:
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Poisson}(\mu_i) \\
+y_i & \sim \operatorname{Poisson}(\mu_i) \cr
 \log{\mu_i} & = \log{\tau_i} + \alpha + \beta x_i
 \end{align}
-$$
 
 Deal with multiple outcome events either by normalizing multiple weights:
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Multinomial}(n_i, p) \\
-p_i & = \frac{\exp{s_i}}{\sum_j \exp{s_j}} \\
-s_1 & = \alpha + \beta x_i \\
-s_2 & = \gamma y_i + \delta z_i \\
+y_i & \sim \operatorname{Multinomial}(n_i, p) \cr
+p_i & = \frac{\exp{s_i}}{\sum_j \exp{s_j}} \cr
+s_1 & = \alpha + \beta x_i \cr
+s_2 & = \gamma y_i + \delta z_i \cr
 s_3 & = \text{etc...}
 \end{align}
-$$
 
 Or by using multiple Poisson processes:
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Poisson}(\lambda_i) \\
-\log{\lambda_1} & = \alpha + \beta x_i \\
-\log{\lambda_2} & = \gamma y_i + \delta z_i \\
+y_i & \sim \operatorname{Poisson}(\lambda_i) \cr
+\log{\lambda_1} & = \alpha + \beta x_i \cr
+\log{\lambda_2} & = \gamma y_i + \delta z_i \cr
 \log{\lambda_3} & = \text{etc...}
 \end{align}
-$$
 
 __(Presumably when total counts vary across cases, we should separate $\lambda_i = \mu_i / \tau_i$ again?)__
 
@@ -284,13 +272,11 @@ Use multiple distributions to model a mixture of causes.
 
 Ordered categorical model. Ordered categories such as ratings can't be treated just like counts because they may produce non-linear effects eg moving a rating from 1/5 to 2/5 may be a bigger change than moving from 3/5 to 4/5.
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Ordered}(p_i) && \text{where $p_{i,k} = \operatorname{Pr}(y_i \le k)$} \\
-\log{\frac{p_{i,k}}{1-p_{i,k}}} & = \alpha_k - \phi_i \\
-\phi_i & = \beta_A A_i + \beta_I I_i + \beta_C C_i \\
+y_i & \sim \operatorname{Ordered}(p_i) && \text{where $p_{i,k} = \operatorname{Pr}(y_i \le k)$} \cr
+\log{\frac{p_{i,k}}{1-p_{i,k}}} & = \alpha_k - \phi_i \cr
+\phi_i & = \beta_A A_i + \beta_I I_i + \beta_C C_i \cr
 \end{align}
-$$
 
 __I think the idea here is that the $\alpha_k$ map the ratings onto a linear scale and then variation in each case is modeled by $\phi_i$. Not confident though.__
 
@@ -300,21 +286,17 @@ Over-dispersion - when variance is higher than expected in the model results. Ma
 
 Beta-binomial model - a continuous mixture model that estimates a different binomial parameter for each case. (Uses a beta distribution because there is a closed form solution for the likelihood function.)
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Binomial}(n_i, \operatorname{Beta}(p_i, \theta))) \\
-\operatorname{logit}(p_i) & = \beta_A A_i + \beta_I I_i + \beta_C C_i \\
+y_i & \sim \operatorname{Binomial}(n_i, \operatorname{Beta}(p_i, \theta))) \cr
+\operatorname{logit}(p_i) & = \beta_A A_i + \beta_I I_i + \beta_C C_i \cr
 \end{align}
-$$
 
 Negative-binomial / gamma-poisson model - a continuous mixture model that estimates a different poisson parameter for each case. (Uses a gamma distribution, again, to make the math easy).
 
-$$
 \begin{align}
-y_i & \sim \operatorname{Poisson}(\operatorname{Gamma}(\mu_i, \theta))) \\
-\log(\mu_i) & = \beta_A A_i + \beta_I I_i + \beta_C C_i \\
+y_i & \sim \operatorname{Poisson}(\operatorname{Gamma}(\mu_i, \theta))) \cr
+\log(\mu_i) & = \beta_A A_i + \beta_I I_i + \beta_C C_i \cr
 \end{align}
-$$
 
 (Beta-binomial and negative-binomial effectively add a hidden parameter per case, so can't be aggregated or disaggregated without changing the structure of the inference which means they can't be compared with WAIC.)
 
@@ -324,25 +306,21 @@ Want to pool information between different groups, but only to the extent that t
 
 Eg single level:
 
-$$
 \begin{align}
-s_i & \sim \operatorname{Binomial}(n_i, p_i) \\
-\operatorname{logit}(p_i) & = \alpha_{\mathrm{TANK}[i]} \\
-\alpha_{\mathrm{TANK}} & \sim \operatorname{Normal}(0,5) \\
+s_i & \sim \operatorname{Binomial}(n_i, p_i) \cr
+\operatorname{logit}(p_i) & = \alpha_{\mathrm{TANK}[i]} \cr
+\alpha_{\mathrm{TANK}} & \sim \operatorname{Normal}(0,5) \cr
 \end{align}
-$$
 
 Eg multilevel:
 
-$$
 \begin{align}
-s_i & \sim \operatorname{Binomial}(n_i, p_i) \\
-\operatorname{logit}(p_i) & = \alpha_{\mathrm{TANK}[i]} \\
-\alpha_{\mathrm{TANK}} & \sim \operatorname{Normal}(\alpha,\sigma) \\
-\alpha & \sim \operatorname{Normal}(0,1) \\
-\sigma & \sim \operatorname{HalfCauchy}(0,1) \\
+s_i & \sim \operatorname{Binomial}(n_i, p_i) \cr
+\operatorname{logit}(p_i) & = \alpha_{\mathrm{TANK}[i]} \cr
+\alpha_{\mathrm{TANK}} & \sim \operatorname{Normal}(\alpha,\sigma) \cr
+\alpha & \sim \operatorname{Normal}(0,1) \cr
+\sigma & \sim \operatorname{HalfCauchy}(0,1) \cr
 \end{align}
-$$
 
 The higher level prior can end up much more strongly regularizing than one the user would set by hand, in which case the lower level estimates will tend to shrink towards the mean and the effective number of parameters in WAIC will be lower than the single level model.
 
@@ -354,20 +332,18 @@ Can think of this as an adaptive tradeoff between complete pooling (ignore group
 
 Varying effects model. Can pool both intercepts and slopes in typical linear model. But intercepts and slopes might also covary, so rather than generating them separately we can model the covariance by drawing them from a joint distribution.
 
-$$
 \begin{align}
-W_i & \sim \operatorname{Normal}(\mu_i, \sigma) \\
-\mu_i & = \alpha_{\operatorname{CAFE}[i]} + \beta_{\operatorname{CAFE}[i]} A_i \\
-\begin{bmatrix} \alpha_{\mathrm{CAFE}} \\ \beta_{\mathrm{CAFE}} \end{bmatrix} & \sim \operatorname{MVNormal}(\begin{bmatrix} \alpha \\ \beta \end{bmatrix}, S) \\
-S & = \begin{pmatrix} \sigma_\alpha & 0 \\ 0 & \sigma_\beta \end{pmatrix} R \begin{pmatrix} \sigma_\alpha & 0 \\ 0 & \sigma_\beta \end{pmatrix} \\
-\alpha & \sim \operatorname{Normal}(0, 10) \\
-\beta & \sim \operatorname{Normal}(0, 10) \\
-\sigma & \sim \operatorname{HalfCauchy}(0, 1) \\
-\sigma_\alpha & \sim \operatorname{HalfCauchy}(0, 1) \\
-\sigma_\beta & \sim \operatorname{HalfCauchy}(0, 1) \\
-R & \sim \operatorname{LKJcorr(2)} \\
+W_i & \sim \operatorname{Normal}(\mu_i, \sigma) \cr
+\mu_i & = \alpha_{\operatorname{CAFE}[i]} + \beta_{\operatorname{CAFE}[i]} A_i \cr
+\begin{bmatrix} \alpha_{\mathrm{CAFE}} \cr \beta_{\mathrm{CAFE}} \end{bmatrix} & \sim \operatorname{MVNormal}(\begin{bmatrix} \alpha \cr \beta \end{bmatrix}, S) \cr
+S & = \begin{pmatrix} \sigma_\alpha & 0 \cr 0 & \sigma_\beta \end{pmatrix} R \begin{pmatrix} \sigma_\alpha & 0 \cr 0 & \sigma_\beta \end{pmatrix} \cr
+\alpha & \sim \operatorname{Normal}(0, 10) \cr
+\beta & \sim \operatorname{Normal}(0, 10) \cr
+\sigma & \sim \operatorname{HalfCauchy}(0, 1) \cr
+\sigma_\alpha & \sim \operatorname{HalfCauchy}(0, 1) \cr
+\sigma_\beta & \sim \operatorname{HalfCauchy}(0, 1) \cr
+R & \sim \operatorname{LKJcorr(2)} \cr
 \end{align}
-$$
 
 (Where $\operatorname{LKJcorr(\eta)}$ at $\eta = 1$ is a flat prior over all valid correlation matrices and at $\eta > 1$ is increasingly skeptical about strong correlations.)
 
@@ -375,19 +351,17 @@ Non-centered parameterization - use adaptive priors that express only correlatio
 
 Gaussian process regression - handle continuous categories by building the covariance matrix from the distances between cases.
 
-$$
 \begin{align}
-T_i & \sim \operatorname{Poisson}(\lambda_i) \\
-\log{\lambda_i} & = \alpha + \gamma_{\operatorname{SOCIETY}[i]} + \beta_P \log{P_i} \\
-\gamma & \sim \operatorname{MVNormal}(0, K) \\
-K_{ij} & = \eta^2 \exp(- \rho^2 D_{ij}^2) + \delta_{ij} \sigma^2\\
-\alpha & \sim \operatorname{Normal}(0, 10) \\
-\beta_P & \sim \operatorname{Normal}(0, 1) \\
-\eta^2 & \sim \operatorname{HalfCauchy}(0, 1) \\
-\rho^2 & \sim \operatorname{HalfCauchy}(0, 1) \\
-\sigma^2 & \sim \operatorname{HalfCauchy}(0, 1) \\
+T_i & \sim \operatorname{Poisson}(\lambda_i) \cr
+\log{\lambda_i} & = \alpha + \gamma_{\operatorname{SOCIETY}[i]} + \beta_P \log{P_i} \cr
+\gamma & \sim \operatorname{MVNormal}(0, K) \cr
+K_{ij} & = \eta^2 \exp(- \rho^2 D_{ij}^2) + \delta_{ij} \sigma^2\cr
+\alpha & \sim \operatorname{Normal}(0, 10) \cr
+\beta_P & \sim \operatorname{Normal}(0, 1) \cr
+\eta^2 & \sim \operatorname{HalfCauchy}(0, 1) \cr
+\rho^2 & \sim \operatorname{HalfCauchy}(0, 1) \cr
+\sigma^2 & \sim \operatorname{HalfCauchy}(0, 1) \cr
 \end{align}
-$$
 
 (Where $D_{ij}$ is the distance matrix, $\rho$ governs the decline of correlation as distance increases, $\eta$ determines the maximum covariance between groups and $\sigma$ describes covariation between multiple observations from the same group.)
 
