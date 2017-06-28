@@ -132,7 +132,7 @@ Akaike Information Criterion. $AIC = D(E_\theta[\theta]) + 2p$. Assuming flat pr
 
 Deviance Information Criterion. $DIC = D(E_\theta[\theta]) + 2p_{DIC}$ where $p_{DIC} = E_\theta[D(\theta)] - D(E_\theta[\theta])$. Similar to AIC, but takes into account the fact that priors constrain degrees of freedom. Still assumes Gaussian posterior.
 
-Widely Applicable Information Criterion. $WAIC = -2\text{lppd} - 2p_{WAIC}$ where $\text{lppd} = \sum_{i=1}^N \log E_\theta[P(y_i|\theta)]$ and $p_{WAIC} = \sum_{i=1}^N \text{Var}_\theta(\log P(y_i|\theta))$. Truely Bayesian calculation of deviance. Penalizes data points which have been fitted into a narrow peak. Assumes independent observations and that $p \ll N$.
+Widely Applicable Information Criterion. $WAIC = -2\text{lppd} - 2p_{WAIC}$ where $\text{lppd} = \sum_{i=1}^N \log E_\theta[P(y_i\vert\theta)]$ and $p_{WAIC} = \sum_{i=1}^N \text{Var}_\theta(\log P(y_i\vert\theta))$. Truely Bayesian calculation of deviance. Penalizes data points which have been fitted into a narrow peak. Assumes independent observations and that $p \ll N$.
 
 Bayesian Information Criterion. Can be heavily influenced by choice of prior - not recommended.
 
