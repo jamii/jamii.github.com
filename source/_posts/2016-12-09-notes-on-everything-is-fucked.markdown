@@ -344,6 +344,11 @@ Ideal:
 * Publish methodology in sufficient detail for accurate replication. Eg publish videos of experimental procedure.
 * Record and publish workflow in real-time in a non-revocable manner. Registered experiments are just the start.
 
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
