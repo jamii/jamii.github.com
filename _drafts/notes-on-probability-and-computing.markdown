@@ -29,5 +29,5 @@ Harmonic number $H(n) = \sum_{k=1}^n 1/k \in [\ln(n), \ln(n) + 1]$
 TODO 16b 
 
 <script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  src="https://cdnjs.cloudflare.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>

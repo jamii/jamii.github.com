@@ -8,7 +8,7 @@ footer: true
 ---
 
 <script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  src="https://cdnjs.cloudflare.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script> 
 
 ### 2016 Jul 27

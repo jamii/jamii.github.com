@@ -5,7 +5,7 @@ date: '2017-06-28 21:11'
 ---
 
 <script type="text/javascript" async
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  src="https://cdnjs.cloudflare.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script> 
 
 <https://smile.amazon.com/dp/1482253445>
