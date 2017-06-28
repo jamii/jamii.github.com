@@ -345,5 +345,5 @@ Ideal:
 * Record and publish workflow in real-time in a non-revocable manner. Registered experiments are just the start.
 
 <script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js">
 </script>
