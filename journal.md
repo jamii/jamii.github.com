@@ -8955,6 +8955,183 @@ end
 
 The fixpoint there is not quite right, but you get the idea.
 
-I wonder what kind of data model + query compiler would allow writing all of the code generically, treating the template as pure data...
+I wonder what kind of data model and query compiler would allow writing all of the code generically, treating the template as pure data...
  
-  
+### 2017 Jul 3
+
+I figured out a nicer way to do it. I thought of using some kind of sort key before, but couldn't figure out how to make the type stable. I spent a bunch of time thinking about algebraic types without realizing that I could just use nulls. Funny how you can get stuck in one line of thinking.
+
+I'm going to id template nodes by their hashes.
+
+I'll generate the whole intermediate tree for now, and worry about coalescing fixed nodes later once I have it working. That means that for now there will be a bunch of pointless queries that just shuffle data around:
+
+``` julia
+function compile_server_tree(node::FixedNode, parent_id, parent_vars, flows)
+  id = Symbol("node_$(hash(node))")
+  flow = @eval @merge begin
+    $parent_id($(parent_vars...))
+    return $id($(parent_vars...))
+  end
+  push!(flows, flow)
+  for child in node.children
+    compile_server_tree(child, id, parent_vars, flows)
+  end
+end
+```
+
+And only the query nodes will actually produce queries that do any work:
+
+``` julia
+function compile_server_tree(node::QueryNode, parent_id, parent_vars, flows)
+  id = Symbol("node_$(hash(node))")
+  vars = unique(vcat(parent_vars, node.vars))
+  flow = @eval @merge begin
+    $parent_id($(parent_vars...))
+    $(node.table)($(node.vars...))
+    return $id($(vars...))
+  end
+  push!(flows, flow)
+  for child in node.children
+    compile_server_tree(child, id, vars, flows)
+  end
+end
+```
+
+That's the easy part. Now we need to flatten the intermediate tree. So first let's divide it into flattenable groups. To make this easier I'm going to insist that the top node in any template is a fixed node. Then each group is formed by starting from a parent fixed node and following the tree downwards until each path is terminated by a child fixed node.
+
+Then we need to figure out the path to each child. This is tricky to represent, because we need to represent in a such a way that the type of the path is the same for each child, even though they may contain different variables. So we'll gather up all the branches and query vars in the group and then null out the ones that aren't needed for each particular child.
+
+I originally thought of this as two passes - figure out what the key is and then fill it out for each node - but it turned out to be easier to do both in the one pass and then tidy up the missing parts of the key afterwards.
+
+``` julia
+function collect_sort_key(node::FixedNode, parent_vars, key, keyed_children)
+  push!(keyed_children, (copy(key), parent_vars, node))
+end
+
+function collect_sort_key(node::QueryNode, parent_vars, key, keyed_children)
+  vars = unique(vcat(parent_vars, node.vars))
+  new_vars = vars[(1+length(parent_vars)):end]
+  start_ix = length(key)
+  push!(key, new_vars) 
+  end_ix = length(key)
+  collect_sort_key(node.children, vars, key, keyed_children)
+  key[start_ix:end_ix] .= nothing
+end
+
+function collect_sort_key(nodes::Vector{Node}, parent_vars, key, keyed_children)
+  push!(key, 0)
+  for node in nodes
+    if typeof(node) in [FixedNode, QueryNode] # TODO handle attributes and text
+      key[end] += 1
+      collect_sort_key(node, parent_vars, key, keyed_children)
+    end
+  end
+  key[end] = 0
+end
+
+function collect_sort_key(node::FixedNode, parent_vars)
+  key = Any[]
+  keyed_children = Any[]
+  collect_sort_key(node.children, parent_vars, key, keyed_children)
+  # tidy up ragged ends of keys
+  for (child_key, vars, child) in keyed_children
+    append!(child_key, key[(length(child_key)+1):end])
+  end
+  keyed_children
+end
+```
+
+And now for each group we need to spit out queries that collect nodes from the intermediate tree and merge them into their groups using the sort keys.
+
+(It occurs to me that it would be much nicer to structure this as a series of smaller passes that elaborates fields on each node, but that's too big a change to make right now.)
+
+``` julia
+function key_expr(elem) 
+  @match typeof(elem) begin
+    Integer => elem
+    Symbol => :(Nullable($elem))
+    Void => :(Nullable())
+    _ => error("What are this: $elem")
+  end
+end
+
+function compile_client_tree(node::FixedNode, parent_vars, flows)
+  keyed_children = collect_sort_key(node, parent_vars)
+  group_id = Symbol("group_$(hash(parent))")
+  parent_node_id = Symbol("node_$(hash(parent))")
+  for (key, child_vars, child) in keyed_children
+    child_node_id = Symbol("node_$(hash(child))")
+    key_exprs = map(key_expr, key)
+    flow = @eval @merge begin
+      $parent_node_id($(parent_vars...)) => parent_id
+      $child_node_id($(child_vars...)) => child_id
+      return $group_id($(key_exprs...)) => (parent_id, child_id, $(node.tag))
+    end
+    push!(flows, flow)
+    compile_client_tree(child, child_vars, flows)
+  end
+end
+```
+
+A couple of bugfixes later, here is a single group:
+
+``` julia
+[ul
+  class="todo-list"
+  visible(session, todo) do
+    text(todo, text) do
+      displaying(session, todo) do
+        [li 
+          ...
+        ]
+      end
+      editing(session, todo) do
+        [li
+          ...
+        ]
+      end
+    end
+  end
+]
+
+quote  # /home/jamie/imp/src/UI.jl, line 304:
+    node_10782481008382097060(session) => parent_id # /home/jamie/imp/src/UI.jl, line 305:
+    node_752968304873089842(session,todo,text) => child_id # /home/jamie/imp/src/UI.jl, line 306:
+    return group_10782481008382097060(1,Nullable(todo),1,Nullable(text),1,1,0) => (parent_id,child_id,"li")
+end
+quote  # /home/jamie/imp/src/UI.jl, line 304:
+    node_10782481008382097060(session) => parent_id # /home/jamie/imp/src/UI.jl, line 305:
+    node_18031626605480411109(session,todo,text) => child_id # /home/jamie/imp/src/UI.jl, line 306:
+    return group_10782481008382097060(1,Nullable(todo),1,Nullable(text),2,0,1) 
+end
+```
+
+What have I missed out so far? It doesn't declare the relations either. To do that I need to know the type of each variable. Let's just use Any for now, for the sake of getting things going.
+
+It doesn't handle attributes or text yet. I'll deal with most of that by compacting fragments together like the earlier code, but I'll also need a separate system for attributes that are the children of a query node.
+
+I tried running this on todomvc and ran into the most annoying roadblock:
+
+``` julia
+LoadError: MethodError: no method matching isless(::Nullable{Any}, ::Nullable{Any})
+```
+
+Nullables aren't comparable. It's fixed in Julia 0.6. Should I try to upgrade?
+
+[Nope!](https://github.com/kmsquire/Match.jl/issues/35). I used Match.jl for all my parsing. It doesn't work in 0.6, it hasn't been updated in 10 months and the last issue I filed several months ago received no response. So probably if I want to upgrade to 0.6 I'll have to fix Match.jl too. Doable, but not right now.
+
+``` julia
+# TODO this is defined in Julia 0.6 but can't currently upgrade because of https://github.com/kmsquire/Match.jl/issues/35
+function Base.isless{T}(x::Nullable{T}, y::Nullable{T})
+  !Base.isnull(x) && (Base.isnull(y) || (get(x) < get(y)))
+end
+```
+
+Now it runs. Kind of hard to tell if it's right just by looking though.
+
+Todo:
+
+* hookup client side 
+* retrieve types from world
+* compact fragments to handle text and fixed attributes
+* handle query attributes
