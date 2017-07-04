@@ -9135,3 +9135,104 @@ Todo:
 * retrieve types from world
 * compact fragments to handle text and fixed attributes
 * handle query attributes
+
+### 2017 Jul 4
+
+Alright, time for the diffing.
+
+``` julia
+# TODO figure out how to handle changes in template
+function render(window, view, world, session)
+  for event in world.events
+    js(window, Blink.JSString("$event = imp_event(\"$event\")"), callback=false) # these never return! :(
+  end
+  flow = Sequence([view.compiled_head.flow, view.compiled_body.flow])
+  group_names = vcat(view.compiled_head.group_ids, view.compiled_body.group_ids)
+  old_groups = Dict{Symbol, Union{Relation, Void}}(name => get(world.state, name, nothing) for name in group_names)
+  Flows.init_flow(flow, world)
+  Flows.run_flow(flow, world)
+  new_groups = Dict{Symbol, Relation}(name => world.state[name] for name in group_names)
+  for name in group_names
+    if old_groups[name] == nothing
+      old_groups[name] = empty(new_groups[name])
+    end
+  end
+  deletes = Set{UInt64}()
+  creates = Vector{Tuple{UInt64, Union{UInt64, Void}, UInt64, String}}()
+  for name in group_names
+    old_columns = old_groups[name].columns
+    old_parent_ids = old_columns[end-2]
+    old_child_ids = old_columns[end-1]
+    new_columns = new_groups[name].columns
+    new_parent_ids = new_columns[end-2]
+    new_child_ids = new_columns[end-1]
+    new_contents = new_columns[end-0]
+    Data.foreach_diff(old_columns, new_columns, old_columns[1:end-3], new_columns[1:end-3],
+      (o, i) -> begin
+        if !(old_parent_ids[i] in deletes)
+          push!(deletes, old_child_ids[i])
+        end
+      end,
+      (n, i) -> begin
+        if (i < length(new_parent_ids)) && (new_parent_ids[i] == new_parent_ids[i+1])
+          sibling = new_child_ids[i+1]
+        else 
+          sibling = nothing
+        end
+        push!(creates, (new_parent_ids[i], sibling, new_child_ids[i], new_contents[i]))
+      end,
+      (o, n, oi, ni) -> ()
+    )
+  end
+  @js_(window, render($deletes, $creates))
+end
+```
+
+Kinda verbose, but it looks like it's working. Now just need to hook it up to the client.
+
+``` js
+function render(deletes, creates) {
+    for (i = 0; i < deletes.length; i++) {
+        document.getElementById(deletes[i]).remove();
+    }
+    for (i = 0; i < creates.length; i++) {
+        create = creates[i]
+        parent = document.getElementById(create[0]);
+        sibling = document.getElementById(create[1]);
+        child = document.createElement(create[3]);
+        child.id = create[2];
+        parent.insertBefore(child, sibling);
+    }
+}
+```
+
+Crap, I forgot about roots. And sessions.
+
+Let's do something super hacky to deal with rooting the template:
+
+``` js
+function render(deletes, creates) {
+    console.time("render")
+    for (i = 0; i < deletes.length; i++) {
+        document.getElementById(deletes[i]).remove();
+    }
+    for (i = 0; i < creates.length; i++) {
+        create = creates[i]
+        // super hacky way to root things
+        if (create[3] == "head") {
+            document.head.id = create[2]
+        } else if (create[3] == "body") {
+            document.body.id = create[2]
+        } else {
+            parent = document.getElementById(create[0]);
+            sibling = (create[1] == null) ? null : document.getElementById(create[1]);
+            child = document.createElement(create[3]);
+            child.id = create[2];
+            parent.insertBefore(child, sibling);
+        }
+    }
+    console.timeEnd("render")
+}
+```
+
+It works! There's no actual content in it, but I can see the structure getting updated correctly when I fire events from console.
