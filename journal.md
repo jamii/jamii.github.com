@@ -9235,4 +9235,174 @@ function render(deletes, creates) {
 }
 ```
 
-It works! There's no actual content in it, but I can see the structure getting updated correctly when I fire events from console.
+It works! There's no actual content in it, but I can see the structure getting updated correctly when I fire events from the console.
+
+Now text. Let's combine TextNode and FixedNode and just call the correct constructor client side:
+
+``` julia
+immutable FixedNode <: Node
+  tag::Value
+  kind::Symbol # :text or :html
+  children::Vector{Node}
+end
+```
+
+``` js
+function render(deletes, creates) {
+    console.time("render")
+    for (i = 0; i < deletes.length; i++) {
+        document.getElementById(deletes[i]).remove();
+    }
+    for (i = 0; i < creates.length; i++) {
+        create = creates[i]
+        // super hacky way to root things
+        if (create[3] == "html") {
+            if (create[4] == "head") {
+                document.head.id = create[2]
+            } else if (create[4] == "body") {
+                document.body.id = create[2]
+            } else {
+                parent = document.getElementById(create[0]);
+                sibling = (create[1] == null) ? null : document.getElementById(create[1]);
+                child = document.createElement(create[4]);
+                child.id = create[2];
+                parent.insertBefore(child, sibling);
+            }
+        } else {
+            parent = document.getElementById(create[0]);
+            sibling = (create[1] == null) ? null : document.getElementById(create[1]);
+            child = document.createTextNode(create[4]);
+            child.id = create[2];
+            parent.insertBefore(child, sibling);
+        }
+    }
+    console.timeEnd("render")
+}
+```
+
+Eugh, turns out text nodes in the DOM can't have ids. Not a complete roadblock. We can just specify deletes and inserts by parent id and child ix instead of child id and sibling id.
+
+I also did some gross struct-of-arrays stuff while I was in there...
+
+``` julia
+function render(window, view, world, session)
+  for event in world.events
+    js(window, Blink.JSString("$event = imp_event(\"$event\")"), callback=false) # these never return! :(
+  end
+  old_groups = Dict{Symbol, Union{Relation, Void}}(name => get(world.state, name, nothing) for name in view.group_names)
+  Flows.init_flow(view.compiled, world)
+  Flows.run_flow(view.compiled, world)
+  new_groups = Dict{Symbol, Relation}(name => world.state[name] for name in view.group_names)
+  for name in view.group_names
+    if old_groups[name] == nothing
+      old_groups[name] = empty(new_groups[name])
+    end
+  end
+  delete_parents = Vector{UInt64}()
+  delete_childs = Set{UInt64}()
+  delete_ixes = Vector{Int64}()
+  html_create_parents = Vector{UInt64}()
+  html_create_ixes = Vector{Int64}()
+  html_create_childs = Vector{UInt64}()
+  html_create_tags = Vector{String}()
+  text_create_parents = Vector{UInt64}()
+  text_create_ixes = Vector{Int64}()
+  text_create_contents = Vector{String}()
+  for name in view.group_names
+    old_columns = old_groups[name].columns
+    old_parent_ids = old_columns[end-3]
+    old_child_ids = old_columns[end-2]
+    new_columns = new_groups[name].columns
+    new_parent_ids = new_columns[end-3]
+    new_child_ids = new_columns[end-2]
+    new_kinds = new_columns[end-1]
+    new_contents = new_columns[end-0]
+    Data.foreach_diff(old_columns, new_columns, old_columns[1:end-3], new_columns[1:end-3],
+      (o, i) -> begin
+        if !(old_parent_ids[i] in delete_childs)
+          parent = old_parent_ids[i]
+          prev_i = findprev((prev_parent) -> prev_parent != parent, old_parent_ids, i-1)
+          ix = i - prev_i - 1 # 0-indexed
+          push!(delete_parents, parent)
+          push!(delete_childs, old_child_ids[i])
+          push!(delete_ixes, ix)
+        end
+      end,
+      (n, i) -> begin
+        parent = new_parent_ids[i]
+        prev_i = findprev((prev_parent) -> prev_parent != parent, new_parent_ids, i-1)
+        ix = i - prev_i - 1 # 0-indexed
+        if new_kinds[i] == :html
+          push!(html_create_parents, parent)
+          push!(html_create_ixes, ix)
+          push!(html_create_childs, new_child_ids[i])
+          push!(html_create_tags, new_contents[i])
+        else
+          push!(text_create_parents, parent)
+          push!(text_create_ixes, ix)
+          push!(text_create_contents, new_contents[i])
+        end
+      end,
+      (o, n, oi, ni) -> ()
+    )
+  end
+  # deletions have to be handled in reverse order to make sure the ixes are correct
+  reverse!(delete_parents)
+  reverse!(delete_ixes)
+  @show delete_parents delete_ixes html_create_parents html_create_ixes html_create_childs html_create_tags text_create_parents text_create_ixes text_create_contents
+  @js_(window, render($delete_parents, $delete_ixes, $html_create_parents, $html_create_ixes, $html_create_childs, $html_create_tags, $text_create_parents, $text_create_ixes, $text_create_contents))
+end
+```
+
+``` js
+function render(delete_parents, delete_ixes, html_create_parents, html_create_ixes, html_create_childs, html_create_tags, text_create_parents, text_create_ixes, text_create_contents) {
+    console.time("render")
+    for (i = 0; i < delete_parents.length; i++) {
+        document.getElementById(delete_parents[i]).children[delete_ixes[i]].remove();
+    }
+    for (i = 0; i < html_create_parents.length; i++) {
+        // super hacky way to root things
+        if (html_create_tags[i] == "head") {
+            document.head.id = html_create_childs[i]
+        } else if (html_create_tags[i] == "body") {
+            document.body.id = html_create_childs[i]
+        } else {
+            parent = document.getElementById(html_create_parents[i]);
+            child = document.createElement(html_create_tags[i]);
+            child.id = html_create_childs[i];
+            parent.insertBefore(child, parent.children[html_create_ixes[i]]);
+        }
+    }
+    for (i = 0; i < text_create_parents.length; i++) {
+        parent = document.getElementById(text_create_parents[i]);
+        child = document.createTextNode(text_create_contents[i]);
+        parent.insertBefore(child, parent.children[text_create_ixes[i]]);
+    }
+    console.timeEnd("render")
+}
+```
+
+It sort of works. I can add one todo and it shows up on screen, but if I add another it just deletes the first. 
+
+Oh, I need the whole chain of variables inside groups - not just the local variables. Now it works!
+
+Ok, attributes. These can just go in a totally separate pathway.
+
+``` julia
+function compile_server_tree(node::AttributeNode, parent_id, parent_vars, flows)
+  merge_flow = @eval @merge begin
+    $parent_id($(parent_vars...)) => parent_id
+    return attribute(parent_id, string($(flatten_value(node.key)...))) => string($(flatten_value(node.val)...))
+  end
+  push!(flows, merge_flow)
+end
+```
+
+``` js
+for (i = 0; i < attribute_delete_childs.length; i++) {
+    document.getElementById(attribute_delete_childs[i]).removeAttribute(attribute_delete_keys[i]);
+}
+for (i = 0; i < attribute_create_childs.length; i++) {
+    document.getElementById(attribute_create_childs[i]).setAttribute(attribute_create_keys[i], attribute_create_vals[i]);
+}
+```
