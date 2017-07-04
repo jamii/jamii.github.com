@@ -9433,4 +9433,7 @@ I want to get types into the generated code. This requires reading them out of t
 
 Todo:
 
+* redo plumbing
 * retrieve types from world
+* handle sessions
+* refactor compiler into normalized style
