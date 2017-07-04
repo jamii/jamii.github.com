@@ -9436,4 +9436,7 @@ Todo:
 * redo plumbing
 * retrieve types from world
 * handle sessions
+* stop making node_ for FixedNode
 * refactor compiler into normalized style
+
+Couldn't resist benchmarking against the classic Om blogpost. Not very reliable measurements on either side, but I'm certainly within 2x, of which almost all the time is spent in the UI flows. Which are missing type annotations...
