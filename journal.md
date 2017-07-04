@@ -9406,3 +9406,31 @@ for (i = 0; i < attribute_create_childs.length; i++) {
     document.getElementById(attribute_create_childs[i]).setAttribute(attribute_create_keys[i], attribute_create_vals[i]);
 }
 ```
+
+Kind of works. CSS is working now, and some of the events. But it seems to get out of sync at times.
+
+Oh, it's silently blowing up on some attributes. I wrapped the whole render in a try/catch and now I can see that attributes inside a query node get the wrong parent id. Easily fixed.
+
+Another bug with not diffing properly, because of the order of init.
+
+And another with deleting attributes of dom nodes that have themselves been deleted.
+
+And finally, discovering that the `node.setAttribute("checked", true)` and `node.checked=true` are not the same. I'm trying to avoid special-casing stuff like this but it's getting harder. I *think* what I want to do is always set properties, not attributes. As far as I know, I only have to special-case class -> className to make that work.
+
+Nope, doesn't work for events - the property has to be a function, not a string.
+
+Also, deleting the checked property doesn't actually work. Maybe it has to be set to undefined?
+
+Text nodes don't show up in `node.children`, only in `node.childNodes`.
+
+Need to consider all deleted nodes when deleting properties, not just the root that I actually delete.
+
+And everything else seems to be working :D
+
+A few tweaks to handle ignoring vars in the template eg `filter_class(session, filter, _) do ... end`.
+
+I want to get types into the generated code. This requires reading them out of the world, which requires changing the way the plumbing between world and ui works. And also propagating the types all through the compiler. Not today.
+
+Todo:
+
+* retrieve types from world
