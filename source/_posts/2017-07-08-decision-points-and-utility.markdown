@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Contracts, decision points and utility'
+title: 'Decision points and utility'
 date: '2017-07-08 13:16'
 ---
 
