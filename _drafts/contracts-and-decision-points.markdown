@@ -4,7 +4,7 @@ title: "Contracts, decision points and utility"
 date: "2017-07-08 11:27"
 ---
 
-I want to start getting up in the morning, rather then in the afternoon. I'm pretty sure this will make me happier. But I know morning-me is a weaselly little bastard, so I write down a contract that explicitly states that my intention to get up in the morning and I pin it up by my bed. The choice is clear.
+I want to start getting up in the morning, rather then in the afternoon. I'm pretty sure this will make me happier. But I know morning-me is a weaselly little bastard, so I write down a contract that explicitly states my intention to get up in the morning and I pin it up by my bed. The choice is clear.
 
 1. Sleep in all morning, be tired and break contract
 2. Get up early and be tired <-- *better option*
