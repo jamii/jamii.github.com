@@ -1,7 +1,7 @@
 ---
-layout: "post"
-title: "Contracts, decision points and utility"
-date: "2017-07-08 11:27"
+layout: post
+title: 'Contracts, decision points and utility'
+date: '2017-07-08 13:16'
 ---
 
 I want to start getting up in the morning, rather then in the afternoon. It seems like a pretty clear choice:
