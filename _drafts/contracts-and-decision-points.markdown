@@ -41,7 +41,7 @@ All I'm doing by sharpening the decision point to a specific moment in time is p
 
 Why is this interesting?
 
-The dominant theory of decision making in behavioral economics is [utility theory](https://en.wikipedia.org/wiki/Utility), which basically asserts that we have some inner function that assigns utility to every future outcome and we pick the outcome that maximizes utility. Reversal of preferences, such as morning-me preferring to sleep in, are often explained by [temporal discounting](https://en.wikipedia.org/wiki/Temporal_discounting) - morning-me prefers the guaranteed reward of sleeping in now to the uncertain reward to getting up and feeling good about it ten minutes from now.
+The dominant theory of decision making in behavioral economics is [utility theory](https://en.wikipedia.org/wiki/Utility), which basically asserts that we have some inner function that assigns utility to every future outcome and we pick the outcome that maximizes utility. Reversals of preferences are often explained by [temporal discounting](https://en.wikipedia.org/wiki/Temporal_discounting) - afternoon-me wants to get up early, but morning-me prefers the guaranteed reward of sleeping in now to the uncertain reward to getting up and feeling good about it ten minutes from now.
 
 Even if we put aside the prospect of a temporal horizon so short that it won't carry me down the stairs to breakfast, the only ways I see to explain my revealed preferences (sleep-but-pretend > get-up > sleep) with utility theory are to either assign utility to lying to myself or accept that my utility-predicting module is so detached from reality that it really believes I'm going to get up in five minutes.
 
