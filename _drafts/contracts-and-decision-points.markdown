@@ -27,7 +27,7 @@ But afternoon-me is wily too, and has figured out a way to close this loophole b
 
 This actually works! Morning-me concedes and gets out of bed at the agreed point in time.
 
-This is not a new idea - eg [trigger-action plans](http://lesswrong.com/lw/o7c/making_intentions_concrete_triggeraction_planning/), [tripwires](https://chrisguillebeau.com/how-to-be-decisive/)) - and I'm not writing a self-help article here. What I'm actually interested in talking about is this:
+This is [not](https://chrisguillebeau.com/how-to-be-decisive/) a [new idea](http://lesswrong.com/lw/o7c/making_intentions_concrete_triggeraction_planning/) and I'm not writing a self-help article here. What I'm actually interested in talking about is this:
 
 __Option 3 is a lie.__
 
