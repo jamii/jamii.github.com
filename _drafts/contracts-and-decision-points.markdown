@@ -4,10 +4,12 @@ title: "Contracts, decision points and utility"
 date: "2017-07-08 11:27"
 ---
 
-I want to start getting up in the morning, rather then in the afternoon. I'm pretty sure this will make me happier. 
+I want to start getting up in the morning, rather then in the afternoon. It seems like a pretty clear choice:
 
 1. Sleep in all morning and be grumpy
 2. Get up early and be happy 
+
+So afternoon-me makes a plan to get up early every morning, sets an alarm and calls it a day.
 
 And that would be the end of it, except that when morning rolls around morning-me discovers a third option.
 
@@ -23,7 +25,7 @@ But afternoon-me is wily too, and has figured out a way to close this loophole b
 2. Get up early and be happy 
 3. Sleep five more minutes, feel a bit conflicted about not sticking to the plan, then get up early and be happy
 
-Weirdly, this is very effective. Morning-me concedes and gets out of bed at the agreed point in time.
+This actually works! Morning-me concedes and gets out of bed at the agreed point in time.
 
 This is not a new idea - eg [trigger-action plans](http://lesswrong.com/lw/o7c/making_intentions_concrete_triggeraction_planning/), [tripwires](https://chrisguillebeau.com/how-to-be-decisive/)) - and I'm not writing a self-help article here. What I'm actually interested in talking about is this:
 
