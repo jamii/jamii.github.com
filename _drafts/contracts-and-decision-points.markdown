@@ -7,20 +7,20 @@ date: "2017-07-08 11:27"
 I want to start getting up in the morning, rather then in the afternoon. I'm pretty sure this will make me happier. 
 
 1. Sleep in all morning and be grumpy
-2. Get up early and be happy <-- *better option*
+2. Get up early and be happy 
 
 And that would be the end of it, except that when morning rolls around morning-me discovers a third option.
 
 1. Sleep in all morning and be grumpy
-2. Get up early and be happy <-- *better option*
-3. Sleep five more minutes, then get up early and be happy <-- *best option*
+2. Get up early and be happy 
+3. Sleep five more minutes, then get up early and be happy
 
 The best part about option 3 is that morning-me gets to choose it *every five minutes*. He never actually makes the decision to sleep in all morning. It just spontaneously coalesces in a totally blame-free fashion.
 
 But afternoon-me is wily too, and has figured out a way to close this loophole by __specifying a specific moment in time at which the decision has to be made__. I set a particular song as the alarm and plan to get up on the first line of the first chorus.
 
-1. Sleep in all morning, be tired and break contract
-2. Get up early and be tired
+1. Sleep in all morning and be grumpy
+2. Get up early and be happy 
 3. Sleep five more minutes, feel a bit conflicted about not sticking to the plan, then get up early and be happy
 
 Weirdly, this is very effective. Morning-me concedes and gets out of bed at the agreed point in time.
