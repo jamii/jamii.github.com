@@ -9440,3 +9440,152 @@ Todo:
 * refactor compiler into normalized style
 
 Couldn't resist benchmarking against the classic Om blogpost. Not very reliable measurements on either side, but I'm certainly within 2x, of which almost all the time is spent in the UI flows. Which are missing type annotations...
+
+### 2017 Jul 11
+
+I removed the watchers stuff, made View wrap World and then just wrapped all the mutation functions. Watchers are a thing I stole from clojure and they always seem like a good idea at first, but in the long run life is always better with linear control flow. Debugging is so much easier if you can follow code by just reading it in a straight line, rather than having to keep track of where callbacks were created.
+
+Now templates have access to the World when they are being compiled, so I have the opportunity to pass type information through. But first I have to fix some new heisenbug inside Blink. Once again I have rpcs being called on the server and not showing up on the client. 
+
+I'm seriously fed up with Blink. The api is great but the constant dropping and hanging is killing my productivity.
+
+Much debugging later, I've stripped out Blink and I'm using raw websockets. I don't think my threading is correct at the moment, but it's at least working well enough for development. The biggest annoyance I have at the moment is closing old versions of the server - it seems that old modules don't get GCed so I can't use finalizers, and I can't close things manually because I lose the reference when I recompile. I'll figure both out later.
+
+Passing types through from the state moves my crude benchmark from 100ms + 9mb to 20ms + 5mb. The number of allocations is still huge, so I figure that `Nullable{String}` is probably landing on the heap. 
+
+``` julia
+function f()
+  x = "foo"
+  [Nullable(x) for i in 1:1000000]
+end
+
+@time f()
+```
+
+Maybe I can unpack that manually?
+
+Actually, better idea:
+
+``` julia
+function column_type{T}(_::Type{Val{T}})
+  Vector{T}
+end
+
+function column_type{T}(_::Type{Val{Nullable{T}}})
+  NullableVector{T}
+end
+```
+
+Ok, that doesn't actually work, because the Nullables still get created and dumped on the stack when querying the vector. Manual it is.
+
+``` julia
+default{T <: Number}(::Type{T}) = zero(T)
+default(::Type{String}) = ""
+
+function key_expr(elem) 
+  @match elem begin
+    _::Integer => elem
+    (_::Symbol, _::Type) => elem[1]
+    (_::Void, _::Type) => default(elem[2])
+    _ => error("What are this: $elem")
+  end
+end
+
+function key_type(elem)
+  @match elem begin
+    _::Integer => Int64
+    (var::Symbol, typ::Type) => typ
+    (_::Void, typ::Type) => typ
+    _ => error("What are this: $elem")
+  end
+end
+```
+
+Uh, that didn't make much of a dent either. Am confused.
+
+Maybe this line?
+
+``` julia
+child_id = hash(tuple($(node_real_vars...), parent_id), $(hash(node)))
+```
+
+Nope.
+
+Oh, I only added types to half of the queries.
+
+:|
+
+With that addressed, we're at 20ms + 4mb. Progress.
+
+I noticed that the codegen for the queries is pretty poor in places. This seems to be the core problem:
+
+``` julia
+SSAValue(10) = (Base.getfield)((Core.getfield)(node_14578074387523514055@_2::Data.Relation{Tuple{Array{String,1},Array{UInt64,1}}},:columns)::Tuple{Array{String,1},Array{UInt64,1}},1)::UNION{ARRAY{STRING,1},ARRAY{UINT64,1}}
+```
+
+Simplified:
+
+``` julia
+Base.getfield(_::Tuple{Array{String,1},Array{UInt64,1}},1)::UNION{ARRAY{STRING,1},ARRAY{UINT64,1}}
+```
+
+Seriously? You can't figure out what type that is?
+
+The solution is bizaare. I changed `:(eltype($(return_clause.name)[$ix]))` to `:(eltype($(return_clause.name).columns[$ix]))` - but it had already done that inlining itself in the generated code. 
+
+Didn't help much though.
+
+I notice that init_flow causes a fair bit of allocation too, which is weird because it doesn't really do anything. I tried to eliminate dynamic dispatch by pulling all the methods into one switch statement, and then doing the creation of the relation up front and just copying thereafter.
+
+``` julia
+function init_flow(flow::ANY, world::World)
+  t = typeof(flow)
+  if t == Create 
+    if flow.is_transient || !haskey(world.state, flow.output_name) 
+      world.state[flow.output_name] = copy(flow.empty)
+    end
+    if flow.is_event
+      push!(world.events, flow.output_name)
+    end
+  elseif t == Sequence
+    for child in flow.flows
+      init_flow(child, world)
+    end
+  elseif t == Fixpoint
+    for child in flow.flows
+      init_flow(child, world)
+    end
+  end
+end
+```
+
+That kills most of the allocations there.
+
+Doing the same for run_flow makes things worse. It doesn't look like Julia is actually respecting my do-not-specialize hints. So I'll undo that change, but keep the better type hints.
+
+Current status:
+
+``` julia
+0.000822 seconds (100 allocations: 12.500 KB)
+@time(init_flow(world.flow,world)) = nothing
+
+0.005367 seconds (2.79 k allocations: 372.141 KB)
+@time(run_flow(world.flow,world)) = nothing
+
+0.003834 seconds (335 allocations: 41.875 KB)
+@time(Flows.init_flow(view.compiled,view.world)) = nothing
+
+0.047323 seconds (18.52 k allocations: 3.962 MB)
+@time(Flows.run_flow(view.compiled,view.world)) = nothing
+
+render: 64.86ms
+roundtrip: 153.92ms
+```
+
+Todo:
+
+* redo plumbing
+* retrieve types from world
+* handle sessions
+* stop making node_ for FixedNode
+* refactor compiler into normalized style
