@@ -9665,3 +9665,157 @@ None of those things were actually on my todo list, so it's still:
 * handle sessions
 * stop making node_ for FixedNode
 * refactor compiler into normalized style
+
+The way I want to refactor this is similar to the compiler - identify everything by ids and store all the actual data in tables. The parser will spit out a list of ids in preorder and a parents table and then nothing else needs to be recursive.
+
+``` julia
+typealias Splice Vector{Union{String, Symbol}} 
+
+immutable AttributeNode
+  key::Splice
+  val::Splice
+end
+
+immutable FixedNode
+  tag::Splice
+  kind::Symbol # :text or :html
+end
+
+immutable QueryNode
+  table::Symbol
+  vars::Vector{Symbol}
+end
+
+typealias Node Union{AttributeNode, FixedNode, QueryNode}
+  
+immutable Parsed
+  nodes::Vector{Node} # in pre-order
+  parents::Vector{Int64} # parent[1] = 0, arbitrarily
+end
+
+function parse_value(expr)
+  convert(Splice, @match expr begin
+    _::String => [expr]
+    _::Symbol => [string(expr)]
+    Expr(:string, args, _) => args
+    _ => error("What are this? $expr")
+  end)
+end
+
+function parse(expr)
+  nodes = Vector{Node}()
+  parents = Vector{Int64}()
+  
+  parse_stack = Vector{Tuple{Int64, Any}}()
+  push!(parse_stack, (0, expr))
+  while !isempty(parse_stack)
+    (parent, expr) = pop!(parse_stack)
+    @match expr begin
+      Expr(:line, _, _) => nothing
+      Expr(:block, [Expr(:line, _, _), expr], _) => begin
+        push!(parse_stack, (parent, expr))
+      end
+      Expr(:vect || :vcat || :hcat, exprs, _) => begin 
+        for expr in exprs
+          push!(parse_stack, (parent, expr))
+        end
+      end
+      Expr(:call, [table::Symbol, Expr(:->, [Expr(:tuple, [], _), Expr(:block, exprs, _)], _), vars...], _) => begin
+        push!(nodes, QueryNode(table, vars))
+        push!(parents, parent)
+        for expr in exprs
+          push!(parse_stack, (length(nodes), expr))
+        end
+      end
+      [tag, exprs...] => begin
+        push!(nodes, FixedNode(parse_value(tag), :html))
+        push!(parents, parent)
+        for expr in exprs
+          push!(parse_stack, (length(nodes), expr))
+        end
+      end
+      Expr(:(=), [key, val], _) => begin
+        push!(nodes, AttributeNode(parse_value(key), parse_value(val)))
+        push!(parents, parent)
+      end
+      other => begin
+        push!(nodes, FixedNode(parse_value(other), :text))
+        push!(parents, parent)
+      end
+    end
+  end
+  
+  Parsed(nodes, parents)
+end
+```
+
+That worked first time. Except that all the nodes came out in reverse order. I... what?
+
+Aha:
+
+``` julia
+Expr(:vect || :vcat || :hcat, exprs, _) => begin 
+  push!(parse_stack, (parent, exprs))
+end
+```
+
+Unpacking the vect/vcat/hcat made me treat the tags of fixed nodes as text nodes. Then I also need to reverse the order on the other nodes to keep pre-order instead of post-order.
+
+``` julia
+for expr in reverse(exprs)
+  push!(parse_stack, (length(nodes), expr))
+end
+```
+
+Now it looks good.
+
+First half of the compiler is easy enough:
+
+``` julia
+varses = Dict{Int64, Vector{Symbol}}(0 => [:session])
+free_varses = Dict{Int64, Vector{Symbol}}(0 => [:session])
+var_typeses = Dict{Int64, Vector{Type}}(0 => [String])
+for (id, node) in enumerate(nodes)
+  @match node begin
+    QueryNode(table, query_vars) => begin
+      vars = copy(varses[parents[id]])
+      free_vars = Symbol[]
+      var_types = copy(var_typeses[parents[id]])
+      columns = state[table].columns
+      for (ix, var) in enumerate(query_vars)
+        if (var != :(_)) && !(var in vars)
+          push!(vars, var)
+          push!(free_vars, var)
+          push!(var_types, eltype(columns[ix]))
+        end
+      end
+      varses[id] = vars
+      free_varses[id] = free_vars
+      var_typeses[id] = var_types
+    end
+    _ => begin
+      varses[id] = varses[parents[id]]
+      free_varses[id] = free_varses[parents[id]]
+      var_typeses[id] = var_typeses[parents[id]]
+    end
+  end
+end
+
+fixed_parents = Dict{Int64, Int64}(1 => 0)
+query_parents = Dict{Int64, Int64}(1 => 0)
+for (id, nodes) in enumerate(nodes)
+  if id != 1
+    parent = parents[id]
+    fixed_parent = fixed_parents[parent]
+    query_parent = query_parents[parent]
+    @match nodes[parent] begin
+      _::QueryNode => query_parent = parent
+      _::FixedNode => fixed_parent = parent
+    end
+    fixed_parents[id] = fixed_parent
+    query_parents[id] = query_parent
+  end
+end
+```
+
+The next part is figuring out how to calculate keys, but I'm out of brainpower for today.
