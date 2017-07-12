@@ -9584,8 +9584,84 @@ roundtrip: 153.92ms
 
 Todo:
 
-* redo plumbing
-* retrieve types from world
+* handle sessions
+* stop making node_ for FixedNode
+* refactor compiler into normalized style
+
+### 2017 Jul 12
+
+I had 'stop making node_ for FixedNode' on the todo list but I just realised that I can't do that in the current setup because I need them for AttributeNodes. I would have to hunt down the group id for the FixedNode and pick them out by key instead. That will be easier after refactoring.
+
+I noticed the codegen in render is pretty bad, so I spent a few hours tweaking it. Mostly it came down to inserting type hints in places where the types are static and closures that cause boxing. The latter is kind of annoying because it seems unpredictable and avoiding it rules out lots of nice things like array comprehensions.
+
+Here's where we're at now:
+
+``` julia
+0.000509 seconds (100 allocations: 12.500 KB)
+@time(init_flow(world.flow,world)) = nothing
+
+0.002258 seconds (2.79 k allocations: 372.141 KB)
+@time(run_flow(world.flow,world)) = nothing
+
+0.001573 seconds (335 allocations: 41.875 KB)
+@time(Flows.init_flow(view.compiled,view.world)) = nothing
+
+0.009917 seconds (18.52 k allocations: 3.962 MB)
+@time(Flows.run_flow(view.compiled,view.world)) = nothing
+
+0.008938 seconds (15.96 k allocations: 1.568 MB)
+@time(render(view,old_state,view.world.state)) = nothing
+
+render: 25.35ms
+roundtrip: 55.82ms
+```
+
+50-60ms of which around half is rendering client-side. 
+
+One thing that's really noticeable is that `run_flow(view.compiled,...)` is at ~10ms down from ~50ms. I didn't change anything though. Weird.
+
+I also made some improvements in live coding. I added:
+
+``` julia
+type View
+  ...
+  clients::Dict{String, WebSocket}
+  server::Nullable{Server}
+end
+
+function Base.close(view::View)
+  if !isnull(view.server) && isopen(get(view.server))
+    close(get(view.server))
+  end
+  for (_, client) in view.clients
+    if isopen(get(view.server))
+      close(client)
+    end
+  end
+  view.server = Nullable{Server}()
+  view.clients = Dict{String, WebSocket}()
+end
+```
+
+And then rather than evalling inside individual files, I eval chunks from this top-level script:
+
+``` julia
+include("src/Data.jl")
+include("src/Query.jl")
+include("src/Flows.jl")
+include("src/UI.jl")
+if isdefined(:Todo)
+  close(Todo.view)
+end
+include("examples/Todo.jl")
+close(Todo.view)
+UI.serve(Todo.view)
+```
+
+That avoids a fair number of restarts.
+
+None of those things were actually on my todo list, so it's still:
+
 * handle sessions
 * stop making node_ for FixedNode
 * refactor compiler into normalized style
