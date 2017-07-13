@@ -9804,7 +9804,7 @@ end
 fixed_parents = Dict{Int64, Int64}(1 => 0)
 query_parents = Dict{Int64, Int64}(1 => 0)
 for (id, nodes) in enumerate(nodes)
-  if id != 1
+  if id != 1 # root node has no parent
     parent = parents[id]
     fixed_parent = fixed_parents[parent]
     query_parent = query_parents[parent]
@@ -9819,3 +9819,123 @@ end
 ```
 
 The next part is figuring out how to calculate keys, but I'm out of brainpower for today.
+
+### 2017 Jul 13
+
+Trying to upgrade to Julia 0.6 today, since kmsquire kindly upgraded Match.jl this week. 
+
+Representation of some Exprs changed. Relatively easy to fix apart from the typical problems with macro errors not giving stack traces or even a line number
+
+The new worlds thing that makes interactive redefinitions work also breaks my workflow - you can no longer eval a function and then call it without returning to the repl in between. I don't really understand how this works, because the repl itself is written in Julia and so there must be a way around it. Let's read the [docs](https://docs.julialang.org/en/latest/manual/methods.html#Redefining-Methods-1).
+
+Well, that was a simple change:
+
+``` julia
+outputs::Vector{Relation} = Base.invokelatest(flow.eval, map((name) -> world.state[name], flow.input_names)...)
+```
+
+Some keyword changes. 
+
+`isopen(::HttpServer.Server)` [disappeared](https://github.com/JuliaWeb/HttpServer.jl/pull/119).
+
+Fix a couple of deprecation warnings and we're done. 
+
+Quick benchmark update:
+
+``` julia
+0.000064 seconds (100 allocations: 12.500 KiB)
+@time(init_flow(world.flow, world)) = nothing
+
+0.001338 seconds (2.25 k allocations: 341.719 KiB)
+@time(run_flow(world.flow, world)) = nothing
+
+0.001820 seconds (913 allocations: 77.469 KiB)
+@time(Flows.init_flow(view.compiled, view.world)) = nothing
+
+0.006001 seconds (14.51 k allocations: 3.721 MiB)
+@time(Flows.run_flow(view.compiled, view.world)) = nothing
+
+0.003617 seconds (16.14 k allocations: 1.119 MiB)
+@time(render(view, old_state, view.world.state)) = nothing
+
+render: 24.45ms
+roundtrip: 55.35ms
+```
+
+They're pretty noisy so no point reading too much into small differences. Looks like it's pretty much the same.
+
+Back to the UI compiler refactor.
+
+Here's all the prep work:
+
+``` julia
+function compile(node, parent, column_type::Function)
+  fixed_parent = Dict{Int64, Int64}(1 => 0)
+  query_parent = Dict{Int64, Int64}(1 => 0)
+  for id in 2:length(node) # node 1 has no real parents
+    my_parent = parent[id]
+    fixed_parent[id] = fixed_parent[my_parent]
+    query_parent[id] = query_parent[my_parent]
+    @match node[my_parent] begin
+      _::QueryNode => query_parent[id] = my_parent
+      _::FixedNode => fixed_parent[id] = my_parent
+    end
+  end
+  
+  vars = Dict{Int64, Vector{Symbol}}(0 => [:session])
+  types = Dict{Int64, Vector{Type}}(0 => [String])
+  free_vars = Dict{Int64, Vector{Symbol}}(0 => [:session])
+  free_types = Dict{Int64, Vector{Type}}(0 => [String])
+  for (id, my_node) in enumerate(node)
+    my_vars = vars[id] = copy(vars[parent[id]])
+    my_types = types[id] = copy(var_types[parent[id]])
+    my_free_vars = free_vars[id] = Vector{Symbol}()
+    my_free_types = free_types[id] = Vector{Type}()
+    if my_node isa QueryNode
+      for (ix, var) in enumerate(my_node.vars)
+        if (var != :(_)) && !(var in my_vars)
+          push!(my_vars, var)
+          push!(my_types, column_type(my_node.table, ix))
+          push!(my_free_vars, var)
+          push!(my_free_types, column_type(my_node.table, ix))
+        end
+      end
+    end
+  end
+  
+  num_children = Dict{Int64, Int64}(id => 0 for id in 0:length(node))
+  ix = Dict{Int64, Int64}()
+  family = Dict{Int64, Vector{Int64}}(id => Vector{Int64}() for (_, id) in fixed_parent)
+  ancestors = Dict{Int64, Vector{Int64}}()
+  for (id, my_node) in enumerate(node)
+    if !(my_node isa AttributeNode)
+      ix[id] = (num_children[parent[id]] += 1)
+      push!(family[fixed_parent[id]], id)
+      ancestors[id] = (parent[id] == fixed_parent[id]) ? Vector{Int64}() : ancestors[parent[id]]
+      push!(ancestors[id], id)
+    end
+  end
+  
+  key = Dict{Int64, Vector{Union{Int64, Type, Tuple{Symbol, Type}}}}()
+  for (my_fixed_parent, my_family) in family
+    base_key = Vector{Union{Int64, Type, Tuple{Symbol, Type}}}()
+    append!(base_key, zip(vars[my_fixed_parent], types[my_fixed_parent]))
+    for id in my_family
+      if node[id] isa FixedNode
+        my_key = copy(base_key)
+        my_ancestors = ancestors[id]
+        for other_id in my_family
+          if other_id in my_ancestors
+            push!(my_key, ix[other_id])
+            append!(my_key, zip(free_vars[other_id], free_types[other_id]))
+          else
+            push!(my_key, 0)
+            append!(my_key, free_types[other_id])
+          end
+        end
+      end
+    end
+  end
+```
+
+Much cleaner than before, especially working out the keys. Just need to do the codegen and debug it now.
