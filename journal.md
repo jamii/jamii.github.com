@@ -9939,3 +9939,222 @@ function compile(node, parent, column_type::Function)
 ```
 
 Much cleaner than before, especially working out the keys. Just need to do the codegen and debug it now.
+
+### 2017 Jul 14
+
+Many hours of debugging later:
+
+``` julia
+0.000077 seconds (100 allocations: 12.500 KiB)
+@time(init_flow(world.flow, world)) = nothing
+
+0.002862 seconds (2.25 k allocations: 341.719 KiB)
+@time(run_flow(world.flow, world)) = nothing
+
+0.000132 seconds (150 allocations: 18.750 KiB)
+@time(Flows.init_flow(view.compiled.flow, view.world)) = nothing
+
+0.008996 seconds (12.36 k allocations: 2.285 MiB)
+@time(Flows.run_flow(view.compiled.flow, view.world)) = nothing
+
+0.005160 seconds (16.16 k allocations: 1.120 MiB)
+@time(render(view, old_state, view.world.state)) = nothing
+
+render: 24.5ms
+roundtrip: 51.99ms
+```
+
+Overall times are very variable, but the allocations are deterministic and these are slightly lower, probably because I'm now able to omit the extra views on FixedNodes.
+
+The new parser and compiler are structured totally differently to the old, and yet they each have almost exactly the same number of lines of code. It's eery.
+
+Most of the complexity is in dealing with special cases at the root and with calculating the sort keys:
+
+``` julia
+family = Dict{Int64, Vector{Int64}}(id => [id] for (_, id) in fixed_parent)
+for (id, my_node) in enumerate(node)
+  if !(my_node isa AttributeNode)
+    push!(family[fixed_parent[id]], id)
+  end
+end
+
+num_children = Dict{Int64, Int64}(id => 0 for id in 0:length(node))
+lineage = Dict{Tuple{Int64, Int64}, Int64}()
+# lineage[hi, lo] = n iff lo is the nth child of hi or a descendant thereof
+# lineage[hi, lo] = 0 otherwise
+for (_, my_family) in family
+  for hi_id in my_family
+    for lo_id in my_family
+      if hi_id >= lo_id # note ids are numbered depth-first
+        lineage[hi_id, lo_id] = 0
+      elseif hi_id == parent[lo_id]
+        lineage[hi_id, lo_id] = (num_children[hi_id] += 1)
+      else
+        lineage[hi_id, lo_id] = lineage[hi_id, parent[lo_id]]
+      end
+    end
+  end
+end
+
+const KeyElem = Union{Int64, Type, Tuple{Symbol, Type}}
+key = Dict{Int64, Vector{KeyElem}}(0 => KeyElem[(:session, String)])
+for (my_fixed_parent, my_family) in family
+  base_key = Vector{KeyElem}()
+  append!(base_key, zip(vars[my_fixed_parent], types[my_fixed_parent]))
+  for lo_id in my_family[2:end] # don't include parent
+    if node[lo_id] isa FixedNode
+      @assert !haskey(key, lo_id)
+      my_key = key[lo_id] = copy(base_key)
+      for hi_id in my_family
+        if (hi_id == my_fixed_parent) || (node[hi_id] isa QueryNode) 
+          if lineage[hi_id, lo_id] == 0
+            append!(my_key, free_types[hi_id])
+            push!(my_key, 0)
+          else
+            append!(my_key, zip(free_vars[hi_id], free_types[hi_id]))
+            push!(my_key, lineage[hi_id, lo_id])
+          end
+        end
+      end
+    end
+  end
+end
+
+key_vars = Dict{Int64, Vector{Any}}()
+key_exprs = Dict{Int64, Vector{Any}}()
+key_types = Dict{Int64, Vector{Type}}()
+for (id, my_key) in key
+  my_key_vars = key_vars[id] = Vector{Any}()
+  my_key_exprs = key_exprs[id] = Vector{Any}()
+  my_key_types = key_types[id] = Vector{Type}()
+  for key_elem in my_key
+    (var, expr, typ) = @match key_elem begin
+      _::Int64 => (key_elem, key_elem, Int64)
+      _::Type => (:(_), :(default($key_elem)), key_elem)
+      (var, typ) => (var, var, typ)
+    end
+    push!(my_key_vars, var)
+    push!(my_key_exprs, expr)
+    push!(my_key_types, typ)
+  end
+end
+```
+
+I'm sure there are better ways to do both.
+
+The compile time is disgusting - probably because of all the evals:
+
+``` julia
+:parse = :parse
+  0.001876 seconds (3.12 k allocations: 206.344 KiB)
+:compile = :compile
+  1.212156 seconds (300.23 k allocations: 17.650 MiB, 1.31% gc time)
+```
+
+There's also some weird stuff going on in the inferred types for the compile. I narrowed it down to something involving chained assignment:
+
+``` julia
+function f()
+  d = Dict{Int64, Vector{Int64}}()
+  x = d[1] = Vector{Int64}()
+  push!(x, 1)
+end
+
+@code_warntype f()
+
+Variables:
+  #self#::#f
+  d::Dict{Int64,Array{Int64,1}}
+  x::ANY
+  n::Int64
+  itemT::Int64
+
+Body:
+  begin 
+      $(Expr(:inbounds, false))
+      # meta: location dict.jl Type 104
+      SSAValue(6) = $(Expr(:invoke, MethodInstance for fill!(::Array{UInt8,1}, ::UInt8), :(Base.fill!), :($(Expr(:foreigncall, :(:jl_alloc_array_1d), Array{UInt8,1}, svec(Any, Int64), Array{UInt8,1}, 0, 16, 0))), :((Base.checked_trunc_uint)(UInt8, 0)::UInt8)))
+      SSAValue(4) = $(Expr(:foreigncall, :(:jl_alloc_array_1d), Array{Int64,1}, svec(Any, Int64), Array{Int64,1}, 0, 16, 0))
+      SSAValue(2) = $(Expr(:foreigncall, :(:jl_alloc_array_1d), Array{Array{Int64,1},1}, svec(Any, Int64), Array{Array{Int64,1},1}, 0, 16, 0))
+      # meta: pop location
+      $(Expr(:inbounds, :pop))
+      d::Dict{Int64,Array{Int64,1}} = $(Expr(:new, Dict{Int64,Array{Int64,1}}, SSAValue(6), SSAValue(4), SSAValue(2), 0, 0, :((Base.bitcast)(UInt64, (Base.check_top_bit)(0)::Int64)), 1, 0)) # line 24:
+      SSAValue(0) = $(Expr(:foreigncall, :(:jl_alloc_array_1d), Array{Int64,1}, svec(Any, Int64), Array{Int64,1}, 0, 0, 0))
+      $(Expr(:invoke, MethodInstance for setindex!(::Dict{Int64,Array{Int64,1}}, ::Array{Int64,1}, ::Int64), :(Main.setindex!), :(d), SSAValue(0), 1)) # line 25:
+      $(Expr(:inbounds, false))
+      # meta: location array.jl push! 618
+      SSAValue(8) = (Base.bitcast)(UInt64, (Base.check_top_bit)(1)::Int64)
+      $(Expr(:foreigncall, :(:jl_array_grow_end), Void, svec(Any, UInt64), SSAValue(0), 0, SSAValue(8), 0)) # line 619:
+      # meta: location abstractarray.jl endof 134
+      # meta: location abstractarray.jl linearindices 99
+      # meta: location abstractarray.jl indices1 71
+      # meta: location abstractarray.jl indices 64
+      SSAValue(11) = (Base.arraysize)(SSAValue(0), 1)::Int64
+      # meta: pop location
+      # meta: pop location
+      # meta: pop location
+      # meta: pop location
+      (Base.arrayset)(SSAValue(0), 1, (Base.select_value)((Base.slt_int)(SSAValue(11), 0)::Bool, 0, SSAValue(11))::Int64)::Array{Int64,1}
+      # meta: pop location
+      $(Expr(:inbounds, :pop))
+      return SSAValue(0)
+  end::Array{Int64,1}
+```
+
+It claims not to know the type of x, but it generates code as if it does. Not really important right now, so I'll just [ask the mailing list about it](https://discourse.julialang.org/t/confusing-type-inference-from-chained-assignment/4861) and move on.
+
+I've been using `@show @time ...` for timing stuff, but the output is a little hard to read and I have to be careful only to use for it statements that don't return any large data-structures that might be printed out. I replaced it with a cute macro:
+
+``` julia
+macro showtime(expr)
+  quote
+    @time $(esc(expr))
+    println($(string("^ ", expr)))
+    println()
+  end
+end
+```
+
+I also added some slightly finer grained timing to the client.
+
+``` julia
+  0.000042 seconds (15 allocations: 1.156 KiB)
+^ event = JSON.parse(String(bytes))
+
+  0.000047 seconds (100 allocations: 12.500 KiB)
+^ init_flow(world.flow, world)
+
+  0.000035 seconds (49 allocations: 3.672 KiB)
+^ push!(world.state[event_table], event_row)
+
+  0.001459 seconds (2.25 k allocations: 341.719 KiB)
+^ run_flow(world.flow, world)
+
+  0.000226 seconds (159 allocations: 19.031 KiB)
+^ Flows.init_flow(view.compiled.flow, view.world)
+
+  0.006604 seconds (12.39 k allocations: 2.286 MiB)
+^ Flows.run_flow(view.compiled.flow, view.world)
+
+  0.005303 seconds (16.16 k allocations: 1.120 MiB)
+^ render(view, old_state, view.world.state)
+
+  0.014123 seconds (31.47 k allocations: 3.788 MiB)
+^ refresh(view, Symbol(event["table"]), tuple(event["values"]...))
+
+parse: 0.69ms
+event handlers: 0.47ms
+parse: 2.56ms
+render: 27.22ms
+roundtrip: 63.21ms
+```
+
+We have here ~14ms spent in server code and ~31ms in client code for a total roundtrip of ~63ms. Who taught you math, computer? I guess that must be ~15ms of network and websocket code on either end.
+
+I watched the exchange in wireshark and, weirdly, the server is telling the truth. The dead time must be on the client side.
+
+I am sending two messages though, so let's try combining them into one and see if that helps at all. I might be eating a repaint or something in between the two.
+
+Nope. Still >10ms missing.
+
+I even tried taking all the console writes out of the client. No dice. No idea where that time is hiding.
