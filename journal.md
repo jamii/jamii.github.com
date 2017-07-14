@@ -10158,3 +10158,143 @@ I am sending two messages though, so let's try combining them into one and see i
 Nope. Still >10ms missing.
 
 I even tried taking all the console writes out of the client. No dice. No idea where that time is hiding.
+
+One last thing I want to try today is specialising code for flows. I timed the individual queries and they add up to about the same amount as the whole flow, so actually this is kinda pointless. But I started so...
+
+``` julia
+struct Sequence{T <: Tuple} <: Flow
+  flows::T # where T is a tuple of flows
+end
+
+function Sequence{T <: Flow}(flows::Vector{T})
+  Sequence(tuple(flows...)) # for better specialization
+end
+
+@generated function run_flow{T}(flow::Sequence{T}, world::World)
+  num_flows = length(T.parameters)
+  quote
+    $([:(run_flow(flow.flows[$i], world)) for i in 1:num_flows]...)
+  end
+end
+```
+
+So yeah, no difference. Which I knew to expect as soon as I bothered to do the timing. Lesson learned.
+
+Let's try breaking down the times in the Merge flow to see if it's the query that's expensive or the plumbing around it.
+
+I think I'm going crazy. Rather than use the client, I just fired an event from the repl. I'm seeing way fewer allocations across the board:
+
+``` julia
+0.000084 seconds (100 allocations: 12.500 KiB)
+^ init_flow(world.flow, world)
+
+0.000036 seconds (49 allocations: 3.672 KiB)
+^ push!(world.state[event_table], event_row)
+
+0.002866 seconds (2.14 k allocations: 304.063 KiB)
+^ run_flow(world.flow, world)
+
+0.000664 seconds (169 allocations: 19.344 KiB)
+^ Flows.init_flow(view.compiled.flow, view.world)
+
+0.005942 seconds (5.85 k allocations: 409.500 KiB)
+^ Flows.run_flow(view.compiled.flow, view.world)
+
+0.001325 seconds (1.20 k allocations: 64.000 KiB)
+^ render(view, old_state, view.world.state)
+```
+
+Oh... it's because there is no session defined. Hey, that's also weird. It's managing to make 5.85k allocations to produce 73 empty relations.
+
+I'm going to try moving the merges inside the query where their types are known. Let's see if that helps at all.
+
+Lot's of complexity and some fair code debt created. No change. Dangnabbit.
+
+Where are all those allocations coming from? I wondered if it's from calling Base.invokelatest which must guarantee dynamic dispatch, but moving it from the leaves of the tree to one call at the top caused 10x as many allocations. What is going on?
+
+Hang on, aren't there tools for this?
+
+Running with --track-allocation=all attributes most of the allocation to gallop and co:
+
+```
+jamie@machine:~/imp$ cat src/*.mem | sort -h | tail
+    15200       $next_lo, c = gallop($column, $var, $lo, $hi, 0)
+    30784   typeof(coll)()
+    42112   deduped::typeof(columns) = map((column) -> empty(column), columns)
+    55056           $body
+    73792           $var = $(columns[1])[$(next_los[1])]
+   109632   c = -1
+   187232           $next_lo, c = gallop($column, $column_rot[$next_lo_rot], $next_lo, $hi, 0)
+   208576         $(project(columns, los, his, next_los, next_his, esc(var), body))
+   284576     $([:(push!($(Symbol("results_$(clause_ix)_$(var_ix)")), $(esc(var))))
+   566752           $([:(($next_hi, _) = gallop($column, $column[$next_lo], $next_lo+1, $hi, 1)) for (next_hi, column, next_lo, hi) in zip(next_his, columns, next_los, his)]...)
+```
+
+It might be because my janky changes are breaking the type inference near gallop. Let's try reverting them.
+
+```
+jamie@machine:~/imp$ cat src/*.mem | sort -h | tail
+     3264   for (output_name, output) in zip(flow.output_names, outputs)
+     3520   Relation(deduped, num_keys, Dict{Vector{Int}, typeof(deduped)}(order => deduped))
+     3920     columns = tuple(((ix in order) ? copy(column) : empty(column) for (ix, column) in enumerate(relation.columns))...)
+     4944   foreach_diff(old_index, new_index, old_index[1:old.num_keys], new_index[1:new.num_keys], 
+     7040   get!(relation.indexes, order) do
+     7856   result_columns::T = tuple((empty(column) for column in old.columns)...)
+    30784   typeof(coll)()
+    32832       $(results_inits...)
+    42112   deduped::typeof(columns) = map((column) -> empty(column), columns)
+   195776         $(project(columns, los, his, next_los, next_his, esc(var), body))
+```
+
+That's basically the same. This is pretty surprising to me, because project and gallop shouldn't allocate at all, and most of my queries barely allocate to begin with. Something is fishy.
+
+It's also putting a lot on Relation and merge, both of which make sense.
+
+``` julia
+function f()
+  Data.Relation(([1,2,3], [4,5,6]), 1)
+end
+  
+@time f()
+
+0.000022 seconds (34 allocations: 2.391 KiB)
+0.000010 seconds (22 allocations: 1.516 KiB)
+0.000011 seconds (22 allocations: 1.516 KiB)
+0.000010 seconds (22 allocations: 1.516 KiB)
+```
+
+1.5kb. Huh.
+
+``` julia
+function g()
+  Data.Relation(([1,2,3], [4,5,6]), 1, Dict{Vector{Int}, Tuple{Vector{Int}, Vector{Int}}}())
+end
+
+@time g()
+
+0.031436 seconds (673 allocations: 37.284 KiB)
+0.000006 seconds (12 allocations: 1.031 KiB)
+0.000007 seconds (12 allocations: 1.031 KiB)
+0.000006 seconds (12 allocations: 1.031 KiB)
+```
+
+Eg, it's not so bad.
+
+How about merge?
+
+``` julia
+function h()
+  x = Data.Relation(([1,2,3], [4,5,6]), 1)
+  y = Data.Relation(([1,2,3], [4,5,6]), 1)
+  merge(x, y)
+end
+
+0.161110 seconds (52.11 k allocations: 2.923 MiB)
+0.000037 seconds (67 allocations: 4.813 KiB)
+0.000033 seconds (67 allocations: 4.813 KiB)
+0.000026 seconds (67 allocations: 4.813 KiB)
+```
+
+Meh, sounds about right.
+
+Dunno. Too tired to come to conclusions tonight.
