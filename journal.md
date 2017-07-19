@@ -10298,3 +10298,37 @@ end
 Meh, sounds about right.
 
 Dunno. Too tired to come to conclusions tonight.
+
+### 2017 Jul 19
+
+Handling multiple sessions is mostly bookkeeping. Handling closed sessions is a little harder, and took a while to debug, but nothing interesting.
+
+``` julia
+0.000113 seconds (100 allocations: 12.500 KiB)
+^ init_flow(world.flow, world)
+
+0.003784 seconds (2.48 k allocations: 264.484 KiB)
+^ run_flow(world.flow, world)
+
+0.000741 seconds (159 allocations: 19.031 KiB)
+^ Flows.init_flow(view.compiled.flow, view.world)
+
+0.012622 seconds (9.12 k allocations: 1.065 MiB)
+^ Flows.run_flow(view.compiled.flow, view.world)
+
+0.012000 seconds (36.69 k allocations: 2.419 MiB)
+^ render(view, old_state, view.world.state)
+
+0.030685 seconds (48.96 k allocations: 3.791 MiB)
+^ refresh(view, Symbol(event["table"]), tuple(event["values"]...))
+
+parse: 2.22ms
+render: 27.93ms
+roundtrip: 115.9ms
+```
+
+The UI sections only take twice as long to do 10x the work, which further confirms my suspicion that I'm paying a lot of overhead in there somewhere, if I could just track it down. 
+
+What next? The UI stuff is still pretty far from being ready for real use, but I also have a ton of code debt in the underlying layers that is making life hard. And further, I know that the next thing I want to work on is graphical interfaces to Imp, which is going to be hard with the syntax-heavy all-at-once compilers I have right now. I need a more compositional query language.
+
+On the other hand, I feel the need for some sort of milestone. Maybe it's worth writing up the UI library in it's current state before moving on to cleaning up code debt.
