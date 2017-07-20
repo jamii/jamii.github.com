@@ -10332,3 +10332,41 @@ The UI sections only take twice as long to do 10x the work, which further confir
 What next? The UI stuff is still pretty far from being ready for real use, but I also have a ton of code debt in the underlying layers that is making life hard. And further, I know that the next thing I want to work on is graphical interfaces to Imp, which is going to be hard with the syntax-heavy all-at-once compilers I have right now. I need a more compositional query language.
 
 On the other hand, I feel the need for some sort of milestone. Maybe it's worth writing up the UI library in it's current state before moving on to cleaning up code debt.
+
+Ok, I put together a draft that seems reasonable. Meanwhile, I had an idea about how to simplify the rendering somewhat. Instead of diffing each group by hand, I can just spit them into one relation with the group number as the first column.
+
+Bah, it's actually tricky to get the diffs to work right...
+
+Ok, I beat my head against this for a few hours. I think I could get it working, but it would involve some awkward sorting inside `render` and piling everything into `node` would actually cause performance problems with current implementation, which dedupes the whole relation every time something new is added.
+
+But! While I was working on that, I did at least figure out how to remove the gallops in `render`. I wanted to use sibling ids instead of ixes before, but text nodes aren't allow to have ids. But I realized that there is no reason I have to use DOM ids to track things. I can just build a big hashtable of my own.
+
+``` julia
+0.000043 seconds (100 allocations: 12.500 KiB)
+^ init_flow(world.flow, world)
+
+0.001380 seconds (2.25 k allocations: 341.719 KiB)
+^ run_flow(world.flow, world)
+
+0.000191 seconds (159 allocations: 19.031 KiB)
+^ Flows.init_flow(view.compiled.flow, view.world)
+
+0.005249 seconds (12.79 k allocations: 2.534 MiB)
+^ Flows.run_flow(view.compiled.flow, view.world)
+
+0.004150 seconds (16.63 k allocations: 1.252 MiB)
+^ render(view, old_state, view.world.state)
+
+0.011534 seconds (32.34 k allocations: 4.168 MiB)
+^ refresh(view, Symbol(event["table"]), tuple(event["values"]...))
+
+parse: 2.37ms
+render: 28.04ms
+roundtrip: 46.57ms
+```
+
+No real performance difference, but I'm much happier with the code.
+
+### 2017 Jul 20
+
+More work on the draft, plus a couple of bugfixes in Todo.jl.
