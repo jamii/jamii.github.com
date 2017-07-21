@@ -10370,3 +10370,15 @@ No real performance difference, but I'm much happier with the code.
 ### 2017 Jul 20
 
 More work on the draft, plus a couple of bugfixes in Todo.jl.
+
+### 2017 Jul 21
+
+I worked on some simple benchmarks to put in the post. It's a bit tricky to frame so that it doesn't come off as claiming to be super-amazing-fast-you-should-use-this-in-your-startup.
+
+Also, I tried to explain the performance and found that I couldn't, so I ended up spending a bunch of time on runtime and allocation profiling, which then inevitably led to optimization. 
+
+I found that almost all the time in the code is spent in quicksort, either from indexes or creating relations. A bunch of the remaining time is spent in merging. Now I check to see if things are sorted before sorting them (because queries often accidentally return things in sorted order) and I check if I'm merging against empty relations. 
+
+That cut about 50% off the runtime. To get the rest I'm probably going to have to rethink how I store relations. Which was going to be coming down the line when I worked on incremental maintenance anyway.
+
+I'm still probably another day or two away from finishing the draft. Should be up by the end of August at least.

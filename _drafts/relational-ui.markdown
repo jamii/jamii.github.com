@@ -882,6 +882,35 @@ currently, templates are limited to a fixed depth, so they can't express eg a fi
 
 TODO benchmarks
 
-10x tabs = 2x time, implying that the original benchmark is 90% overhead. This is probably because while the query compiler is pretty good, the dataflow layer that binds the queries together is a pile of poop. 
+Compare to [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). Not a pissing contest, just trying to get a handle on whether performance is likely to be a problem.
 
-Between incremental maintenance and removing the overhead from the dataflow layer, it seems that there is a lot of room to improve the performance.
+Not particularly rigorous. Run through all the benchmarks a few times to warmup, and then record a profile.
+
+Add first todo:
+imp-1
+imp-200
+imp-201
+
+
+
+Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins so in theory it should be easy to maintain incrementally.
+
+201st todo, total time spent in server code, mean of 100 runs
+
+| #tabs | time (ms) |
+|-------|-----------|
+| 1     | 9         |
+| 10    | 22        |
+| 100   | 168       |
+| 1000* | 2056      |
+
+* Chrome has a cunning optimization where after ~150 tabs it just stops loading pages, so the last row is 100 real tabs and 900 fake sessions.
+
+The marginal cost per tab is about 1.6ms. The bulk of the time is spent sorting and resorting relations, rather than solving queries.
+
+That leaves about ~7-8ms of overhead. This is probably because while the query compiler is pretty good, the dataflow layer that binds the queries together is a pile of poop. 
+
+The marginal allocation rate per tab is 1mb across 5373 allocations. This is almost entirely in the template queries. Most of the individual allocations are from creating identical event strings on each of 200 todos x 100 tabs, but the bulk of the allocation size is from many, many copies of the columns in these relations. 
+
+The biggest opportunities for improving performance are prob
+Between incremental maintenance, removing the overhead from the dataflow layer, cleaning up the fanout and batching the incoming and outgoing events, it seems that there is a lot of potential to improve the performance.
