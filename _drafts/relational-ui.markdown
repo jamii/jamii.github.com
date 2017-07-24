@@ -979,7 +979,7 @@ end
 end
 ```
 
-Currently, templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. Allowing template fragments to call themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation here. It's probably not impossible, but I won't attempt to deal with it until I definitely need it.
+Currently templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. Allowing template fragments to call themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation here. It's probably not impossible, but I won't attempt to deal with it until I definitely need it.
 
 ### Performance
 
