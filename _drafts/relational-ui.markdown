@@ -1048,7 +1048,7 @@ Breaking down the costs:
 
 So there is probably a lot of margin for improvement in the control flow layer that binds the queries together and handles sorting/indexing relations. Which is unsurprising, because one of the top items on my todo list is `control flow is a pile of poop - make it not that`.
 
-Overall, I'm pleasantly surprised that its already this fast.
+Overall, I'm pleasantly surprised that it's already this fast.
 
 ### Status
 
