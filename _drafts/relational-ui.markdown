@@ -36,7 +36,11 @@ That's what we're going to deal with in this post.
 
 [Imp](https://github.com/jamii/imp/) is a [datalog](https://en.wikipedia.org/wiki/Datalog)-ish language in the same family as [Eve](http://evelang.com/), [LogicBlox](http://www.logicblox.com/), [Bloom](http://bloom-lang.net/), [Dyna](http://www.cs.jhu.edu/~nwf/datalog20-paper.pdf) etc.
 
-The GUI library in this post could run on top of any relational datastore, but since all the examples are written in Imp let's just run through some basic examples with translations to SQL.
+Imp is focused on reducing the number of layers and concepts involved in writing GUI apps. I prioritize simplicity over scale/power.
+
+The goal is to build apps that run on one machine or that server small number of users on a local network, rather than building public apps that scale to large numbers of users. Think [shiny](https://github.com/rstudio/shiny) or [nitrogen](http://nitrogenproject.com/learn), not [rails](http://rubyonrails.org/).
+
+The GUI library in this post could run on top of any relational datastore, but since all the examples are written in Imp let's just run through some basic Imp code with translations to SQL.
 
 Imp data is stored in relations and is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form):
 
@@ -156,10 +160,6 @@ create view completed_count_text as
    from completed_count
 ;
 ```
-
-Imp is focused on reducing the number of layers and concepts involved in writing GUI apps. I prioritize simplicity over scale/power.
-
-The goal is to build apps that run on one machine or that server small number of users on a local network, rather than building public apps that scale to large numbers of users. Think [shiny](https://github.com/rstudio/shiny) or [nitrogen](http://nitrogenproject.com/learn), not [rails](http://rubyonrails.org/).
 
 ### TODO?
 
