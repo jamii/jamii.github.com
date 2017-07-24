@@ -295,9 +295,9 @@ Suppose we have this data:
 visible(1)
 visible(3)
 
-todo(1, "foo")
-todo(2, "bar")
-todo(3, "quux")
+text(1, "foo")
+text(2, "bar")
+text(3, "quux")
 
 displaying(1)
 displaying(2)
