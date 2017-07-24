@@ -671,7 +671,7 @@ end
 
 As much as possible we want to do the work in Imp queries. This lets us take advantage of the query compiler for efficient joins. It also means that when I get around to implementing [incremental view maintenance](http://blogs.evergreen.edu/sosw/files/2014/04/Green-Vol5-DBS-017.pdf), I'll get incremental template evaluation for free.
 
-Before I walk through the template compiler, let's pick a slightly simpler example.
+Before we walk through the template compiler, let's pick a slightly simpler example.
 
 ``` julia
 # --- data ---
