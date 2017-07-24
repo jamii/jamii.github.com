@@ -792,7 +792,7 @@ end
 ```
 
 ``` julia
-# with made-up hashes
+# results, with made-up hashes
 
 query_0("my_session") => 0x0
 
@@ -897,7 +897,7 @@ end
 ```
 
 ``` julia
-# with made-up hashes
+# results, with made-up hashes
 
 group_0("session_1", 1) => (0x0, 0x1, Html, "div")
 
