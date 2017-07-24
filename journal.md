@@ -10382,3 +10382,5 @@ I found that almost all the time in the code is spent in quicksort, either from 
 That cut about 50% off the runtime. To get the rest I'm probably going to have to rethink how I store relations. Which was going to be coming down the line when I worked on incremental maintenance anyway.
 
 I'm still probably another day or two away from finishing the draft. Should be up by the end of August at least.
+
+Oh, also it turned out that the dead time is specific to firefox - in chrome that 10-20ms delay doesn't happen.

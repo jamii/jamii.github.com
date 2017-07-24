@@ -4,89 +4,242 @@ title: "A UI library for a relational language"
 date: "2017-07-19 11:12"
 ---
 
-* developing GUI apps in a relational language
-* having tried a bunch of different approaches, I've settled on binding relational data to html templates
-* binding has very simple semantics, including events and easy mental model for patching
-* can be implemented almost entirely by compiling to relational queries
-* for examples so far it performs on par with other libraries, and has lots of room for optimization
+TLDR
 
+* I'm working on a relational programming language intended for rapid GUI dev.
+* Having tried a couple of different approaches to describing GUIs, I've settled on a [React](https://facebook.github.io/react/)-like library that binds relational data to HTML templates.
+* The library has very simple semantics, including an easy mental model for patching the DOM.
+* The template language can be implemented almost entirely by compiling to relational queries.
+* The current implementation has been used to build a few simple examples, with performance on par with other similar libraries (eg React, Om).
 
+## Background
 
-## background
+The typical architecture for a small web or native app looks like:
 
-typical object-relational mismatch problem
-
-relational db <-> tree(ish) language <-> tree UI
-
-lots of manual plumbing and changes of data structure
-
-popular solutions
-
-get rid off the relations!
-
-tree db <-> tree(ish) language <-> tree UI
-
-people who go for this often receive an object lesson in why relational databases where invented in the first place.
-
-add a layer of abstraction!
-
-relation db <-> magic <-> tree(ish) language <-> tree UI
-
-older magic layers tended not to play well with dbs, causing n+1 queries etc, but newer magic layers like graphql are pretty reasonable.
-
-many many different options for what to put in the magic layer, but they all go between the datastore and the logic, because everyone writes GUI apps in tree(ish) languages.
-
-I have a slightly different problem
-
-relational db <-> relational language <-> tree UI
-
-(It's a datalog(ish) language with [extensions for talking about time](http://bloom-lang.net/), but the details of the language don't matter that much for the purpose of this post.)
-
-It's a similar problem in that it still comes down to mapping between relations and trees, but it happens at a different layer.
-
-Like the previous problem, you can do this by hand and it's not *terrible*, but it's less than satisfying.
-
-Approaches I've tried before
-
-put trees in the relations! if your relational language is good at aggregation and allows complex data types, you can build up a tree and store it in a table cell
-
-``` julia
-@table ui(Session) => Tree
+```
+datastore (relations) <-> application logic (objects) <-> GUI (trees)
 ```
 
-get rid off the trees! we can model trees with relations and node ids. [add a little syntax sugar]
+Moving data back and forth between the first two layers is painful because of the [object-relational mismatch](https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch). Developers typically try to solve this by [hiding](https://en.wikipedia.org/wiki/Object-relational_mapping) or [getting rid off](https://en.wikipedia.org/wiki/NoSQL) relations.
+
+Relational data models have a lot of great qualities so it's interesting to try getting rid off the objects instead, by making a datastore query language that can comfortably express the application logic.
+
+But that still leaves us with another data model mismatch here between the relational model in the application logic and the tree model that almost every GUI uses.
+
+```
+datastore + application logic (relations) <-> GUI (trees)
+```
+
+That's what we're going to solve in this post.
+
+### Imp
+
+[Imp](https://github.com/jamii/imp/) is a [datalog](https://en.wikipedia.org/wiki/Datalog)-ish language in the same family as [Eve](http://evelang.com/), [LogicBlox](http://www.logicblox.com/), [Bloom](http://bloom-lang.net/), [Dyna](http://www.cs.jhu.edu/~nwf/datalog20-paper.pdf) etc.
+
+The GUI library in this post is generally applicable to any relational datastore, but since all the examples are written in Imp let's just run through some basic examples with translations to SQL.
+
+Imp data is stored in relations and is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form):
 
 ``` julia
-@table root(Session) => Node
-@table parent(Node) => Node
-@table position(Node) => Int64
-@table tag(Node) => String
-@table attribute(Node, String) => String
+# global state
+
+@relation text(Todo) => String
+@relation completed(Todo) => Bool
+@relation deleted(Todo) => Bool
+
+# session state 
+
+@relation current_filter(Session) => String
+@relation editing(Session) => Todo
+```
+
+``` sql
+create table text(todo int, text varchar,
+  primary key(todo));
+create table completed(todo int, iscompleted bool,
+  primary key(todo));
+create table deleted(todo int, isdeleted bool,
+  primary key(todo));
+  
+create table current_filter(session int, filter varchar,
+  primary key(session));
+create table editing(session int, todo int,
+  primary key(session));
+```
+
+Imp programs are built out of relational views:
+
+``` julia
+@relation visible(Session, Todo)
+
+@merge begin
+  current_filter(session) => "Active"
+  completed(todo) => false
+  deleted(todo) => false
+  return visible(session, todo)
+end
+
+@merge begin
+  current_filter(session) => "Completed"
+  completed(todo) => true
+  deleted(todo) => false
+  return visible(session, todo)
+end
+
+@merge begin
+  current_filter(session) => "All"
+  completed(todo) => _
+  deleted(todo) => false
+  return visible(session, todo)
+end
+```
+
+``` sql
+create view visible as
+  
+  select current_filter.session, completed.todo
+  from current_filter, completed, deleted
+  where current_filter.filter = 'Active'
+  and completed.iscompleted = FALSE
+  and deleted.isdeleted = FALSE
+  and completed.todo = deleted.todo
+  
+  union
+  
+  select current_filter.session, completed.todo
+  from current_filter, completed, deleted
+  where current_filter.filter = 'Completed'
+  and completed.iscompleted = TRUE
+  and deleted.isdeleted = FALSE
+  and completed.todo = deleted.todo
+  
+  union
+  
+  select current_filter.session, completed.todo
+  from current_filter, completed, deleted
+  where current_filter.filter = 'All'
+  and deleted.isdeleted = FALSE
+  and completed.todo = deleted.todo
+;
+```
+
+Imp is built on top of [Julia](https://julialang.org/) and can use any Julia types and functions:
+
+``` julia
+@relation completed_count_text() => String
+
+@query begin
+  @query begin 
+    completed(todo) => false
+    deleted(todo) => false
+  end
+  count = length(todo) # this is a Julia expression
+  text = (count == 1) ? "1 item left" : "$count items left" # this is a Julia expression
+  return completed_count_text() => text
+end
+```
+
+``` sql
+create view completed_count as
+  select count(*) as count
+  from completed, deleted 
+  where completed.todo = deleted.todo 
+  and completed.iscompleted = FALSE
+  and deleted.isdeleted = FALSE
+;
+
+create view completed_count_text as
+  select case
+     when completed_count.count = 1 then '1 item left' 
+     else completed_count.count || ' items left' 
+   end
+   from completed_count
+;
+```
+
+Imp is focused on reducing the number of layers and concepts involved in writing GUI apps. I prioritize simplicity over scale/power.
+
+The goal is to build apps that run on one machine or that server small number of users on a local network, rather than building public apps that scale to large numbers of users. Think [shiny](https://github.com/rstudio/shiny) or [nitrogen](http://nitrogenproject.com/learn), not [rails](http://rubyonrails.org/).
+
+### TODO?
+
+There are two approaches that I've tried before:
+
+* Put trees in the relations! If your relational language is good at aggregation and allows complex data types, you can build up a tree and store it in a single row per session.
+
+``` julia
+using Hiccup
+
+@relation tree(Session) => Hiccup.Node
+```
+
+* Get rid off the trees! We can model trees with relations and node ids (and with [a little syntax sugar](https://github.com/witheve/eve-starter/blob/master/programs/todomvc.eve#L99-L103) we can hide all the tedious id creation).
+
+``` julia
+struct Node 
+  id::UInt128
+end
+
+@relation root(Session) => Node
+@relation parent(Node) => Node
+@relation position(Node) => Int64
+@relation tag(Node) => String
+@relation attribute(Node, String) => String
 ```
 
 My main objection to both of these approaches is that the code doesn't visually map well to the mental model of the ui. 
 
-Problem exists in treeish languages too, which is why most UI libraries include some kind of template language that mimics the mental model of the tree while making it easy to splice in logic and data. 
+Similar problem exists in OOPy languages too, which is why many UI libraries include some kind of template language that mimics the mental model of the HTML tree while making it easy to splice in logic and data. 
 
-[template]
+``` njk
+<section class="todoapp">
+    <header class="header">
+        <h1>todos</h1>
+        <input class="new-todo" placeholder="What needs to be done?" autofocus value="{{ input or "" }}">
+    </header>
+    <section class="main">
+        <input class="toggle-all" type="checkbox">
+        <label for="toggle-all">Mark all as complete</label>
+        <ul class="todo-list">
+            {% for item in items %}
+                <li class="todo-item {% if item.complete %}completed{% endif %}" data-uuid="{{ item.uuid }}">
+                    <div class="view">
+                        <input class="toggle js-complete" type="checkbox" {% if item.complete %}checked{% endif %}>
+                        <label>{{ item.name }}</label>
+                        <button class="destroy"></button>
+                    </div>
+                    <input class="edit js-item" value="{{ item.name }}">
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <footer class="footer">
+        <span class="todo-count"><strong>{{ count }}</strong> item left</span>
+        <ul class="filters">
+            <li>
+                <a data-filter="all" {% if filter == "all" or not filter %}class="selected"{% endif %} href="#/">All</a>
+            </li>
+            <li>
+                <a {% if filter == "active" %}class="selected"{% endif %} data-filter="active" href="#/active">Active</a>
+            </li>
+            <li>
+                <a {% if filter == "completed" %}class="selected"{% endif %} data-filter="completed" href="#/completed">Completed</a>
+            </li>
+        </ul>
+        <button class="clear-completed">Clear completed</button>
+    </footer>
+</section>
+```
 
-[jsx]
+Note the line `{% for item in items %}`. Every time we want to express this relationship in a datalog language we have to start a new query or subquery, because if `items` is empty the entire query will return nothing, rather than a parent with zero children. This requires breaking up the flow of the tree, making it harder to understand the structure of the UI when reading the code.
 
-So we want to create a template language that binds to relational data, rather than treeish data.
+So we want to create a relational analogue to these template languages, to allow us to express these hierarchical relationships in a way that directly mimics the structure of the resulting tree.
 
-## limitations / goals
+## Semantics
 
-Interested in attaching UI to [Imp] programs. 
+### Templates
 
-Using browser as UI purely for familiarity. Same approach should work with native UI toolkit too.
-
-Focused on reducing the number of layers and concepts involved in writing GUI apps. Simplicity > scale/power.
-
-Local app, or small number of users on local network - similar domain to [shiny](https://github.com/rstudio/shiny) or [nitrogen](http://nitrogenproject.com/learn)
-
-## outside
-
-templates look like this:
+Imp templates look like this:
 
 ``` julia
 [ul
@@ -129,14 +282,14 @@ templates look like this:
 ]
 ```
 
-Templates are made up of these pieces:
+Templates are made up of four kinds of elements:
 
 * DOM nodes like `[ul ...]`
 * DOM attributes like `class="todo-list"`
 * Text nodes like `"$text"`
 * Query fragments like `text(todo, text) do ... end`
 
-Combine this template with some data:
+Suppose we have this data:
 
 ``` julia
 visible(1)
@@ -152,6 +305,10 @@ editing(3)
 
 checked(1)
 ```
+
+When we combine the data with the template, each query fragment is repeated for every row in the corresponding relation whose variable values match the variables bound in higher up in the template. For example, inside the filled out query fragment `visible(todo=1)` we repeat the query fragment `text(todo, text)` for every row that matches `todo=1`. (This is effectively a [lateral join](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/)).
+
+The filled out query fragments are sorted by the values of their variables, in the order that the variables appear in the text. The `visible(todo)` fragments are sorted by `todo`, the `text(todo, text)` fragments are sorted by `todo, text` and the `displaying(todo)` fragments are sorted by `todo, text` etc.
 
 ``` julia
 [ul
@@ -198,7 +355,7 @@ checked(1)
 ]
 ```
 
-The filled out query fragments are sorted by the values of their variables, in the order that the variables appear in the text.
+Next, anywhere that a splice such as `$todo` appears inside a string, we replace it with the value of that variable. So `"escape_editing"($todo)"` becomes `"escape_editing(1)"` inside the `visible(todo=1)` query fragment.
 
 ``` julia
 [ul
@@ -245,6 +402,8 @@ The filled out query fragments are sorted by the values of their variables, in t
 ]
 ```
 
+Now that the query fragments have done their job, each query fragment is removed and replaced by its children.
+
 ``` julia
 [ul
   class="todo-list"
@@ -278,11 +437,9 @@ The filled out query fragments are sorted by the values of their variables, in t
 
 And finally this is sent to the browser to be rendered.
 
-## incremental
+### Patching
 
-as described so far, this is only good for one-off rendering. we need to define what happens when things change. 
-
-let's say the underlying relations change
+As described so far, this is only good for one-off rendering. We need to define what happens when the underlying data changes eg:
 
 ``` julia
 +visible(2)
@@ -290,7 +447,7 @@ let's say the underlying relations change
 -checked(1)
 ```
 
-with the new data, the filled-out template looks like
+With the new data, the filled-out template now looks like:
 
 ``` julia
 [ul
@@ -346,8 +503,8 @@ Given that varying the heuristics can result in lost state in child components, 
 
 In our templates we have much better information about how data maps to the filled out template, so we can adopt a much simpler set of rules:
 
-* When a new row is added to a relation, everything under it in the filled out template is created from scratch.
-* When a row is removed from a relation, everything under it in the filled out template is deleted.
+* When a new row is added to a relation, everything under the corresponding filled out query fragment is created from scratch.
+* When a row is removed from a relation, everything under the corresponding filled out query fragment is deleted.
 
 So if the change to our data is:
 
@@ -403,52 +560,9 @@ end
 end
 ```
 
-This provides a simple mental model that is easy to map to the visual appearance of the template. The user can easily control how the DOM is mutated by changing the position of the query fragments. 
+This provides a simple mental model that is easy to map to the visual appearance of the template. 
 
-For example, our template currently has `text(todo, text)` above the `li` node. 
-
-``` julia
-visible(todo) do
-  text(todo, text) do
-    displaying(todo) do
-      [li 
-        [div 
-          class="view" 
-          [input 
-            class="toggle" 
-            "type"="checkbox" 
-            checked(todo) do
-              checked="checked"
-            end
-            onclick="toggle($todo)"
-          ] 
-          [label 
-            ondblclick="start_editing($todo)"
-            "$text" 
-          ]
-          [button class="destroy" onclick="delete_todo($todo)"]
-        ]
-      ]
-    end
-    editing(todo) do
-      [li
-        class="editing"
-        [input  
-          class="edit"
-          defaultValue="$text"
-          onkeydown="""
-            if (event.which == 13) finish_editing($todo, this.value)
-            if (event.which == 27) escape_editing($todo)
-          """
-          onblur="escape_editing($todo)"
-        ]
-      ]
-    end
-  end
-end
-```
-
-This means that if the text of a todo is changed, the entire `li` node will be deleted and recreated. If this is not acceptable, we could move the `text(todo, text)` down closer to the nodes that it actually affects.
+The user can easily control how the DOM is mutated by changing the position of the query fragments. For example, our template currently has `text(todo, text)` above the `li` node. This means that if the text of a todo is changed, the entire `li` node will be deleted and recreated. If this is not acceptable, we could move the `text(todo, text)` down closer to the nodes that it actually affects.
 
 ``` julia
 visible(todo) do
@@ -496,23 +610,23 @@ end
 
 Now when the text is changed only the `"$text'` node or the `defaultValue="$text"` attribute will be replaced.
 
-## events
+### Events
 
-need to be able to react to user input. 
+We also need to be able to react to user input. 
 
-can tag certain relations as event relations eg
+In Imp, we can tag certain relations as event relations.
 
 ``` julia
 @event delete_todo(todo::Int64)
 ```
 
-for every event relation, a matching js function is created that will insert a row into that relation. event handlers in the dom can call these functions to send data back to the server.
+For every event relation, a matching js function is created that will insert a row into that relation. Event handlers in the template can call these functions to send data back to the server.
 
 ``` julia
 [button class="destroy" onclick="delete_todo($todo)"]
 ```
 
-but we also still allow arbitrary javascript in event handlers, which is useful for eg reading state from the DOM.
+But we also still allow arbitrary javascript in event handlers, which is useful for eg reading state from the DOM.
 
 ``` julia
 [input  
@@ -530,11 +644,13 @@ but we also still allow arbitrary javascript in event handlers, which is useful 
 
 Again, if this was running in the browser itself or we were using a native UI toolkit it might be useful to manage such state directly. But in the current server/client implementation it's more practical to leave low-latency interactions such as typing and scrolling to the browser.
 
-## sessions
+### Sessions
 
-want to be able to handle multiple users on same server. give each browser tab a unique session key. implicitly wrap each template in `session(session) do ... end` so that the template can behave differently. 
+We also want to be able to handle multiple users on same server. 
 
-for example, in our todo list we want the filter to be set per tab, not globally. 
+We give each browser tab a unique session key. The template is implicitly wrapped in `session(session) do ... end` so that it can behave differently for each session. 
+
+For example, in our todo list we want the filter to be set per tab, not globally. 
 
 ``` julia
 filter(filter) do
@@ -551,14 +667,11 @@ end
 ]
 ```
 
-## implementation
+## Implementation
 
-template evaluation. as much as possible want to do the work in Imp queries. two reasons:
+As much as possible we want to do the work in Imp queries. This lets us take advantage of the query compiler for efficient joins. It also means that when I get around to implementing [incremental view maintenance](http://blogs.evergreen.edu/sosw/files/2014/04/Green-Vol5-DBS-017.pdf), I'll get incremental template evaluation for free.
 
-1. can take advantage of the query compiler
-2. when I get around to implementing [incremental view maintenance](http://blogs.evergreen.edu/sosw/files/2014/04/Green-Vol5-DBS-017.pdf), I'll get incremental template evaluation for free
-
-simple example
+Before I walk through the template compiler, let's pick a slightly simpler example.
 
 ``` julia
 # --- data ---
@@ -624,7 +737,7 @@ editing(3)
 ]
 ```
 
-first we number all the nodes, depth-first, to make it easier to refer to them.
+The first thing the compiler does is number all the nodes, depth-first, to make it easier to refer to them.
 
 ``` julia
 [div # 1
@@ -641,7 +754,7 @@ first we number all the nodes, depth-first, to make it easier to refer to them.
 ]
 ```
 
-next, for each query fragment we create a corresponding query that performs the join against it's parent. we also create an id for each filled out fragment by hashing together the node id and all the variable values. (this id is just used as a shorthand reference - if hash collisions are worrying you could use some kind of lookup table or even just use the list of variable values directly.)
+Next, for each query fragment we create a corresponding query that performs the join against it's parent. We also create an id for each filled out query fragment by hashing together the node id and all the variable values. (This id is just used as a shorthand reference - if hash collisions are worrying you could use some kind of lookup table or even just use the list of variable values directly.)
 
 ``` julia
 @query begin # special dummy query for the root of the tree
@@ -696,7 +809,7 @@ query_5("my_session", 1, "foo") => 0x7
 query_5("my_session", 2, "bar") => 0x8
 ```
 
-Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky, but I eventually hit upon an elegant solution. 
+Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky, but I eventually hit upon an elegant solution:
 
 The position of each node can be described by the positions and variable values of all the query nodes between it and its eventual parent:
 
@@ -741,7 +854,7 @@ The position of each node can be described by the positions and variable values 
 ]
 ```
 
-(A potential confusion - when we say "nth child of node x" we mean the nth child in the *template*, not in the resulting DOM tree. We can't use the positions in the DOM tree those are exactly what we are trying to calculate.)
+(A potential confusion - when we say "nth child of node x" we mean the nth child in the *template*, not in the resulting DOM tree. We can't use the positions in the DOM tree because those are exactly what we are trying to calculate.)
 
 If we represent these paths as tuples and use them as sort keys, the nodes will end up sorted in the correct order:
 
@@ -759,7 +872,7 @@ Julia can avoid dynamic dispatch when given stable types. To make sure all the s
 (1, todo=3, 2, 0, 1, text="", 0) => "editing: 3"
 ```
 
-So for each non-query-fragment we create a query that calculates the correct sort key, as well as the node id, the parent node id, the type of DOM node to create and the content.
+For each DOM node in the template we create a query that calculates the correct sort key, as well as the node id, the parent node id, the type of DOM node and the content.
 
 ``` julia
 @query begin
@@ -809,7 +922,7 @@ Suppose the source data in our example changes:
 +text(4, "more milk!")
 ```
 
-We can use standard incremental maintenance algorithms to calculate the resulting changes to our list of nodes.
+We can use standard incremental maintenance algorithms to calculate the resulting changes to our compiled queries.
 
 ``` julia
 +group_1("session_1", 1, 1, 0, 1, 0, "make a todo list", 1) => (0x1, 0x5, Text, "displaying: make a todo list")
@@ -817,7 +930,7 @@ We can use standard incremental maintenance algorithms to calculate the resultin
 +group_1("session_1", 1, 1, 4, 1, 0, "more milk!", 1) => (0x1, 0x6, Text, "displaying: more milk!")
 ```
 
-We can look at the new list to find out that the next node after 0x5 "displaying: make a todo list" is 0x2 "displaying:foo" and that there is no node after 0x6 "displaying: more milk!". So we send the following commands to whichever client has `session="session_1"`:
+We can also look at the new results to find out that the next node after 0x5 "displaying: make a todo list" is 0x2 "displaying:foo" and that there is no node after 0x6 "displaying: more milk!". So we send the following commands to whichever client has `session="session_1"`:
 
 ``` julia
 delete(0x3)
@@ -827,21 +940,25 @@ insertAtEnd(0x6, "text", "displaying: more milk!", parent=0x1)
 
 The nodes in each group are sorted in the order they will appear in the DOM and the groups themselves are sorted in depth-first order, so if we generate these instructions by order of group and then reverse order within the group, we can be sure that by the time each instruction is run the parent and sibling will always exist.
 
-Finally, attributes like `class="main"` are handled almost identically to html and text nodes except that their order doesn't matter.
+Finally, attributes like `class="main"` are handled almost identically to html and text nodes, except that their order doesn't matter so the sort key is empty.
 
-## evaluation
+## Evaluation
 
-### status
+### Expressiveness
 
-Implementation quality = not pretty. Works well enough to demonstrate that this is feasible for simple examples. 
+All the examples in this post only spliced data into text nodes, but the implementation allows splicing anywhere:
 
-Running everything on the server has obvious limitations wrt latency and maximum load. I *think* this approach could be scaled to handle public webapps with many users, but it would require a much more sophisticated implementation, with some way to run parts of the logic on the client. 
+``` julia
+dynamic_tag(tag) do
+  ["$tag"
+    dynamic_attributes(key, val) do
+      "$key"="$val"
+    end
+  ]
+end
+```
 
-I haven't given much thought to security yet. A good start would be to track what events are present in the template and refuse to allow clients to submit any events that aren't on the list.
-
-### expressiveness
-
-can implement template fragments as a pass before query generation, so that we could write
+The current implementation expects one huge template for the entire app but it should be trivial to implement template fragments as a pass before query generation, so that we could eg break the previous example into two components:
 
 ``` julia
 @template main()
@@ -862,55 +979,85 @@ end
 end
 ```
 
-all the examples in this post only spliced data into text nodes, but the implementation allows splicing anywhere:
+Currently, templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. Allowing template fragments to call themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation here. It's probably not impossible, but I won't attempt to deal with it until I definitely need it.
 
-``` julia
-dynamic_tag(tag) do
-  ["$tag"
-    dynamic_attributes(key, val) do
-      "$key"="$val"
-    end
-  ]
-end
-```
+### Performance
 
-currently, templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. allowing template fragments to call themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation here. probably not impossible, but I won't attempt to deal with it until I definitely need it.
+I won't know for sure how this will perform until I've built something substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
 
-### performance
+My approach is not particularly rigorous. I just run through all the benchmarks a few times to warmup, and then record a profile. 
 
-[Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl)
+Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces.
 
-TODO benchmarks
+Adding 1st todo in Imp:
 
-Compare to [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). Not a pissing contest, just trying to get a handle on whether performance is likely to be a problem.
+![](/img/imp-1.png)
 
-Not particularly rigorous. Run through all the benchmarks a few times to warmup, and then record a profile.
+Adding 1st todo in React:
 
-Add first todo:
-imp-1
-imp-200
-imp-201
+![](/img/react-1.png)
 
+Adding 1st todo in Om:
 
+![](/img/om-1.png)
+
+Adding 200 todos at once in Imp:
+
+![](/img/imp-200.png)
+
+(I couldn't be bothered to compile the React demo myself to add a button to add 200 todos.)
+
+Adding 200 todos at once in Om:
+
+![](/img/imp-200.png)
+
+Adding the 201st todo in Imp:
+
+![](/img/imp-201.png)
+
+Adding the 201st todo in React:
+
+![](/img/react-201.png)
+
+Adding the 201st todo in Om:
+
+![](/img/om-201.png)
+
+I won't bother reading too much detail into those numbers, but it's clear that Imp is in the same ballpark as React and Om for this simple example.
 
 Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins so in theory it should be easy to maintain incrementally.
 
-201st todo, total time spent in server code, mean of 100 runs
+I also tested how the server scales with multiple sessions connected. These times the total time spent in server code when adding the 201st todo and updating every client (mean of 100 runs).
 
-| #tabs | time (ms) |
+| tabs | time (ms) |
 |-------|-----------|
 | 1     | 9         |
 | 10    | 22        |
 | 100   | 168       |
 | 1000* | 2056      |
 
-* Chrome has a cunning optimization where after ~150 tabs it just stops loading pages, so the last row is 100 real tabs and 900 fake sessions.
+(\*Chrome has a cunning optimization where after ~150 tabs it just stops loading pages, so the last row is 100 real tabs and 900 fake sessions.)
 
-The marginal cost per tab is about 1.6ms. The bulk of the time is spent sorting and resorting relations, rather than solving queries.
+This is the cost to recalculate everything from scratch and is not proportional to the number of events processed, so if I add some kind of event batching it looks like I could handle up to 100 clients with reasonable latency even before incremental maintenance.
 
-That leaves about ~7-8ms of overhead. This is probably because while the query compiler is pretty good, the dataflow layer that binds the queries together is a pile of poop. 
+Breaking down the costs:
 
-The marginal allocation rate per tab is 1mb across 5373 allocations. This is almost entirely in the template queries. Most of the individual allocations are from creating identical event strings on each of 200 todos x 100 tabs, but the bulk of the allocation size is from many, many copies of the columns in these relations. 
+* The marginal cost per tab is about 1.6ms. The bulk of the time is spent sorting and resorting relations, rather than solving queries.
 
-The biggest opportunities for improving performance are prob
-Between incremental maintenance, removing the overhead from the dataflow layer, cleaning up the fanout and batching the incoming and outgoing events, it seems that there is a lot of potential to improve the performance.
+* The marginal allocation rate per tab is 1mb across 5373 allocations. This is almost entirely in the template queries. Most of the individual allocations are from creating identical event strings on each of 200 todos x 100 tabs, but the bulk of the allocation size is from many, many copies of the columns in these relations.
+
+So it looks like there is a lot of margin for improvement in the control flow layer that binds the queries together and handles sorting/indexing relations. Which is unsurprising, because one of the top items on my todo list is `control flow is a pile of poop - make it not that`.
+
+Overall, I'm pleasantly surprised that its already this fast.
+
+### Status
+
+The current implementation is not pretty, but it works well enough to demonstrate that this is feasible for simple examples. 
+
+I targeted the browser purely for familiarity. The same approach should work with native UI toolkits too, and I may well switch in the future.
+
+Running everything on the server has obvious limitations wrt latency and maximum load. I *think* this approach could be scaled to handle public webapps with many users, but it would require a much more sophisticated implementation, with some way to run parts of the logic on the client. 
+
+I haven't given much thought to security yet. A good start would be to track what events are present in the template and refuse to allow clients to submit any events that aren't on the list.
+
+The implementation strategy here produces non-recursive views which only use simple joins, string concatenation and hashing. It should be possible to target pretty much any relational system.
