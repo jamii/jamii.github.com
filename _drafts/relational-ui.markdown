@@ -979,11 +979,11 @@ end
 end
 ```
 
-Currently templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. Allowing template fragments to call themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation here. It's probably not impossible, but I won't attempt to deal with it until I definitely need it.
+Currently templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. Allowing template fragments to call themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation I described in the last section. It's probably not impossible, but I won't attempt to deal with it until I definitely need it.
 
 ### Performance
 
-I won't know for sure how this will perform until I've built something substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
+I won't know for sure how well this will perform until I've built something more substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
 
 My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile. 
 
@@ -1027,7 +1027,7 @@ I won't bother reading too much detail into those numbers, but it's clear that I
 
 Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins so in theory it should be easy to maintain incrementally.
 
-I also tested how the server scales with multiple sessions connected. These times the total time spent in server code when adding the 201st todo and updating every client (mean of 100 runs).
+I also tested how the server scales with multiple sessions connected. This table shows the total time taken by the server to add the 201st todo and update every client (mean of 100 runs).
 
 | tabs | time (ms) |
 |-------|-----------|
