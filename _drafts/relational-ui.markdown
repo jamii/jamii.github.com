@@ -6,11 +6,11 @@ date: "2017-07-19 11:12"
 
 TLDR
 
-* I'm working on a relational programming language intended for rapid GUI dev.
-* Having tried a couple of different approaches to describing GUIs, I've settled on a [React](https://facebook.github.io/react/)-like library that binds relational data to HTML templates.
-* The library has very simple semantics, including an easy mental model for patching the DOM.
-* The template language can be implemented almost entirely by compiling to relational queries.
-* The current implementation has been used to build a few simple examples, with performance on par with other similar libraries (eg React, Om).
+* [I'm working on a relational programming language intended for rapid GUI dev.](#imp)
+* [Having tried a couple of different approaches to describing GUIs, I've settled on a React-like library that binds relational data to HTML templates.](#templates)
+* [The library has very simple semantics, including an easy mental model for patching the DOM.](#patching)
+* [The template language can be implemented almost entirely by compiling to relational queries.](#implementation)
+* [The current implementation has been used to build a few simple examples, with performance on par with similar libraries in OOPy languages.](#performance)
 
 ## Background
 
@@ -942,7 +942,7 @@ The nodes in each group are sorted in the order they will appear in the DOM and 
 
 Finally, attributes like `class="main"` are handled almost identically to html and text nodes, except that their order doesn't matter so the sort key is empty.
 
-## Evaluation
+## Results
 
 ### Expressiveness
 
@@ -985,7 +985,7 @@ Currently, templates are limited to a fixed depth, so they can't express eg a fi
 
 I won't know for sure how this will perform until I've built something substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
 
-My approach is not particularly rigorous. I just run through all the benchmarks a few times to warmup, and then record a profile. 
+My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile. 
 
 Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces.
 
