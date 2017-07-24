@@ -161,7 +161,7 @@ create view completed_count_text as
 ;
 ```
 
-### TODO?
+### Relations to trees
 
 There are two approaches that I've tried before:
 
