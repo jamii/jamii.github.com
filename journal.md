@@ -10384,3 +10384,7 @@ That cut about 50% off the runtime. To get the rest I'm probably going to have t
 I'm still probably another day or two away from finishing the draft. Should be up by the end of August at least.
 
 Oh, also it turned out that the dead time is specific to firefox - in chrome that 10-20ms delay doesn't happen.
+
+### 2017 Jul 24
+
+First draft is up. Waiting for feedback on clarity. Will need to do some editing for flow etc in addition.

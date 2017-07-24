@@ -1046,7 +1046,7 @@ Breaking down the costs:
 
 * The marginal allocation rate per tab is 1mb across 5373 allocations. This is almost entirely in the template queries. Most of the individual allocations are from creating identical event strings on each of 200 todos x 100 tabs, but the bulk of the allocation size is from many, many copies of the columns in these relations.
 
-So it looks like there is a lot of margin for improvement in the control flow layer that binds the queries together and handles sorting/indexing relations. Which is unsurprising, because one of the top items on my todo list is `control flow is a pile of poop - make it not that`.
+So there is probably a lot of margin for improvement in the control flow layer that binds the queries together and handles sorting/indexing relations. Which is unsurprising, because one of the top items on my todo list is `control flow is a pile of poop - make it not that`.
 
 Overall, I'm pleasantly surprised that its already this fast.
 
