@@ -30,13 +30,13 @@ But that still leaves us with another data model mismatch here between the relat
 datastore + application logic (relations) <-> GUI (trees)
 ```
 
-That's what we're going to solve in this post.
+That's what we're going to deal with in this post.
 
 ### Imp
 
 [Imp](https://github.com/jamii/imp/) is a [datalog](https://en.wikipedia.org/wiki/Datalog)-ish language in the same family as [Eve](http://evelang.com/), [LogicBlox](http://www.logicblox.com/), [Bloom](http://bloom-lang.net/), [Dyna](http://www.cs.jhu.edu/~nwf/datalog20-paper.pdf) etc.
 
-The GUI library in this post is generally applicable to any relational datastore, but since all the examples are written in Imp let's just run through some basic examples with translations to SQL.
+The GUI library in this post could run on top of any relational datastore, but since all the examples are written in Imp let's just run through some basic examples with translations to SQL.
 
 Imp data is stored in relations and is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form):
 
