@@ -958,7 +958,7 @@ dynamic_tag(tag) do
 end
 ```
 
-The current implementation expects one huge template for the entire app but it should be trivial to implement template fragments as a pass before query generation, so that we could eg break the previous example into two components:
+The current implementation expects one huge template for the entire app but it should be trivial to implement template fragments as a pass before query generation. Then we could eg break the example from the previous section into two components:
 
 ``` julia
 @template main()
