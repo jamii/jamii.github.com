@@ -165,3 +165,14 @@ iframe {
   margin: 0 auto;
   padding-top: 1em;
 }
+
+table {
+  margin-left:auto; 
+  margin-right:auto;
+  border-collapse: collapse;
+}
+
+table, th, td {
+  padding: 0.5em;
+  border: 0.5px solid #333333;
+}
