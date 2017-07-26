@@ -1193,7 +1193,7 @@ Adding 200 todos at once in Imp:
 
 Adding 200 todos at once in Om:
 
-![](/img/imp-200.png)
+![](/img/om-200.png)
 
 Adding the 201st todo in Imp:
 
