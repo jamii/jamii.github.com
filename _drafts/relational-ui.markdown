@@ -108,7 +108,7 @@ insert into sent_at select next_message, now() from results;
 commit;
 ```
 
-Imp is built on top of [Julia](https://julialang.org/) and can use any Julia types and functions. The `DateTime` and the `now()` function used above are part of the Julia standard library. 
+Imp is built on top of [Julia](https://julialang.org/). The queries are [compiled to Julia code](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) and can use any Julia types and functions. The `DateTime` and the `now()` function used above are part of the Julia standard library. 
 
 ## Previous approaches
 
@@ -601,6 +601,8 @@ In our templates we have much better information about how data maps to the fill
 
 * When a new row is added to a relation, everything under the corresponding query fragment is created from scratch.
 * When a row is removed from a relation, everything under the corresponding query fragment is deleted.
+
+We treat updating a row as if the old value was removed and the new value added. Since the schema is so heavily normalized this generally doesn't affect any values other than the one that was changed.
 
 So if the change to our data is:
 
@@ -1108,6 +1110,8 @@ insertBefore(0x24, 0x23, Html, "td")
 
 The nodes in each group are sorted in the order they will appear in the DOM and the groups themselves are sorted in depth-first order, so if we generate these instructions by order of group and then reverse order within the group, we can be sure that by the time each instruction is run the parent and sibling will always exist.
 
+(What about html escaping? Well, the only way we ever create DOM nodes is via `document.createElement` or `document.createTextNode` so injection attacks are not possible there. It *is* currently possible to inject javascript into interpolated values in event handlers. I plan to deal with that by jsonifying data before interpolating it into javascript strings.)
+
 ## Expressiveness
 
 All the examples in this post only spliced data into text nodes, but the implementation allows splicing anywhere:
@@ -1171,13 +1175,17 @@ I won't know for sure how well this will perform until I've built something more
 
 My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile and eyeballed the time from the user event until the start of layout/rendering/painting.
 
-Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces.
+Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces. 
+
+Time in ms:
 
 |       | adding 1st todo | adding 200 todos at once | adding 201st todo |
 |-------|-----------------|--------------------------|-------------------|
 | imp   | [10](/img/imp-1.png)             | [22](/img/imp-200.png) | [12](/img/imp-201.png)                |
 | react | [6](/img/react-1.png)               | x                   | [14](/img/react-201.png)                 |
 | om    | [5](/img/om-1.png)               | [100](/img/om-200.png) | [28](/img/om-201.png)                |
+
+(I couldn't be bothered to download and compile the React version myself to add a button to add 200 todos at once.)
 
 I won't bother reading too much detail into those numbers, but it's clear that Imp is at least in the same ballpark as React and Om for this simple example.
 
