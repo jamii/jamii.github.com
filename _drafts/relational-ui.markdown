@@ -297,7 +297,9 @@ Templates are made up of four kinds of elements:
 * Text nodes like `"$liker likes this!"`
 * Query fragments like `@query likes(liker, message) begin ... end`
 
-The query fragment `@query likes(liker, message) begin ... end` acts much like a for loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in a parent query fragment are already bound, so we keep only the rows that have matching values. The equivalent code in the OOPy template would be something like {% raw %}`{% for like in likes if like.message == message.id %} ... {% endfor %}`{% endraw %}. 
+Query fragments like `@query likes(liker, message) begin ... end` acts much like a `for` loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in an enclosing query fragment are already bound to some value, so we keep only the rows that have matching values. In this case, `message` already appeared the in the enclosing query fragment `message(message) begin ... end`. The equivalent code in the OOPy template would be {% raw %}`{% for like in likes if like.message == message.id %} ... {% endfor %}`{% endraw %}. 
+
+The order the rows appear in is determined by sorting them by their variables in lexicographic order. So `likes(liker, message)` is sorted by `liker` and then by `message`.
 
 Let's see how this works out in practice. Here is the data behind the screenshot from the beginning of this post:
 
@@ -321,194 +323,271 @@ likes("alice", 4)
 likes("bob", 4)
 ```
 
-YOU ARE HERE
-
-To combine this data with the template above, we treat each query fragment just like a `for` loop over the rows in the corresponding relation, except that whenever we use a variable name that already appeared higher up in the tree we only loop over rows with the same value. For example, inside the filled out query fragment `visible(todo=1)` we repeat the query fragment `text(todo, text)` for every row that matches `todo=1`. (This is effectively a [lateral join](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/)).
-
-The filled out query fragments are sorted by the values of their variables, in the order that the variables appear in the template text. So the `visible(todo)` fragments are sorted by `todo`, the `text(todo, text)` fragments are sorted by `todo, text` etc.
+When we run the query fragments in our templates on this data, we get:
 
 ``` julia
-[ul
-  class="todo-list"
-  visible(todo=1) do
-    text(todo=1, text="foo") do
-      displaying(todo=1) do
-        [li 
-          [div 
-            class="view" 
-            [input 
-              class="toggle" 
-              "type"="checkbox" 
-              checked(todo=1) do
-                checked="checked"
-              end
-              onclick="toggle($todo)"
-            ] 
-            [label "$text" ondblclick="start_editing($todo)"]
-            [button class="destroy" onclick="delete_todo($todo)"]
-          ]
-        ]
+[table
+  @query message(message=1) begin
+    [tr
+      @query sent_by(message=1) => sent_by="alice" begin
+        [td "$sent_by:"]
       end
-    end
+      @query text(message=1) => text="hello" begin
+        [td "$text"]
+      end
+      [td 
+      ]
+      [td 
+        [button "like!" onclick="new_like($session, $message)"]
+      ]
+    ]
   end
-  visible(todo=3) do
-    text(todo=3, text="quux") do
-      editing(todo=3) do
-        [li
-          class="editing"
-          [input  
-            class="edit"
-            defaultValue="$text"
-            onkeydown="""
-              if (event.which == 13) finish_editing($todo, this.value)
-              if (event.which == 27) escape_editing($todo)
-            """
-            onblur="escape_editing($todo)"
-          ]
-        ]
+  @query message(message=2) begin
+    [tr
+      @query sent_by(message=2) => sent_by="bob" begin
+        [td "$sent_by:"]
       end
-    end
+      @query text(message=2) => text="hi" begin
+        [td "$text"]
+      end
+      [td 
+      ]
+      [td 
+        [button "like!" onclick="new_like($session, $message)"]
+      ]
+    ]
+  end
+  @query message(message=3) begin
+    [tr
+      @query sent_by(message=3) => sent_by="chia" begin
+        [td "$sent_by:"]
+      end
+      @query text(message=3) => text="greetings" begin
+        [td "$text"]
+      end
+      [td 
+      ]
+      [td 
+        [button "like!" onclick="new_like($session, $message)"]
+      ]
+    ]
+  end
+  @query message(message=4) begin
+    [tr
+      @query sent_by(message=4) => sent_by="chia" begin
+        [td "$sent_by:"]
+      end
+      @query text(message=4) => text="free tacos all round!" begin
+        [td "$text"]
+      end
+      [td 
+        @query likes(liker="alice", message=4) begin
+          [div "$liker likes this!"]
+        end
+        @query likes(liker="bob", message=4) begin
+          [div "$liker likes this!"]
+        end
+      ]
+      [td 
+        [button "like!" onclick="new_like($session, $message)"]
+      ]
+    ]
   end
 ]
 ```
 
-Next, anywhere that an interpolated variable such as `$todo` appears inside a string, we replace it with the value of that variable. So within the `visible(todo=1)` query fragment, `"escape_editing($todo)"` becomes `"escape_editing(1)"`.
+Next we take all the text fragments, such as `"$liker likes this!"` and replace the interpolated variables `$liker` with their values. (Don't worry about where the `session` variable comes from just yet. We'll get to that.)
 
 ``` julia
-[ul
-  class="todo-list"
-  visible(todo=1) do
-    text(todo=1, text="foo") do
-      displaying(todo=1) do
-        [li 
-          [div 
-            class="view" 
-            [input 
-              class="toggle" 
-              "type"="checkbox" 
-              checked(todo=1) do
-                checked="checked"
-              end
-              onclick="toggle(1)"
-            ] 
-            [label "foo" ondblclick="start_editing(1)"]
-            [button class="destroy" onclick="delete_todo(1)"]
-          ]
-        ]
+[table
+  @query message(message=1) begin
+    [tr
+      @query sent_by(message=1) => sent_by="alice" begin
+        [td "alice:"]
       end
-    end
+      @query text(message=1) => text="hello" begin
+        [td "hello"]
+      end
+      [td 
+      ]
+      [td 
+        [button "like!" onclick="new_like(42, 1)"]
+      ]
+    ]
   end
-  visible(todo=3) do
-    text(todo=3, text="quux") do
-      editing(todo=3) do
-        [li
-          class="editing"
-          [input  
-            class="edit"
-            defaultValue="quux"
-            onkeydown="""
-              if (event.which == 13) finish_editing(3, this.value)
-              if (event.which == 27) escape_editing(3)
-            """
-            onblur="escape_editing(3)"
-          ]
-        ]
+  @query message(message=2) begin
+    [tr
+      @query sent_by(message=2) => sent_by="bob" begin
+        [td "bob:"]
       end
-    end
+      @query text(message=2) => text="hi" begin
+        [td "hi"]
+      end
+      [td 
+      ]
+      [td 
+        [button "like!" onclick="new_like(42, 2)"]
+      ]
+    ]
+  end
+  @query message(message=3) begin
+    [tr
+      @query sent_by(message=3) => sent_by="chia" begin
+        [td "chia:"]
+      end
+      @query text(message=3) => text="greetings" begin
+        [td "greetings"]
+      end
+      [td 
+      ]
+      [td 
+        [button "like!" onclick="new_like(42, 3)"]
+      ]
+    ]
+  end
+  @query message(message=4) begin
+    [tr
+      @query sent_by(message=4) => sent_by="chia" begin
+        [td "chia:"]
+      end
+      @query text(message=4) => text="free tacos all round!" begin
+        [td "free tacos all round!"]
+      end
+      [td 
+        @query likes(liker="alice", message=4) begin
+          [div "alice likes this!"]
+        end
+        @query likes(liker="bob", message=4) begin
+          [div "bob likes this!"]
+        end
+      ]
+      [td 
+        [button "like!" onclick="new_like(42, 4)"]
+      ]
+    ]
   end
 ]
 ```
 
-Now that the data has been filled in we don't need the query fragments anymore, so they are each removed and replaced by their children.
+Now that the interpolated variables have been filled in we don't need the query fragments anymore, so they are each removed and replaced by their children, yielding our final DOM tree:
 
 ``` julia
-[ul
-  class="todo-list"
-  [li 
-    [div 
-      class="view" 
-      [input 
-        class="toggle" 
-        "type"="checkbox" 
-        checked="checked"
-        onclick="toggle(1)"
-      ] 
-      [label "foo" ondblclick="start_editing(1)"]
-      [button class="destroy" onclick="delete_todo(1)"]
+[table
+  [tr
+    [td "alice:"]
+    [td "hello"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 1)"]
     ]
   ]
-  [li
-    class="editing"
-    [input  
-      class="edit"
-      defaultValue="quux"
-      onkeydown="""
-        if (event.which == 13) finish_editing(3, this.value)
-        if (event.which == 27) escape_editing(3)
-      """
-      onblur="escape_editing(3)"
+  [tr
+    [td "bob:"]
+    [td "hi"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 2)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "greetings"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 3)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "free tacos all round!"]
+    [td 
+      [div "alice likes this!"]
+      [div "bob likes this!"]
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 4)"]
     ]
   ]
 ]
 ```
-
-And finally this is sent to the browser to be rendered.
 
 ## Patching
 
-As described so far, this is only good for one-off rendering. We need to define what happens when the underlying data changes eg:
+As described so far, this is only good for one-off rendering. We need to define what happens when the underlying data changes. Suppose Alice retracts her liking of free tacos, Bob deletes his message entirely and Chia sends a new message complaining about their fickleness.
 
-``` julia
-+visible(2)
--visible(3)
--checked(1)
+``` diff
+message(1)
+-message(2)
+message(3)
+message(4)
++message(5)
+
+sent_by(1) => "alice"
+-sent_by(2) => "bob"
+sent_by(3) => "chia"
+sent_by(4) => "chia"
++sent_by(5) => "chia"
+
+text(1) => "hello"
+-text(2) => "hi"
+text(3) => "greetings"
+text(4) => "free tacos all round!"
++text(5) => "who doesn't like free tacos?"
+
+-likes("alice", 4)
+likes("bob", 4)
 ```
 
-With the new data, the filled-out template now looks like:
+With the new data, the template now specifies this DOM tree:
 
 ``` julia
-[ul
-  class="todo-list"
-  visible(todo=1) do
-    text(todo=1, text="foo") do
-      displaying(todo=1) do
-        [li 
-          [div 
-            class="view" 
-            [input 
-              class="toggle" 
-              "type"="checkbox" 
-              onclick="toggle(1)"
-            ] 
-            [label "foo" ondblclick="start_editing(1)"]
-            [button class="destroy" onclick="delete_todo(1)"]
-          ]
-        ]
-      end
-    end
-  end
-  visible(todo=2) do
-    text(todo=2, text="bar") do
-      displaying(todo=2) do
-        [li 
-          [div 
-            class="view" 
-            [input 
-              class="toggle" 
-              "type"="checkbox" 
-              onclick="toggle(2)"
-            ] 
-            [label "bar" ondblclick="start_editing(2)"]
-            [button class="destroy" onclick="delete_todo(2)"]
-          ]
-        ]
-      end
-    end
-  end
+[table
+  [tr
+    [td "alice:"]
+    [td "hello"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 1)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "greetings"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 3)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "free tacos all round!"]
+    [td 
+      [div "bob likes this!"]
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 4)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "who doesn't like free tacos?"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 5)"]
+    ]
+  ]
 ]
 ```
 
-Obviously, we want to guarantee that changes are made to the DOM so that the end result matches the new filled out template. But it's not enough to specify only the end result. Some DOM nodes have their own state that is not reflected in the template, such as scroll position or text entered by the user. It's not practical to manage this state from the server, both because of the latency involved and the inability to block the client or save up keystrokes. But deleting and recreating a node will erase its state. So as part of the semantics of the template library we have to specify exactly what changes it makes to the DOM to reach the correct end result.
+Obviously, we want to guarantee that changes are made to the DOM in the browser so that the end result matches the new results from the template. 
+
+But it's not enough to specify only the end result. Some DOM nodes have their own state that is not reflected in the template, such as scroll position or text entered by the user. It's not practical to manage this state from the server, both because of the latency involved and the inability to block the client or save up keystrokes. But deleting and recreating a node will erase its state. So as part of the semantics of the template library we have to specify exactly what changes it makes to the DOM on the way to the correct end result.
 
 Libraries like [React](https://facebook.github.io/react/) do this by [specifying](https://facebook.github.io/react/docs/reconciliation.html) an algorithm that compares the old and new DOM trees and computes a set of changes that will turn one into the other. When comparing large lists of elements, it recommends that users supply a unique key for each element to help React decide whether to mutate an old list element or delete and replace it. It warns:
 
@@ -525,437 +604,509 @@ In our templates we have much better information about how data maps to the fill
 
 So if the change to our data is:
 
-``` julia
-+visible(2)
--visible(3)
--checked(1)
+``` diff
+message(1)
+-message(2)
+message(3)
+message(4)
++message(5)
+
+sent_by(1) => "alice"
+-sent_by(2) => "bob"
+sent_by(3) => "chia"
+sent_by(4) => "chia"
++sent_by(5) => "chia"
+
+text(1) => "hello"
+-text(2) => "hi"
+text(3) => "greetings"
+text(4) => "free tacos all round!"
++text(5) => "who doesn't like free tacos?"
+
+-likes("alice", 4)
+likes("bob", 4)
 ```
 
 Then the change to the DOM will be:
 
-``` julia
-+visible(todo=2) do
-  text(todo=2, text="bar") do
-    displaying(todo=2) do
-      [li 
-        [div 
-          class="view" 
-          [input 
-            class="toggle" 
-            "type"="checkbox" 
-            onclick="toggle(2)"
-          ] 
-          [label "bar" ondblclick="start_editing(2)"]
-          [button class="destroy" onclick="delete_todo(2)"]
-        ]
-      ]
-    end
-  end
-end
-
--visible(todo=3) do
-  text(todo=3, text="quux") do
-    editing(todo=3) do
-      [li
-        class="editing"
-        [input  
-          class="edit"
-          defaultValue="quux"
-          onkeydown="""
-            if (event.which == 13) finish_editing(3, this.value)
-            if (event.which == 27) escape_editing(3)
-          """
-          onblur="escape_editing(3)"
-        ]
-      ]
-    end
-  end
-end
-
--checked(todo=1) do
-  checked="checked"
-end
+``` diff
+[table
+  [tr
+    [td "alice:"]
+    [td "hello"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 1)"]
+    ]
+  ]
+-  [tr
+-    [td "bob:"]
+-    [td "hi"]
+-    [td 
+-    ]
+-    [td 
+-      [button "like!" onclick="new_like(42, 2)"]
+-    ]
+-  ]
+  [tr
+    [td "chia:"]
+    [td "greetings"]
+    [td 
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 3)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "free tacos all round!"]
+    [td 
+-      [div "alice likes this!"]
+      [div "bob likes this!"]
+    ]
+    [td 
+      [button "like!" onclick="new_like(42, 4)"]
+    ]
+  ]
++  [tr
++    [td "chia:"]
++    [td "who doesn't like free tacos?"]
++    [td 
++    ]
++    [td 
++      [button "like!" onclick="new_like(42, 5)"]
++    ]
++  ]
+]
 ```
 
-This provides a simple mental model that is easy to map to the visual appearance of the template. 
+That is, we delete the `[tr ...]` subtree containing Bobs message, we delete the `[div ...]` containing Alices like and we create a new subtree for Chias new message.
 
-The user can easily control how the DOM is mutated by changing the position of the query fragments. For example, our template currently has `text(todo, text)` above the `li` node. This means that if the text of a todo is changed, the entire `li` node will be deleted and recreated. If this is not acceptable, we could move the `text(todo, text)` down closer to the nodes that it actually affects.
-
-``` julia
-visible(todo) do
-    displaying(todo) do
-      [li 
-        [div 
-          class="view" 
-          [input 
-            class="toggle" 
-            "type"="checkbox" 
-            checked(todo) do
-              checked="checked"
-            end
-            onclick="toggle($todo)"
-          ] 
-          [label 
-            ondblclick="start_editing($todo)"
-            text(todo, text) do
-              "$text" 
-            end
-          ]
-          [button class="destroy" onclick="delete_todo($todo)"]
-        ]
-      ]
-    end
-    editing(todo) do
-      [li
-        class="editing"
-        [input  
-          class="edit"
-          text(todo, text) do
-            defaultValue="$text"
-          end
-          onkeydown="""
-            if (event.which == 13) finish_editing($todo, this.value)
-            if (event.which == 27) escape_editing($todo)
-          """
-          onblur="escape_editing($todo)"
-        ]
-      ]
-    end
-  end
-end
-```
-
-Now when the text is changed only the `"$text'` node or the `defaultValue="$text"` attribute will be replaced.
+That may seem obvious, but we could equally have decided to leave the four message subtrees intact but change the text of each. Without unique keys to help match up the old and new subtrees, React might decide to do exactly that. Tying the identity of each subtree to the rows that feed them data provides a simple mental model that is easy to map to the visual appearance of the template. 
 
 ## Events
 
 We also need to be able to react to user input. 
 
-In Imp, we can tag certain relations as event relations.
+In Imp, we can tag relations as event relations.
 
-``` julia
-@event delete_todo(todo::Int64)
+``` julia    
+@event new_like(Session, Message)
+
+@query begin
+  new_like(session, message)
+  username(session) => username
+  return likes(username, message)
+end
 ```
 
 For every event relation, a matching javascript function is created that will insert a row into that relation. Event handlers in the template can call these functions to send data back to the server.
 
 ``` julia
-[button class="destroy" onclick="delete_todo($todo)"]
+[button "like!" onclick="new_like($session, $message)"]
 ```
 
 But we also still allow arbitrary javascript in event handlers, which is useful for eg reading state from the DOM.
 
 ``` julia
-[input  
-  class="edit"
-  text(todo, text) do
-    defaultValue="$text"
-  end
-  onkeydown="""
-    if (event.which == 13) finish_editing($todo, this.value) // enter
-    if (event.which == 27) escape_editing($todo) // escape
-  """
-  onblur="escape_editing($todo)"
-]
+[input
+  style="width: 100%; height: 2em"
+  placeholder="What do you want to say?"
+  onkeydown="if (event.which == 13) {new_message($session, this.value); this.value=''}"
+] 
 ```
 
 Again, if this was running in the browser itself or we were using a native UI toolkit it might be useful to manage such state directly. But in the current server/client implementation it's more practical to leave low-latency interactions such as typing and scrolling to the browser.
 
 ## Sessions 
 
-We give each browser tab a unique session key. The template is implicitly wrapped in `session(session) do ... end` so that it can behave differently for each session. 
+We give each browser tab a unique session key. The template is implicitly wrapped in `@query session(session) begin ... end` so that it can behave differently for each session. 
 
-For example, in our todo list we want the filter to be set per tab, not globally. 
+For example, when someone clicks `like!` we record their session id so we can later display their username in the likes list. 
 
 ``` julia
-filter(filter) do
-  [li 
-    [a 
-      current_filter(session, filter) do
-        class="selected"
-      end 
-      onclick="set_filter('$session', '$filter')" 
-      "$filter"
-    ]
-  ]
-end 
-]
+[button "like!" onclick="new_like($session, $message)"]
 ```
 
 ## Implementation
 
 As much as possible we want to do the work in Imp queries. This lets us take advantage of the query compiler for efficient joins. It also means that when I get around to implementing [incremental view maintenance](http://blogs.evergreen.edu/sosw/files/2014/04/Green-Vol5-DBS-017.pdf), I'll get incremental template evaluation for free.
 
-Before we walk through the template compiler, let's pick a slightly simpler example.
-
-``` julia
-# --- data ---
-
-visible(1)
-visible(2)
-visible(3)
-
-text(1, "foo")
-text(2, "bar")
-text(3, "quux")
-
-displaying(1)
-displaying(2)
-
-editing(3)
-
-# --- template ---
-
-[div
-  visible(todo) do
-    displaying(todo) do
-      text(todo, text) do
-        "displaying: $text"
-      end
-    end
-    editing(todo) do
-      "editing: $todo"
-    end
-  end
-]
-
-# --- fill out query fragments ---
-
-[div 
-  visible(todo=1) do 
-    displaying(todo=1) do 
-      text(todo=1, text="foo") do 
-        "displaying: foo" 
-      end
-    end
-  end
-  visible(todo=2) do 
-    displaying(todo=2) do 
-      text(todo=2, text="bar") do 
-        "displaying: bar" 
-      end
-    end
-  end
-  visible(todo=3) do 
-    editing(todo=3) do 
-      "editing: 3" 
-    end
-  end
-]
-
-# --- collapse query fragments ---
-
-[div 
-  "displaying: foo" 
-  "displaying: bar" 
-  "editing: 3" 
-]
-```
+Let's walk through how the template compiler deals with our example.
 
 The first thing the compiler does is number all the nodes, depth-first, to make it easier to refer to them.
 
 ``` julia
-[div # 1
-  visible(todo) do # 2
-    displaying(todo) do # 3
-      text(todo, text) do # 5
-        "displaying: $text" # 7
+[table # 1
+  @query message(message) begin # 2
+    [tr # 3
+      @query sent_by(message) => sent_by begin # 4
+        [td "$sent_by:"] # 8
       end
-    end
-    editing(todo) do # 4
-      "editing: $todo" # 6
-    end
+      @query text(message) => text begin # 5
+        [td "$text"] # 9
+      end
+      [td # 6
+        @query likes(liker, message) begin # 10
+          [div "$liker likes this!"] # 12
+        end
+      ]
+      [td # 7
+        [button "like!" onclick="new_like($session, $message)"] # 11
+      ]
+    ]
   end
 ]
 ```
 
-Next, for each query fragment we create a corresponding query that performs the join against it's parent. We also create an id for each filled out query fragment by hashing together the node id and all the variable values. (This id is just used as a shorthand reference - if hash collisions are worrying you could use some kind of lookup table or even just use the list of variable values directly.)
+Next, for each query fragment we create a corresponding query that performs a join against all the data produced by the enclosing queries. We also create an id for each filled out query fragment by hashing together the node id and all the variable values. (This id is just used as a shorthand reference - if hash collisions are worrying you could use some kind of lookup table or even just use the list of variable values directly.)
 
 ``` julia
 @query begin # special dummy query for the root of the tree
-    session(session) 
-    return query_0(session) => hash(session)
+  session(session)
+  return query_0(session) => hash(session)
 end
 
 @query begin
-    query_0(session) => query_parent_hash 
-    visible(todo) 
-    my_hash = hash(todo, hash(2, query_parent_hash)) 
-    return query_2(session, todo) => my_hash
+  query_0(session) => query_parent_hash 
+  message(message) 
+  my_hash = hash(message, hash(2, query_parent_hash)) 
+  return query_2(session, message) => my_hash
 end
 
 @query begin
-    query_2(session, todo) => query_parent_hash 
-    displaying(todo) 
-    my_hash = hash(todo, hash(3, query_parent_hash)) 
-    return query_3(session, todo) => my_hash
+  query_2(session, message) => query_parent_hash 
+  sent_by(message, sent_by) 
+  my_hash = hash(sent_by, hash(message, hash(4, query_parent_hash))) 
+  return query_4(session, message, sent_by) => my_hash
 end
 
 @query begin
-    query_2(session, todo) => query_parent_hash 
-    editing(todo) 
-    my_hash = hash(todo, hash(4, query_parent_hash)) 
-    return query_4(session, todo) => my_hash
+  query_2(session, message) => query_parent_hash 
+  text(message, text) 
+  my_hash = hash(text, hash(message, hash(5, query_parent_hash))) 
+  return query_5(session, message, text) => my_hash
 end
 
 @query begin
-    query_3(session, todo) => query_parent_hash 
-    text(todo, text) 
-    my_hash = hash(text, hash(todo, hash(5, query_parent_hash))) 
-    return query_5(session, todo, text) => my_hash
+  query_2(session, message) => query_parent_hash 
+  likes(liker, message) 
+  my_hash = hash(message, hash(liker, hash(10, query_parent_hash))) 
+  return query_10(session, message, liker) => my_hash
 end
 ```
+
+When we run these queries on the original data, we get something like this (but with real hashes):
 
 ``` julia
-# --- results (with made-up hashes) ---
+query_0(42) => 0x00
 
-query_0("my_session") => 0x0
+query_2(42, 1) => 0x01
+query_2(42, 2) => 0x02
+query_2(42, 3) => 0x03
+query_2(42, 4) => 0x04
 
-query_2("my_session", 1) => 0x1
-query_2("my_session", 2) => 0x2
-query_2("my_session", 3) => 0x3
+query_4(42, 1, "alice") => 0x05
+query_4(42, 2, "bob") => 0x06
+query_4(42, 3, "chia") => 0x07
+query_4(42, 4, "chia") => 0x08
 
-query_3("my_session", 1) => 0x4
-query_3("my_session", 2) => 0x5
+query_5(42, 1, "hello") => 0x09
+query_5(42, 2, "hi") => 0x10
+query_5(42, 3, "greetings") => 0x11
+query_5(42, 4, "free tacos all round!") => 0x12
 
-query_4("my_session", 3) => 0x6
-
-query_5("my_session", 1, "foo") => 0x7
-query_5("my_session", 2, "bar") => 0x8
+query_10(42, 4, "alice") => 0x13
+query_10(42, 4, "bob") => 0x14
 ```
 
-Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky, but I eventually hit upon an elegant solution:
+Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky, but I eventually hit upon an elegant solution.
 
 The position of each node can be described by the positions and variable values of all the query nodes between it and its eventual parent:
 
 ``` julia
 # --- template ---
 
-[div # 1
-  visible(todo) do # 2
-    displaying(todo) do # 3
-      text(todo, text) do # 5
-        "displaying: $text" # 7
+[table # 1
+  @query message(message) begin # 2
+    [tr # 3
+      @query sent_by(message) => sent_by begin # 4
+        [td "$sent_by:"] # 8
       end
-    end
-    editing(todo) do # 4
-      "editing: $todo" # 6
-    end
+      @query text(message) => text begin # 5
+        [td "$text"] # 9
+      end
+      [td # 6
+        @query likes(liker, message) begin # 10
+          [div "$liker likes this!"] # 12
+        end
+      ]
+      [td # 7
+        [button "like!" onclick="new_like($session, $message)"] # 11
+      ]
+    ]
   end
 ]
 
 # --- filled out template ---
 
-[div # 1
-  visible(todo=1) do # 2
-    displaying(todo=1) do # 3
-      text(todo=1, text="foo") do # 5
-        "displaying: foo" # 1st child of node 1 -> todo=1 -> 1st child of node 2 -> 1st child of node 3 -> text="foo" -> 1st child of node 5
+[table # node 1
+  @query message(message=1) begin 
+    [tr # 1st child of node 1 -> 1st child of node 2 -> message=1
+      @query sent_by(message=1) => sent_by="alice" begin
+        [td "alice:"] # 1st child of node 1 -> 1st child of node 2 -> message=1 -> 1st child of node 3 -> sent_by="alice" -> 1st child of node 4
       end
-    end
-  end
-  visible(todo=2) do # 2
-    displaying(todo=2) do # 3
-      text(todo=2, text="bar") do # 5
-        "displaying: bar" # 1st child of node 1 -> todo=2 -> 1st child of node 2 -> 1st child of node 3 -> text="bar" -> 1st child of node 5
+      @query text(message=1) => text="hello" begin
+        [td "hello"] # 1st child of node 1 -> 1st child of node 2 -> message=1 -> 2nd child of node 3 -> text="hello" -> 1st child of node 5
       end
-    end
+      [td # 1st child of node 1 -> 1st child of node 2 -> message=1 -> 3rd child of node 3
+      ]
+      [td # 1st child of node 1 -> 1st child of node 2 -> message=1 -> 4th child of node 3
+        [button "like!" onclick="new_like(42, 1)"] # 1st child of node 1 -> 1st child of node 2 -> message=1 -> 4th child of node 3 -> 1st child of node 7
+      ]
+    ]
   end
-  visible(todo=3) do # 2
-    editing(todo=3) do # 4
-      "editing: 3" # 1st child of node 1 -> todo=3 -> 2nd child of node 2 -> 1st child of node 4 
-    end
-  end
+  # etc...
 ]
 ```
 
 (A potential confusion - when we say "nth child of node x" we mean the nth child in the *template*, not in the resulting DOM tree. We can't use the positions in the DOM tree because those are exactly what we are trying to calculate.)
 
-If we represent these paths as tuples and use them as sort keys, the nodes will end up sorted in the correct order:
+If we represent these paths as tuples and use them as sort keys, the nodes at each level will end up sorted in the correct order:
 
 ``` julia
-(1, todo=1, 1, 1, text="foo", 1) => "displaying: foo"
-(1, todo=2, 1, 1, text="bar", 1) => "displaying: bar"
-(1, todo=3, 2, 1) => "editing: 3"
+(1, 1, message=1, 1, sent_by="alice") => [td "alice:"]
+(1, 1, message=1, 2, text="hello") => [td "hello"]
+(1, 1, message=1, 3) => [td]
+(1, 1, message=1, 4) => [td [button "like!" onclick="new_like(42, 1)"]]
 ```
 
 Julia can avoid dynamic dispatch when given stable types. To make sure all the sort keys have the same type, we can just fill in dummy columns.
 
 ``` julia
-(1, todo=1, 1, 1, 0, text="foo", 1) => "displaying: foo"
-(1, todo=2, 1, 1, 0, text="bar", 1) => "displaying: bar"
-(1, todo=3, 2, 0, 1, text="", 0) => "editing: 3"
+(1, 1, message=1, 1, sent_by="alice", text="") => [td "alice:"]
+(1, 1, message=1, 2, sent_by="", text="hello") => [td "hello"]
+(1, 1, message=1, 3, sent_by="", text="") => [td]
+(1, 1, message=1, 4, sent_by="", text="") => [td [button "like!" onclick="new_like(42, 1)"]]
 ```
 
-For each DOM node in the template we create a query that calculates the correct sort key, as well as the node id, the parent node id, the type of DOM node and the content.
+Now for each DOM node in the template we create a query that calculates the correct sort key, as well as the node id, the parent node id, the type of DOM node and the content.
 
 ``` julia
 @query begin
-    query_0(session) => query_hash 
-    my_hash = hash(0, query_hash) 
-    return group_0(session, 1) => (UInt64(0), my_hash, Html, "div")
+  query_0(session) => query_hash 
+  my_hash = hash(0, query_hash) 
+  return group_0(session, 1) => (UInt64(0), my_hash, Html, "table")
 end
 
 @query begin
-    group_0(session, 1) => (_, fixed_parent_hash, _, _) 
-    query_4(session, todo) => query_parent_hash 
-    my_hash = hash(6, query_parent_hash) 
-    return group_1(session, 1, todo, 2, 0, 1, "", 0) => (fixed_parent_hash, my_hash, Text, string("editing: ", todo))
+  query_2(session, message) => query_parent_hash 
+  group_0(session, 1) => (_, fixed_parent_hash, _, _) 
+  my_hash = hash(3, query_parent_hash) 
+  return group_1(session, 1, message, 1) => (fixed_parent_hash, my_hash, Html, "tr")
 end
 
 @query begin
-    group_0(session, 1) => (_, fixed_parent_hash, _, _) 
-    query_5(session, todo, text) => query_parent_hash 
-    my_hash = hash(7, query_parent_hash) 
-    return group_1(session, 1, todo, 1, 1, 0, text, 1) => (fixed_parent_hash, my_hash, Text, string("displaying: ", text))
+  query_4(session, message, sent_by) => query_parent_hash 
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
+  my_hash = hash(8, query_parent_hash) 
+  return group_3(session, message, 1, sent_by, 1, "", 0) => (fixed_parent_hash, my_hash, Html, "td")
+end
+
+@query begin
+  query_5(session, message, text) => query_parent_hash 
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
+  my_hash = hash(9, query_parent_hash) 
+  return group_3(session, message, 2, "", 0, text, 1) => (fixed_parent_hash, my_hash, Html, "td")
+end
+
+@query begin
+  query_2(session, message) => query_parent_hash 
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
+  my_hash = hash(6, query_parent_hash) 
+  return group_3(session, message, 3, "", 0, "", 0) => (fixed_parent_hash, my_hash, Html, "td")
+end
+
+@query begin
+  query_2(session, message) => query_parent_hash 
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
+  my_hash = hash(7, query_parent_hash) 
+  return group_3(session, message, 4, "", 0, "", 0) => (fixed_parent_hash, my_hash, Html, "td")
+end
+
+@query begin
+  query_4(session, message, sent_by) => query_parent_hash 
+  group_3(session, message, 1, sent_by, 1, _, 0) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(11, query_parent_hash) 
+  return group_8(session, message, sent_by, 1) => (fixed_parent_hash, my_hash, Text, string(sent_by, ":"))
+end
+
+@query begin
+  query_5(session, message, text) => query_parent_hash 
+  group_3(session, message, 2, _, 0, text, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(12, query_parent_hash) 
+  return group_9(session, message, text, 1) => (fixed_parent_hash, my_hash, Text, string(text))
+end
+
+@query begin
+  query_2(session, message) => query_parent_hash 
+  group_3(session, message, 4, _, 0, _, 0) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(13, query_parent_hash) 
+  return group_7(session, message, 1) => (fixed_parent_hash, my_hash, Html, "button")
+end
+
+@query begin
+  query_10(session, message, liker) => query_parent_hash 
+  group_3(session, message, 3, _, 0, _, 0) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(14, query_parent_hash) 
+  return group_6(session, message, 1, liker, 1) => (fixed_parent_hash, my_hash, Html, "div")
+end
+
+@query begin
+  query_2(session, message) => query_parent_hash 
+  group_7(session, message, 1) => (_, fixed_parent_hash, _, _) 
+  my_hash = hash(15, query_parent_hash) 
+  return group_13(session, message, 1) => (fixed_parent_hash, my_hash, Text, "like!")
+end
+
+@query begin
+  query_10(session, message, liker) => query_parent_hash 
+  group_6(session, message, 1, liker, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(17, query_parent_hash) 
+  return group_14(session, message, liker, 1) => (fixed_parent_hash, my_hash, Text, string(liker, " likes this!"))
+  end
+```
+
+When we run these queries on the original data, we get something like this (but with real hashes):
+
+``` julia
+group_0(42, 1) => (0x00, 0x01, Html, "table")
+
+group_1(42, 1, 1, 1) => (0x01, 0x02, Html, "tr")
+group_1(42, 1, 2, 1) => (0x01, 0x03, Html, "tr")
+group_1(42, 1, 3, 1) => (0x01, 0x04, Html, "tr")
+group_1(42, 1, 4, 1) => (0x01, 0x05, Html, "tr")
+
+group_3(42, 1, 1, "alice", 1, "", 0) => (0x02, 0x06, Html, "td")
+group_3(42, 1, 2, "", 0, "hello", 1) => (0x02, 0x07, Html, "td")
+group_3(42, 1, 3, "", 0, "", 0) => (0x02, 0x08, Html, "td")
+group_3(42, 1, 4, "", 0, "", 0) => (0x02, 0x09, Html, "td")
+group_3(42, 2, 1, "bob", 1, "", 0) => (0x03, 0x10, Html, "td")
+group_3(42, 2, 2, "", 0, "hi", 1) => (0x03, 0x11, Html, "td")
+group_3(42, 2, 3, "", 0, "", 0) => (0x03, 0x12, Html, "td")
+group_3(42, 2, 4, "", 0, "", 0) => (0x03, 0x13, Html, "td")
+group_3(42, 3, 1, "chia", 1, "", 0) => (0x04, 0x14, Html, "td")
+group_3(42, 3, 2, "", 0, "greetings", 1) => (0x04, 0x15, Html, "td")
+group_3(42, 3, 3, "", 0, "", 0) => (0x04, 0x16, Html, "td")
+group_3(42, 3, 4, "", 0, "", 0) => (0x04, 0x17, Html, "td")
+group_3(42, 4, 1, "chia", 1, "", 0) => (0x05, 0x18, Html, "td")
+group_3(42, 4, 2, "", 0, "free tacos all round!", 1) => (0x05, 0x19, Html, "td")
+group_3(42, 4, 3, "", 0, "", 0) => (0x05, 0x20, Html, "td")
+group_3(42, 4, 4, "", 0, "", 0) => (0x05, 0x21, Html, "td")
+
+# etc...
+```
+
+Now we have a list of every DOM node together with a (probably) unique id and the id of its parent node. Since they are sorted in the correct order we can also easily find the siblings of each node. That will come in handy later when we patch the DOM tree.
+
+DOM attributes like `onclick="new_like($session, $message)"` are handled similarly to DOM nodes, except that their order doesn't matter so there is no sort key.
+
+``` julia
+@query begin
+  query_2(session, message) => _ 
+  group_7(session, message, 1) => (_, fixed_parent_hash, _, _) 
+  return attribute_16(session, fixed_parent_hash, "onclick") => string("new_like(", session, ", ", message, ")")
 end
 ```
 
-``` julia
-# --- results (with made-up hashes) ---
+Now lets consider again what happens when our source data changes:
 
-group_0("session_1", 1) => (0x0, 0x1, Html, "div")
+``` diff
+message(1)
+-message(2)
+message(3)
+message(4)
++message(5)
 
-group_1("session_1", 1, 1, 1, 1, 0, "foo", 1) => (0x1, 0x2, Text, "displaying: foo")
-group_1("session_1", 1, 2, 1, 1, 0, "bar", 1) => (0x1, 0x3, Text, "displaying: bar")
-group_1("session_1", 1, 3, 2, 0, 1, "", 0) => (0x1, 0x4, Text, "editing: 3")
+sent_by(1) => "alice"
+-sent_by(2) => "bob"
+sent_by(3) => "chia"
+sent_by(4) => "chia"
++sent_by(5) => "chia"
+
+text(1) => "hello"
+-text(2) => "hi"
+text(3) => "greetings"
+text(4) => "free tacos all round!"
++text(5) => "who doesn't like free tacos?"
+
+-likes("alice", 4)
+likes("bob", 4)
 ```
 
-Now we have a list of every DOM node together with a (probably) unique id and the id of its parent node. Since they are sorted in the correct order we can also easily find the siblings of each node. 
+This results in downstream changes in the compiled queries:
 
-Suppose the source data in our example changes:
+``` diff
+group_0(42, 1) => (0x00, 0x01, Html, "table")
 
-``` julia
--visible(2)
+group_1(42, 1, 1, 1) => (0x01, 0x02, Html, "tr")
+-group_1(42, 1, 2, 1) => (0x01, 0x03, Html, "tr")
+group_1(42, 1, 3, 1) => (0x01, 0x04, Html, "tr")
+group_1(42, 1, 4, 1) => (0x01, 0x05, Html, "tr")
++group_1(42, 1, 5, 1) => (0x01, 0x22, Html, "tr")
 
-+visible(0)
-+displaying(0)
-+text(0, "make a todo list")
+group_3(42, 1, 1, "alice", 1, "", 0) => (0x02, 0x06, Html, "td")
+group_3(42, 1, 2, "", 0, "hello", 1) => (0x02, 0x07, Html, "td")
+group_3(42, 1, 3, "", 0, "", 0) => (0x02, 0x08, Html, "td")
+group_3(42, 1, 4, "", 0, "", 0) => (0x02, 0x09, Html, "td")
+-group_3(42, 2, 1, "bob", 1, "", 0) => (0x03, 0x10, Html, "td")
+-group_3(42, 2, 2, "", 0, "hi", 1) => (0x03, 0x11, Html, "td")
+-group_3(42, 2, 3, "", 0, "", 0) => (0x03, 0x12, Html, "td")
+-group_3(42, 2, 4, "", 0, "", 0) => (0x03, 0x13, Html, "td")
+group_3(42, 3, 1, "chia", 1, "", 0) => (0x04, 0x14, Html, "td")
+group_3(42, 3, 2, "", 0, "greetings", 1) => (0x04, 0x15, Html, "td")
+group_3(42, 3, 3, "", 0, "", 0) => (0x04, 0x16, Html, "td")
+group_3(42, 3, 4, "", 0, "", 0) => (0x04, 0x17, Html, "td")
+group_3(42, 4, 1, "chia", 1, "", 0) => (0x05, 0x18, Html, "td")
+group_3(42, 4, 2, "", 0, "free tacos all round!", 1) => (0x05, 0x19, Html, "td")
+group_3(42, 4, 3, "", 0, "", 0) => (0x05, 0x20, Html, "td")
+group_3(42, 4, 4, "", 0, "", 0) => (0x05, 0x21, Html, "td")
++group_3(42, 5, 1, "chia", 1, "", 0) => (0x22, 0x23, Html, "td")
++group_3(42, 5, 2, "", 0, "who doesn't like free tacos?", 1) => (0x22, 0x24, Html, "td")
++group_3(42, 5, 3, "", 0, "", 0) => (0x22, 0x25, Html, "td")
++group_3(42, 5, 4, "", 0, "", 0) => (0x22, 0x26, Html, "td")
 
-+visible(4)
-+displaying(4)
-+text(4, "more milk!")
+# etc...
 ```
 
-Which results in these downstream changes:
+First we instruct the browser to delete all the nodes that were in the old query output and not in the new.
 
 ``` julia
-+group_1("session_1", 1, 1, 0, 1, 0, "make a todo list", 1) => (0x1, 0x5, Text, "displaying: make a todo list")
--group_1("session_1", 1, 2, 1, 1, 0, "bar", 1) => (0x1, 0x3, Text, "displaying: bar")
-+group_1("session_1", 1, 1, 4, 1, 0, "more milk!", 1) => (0x1, 0x6, Text, "displaying: more milk!")
+deleteNode(0x03)
+
+deleteNode(0x10)
+deleteNode(0x11)
+deleteNode(0x12)
+deleteNode(0x13)
+
+# etc...
 ```
 
-We can look at the updated `group_1` to find out that the next node after `0x5 displaying: make a todo list` is `0x2 displaying:foo` and that there is no node after `0x6 displaying: more milk!`. So we send the following commands to the client browser:
+Then for each new node that is not in the old output we find its sibling, if it has one, and instruct the browser to create a new node and insert it in the appropriate place.
 
 ``` julia
-delete(0x3)
-insertBefore(0x5, "text", "displaying: make a todo list", parent=0x1, sibling=0x2)
-insertAtEnd(0x6, "text", "displaying: more milk!", parent=0x1)
+insertAtEnd(0x22, Html, "tr")
+
+insertAtEnd(0x26, Html, "td")
+insertBefore(0x26, 0x25, Html, "td")
+insertBefore(0x25, 0x24, Html, "td")
+insertBefore(0x24, 0x23, Html, "td")
+
+# etc...
 ```
 
 The nodes in each group are sorted in the order they will appear in the DOM and the groups themselves are sorted in depth-first order, so if we generate these instructions by order of group and then reverse order within the group, we can be sure that by the time each instruction is run the parent and sibling will always exist.
-
-Finally, attributes like `class="main"` are handled almost identically to html and text nodes, except that their order doesn't matter so the sort key is empty.
 
 ## Expressiveness
 
@@ -971,26 +1122,46 @@ dynamic_tag(tag) do
 end
 ```
 
-The current implementation expects one huge template for the entire app but it should be trivial to allow composable components eg we could break the example from the previous section into two components:
+The templates are just Julia ASTs, so it's possible to create components using ordinary Julia code:
 
 ``` julia
-@template main()
-  visible(todo) do
-    displaying(todo) do
-      displayed_todo(todo)
+template = quote
+  [table
+    @query message(message) begin
+      [tr
+        $(message_template(:message)...)
+        $(likes_template(:message))
+        [td 
+          [button "like!" onclick="new_like($session, $message)"]
+        ]
+      ]
     end
-    editing(todo) do
-      "editing: $todo"
-    end
-  end
+  ]
 end
 
-@template displayed_todo(id)
-  text(id, text) do
-    "displaying: $text"
+function message_template(message)
+  quote [
+    @query sent_by($message) => sent_by begin
+      [td "$sent_by:"]
+    end
+    @query text($message) => text begin
+      [td "$text"]
+    end
+  ] end
+end
+
+function likes_template(message)
+  quote
+    [td 
+      @query likes(liker, $message) begin
+        [div "$liker likes this!"]
+      end
+    ]
   end
 end
 ```
+
+It should be trivial to provide a macro that makes the syntax more direct.
 
 Currently templates are limited to a fixed depth, so they can't express eg a file browser where the depth depends on the data. Allowing components to include themselves recursively would fix this, but it's non-obvious how to combine recursion with the query-based implementation I described earlier. It's probably not impossible, but I won't attempt to deal with it until I definitely need it.
 
