@@ -1169,45 +1169,17 @@ Currently templates are limited to a fixed depth, so they can't express eg a fil
 
 I won't know for sure how well this will perform until I've built something more substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
 
-My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile. 
+My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile and eyeballed the time from the user event until the start of layout/rendering/painting.
 
 Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces.
 
-Adding 1st todo in Imp:
+|       | adding 1st todo | adding 200 todos at once | adding 201st todo |
+|-------|-----------------|--------------------------|-------------------|
+| imp   | [10](/img/imp-1.png)             | [22](/img/imp-200.png) | [12](/img/imp-201.png)                |
+| react | [6](/img/react-1.png)               | x                   | [14](/img/react-201.png)                 |
+| om    | [5](/img/om-1.png)               | [100](/img/om-200.png) | [28](/img/om-201.png)                |
 
-![](/img/imp-1.png)
-
-Adding 1st todo in React:
-
-![](/img/react-1.png)
-
-Adding 1st todo in Om:
-
-![](/img/om-1.png)
-
-Adding 200 todos at once in Imp:
-
-![](/img/imp-200.png)
-
-(I couldn't be bothered to compile the React demo myself to add a button to add 200 todos.)
-
-Adding 200 todos at once in Om:
-
-![](/img/om-200.png)
-
-Adding the 201st todo in Imp:
-
-![](/img/imp-201.png)
-
-Adding the 201st todo in React:
-
-![](/img/react-201.png)
-
-Adding the 201st todo in Om:
-
-![](/img/om-201.png)
-
-I won't bother reading too much detail into those numbers, but it's clear that Imp is in the same ballpark as React and Om for this simple example.
+I won't bother reading too much detail into those numbers, but it's clear that Imp is at least in the same ballpark as React and Om for this simple example.
 
 Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins so in theory it should be easy to maintain incrementally.
 
