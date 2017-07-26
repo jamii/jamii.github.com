@@ -823,9 +823,9 @@ query_10(42, 4, "alice") => 0x13
 query_10(42, 4, "bob") => 0x14
 ```
 
-Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky, but I eventually hit upon an elegant solution.
+Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky eg if we just calculate positions of each child within its parent, inserting one child would mean updating the positions of all the children that came after it. 
 
-The position of each node can be described by the positions and variable values of all the query nodes between it and its eventual parent:
+But I eventually hit upon an elegant solution. The position of each node can be described by the positions and variable values of all the query nodes between it and its eventual parent:
 
 ``` julia
 # --- template ---
@@ -883,6 +883,8 @@ If we represent these paths as tuples and use them as sort keys, the nodes at ea
 (1, 1, message=1, 3) => [td]
 (1, 1, message=1, 4) => [td [button "like!" onclick="new_like(42, 1)"]]
 ```
+
+When we insert new nodes around an existing one it's key doesn't change, so whatever incremental maintenance algorithm I end up using will only have to deal with inserting and deleting rows for each node and not updating any additional bookkeeping information elsewhere.
 
 Julia can avoid dynamic dispatch when given stable types. To make sure all the sort keys have the same type, we can just fill in dummy columns.
 
