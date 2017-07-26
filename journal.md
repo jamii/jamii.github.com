@@ -10388,3 +10388,11 @@ Oh, also it turned out that the dead time is specific to firefox - in chrome tha
 ### 2017 Jul 24
 
 First draft is up. Waiting for feedback on clarity. Will need to do some editing for flow etc in addition.
+
+### 2017 Jul 25
+
+Yet more editing.
+
+### 2017 Jul 26
+
+Yet. More. Editing.

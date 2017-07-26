@@ -32,6 +32,12 @@ datastore + application logic (relations) <-> GUI (trees)
 
 That's what we're going to deal with in this post.
 
+To keep things concrete, we'll use this very simple chat app as a running example.
+
+![](/imp/chat.png)
+
+Yes, it is hideous, but it illustrates all the important points while being small enough to show the entire dataflow.
+
 ## Imp
 
 [Imp](https://github.com/jamii/imp/) is a [datalog](https://en.wikipedia.org/wiki/Datalog)-ish language in the same family as [Eve](http://evelang.com/), [LogicBlox](http://www.logicblox.com/), [Bloom](http://bloom-lang.net/), [Dyna](http://www.cs.jhu.edu/~nwf/datalog20-paper.pdf) etc.
@@ -40,154 +46,137 @@ Imp is focused on reducing the number of layers and concepts involved in writing
 
 The goal is to build apps that run on one machine or that serve small number of users on a local network, and not so much to build public apps that scale to large numbers of users. Think [shiny](https://github.com/rstudio/shiny) or [nitrogen](http://nitrogenproject.com/learn), not [rails](http://rubyonrails.org/).
 
-The GUI library in this post could run on top of any relational datastore, but since all the examples are written in Imp here is an blindingly brief Imp <-> SQL comparison:
+Imp data is stored in relations. The schema is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form) - this has several important advantages that we will see later.
 
-Imp data is stored in relations and is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form).
+Here are the relations used in the chat example:
 
 ``` julia
-# global state
+const Session = Int64
+const Message = Int64
 
-@relation text(Todo) => String
-@relation completed(Todo) => Bool
-@relation deleted(Todo) => Bool
-
-# session state 
-
-@relation current_filter(Session) => String
-@relation editing(Session) => Todo
+@relation username(Session) => String
+@relation message(Message)
+@relation text(Message) => String
+@relation sent_by(Message) => String
+@relation sent_at(Message) => DateTime
+@relation likes(username::String, Message) 
 ```
+
+And a direct translation into sql:
 
 ``` sql
-create table text(todo int, text varchar,
-  primary key(todo));
-create table completed(todo int, iscompleted bool,
-  primary key(todo));
-create table deleted(todo int, isdeleted bool,
-  primary key(todo));
-  
-create table current_filter(session int, filter varchar,
-  primary key(session));
-create table editing(session int, todo int,
-  primary key(session));
+create table username(session int, username varchar, primary key (session));
+create table message(id int, primary key (id));
+create table text(id int, text varchar, primary key (id));
+create table sent_by(id int, username varchar, primary key (id));
+create table sent_at(id int, time timestamp, primary key (id));
+create table likes(username varchar, id int, primary key (username, id));
 ```
 
-Imp programs are built out of relational views. Each line refers to a single relation. Whenever the same variable name is used in more than one column, those columns are joined together. The `=>` arrows just indicate which of the columns are in the primary key and which are values. 
+Imp programs are built out of relational queries. Each line within the query refers to a single relation and its columns. Whenever the same variable name is used for more than one column, those columns are joined together. Subqueries begin with `@query` and return an array of results for each column.
+
+Here is a query that records data for each new message:
 
 ``` julia
-@relation visible(Session, Todo)
-
 @query begin
-  current_filter(session) => "Active"
-  completed(todo) => false
-  deleted(todo) => false
-  return visible(session, todo)
-end
-
-@query begin
-  current_filter(session) => "Completed"
-  completed(todo) => true
-  deleted(todo) => false
-  return visible(session, todo)
-end
-
-@query begin
-  current_filter(session) => "All"
-  completed(todo) => _
-  deleted(todo) => false
-  return visible(session, todo)
-end
-```
-
-``` sql
-create view visible as
-  
-  select current_filter.session, completed.todo
-  from current_filter, completed, deleted
-  where current_filter.filter = 'Active'
-  and completed.iscompleted = FALSE
-  and deleted.isdeleted = FALSE
-  and completed.todo = deleted.todo
-  
-  union
-  
-  select current_filter.session, completed.todo
-  from current_filter, completed, deleted
-  where current_filter.filter = 'Completed'
-  and completed.iscompleted = TRUE
-  and deleted.isdeleted = FALSE
-  and completed.todo = deleted.todo
-  
-  union
-  
-  select current_filter.session, completed.todo
-  from current_filter, completed, deleted
-  where current_filter.filter = 'All'
-  and deleted.isdeleted = FALSE
-  and completed.todo = deleted.todo
-;
-```
-
-Imp is built on top of [Julia](https://julialang.org/) and can use any Julia types and functions.
-
-``` julia
-@relation completed_count_text() => String
-
-@query begin
+  new_message(session, text)
+  username(session) => username
   @query begin 
-    completed(todo) => false
-    deleted(todo) => false
+    message(id) => (_, _)
   end
-  count = length(todo) # this is a Julia expression
-  text = (count == 1) ? "1 item left" : "$count items left" # this is a Julia expression
-  return completed_count_text() => text
+  new_message = 1 + length(id) 
+  return message(new_message)
+  return text(new_message) => text
+  return sent_by(new_message) => username
+  return sent_at(new_message) => now()
 end
 ```
 
-``` sql
-create view completed_count as
-  select count(*) as count
-  from completed, deleted 
-  where completed.todo = deleted.todo 
-  and completed.iscompleted = FALSE
-  and deleted.isdeleted = FALSE
-;
+And again, a direct translation into sql:
 
-create view completed_count_text as
-  select case
-     when completed_count.count = 1 then '1 item left' 
-     else completed_count.count || ' items left' 
-   end
-   from completed_count
-;
+``` sql
+begin; 
+create temporary table results as (
+  select new_message.text as text, username.username as username, ((select count(*) from message) + 1) as next_message
+  from new_message, username
+  where new_message.session = username.session
+);
+insert into message select next_message from results;
+insert into text select next_message, text from results;
+insert into sent_by select next_message, username from results;
+insert into sent_at select next_message, now() from results;
+commit;
 ```
+
+Imp is built on top of [Julia](https://julialang.org/) and can use any Julia types and functions. The `DateTime` and the `now()` function used above are part of the Julia standard library. 
 
 ## Previous approaches
 
-We need to turn our relational data into a GUI tree. There are two approaches that I've tried before:
+In a typical OOPy language we would probably build these trees using a template language like this one:
 
-* Put trees in the relations! If your relational language is good at aggregation and allows complex data types, you can build up a tree and store it in a single row per session.
+{% raw %}
+``` html
+<table>
+  {% for message in messages %}
+    <tr>
+      <td>{% message.sent_by %}:</td>
+      <td>{% message.text %}</td>
+      <td>
+        {% for like in message.likes %}
+          <div>{% like.liker %} likes this</div>
+        {% endfor %}
+      </td>
+      <td>
+        <button onclick="new_like({% session %}, {% message.id %})">
+          like!
+        </button>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+```
+{% endraw %}
+
+There are all kinds of template languages, but what they generally have in common is that their visual appearance mimics the mental model of the tree they are producing. This makes them much easier to read and navigate.
+
+In previous versions of Imp, I've tried two different approaches to building trees. Both are pretty hard to follow, so just let your eyes glaze over and see the rough outline.
+
+The first approach was to just use an existing tree datatype and use subqueries and aggregation to build it up:
 
 ``` julia
-using Hiccup
+using Hiccup # virtual DOM library
 
 @relation tree() => Hiccup.Node
 
 @query begin
+  session(session)
   @query begin
-    visible(todo)
-    text(todo) => text
-    todo_node = li("class"=>"view", label(text))
+    message(message)
+    sent_by(message) => sent_by
+    text(message) => text
+    @query begin
+      likes(liker, message)
+      like_node = div("$liker likes this")
+      return like_node
+    end
+    message_node = tr(
+      td(sent_by),
+      td(text),
+      td(like_node...),
+      button(onclick="new_like($session, $message)", "like!")
+    )
+    return message_node
   end
-  list_node = ul("class"=>"todo-list", todo_node...)
-  return tree() => list_node
+  table_node = table(message_node...)
+  return tree(session) => table_node
 end
 ```
 
-* Get rid off the trees! We can model trees with relations and node ids.
+The second was to represent the tree as a set of relations, using hashes to create unique node ids:
 
 ``` julia
 struct Node 
-  id::UInt128
+  id::UInt64
 end
 
 @relation root(Session) => Node
@@ -197,147 +186,142 @@ end
 @relation attribute(Node, String) => String
 
 @query begin
-  node = Node(1)
-  return root() => node
-  return tag(node) => "ul"
-  return attribute(node, "class") => "todo-list"
+  session(session)
+  table_node = Node(hash(:table, session))
+  return root(session) => table_node
+  return tab(table_node) => "table"
 end
 
 @query begin
-  visible(todo)
-  text(todo) => text
-  li_node = Node(hash(:todo, todo, :li))
-  label_node = Node(hash(:todo, todo, :label))
-  return parent(li_node) => Node(1)
-  return sort_key(li_node) => todo
-  return tag(li_node) => "li"
-  return attribute(li_node, "class") => "todo-list"
-  return parent(label_node) => li_node
-  return tag(label_node) => "label"
-  return attribute(label_node, "textContent") => text
+  session(session)
+  message(message)
+  sent_by(message) => sent_by
+  text(message) => text
+  table_node = Node(hash(:table, session))
+  tr_node = Node(hash(:tr, session, message))
+  td_node_1 = Node(hash(:td, session, message, 1))
+  td_node_2 = Node(hash(:td, session, message, 2))
+  td_node_3 = Node(hash(:td, session, message, 3))
+  button_node = Node(hash(:button, session, message))
+  return parent(tr_node) => table_node
+  return tag(tr_node) => "tr"
+  return parent(td_node_1) => tr_node
+  return tag(td_node_1) => "td"
+  return attribute(td_node_1, "textContent") => sent_by
+  return sort_key(td_node_1) => 1
+  return parent(td_node_2) => tr_node
+  return tag(td_node_2) => "td"
+  return attribute(td_node_2, "textContent") => text
+  return sort_key(td_node_2) => 2
+  return parent(td_node_3) => tr_node
+  return tag(td_node_3) => "td"
+  return sort_key(td_node_3) => 3
+  return parent(button_node) => tr_node
+  return tag(button_node) => "button"
+  return attribute(button_node, "textContent") => "like!"
+  return attribute(button_node, "onclick") => "new_like($session, $message)"
+  return sort_key(button_node) => 4
+end
+
+@query begin
+  session(session)
+  likes(liker, message)
+  td_node_3 = Node(hash(:td, session, message, 4))
+  liker_node = Node(hash(:like, session, message, liker))
+  return parent(liker_node) => td_node_3
+  return tag(liker_node) => "div"
+  return sort_key(liker_node) => "$liker likes this!"
+  return attribute(liker_node, "textContent") => liker
 end
 ```
 
-Both of these work, and with [a little syntax sugar](https://github.com/witheve/eve-starter/blob/master/programs/todomvc.eve#L99-L103) the verbosity of the second approach can be tamed.
+The extreme verbosity of the second approach can be tamed with [a little syntax sugar](https://github.com/witheve/eve-starter/blob/master/programs/todomvc.eve#L99-L103), but both approaches still suffer from the lack of visual similarity between the code structure and the UI structure.
 
-My main objection to both of these approaches is that the visual structure of the code doesn't map well to the mental model of the UI. 
-
-Similar problem exists in OOPy languages too, which is why many UI libraries include some kind of template language that mimics the mental model of the HTML tree while making it easy to splice in logic and data. 
+The core problem is these nested `for` loops in the OOPy template:
 
 {% raw %}
-``` 
-<section class="todoapp">
-    <header class="header">
-        <h1>todos</h1>
-        <input class="new-todo" placeholder="What needs to be done?" autofocus value="{{ input or "" }}">
-    </header>
-    <section class="main">
-        <input class="toggle-all" type="checkbox">
-        <label for="toggle-all">Mark all as complete</label>
-        <ul class="todo-list">
-            {% for item in items %}
-                <li class="todo-item {% if item.complete %}completed{% endif %}" data-uuid="{{ item.uuid }}">
-                    <div class="view">
-                        <input class="toggle js-complete" type="checkbox" {% if item.complete %}checked{% endif %}>
-                        <label>{{ item.name }}</label>
-                        <button class="destroy"></button>
-                    </div>
-                    <input class="edit js-item" value="{{ item.name }}">
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
-    <footer class="footer">
-        <span class="todo-count"><strong>{{ count }}</strong> item left</span>
-        <ul class="filters">
-            <li>
-                <a data-filter="all" {% if filter == "all" or not filter %}class="selected"{% endif %} href="#/">All</a>
-            </li>
-            <li>
-                <a {% if filter == "active" %}class="selected"{% endif %} data-filter="active" href="#/active">Active</a>
-            </li>
-            <li>
-                <a {% if filter == "completed" %}class="selected"{% endif %} data-filter="completed" href="#/completed">Completed</a>
-            </li>
-        </ul>
-        <button class="clear-completed">Clear completed</button>
-    </footer>
-</section>
+``` julia
+{% for message in messages %}
+  ...
+      {% for like in message.likes %}
+        ...
+      {% endfor %}
+  ...
+{% endfor %}
 ```
 {% endraw %}
 
-Note the line `{% raw %}{% for item in items %}{% endraw %}`. Every time we want to express this relationship in a datalog language we have to start a new query or subquery, because if `items` is empty the entire query will return nothing, rather than a parent with zero children. This requires breaking up the flow of the tree, making it harder to understand the structure of the UI when reading the code.
+We can try to emulate this structure with a relational query:
 
-So we want to create a relational analogue to these template languages, to allow us to express these hierarchical relationships in a way that visually mimics the structure of the resulting tree.
+``` sql 
+select message.id, like.liker
+from message, like
+where message.id = like.message
+```
+
+But this query does not return any results for messages which have no likes. To generate the correct UI tree, we have to break this up into multiple queries, use subqueries or use [lateral joins](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/), and that leads to tangled query code that is hard to match up to the resulting tree.
+
+So I created a relational analogue to the OOPy template language that allows expressing these nested lateral joins in a way that visually mimics the structure of the resulting tree.
 
 ## Templates
 
 Imp templates look like this:
 
 ``` julia
-[ul
-  class="todo-list"
-  visible(todo) do
-    text(todo, text) do
-      displaying(todo) do
-        [li 
-          [div 
-            class="view" 
-            [input 
-              class="toggle" 
-              "type"="checkbox" 
-              checked(todo) do
-                checked="checked"
-              end
-              onclick="toggle($todo)"
-            ] 
-            [label "$text" ondblclick="start_editing($todo)"]
-            [button class="destroy" onclick="delete_todo($todo)"]
-          ]
-        ]
+[table
+  @query message(message) begin
+    [tr
+      @query sent_by(message) => sent_by begin
+        [td "$sent_by:"]
       end
-      editing(todo) do
-        [li
-          class="editing"
-          [input  
-            class="edit"
-            defaultValue="$text"
-            onkeydown="""
-              if (event.which == 13) finish_editing($todo, this.value)
-              if (event.which == 27) escape_editing($todo)
-            """
-            onblur="escape_editing($todo)"
-          ]
-        ]
+      @query text(message) => text begin
+        [td "$text"]
       end
-    end
+      [td 
+        @query likes(liker, message) begin
+          [div "$liker likes this!"]
+        end
+      ]
+      [td 
+        [button "like!" onclick="new_like($session, $message)"]
+      ]
+    ]
   end
 ]
 ```
 
 Templates are made up of four kinds of elements:
 
-* DOM nodes like `[ul ...]`
-* DOM attributes like `class="todo-list"`
-* Text nodes like `"$text"`
-* Query fragments like `text(todo, text) do ... end`
+* DOM nodes like `[table ...]`
+* DOM attributes like `onclick="new_like($session, $message)"`
+* Text nodes like `"$liker likes this!"`
+* Query fragments like `@query likes(liker, message) begin ... end`
 
-Suppose we have this data:
+The query fragment `@query likes(liker, message) begin ... end` acts much like a for loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in a parent query fragment are already bound, so we keep only the rows that have matching values. The equivalent code in the OOPy template would be something like {% raw %}`{% for like in likes if like.message == message.id %} ... {% endfor %}`{% endraw %}. 
+
+Let's see how this works out in practice. Here is the data behind the screenshot from the beginning of this post:
 
 ``` julia
-visible(1)
-visible(3)
+message(1)
+message(2)
+message(3)
+message(4)
 
-text(1, "foo")
-text(2, "bar")
-text(3, "quux")
+sent_by(1) => "alice"
+sent_by(2) => "bob"
+sent_by(3) => "chia"
+sent_by(4) => "chia"
 
-displaying(1)
-displaying(2)
-editing(3)
+text(1) => "hello"
+text(2) => "hi"
+text(3) => "greetings"
+text(4) => "free tacos all round!"
 
-checked(1)
+likes("alice", 4)
+likes("bob", 4)
 ```
+
+YOU ARE HERE
 
 To combine this data with the template above, we treat each query fragment just like a `for` loop over the rows in the corresponding relation, except that whenever we use a variable name that already appeared higher up in the tree we only loop over rows with the same value. For example, inside the filled out query fragment `visible(todo=1)` we repeat the query fragment `text(todo, text)` for every row that matches `todo=1`. (This is effectively a [lateral join](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/)).
 
