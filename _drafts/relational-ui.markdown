@@ -34,9 +34,9 @@ That's what we're going to deal with in this post.
 
 To keep things concrete, we'll use this very simple chat app as a running example.
 
-![](/imp/chat.png)
+![](/img/chat.png)
 
-Yes, it is hideous, but it illustrates all the important points while being small enough to show the entire dataflow.
+Yes, it is hideous, but it illustrates all the important cases while being small enough to show large chunks of the internal dataflow.
 
 ## Imp
 
@@ -46,7 +46,7 @@ Imp is focused on reducing the number of layers and concepts involved in writing
 
 The goal is to build apps that run on one machine or that serve small number of users on a local network, and not so much to build public apps that scale to large numbers of users. Think [shiny](https://github.com/rstudio/shiny) or [nitrogen](http://nitrogenproject.com/learn), not [rails](http://rubyonrails.org/).
 
-Imp data is stored in relations. The schema is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form) - this has several important advantages that we will see later.
+Imp data is stored in relations. The schema is usually [highly normalized](https://en.wikipedia.org/wiki/Sixth_normal_form) - this has some important advantages that we will see later.
 
 Here are the relations used in the chat example:
 
@@ -254,12 +254,12 @@ The core problem is these nested `for` loops in the OOPy template:
 We can try to emulate this structure with a relational query:
 
 ``` sql 
-select message.id, like.liker
-from message, like
-where message.id = like.message
+select message.id, likes.liker
+from message, likes
+where message.id = likes.message
 ```
 
-But this query does not return any results for messages which have no likes. To generate the correct UI tree, we have to break this up into multiple queries, use subqueries or use [lateral joins](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/), and that leads to tangled query code that is hard to match up to the resulting tree.
+But this query does not return any results for messages which have no likes. To generate the correct UI tree we have to break this up into multiple queries, use subqueries or use [lateral joins](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/). That leads to tangled query code that is hard to visually match up to the resulting tree.
 
 So I created a relational analogue to the OOPy template language that allows expressing these nested lateral joins in a way that visually mimics the structure of the resulting tree.
 
@@ -297,9 +297,9 @@ Templates are made up of four kinds of elements:
 * Text nodes like `"$liker likes this!"`
 * Query fragments like `@query likes(liker, message) begin ... end`
 
-Query fragments like `@query likes(liker, message) begin ... end` acts much like a `for` loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in an enclosing query fragment are already bound to some value, so we keep only the rows that have matching values. In this case, `message` already appeared the in the enclosing query fragment `message(message) begin ... end`. The equivalent code in the OOPy template would be {% raw %}`{% for like in likes if like.message == message.id %} ... {% endfor %}`{% endraw %}. 
+Query fragments like `@query likes(liker, message) begin ... end` acts much like a `for` loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in an enclosing query fragment are already bound to some value, so we keep only the rows that have matching values. In this case, `message` already appeared the in the enclosing query fragment `message(message) begin ... end`. The equivalent code in the OOPy template would be {% raw %}`{% for like in likes if like.message == message.id %}`{% endraw %}. 
 
-The order the rows appear in is determined by sorting them by their variables in lexicographic order. So `likes(liker, message)` is sorted by `liker` and then by `message`.
+The order the rows appear in is determined by sorting them by their variables in lexicographic order. So rows from `likes(liker, message)` are sorted first by `liker` and then by `message`.
 
 Let's see how this works out in practice. Here is the data behind the screenshot from the beginning of this post:
 
@@ -396,7 +396,7 @@ When we run the query fragments in our templates on this data, we get:
 ]
 ```
 
-Next we take all the text fragments, such as `"$liker likes this!"` and replace the interpolated variables `$liker` with their values. (Don't worry about where the `session` variable comes from just yet. We'll get to that.)
+Next we take all the text nodes, such as `"$liker likes this!"`, and replace the `$`-interpolated variables with their values. 
 
 ``` julia
 [table
@@ -602,7 +602,7 @@ In our templates we have much better information about how data maps to the fill
 * When a new row is added to a relation, everything under the corresponding query fragment is created from scratch.
 * When a row is removed from a relation, everything under the corresponding query fragment is deleted.
 
-We treat updating a row as if the old value was removed and the new value added. Since the schema is so heavily normalized this generally doesn't affect any values other than the one that was changed.
+Updating a row is the same as removing the old row and adding the new row. Since the schema is so heavily normalized this generally doesn't affect any values other than the one that was changed.
 
 So if the change to our data is:
 
@@ -685,22 +685,18 @@ Then the change to the DOM will be:
 
 That is, we delete the `[tr ...]` subtree containing Bobs message, we delete the `[div ...]` containing Alices like and we create a new subtree for Chias new message.
 
-That may seem obvious, but we could equally have decided to leave the four message subtrees intact but change the text of each. Without unique keys to help match up the old and new subtrees, React might decide to do exactly that. Tying the identity of each subtree to the rows that feed them data provides a simple mental model that is easy to map to the visual appearance of the template. 
+That may seem obvious, but we could just as correctly have decided to leave the four message subtrees intact but change the text of each. Without unique keys to help match up the old and new subtrees, React might decide to do exactly that. 
+
+Tying the identity of each subtree to the rows that feed them data provides a simple mental model that is easy to map to the visual appearance of the template. 
 
 ## Events
 
 We also need to be able to react to user input. 
 
-In Imp, we can tag relations as event relations.
+In Imp, we can tag relations as event relations:
 
 ``` julia    
 @event new_like(Session, Message)
-
-@query begin
-  new_like(session, message)
-  username(session) => username
-  return likes(username, message)
-end
 ```
 
 For every event relation, a matching javascript function is created that will insert a row into that relation. Event handlers in the template can call these functions to send data back to the server.
@@ -709,7 +705,17 @@ For every event relation, a matching javascript function is created that will in
 [button "like!" onclick="new_like($session, $message)"]
 ```
 
-But we also still allow arbitrary javascript in event handlers, which is useful for eg reading state from the DOM.
+And then we can write Imp queries to react to these events:
+
+``` julia
+@query begin
+  new_like(session, message)
+  username(session) => username
+  return likes(username, message)
+end
+```
+
+We also still allow arbitrary javascript in event handlers, which is useful for eg reading state from the DOM.
 
 ``` julia
 [input
@@ -1084,7 +1090,7 @@ group_3(42, 4, 4, "", 0, "", 0) => (0x05, 0x21, Html, "td")
 # etc...
 ```
 
-First we instruct the browser to delete all the nodes that were in the old query output and not in the new.
+First, for each old node that is not in the new output we instruct the browser to delete the node.
 
 ``` julia
 deleteNode(0x03)
@@ -1097,7 +1103,7 @@ deleteNode(0x13)
 # etc...
 ```
 
-Then for each new node that is not in the old output we find its sibling, if it has one, and instruct the browser to create a new node and insert it in the appropriate place.
+Second, for each new node that is not in the old output we find its sibling, if it has one, and instruct the browser to create the new node and insert it in the appropriate place.
 
 ``` julia
 insertAtEnd(0x22, Html, "tr")
@@ -1189,9 +1195,7 @@ Times in ms:
 
 (I couldn't be bothered to download and compile the React version myself to add a button to add 200 todos at once.)
 
-I won't bother reading too much detail into those numbers, but it's clear that Imp is at least in the same ballpark as React and Om for this simple example.
-
-Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins so in theory it should be easy to maintain incrementally.
+I won't bother reading too much detail into those numbers, but it's clear that Imp is at least in the same ballpark as React and Om for this simple example, which means that this approach could feasibly work.
 
 I also tested how the server scales with multiple sessions connected. This table shows the total time taken by the server to add the 201st todo and update every client (mean of 100 runs).
 
@@ -1204,7 +1208,7 @@ I also tested how the server scales with multiple sessions connected. This table
 
 (\*Chrome has a cunning optimization where after ~150 tabs it just stops loading pages, so the last row is 100 real tabs and 900 fake sessions.)
 
-This is the cost to recalculate everything from scratch and is not proportional to the number of events processed, so if I add some kind of event batching it looks like I could handle up to 100 clients with reasonable latency, even without incremental maintenance.
+This is the cost to recalculate everything from scratch and is not proportional to the number of events processed, so if I add some kind of event batching it looks like I could handle up to 100 clients with reasonable latency.
 
 Breaking down the costs at 100 tabs:
 
@@ -1213,6 +1217,8 @@ Breaking down the costs at 100 tabs:
 * The marginal allocation rate per tab is 1mb across 5373 allocations. This is almost entirely in the template queries. Most of the individual allocations are from creating identical event strings on each of 200 todos x 100 tabs, but the bulk of the allocation size is from many, many copies of the columns in these relations.
 
 So there is probably a lot of margin for improvement in the control flow layer that binds the queries together and handles sorting/indexing relations. Which is unsurprising, because one of the top items on my todo list is `control flow is a pile of poop - make it not that`.
+
+Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins and maps so in theory it should be easy to maintain incrementally.
 
 Overall, I'm pleasantly surprised that it's already this fast.
 
