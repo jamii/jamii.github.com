@@ -884,7 +884,7 @@ If we represent these paths as tuples and use them as sort keys, the nodes at ea
 (1, 1, message=1, 4) => [td [button "like!" onclick="new_like(42, 1)"]]
 ```
 
-When we insert new nodes around an existing one it's key doesn't change, so whatever incremental maintenance algorithm I end up using will only have to deal with inserting and deleting rows for each node and not updating any additional bookkeeping information elsewhere.
+When we insert new nodes around an existing one its key doesn't change, so whatever incremental maintenance algorithm I end up using will only have to deal with inserting and deleting rows for each node and not updating any additional bookkeeping information elsewhere.
 
 Julia can avoid dynamic dispatch when given stable types. To make sure all the sort keys have the same type, we can just fill in dummy columns.
 
@@ -1179,7 +1179,7 @@ My approach is not particularly rigorous. I just ran through all the benchmarks 
 
 Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces. 
 
-Time in ms:
+Times in ms:
 
 |       | adding 1st todo | adding 200 todos at once | adding 201st todo |
 |-------|-----------------|--------------------------|-------------------|
