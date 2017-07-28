@@ -46,6 +46,10 @@ h3 {
   line-height: 1.66em;
 }
 
+h4 {
+  text-align: center;
+}
+
 a {
   text-decoration: underline;
   font-weight: normal;
