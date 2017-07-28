@@ -1233,3 +1233,5 @@ Running everything on the server has obvious limitations wrt latency and maximum
 I haven't given much thought to security yet. A good start would be to track what events are present in the template and refuse to allow clients to submit any events that aren't on the list.
 
 The implementation strategy here produces non-recursive views which only use simple joins, string concatenation and hashing. It should be possible to target pretty much any relational system. I've [implemented the underlying layers](https://github.com/jamii/imp/tree/master/lb) in [LogicBlox](http://logicblox.com/) and I'm just waiting on some upcoming features before doing the work to compile templates automatically. It would be useful to target something like sqlite too.
+
+_Thanks to rtnz for extensive feedback on the first drafts._
