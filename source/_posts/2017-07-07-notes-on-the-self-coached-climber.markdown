@@ -182,7 +182,7 @@ Stamina - ability to work and recover repeatedly over the day __(I'm not clear o
 * Bouldering pyramid - given max grade M, climb 4x(M-3), 2x(M-2), 1x(M-1), 1xM, 1x(M-1), 2x(M-2), 4x(M-3). Fully rest between routes.
 * Continuous-Intensity Repetitions on rope - 10-15 laps, rest fully between laps, aim for hardest grade that won't produce a pump.
 
-# Strength training
+## Strength training
 
 Aside from obvious benefits, improving strength improves your ability to rest. Recovery rate is related to percentage of maximum contraction, not absolute force, so stronger climbers can rest on holds that weaker climbers would pump out on. __(Not clear what the mechanism is here. Are stronger muscles more efficient? Does percentage-of-maximum-contraction affect how much the blood supply is constricted?)__
 
