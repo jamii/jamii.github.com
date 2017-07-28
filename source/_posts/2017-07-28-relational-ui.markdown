@@ -1,7 +1,7 @@
 ---
-layout: "post"
-title: "A UI library for a relational language"
-date: "2017-07-19 11:12"
+layout: post
+title: A UI library for a relational language
+date: '2017-07-28 11:18'
 ---
 
 TLDR:
