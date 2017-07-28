@@ -743,7 +743,7 @@ As much as possible we want to do the work in Imp queries. This lets us take adv
 
 Let's walk through how the template compiler deals with our example.
 
-The first thing the compiler does is number all the nodes, breadth-first, to make it easier to refer to them.
+The first thing the compiler does is number all the nodes (in pre-order) to make it easier to refer to them.
 
 ``` julia
 [table # 1
