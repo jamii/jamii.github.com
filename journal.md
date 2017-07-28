@@ -10396,3 +10396,9 @@ Yet more editing.
 ### 2017 Jul 26
 
 Yet. More. Editing.
+
+### 2017 Jul 28
+
+And up it goes. 
+
+I think I'm reaching the limits of what can usefully be explained with text. Going forwards, I'm going to try creating animated debuggers for everything I build. I suspect it will be a similar amount of effort to the constant rewriting of examples that went into this post but with much more versatility.
