@@ -5827,7 +5827,7 @@ gc()
 
 This is taking forever...
 
-Drops memory usage to 2.8gb. Better than nothing. Stills seems like a lot of overhead for a <1gb file.
+Drops memory usage to 2.8gb. Better than nothing. Stills seems like a lot of overhead for a sub-1gb file.
 
 Small numbers are only a few bytes in ascii, but always 8 bytes as an Int64. Postgres treats `integer` as 32 bits. SQLite stores it adaptively depending on the max value. Let's copy SQLite.
 
@@ -9592,7 +9592,7 @@ Todo:
 
 I had 'stop making node_ for FixedNode' on the todo list but I just realised that I can't do that in the current setup because I need them for AttributeNodes. I would have to hunt down the group id for the FixedNode and pick them out by key instead. That will be easier after refactoring.
 
-I noticed the codegen in render is pretty bad, so I spent a few hours tweaking it. Mostly it came down to inserting type hints in places where the types are static and closures that cause boxing. The latter is kind of annoying because it seems unpredictable and avoiding it rules out lots of nice things like array comprehensions.
+I noticed the codegen in render is pretty bad, so I spent a few hours tweaking it. Mostly it came down to inserting type hints in places where the types are static and removing closures that cause boxing. The latter is kind of annoying because it seems unpredictable and avoiding it rules out lots of nice things like array comprehensions.
 
 Here's where we're at now:
 
@@ -10402,3 +10402,58 @@ Yet. More. Editing.
 And up it goes. 
 
 I think I'm reaching the limits of what can usefully be explained with text. Going forwards, I'm going to try creating animated debuggers for everything I build. I suspect it will be a similar amount of effort to the constant rewriting of examples that went into this post but with much more versatility.
+
+### 2017 Aug 4
+
+I spent this week deciding what to work on for the next 3-6 months. I always find this difficult. When I'm actually working on something concrete I find it pretty easy to schedule and prioritize work, but choosing a direction is so open-ended that it's easy to become paralyzed with indecision.
+
+I settled on a somewhat meta- direction. I always complained at Eve that I didn't know who our users were and so didn't have clear goals for design but I've been perpetuating that bad habit in Imp. 
+
+I spoke to a couple of people who would be interested in using Imp in their day-to-day work if it were actually ready, and I also went through a bunch of imaginary users. 
+
+Long-term, I can divide the desired features into two rough groups:
+
+* Acquiring, exploring and manipulating data (import tools, schemas, visual browser, query editor, graphs etc)
+* Deploying stateful, collaborative services (deployment/sharing, persistence, collaborative editing of data and/or code, version control, permissions)
+
+There's a third group that revolves around building websites/apps, which is the current focus of Eve, but I'm much less interested in that. Apps are a means to an end, the end is most often 'shared datastore + reasonable interface' and a big chunk of the time I suspect that that end is better served by some standard interface with the odd plugin rather than requiring people to build all their interactions from scratch. It's the wrong level of abstraction for most day-to-day problems. 
+
+That means that my focus on reactivity is probably misplaced. It's really cool and interesting that you can build webapps with a declarative, order-lite language, but it's not actually that relevant to the problems that I'm trying to solve.
+
+Short-term, my immediate goal is to make the current feature set usable, so that I can actually put it in front of people and see what they do with it. I went through an intro for an imaginary friend and made a list of all the places where I had caveats or apologies:
+
+1. syntax is verbose for normalized schemas
+2. no support for deletion
+3. no support for negation/existentials
+4. aggregates are confusing
+5. model for state/mutation is a huge hack - requires understanding operational semantics
+6. no way to query previous states
+7. zero-column relations don't work
+8. parsing errors are unhelpful
+9. runtime errors are unhelpful and aren't even raised from user code
+10. the query compiler is hard to understand/maintain/extend
+11. the query compiler has hygiene bugs
+12. query compile times are way too long
+13. no good way to display relations
+14. query language is not composable/extensible
+15. order matters in the control flow language, but this is not visually obvious and mistakes are not detected by the compiler
+
+Breaking this down by layer:
+
+* relations (2, 7, 13)
+* query execution (3, 4, 7, 9, 10, 11, 12, 14)
+* query parsing (1, 3, 4, 8, 9)
+* control flow (2, 5, 6, 8, 9, 15)
+
+I'm going to start by replacing the monolithic compiler with a staged interpreter. This directly addresses 10/11/14, will hopefully impact 12 and will make 2/3/4/7/9 easier to fix. It also dictates the interface to relations, which means it's worth doing before 7/13.
+
+It's going to be constantly tempting to try out different query execution strategies and try to improve performance, but I have to keep reminding myself that the prime goal is to improve usability. The current performance is fine, and trying to mix research with refactoring is a recipe for overrunning deadlines and drained motivation. So as much as possible I want to generate more or less the same code as now, just via staging rather than direct codegen.
+
+Random performance diversion:
+
+``` julia
+quicksort!((strings, ints)) # 2.415ms
+quicksort!((hash.(strings), strings, ints)) # 0.887ms
+```
+
+If I only care about having some arbitrary order, I should sort most things by their hashes. Avoids jumping all over memory.
