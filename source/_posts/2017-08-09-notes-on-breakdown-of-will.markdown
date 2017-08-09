@@ -1,10 +1,10 @@
 ---
 layout: post
 title: Notes on 'Breakdown of Will'
-date: '2017-08-08 18:31'
+date: '2017-08-09 13:08'
 ---
 
-TODO link
+<https://smile.amazon.com/dp/0521596947>
 
 ## Akrasia vs willpower
 

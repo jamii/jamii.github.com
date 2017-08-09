@@ -1,10 +1,10 @@
 ---
-layout: "post"
-title: "Notes on 'The Mind Illuminated'"
-date: "2017-08-08 18:34"
+layout: post
+title: Notes on 'The Mind Illuminated'
+date: '2017-08-09 13:08'
 ---
 
-TODO link
+<https://smile.amazon.com/dp/1781808201/>
 
 Old Buddhist texts on meditation contain a lot of structure and progression. Not well communicated though, because of language barrier and assumption that the reader is embedded in a community of experienced practitioners. Authors goal is to produce a standalone text for a modern reader. 
 
@@ -84,7 +84,7 @@ Deal with impatience or frustration by noticing but not identifying with them - 
 
 ## Stage 3 - Extend continuity of attention and overcoming forgetting
 
-Goal: overcome forgetting (the breath) and falling asleep
+Goal: no more forgetting the meditation object or falling asleep
 
 Losing extrospective awareness contributes to drowsiness - need constant input to stay awake at this stage.
 
@@ -94,4 +94,67 @@ Label distractions at the moment you notice them eg thinking, planning, remember
 
 Doing periods of sustained attention, practice quick introspective awareness checkins. Trying to develop this as a regular habit in general life. Priming awareness to pay attention to internal processes.
 
-Deal with pain initially like impatience or frustration - just observe it. If you really need to move to deal with it, formulate the intention first and then move slowly and deliberately. Don't just react.
+Deal with pain initially like impatience or frustration - just observe it. If you can't avoid focusing on it, use it as the meditation object. If you really need to move to deal with it, formulate the intention first and then move slowly and deliberately. Don't just react.
+
+Dullness - states along the scale from drowsy to spaced out. When you catch it, need to wake yourself up again before returning to meditation. In order of drasticness:
+
+* Take several deep breaths
+* Tense all the muscles in your body
+* Meditate while standing
+* Meditate while walking
+* Go splash cold water on your face
+
+## How mindfulness works
+
+Less distracted by emotions, so we still have space to think calmly.
+
+Moderating behavior - inserts pause between trigger and reaction so that you can recognize patterns and, over time, edit them.
+
+## Stage 4 - Continuous attention and overcoming gross distraction and strong dullness
+
+Goal: continuous introspective awareness which counters gross distraction and strong dullness as they arise.
+
+Powerful new distractions - insights, strong emotions. Possibly valuable, but a distraction from training your mind.
+
+Insights - make a note and put them aside for later analytical meditation.
+
+Strong emotions, memories, imagery - resist giving them attention as much as possible. If not possible - acknowledge, allow, accept. Maintain bodily and introspective awareness to avoid getting caught up.
+
+## Model 2
+
+Consciousness as a stream of discrete moments.
+
+Each moment can contain either information from a single sense, or an abstract combining/binding/integration of previous inputs that are still in working memory. 
+
+Each moment is also either attention or awareness. Contain few objects vs many objects. Engage much conscious processing vs mostly background processing.
+
+Non-perceiving moments - moments of potential but not actual consciousness. Dullness is the increase in fraction of non-perceiving moments. 
+
+Conscious intention to pay attention or maintain awareness reduces the number of non-perceiving moments. Non-perceiving moments are also non-intending moments, so in the absence of external interruptions they have the potential to cascade into drowsiness.
+
+Goal in meditation is to:
+
+* increase the number of non-perceiving moments
+* increase the control over what moments of attention are focused on
+* spread moments of awareness across all introspective and extrospective senses
+
+## Much missing content
+
+...
+
+## Walking meditation
+
+Use sensation of feet on the ground as meditation object. 
+
+Start by walking as slowly as possible, breaking up the motion into individual movements - left foot up, left foot swing, left foot down, right foot up, right foot swing, right foot down etc.
+
+When you catch yourself in distraction, stop walking for a moment and reengage with your senses.
+
+## Analytical meditation
+
+1. Prepare a problem, selecting important information and setting aside any irrelevant information.
+2. Begin with focusing on the breath until your mind is calm. 
+3. Hold the problem in your head as the meditation object. Don't apply effort to solve it, just roll it around and listen. Wait for something to jump out at you. Like gently picking at a tangled knot at random until something comes loose.
+4. Follow the thread that popped out and see where it leads.
+5. Evaluate the results. You may have found a solution, or a deadend, or some question that needs research. Go back to the step 3 for a new thread if necessary.
+6. Consolidate, verify and record the results.
