@@ -10457,3 +10457,86 @@ quicksort!((hash.(strings), strings, ints)) # 0.887ms
 ```
 
 If I only care about having some arbitrary order, I should sort most things by their hashes. Avoids jumping all over memory.
+
+### 2017 Aug 9
+
+Ok, I need to think this out even more.
+
+The whole Imp vision includes:
+
+1. Unified data model
+2. Persistence
+3. Version control / collaboration / offline editing
+4. Query/view language
+5. Model of time/change (eg queries across versions)
+6. Some way to create UI
+7. Good default viewing/exploring/editing UI
+8. Good default query/view UI
+9. Runs on phone and laptop, without deploy/install step
+10. Soft automation / notifications / scheduling
+
+Last year I figured out most of 4. This year I figured out most of 6. I have ideas but am still undecided on 1 and 5.
+
+Old versions of Eve had some crude but good enough solutions to 2. We tried 7 and 8 but it was unconvincing and we backed off.
+
+Currents versions of Eve seem to have settled down on 1,4,5. 6 is there but they seem to be leaning towards something more templatey like me.
+
+Think about the size of other projects. Git = 3. Sqlite = 1,2,4,5. Fieldbook/Airtable/Ragic = 1,2,7.  
+
+If one of Fieldbook/Airtable/Ragic was open-source I would have a much better starting platform. Building that would be valuable in its own right, but UI is definitely not my strong point.
+
+If I estimated, based on progress so far, another half year for each of those bullet points, it would take me another four years before this is usable. That's pretty fucking daunting.
+
+Let's constrain the problem. Suppose I wanted to show someone a demo on my phone by the end of this year. That's five months. What could I do in that time?
+
+### 2017 Aug 10
+
+I can't run Julia on my phone. Not natively, not in the browser. So in the long run I need to port this to a different language. Java is the obvious choice for android. Rust would have some complexity overhead, but is nicer for runtime dev and would potentially let me run stuff in the browser too.
+
+I'm considering using sqlite as a starting point. It would let me get up and running without porting all the Imp runtime, and would solve persistence too. But there may be enough unexpected niggles that it's not a time saver overall.
+
+I also have to decide whether to use the android UI or to stick with all-html. The latter will make it easier to support multiple platforms but there is enough of a performance cost that react-native exists. 
+
+Speaking of react-native, would that a good way to bridge between Rust and Android?
+
+https://tadeuzagallo.com/blog/react-native-bridge/
+
+Looks like a lot of the setup work is done in the javascript code, and there are also a bunch of queues to make the communication between the Android thread and the JS thread asynchronous.
+
+I found a couple of examples of calling into native libs from react-native, but they are all using the react UI still so it doens't help me figure out the protocol.
+
+https://github.com/caseylmanus/go-react-native
+
+Qt is also available cross-platform, but it doesn't seem to have enough advantages over html to make up for the learning curve. Also none of the Rust bindings seem to be complete.
+
+Looks like nativescript does synchronous bindings:
+
+http://developer.telerik.com/featured/nativescript-works/
+
+Both seem to be pretty complicated. Android has an XML layout thing, so it must have some data-centric way to building UI. Oh, wait:
+
+> For performance reasons, view inflation relies heavily on pre-processing of XML files that is done at build time. Therefore, it is not currently possible to use LayoutInflater with an XmlPullParser over a plain XML file at runtime; it only works with an XmlPullParser returned from a compiled resource (R.something file.) 
+
+But maybe? 
+
+https://stackoverflow.com/questions/1754714/android-and-reflection
+
+https://stackoverflow.com/questions/16022615/how-to-load-programmatically-a-layout-xml-file-in-android
+
+More react native internals:
+
+https://medium.com/@rotemmiz/react-native-internals-a-wider-picture-part-1-messagequeue-js-thread-7894a7cba868
+
+https://medium.com/@jondot/debugging-react-native-performance-snoopy-and-the-messagequeue-fe014cd047ac
+
+https://github.com/facebook/react-native/blob/cb313569e526353a71755a6e40a78713e2d4e454/Libraries/BatchedBridge/MessageQueue.js
+
+So it looks like I *can* call arbitrary stuff across their bridge. But that won't give me access to layout or anything useful like that, because that's partially managed by js and partially by another native module. I don't think I can reuse this usefully.
+
+No decision reached yet, but I have at least a good idea of what the options are:
+
+* webview - familiar, but every major app has moved away from hybrid
+* react native - lots of complexity, probably too hard to glue together wihout using their entire renderer
+* native and jni - simple, but requires hand-coding or reflection for api
+
+I'm leaning towards the latter. It will at least give me simple apps with a sensible complexity load. 
