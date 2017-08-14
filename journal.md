@@ -10540,3 +10540,7 @@ No decision reached yet, but I have at least a good idea of what the options are
 * native and jni - simple, but requires hand-coding or reflection for api
 
 I'm leaning towards the latter. It will at least give me simple apps with a sensible complexity load. 
+
+### 2017 Aug 13
+
+Got the Rust tools installed and semi-working. VS Code seems to be the best supported editor. Had to install https://fonts.google.com/download?family=Droid%20Sans%20Mono to make it readable.  
