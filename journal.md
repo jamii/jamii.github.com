@@ -10558,3 +10558,66 @@ Both require information about relationship caridinality to be expressed separat
 A downside of EAV as it is normally practiced is that you can only say things about entities, so if the natural key for a domain is, say, a string, you must create entities with a string AV. If the same string is used somewhere else but not constructed into an entity in the same way, you don't get equality.
 
 But this might actually be useful in a GUI, because it tells you whether various string-valued KVs should be displayed together. It's much like creating a table with a single string column and then using it as a foreign key. I'd wager that in most actual applications, strings tend to name some real entity. It's only in programming where we abstract enough to consider as string as a thing in it's own right, say for string processing functions in the stdlib. (Does Eve treat functions as relations? Not really, but it also doesn't have many functions atm.)
+
+Let's just do something.
+
+``` rust
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Entity {
+    values: Vec<(Attribute, Value)>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Attribute {
+    name: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+enum Value {
+    Entity(Entity),
+    Attribute(Attribute),
+    String(String),
+}
+
+struct Data {
+    eav: Vec<(Entity, Attribute, Value)>,
+}
+
+impl Data {
+    fn add_eav(self:&mut Self, entity:Entity, attribute:Attribute, value:Value) {
+        self.eav.push((entity, attribute, value));
+    }
+
+    fn add_e(self:&mut Self, entity:Entity) {
+        for (attribute, value) in entity.values.clone() {
+            self.add_eav(entity.clone(), attribute, value);
+        }
+    }
+}
+```
+
+Don't think about performance at all yet. Just keep moving.
+
+I want to print stuff out in nice tables. So there needs to be some kind of schema info.
+
+``` rust
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Kind {
+    name: String,
+    attributes: Vec<Attribute>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Entity {
+    kind: Kind,
+    values: Vec<Value>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct Attribute {
+    name: String,
+    kind: Kind,
+}
+```
+
+It ought to be reflected into the db eventually, but right now it doesn't matter.
