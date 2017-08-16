@@ -10544,3 +10544,17 @@ I'm leaning towards the latter. It will at least give me simple apps with a sens
 ### 2017 Aug 13
 
 Got the Rust tools installed and semi-working. VS Code seems to be the best supported editor. Had to install https://fonts.google.com/download?family=Droid%20Sans%20Mono to make it readable.  
+
+### 2017 Aug 16
+
+Somewhat paralyzed by data model decisions. LBs [constructor predicates](https://developer.logicblox.com/content/docs4/core-reference/html/index.html#predicates-constructors) and Eves entities-as-a-bag-of-AVs both effectively allow constructing algebraic datatypes, the lack of which often makes life hard in SQL.
+
+There is a natural symettry between the two. Entities-as-a-bag-of-AVs allows building n-way relationships out of the 2-way relationships that EAV provides. Relational models allow n-way relationships from the start, but if you want to do any metaprogramming you're going to end up with some sort of column-n-of-row function, which is effectively interpreting the relational model as it would be implemented in EAV.
+
+Neither lends itself more to a particular level of structure. A relational model could just be a set of arbitrary-length named tuples. An EAV model could require types for every entity and attribute. 
+
+Both require information about relationship caridinality to be expressed separately too (although I suppose an EAV model where is always many-to-one is possible, I've never seen it in practice).
+
+A downside of EAV as it is normally practiced is that you can only say things about entities, so if the natural key for a domain is, say, a string, you must create entities with a string AV. If the same string is used somewhere else but not constructed into an entity in the same way, you don't get equality.
+
+But this might actually be useful in a GUI, because it tells you whether various string-valued KVs should be displayed together. It's much like creating a table with a single string column and then using it as a foreign key. I'd wager that in most actual applications, strings tend to name some real entity. It's only in programming where we abstract enough to consider as string as a thing in it's own right, say for string processing functions in the stdlib. (Does Eve treat functions as relations? Not really, but it also doesn't have many functions atm.)
