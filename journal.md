@@ -1837,7 +1837,7 @@ I also spent a week or two exploring data-structures for the indexes. I tried bu
 
 Using the same layout as [Champ](http://michael.steindorfer.name/publications/oopsla15.pdf) would be far easier and produce far less segfaults. I haven't seen a comparison between the original C++ HAMT and the various descendants in managed languages so it's hard to say how much the extra pointer indirections cost. I wonder if there is some way to estimate the difference without actually having to implement both...
 
-# Compiling
+### Compiling
 
 Imp is currently an interpreter. The overhead of interpreting query plans is hard to determine exactly, but the execution time is dominated by sorting and the sort function is ~35% faster if I hardcode the data layout for a specific table, so it's certainly non-trivial.
 
