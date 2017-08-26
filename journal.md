@@ -34,7 +34,7 @@ However, it's not yet useful for *me*. I spend my days building compilers and ID
 
 Performance is the only point for which I actually have something resembling a plan, so that's where I'll begin.
 
-# Runtime
+### Runtime
 
 Like Eve, Imp is going to be a [Bloom](http://boom.cs.berkeley.edu/)-like language. There are a couple of stateful tables used for inputs and everything else is built out of [views](https://en.wikipedia.org/wiki/View_%28SQL%29) written in a Turing-complete query language. That means that the internals look more like a relational database than a programming language.
 
