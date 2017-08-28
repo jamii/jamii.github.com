@@ -20,7 +20,7 @@ footer: true
 
 * Together with the CEO built a language and IDE which secured a [$2.3m seed round](https://techcrunch.com/2014/10/01/eve-raises-2-3m-to-rethink-programming/) from Andreessen Horowitz.
 
-* Created a live relational language based on temporal-logic extensions of datalog.
+* Created a [live relational language](http://witheve.com/) based on temporal-logic extensions of datalog.
 
 * Built relational databases, query planners and bootstrapped compilers for a series of prototypes (demonstrated in <https://youtu.be/VZQoAKJPbh8>).
 
@@ -40,19 +40,19 @@ footer: true
 
 Highlighted commercial projects:
 
-* Provided item-item article recommendations for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server. 
+* Built a [LaTeX aware search engine](http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/) to power <latexsearch.com>. Covers the entire Springer library of more than 8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
 
-* Built a prototype replacement for the core trading engine at the Smarkets betting exchange: 10x less code, 40x better throughput, 10x better 99% latency.
+* Built a prototype replacement for the core trading engine at the [Smarkets](https://smarkets.com/) betting exchange: 10x less code, 40x better throughput, 10x better 99% latency.
 
-* Built a LaTeX aware search engine to power latexsearch.com. Covers the entire Springer library - more than 8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
+* [Provided item-item article recommendations](https://github.com/jamii/springer-recommendations) for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server. 
 
 Highlighted personal projects:
 
-* Extended the core.logic CLP solver with fair conjunction and a parallel solver.
+* Extended the core.logic CLP solver with [fair conjunction and a parallel solver](http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/).
 
-* Built a clojure DSL for pattern matching and parsing using PEGs.
+* Created a clojure DSL for [pattern matching and parsing using PEGs](http://scattered-thoughts.net/blog/2012/12/04/strucjure-motivation/).
 
-* Built a multi-user clojure REPL for collaborative live-coding.
+* Built a [multi-user clojure REPL](https://github.com/jamii/concerto) for collaborative live-coding.
 
 ## MSc Computer Science at Oxford University
 
