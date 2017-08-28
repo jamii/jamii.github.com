@@ -12,6 +12,7 @@ footer: true
 #### Aug 2016 - today
 
 * Built a relational query compiler that compiles queries into zero-allocation, [worst-case optimal](https://arxiv.org/abs/1310.3314) native code and [outperforms Postgres](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) on the Join Order Benchmark.
+
 * Built a declarative language for building GUIs directly on top of a relational database, without any application code, that [performs on par with React](http://scattered-thoughts.net/blog/2017/07/28/relational-ui/).
 
 ## CTO at [Eve](http://witheve.com/)
