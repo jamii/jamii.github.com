@@ -8,7 +8,7 @@ date: "2017-08-31 13:10"
 
 __Surprising parallels to parts of rationalist culture eg double crux, tabooing words, tell culture.__
 
-__Shouldn't be surprising since the underlying strategy seems to be the same - make sure everyone actually agrees on what the problem actually is, with no room for ambiguity due to different interpretations of abstractions or different values.__
+__Shouldn't be surprising since the underlying strategy seems to be the same - make sure everyone actually agrees on what the problem actually is, with no room for ambiguity due to different values or different interpretations of abstractions.__
 
 __Much of the book doesn't seem as applicable to zero- or negative-sum interactions eg negotiating prices. It relies on sharing as much information as possible.__
 
