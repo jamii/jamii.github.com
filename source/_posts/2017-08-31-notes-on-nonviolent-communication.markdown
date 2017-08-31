@@ -23,7 +23,7 @@ Observations:
 * avoid moralistic language eg 'should', 'ought', 'must', 'have to', 'deserve', too open to disagreement or multiple interpretations
 * avoid value judgments: 'you are too messy' -> 'I dont like how much mess there is right now'
 * compliments are also often value judgements, tend to be better received as observations and feelings: 'you are a really good teacher' -> 'the way you explained X finally made sense to me and I feel less anxious about my exam now'
-* basically, try to make statements that are inarguably true, that any observer would be unable to disagree with
+* __basically, try to make statements that are inarguably true, that any observer would be unable to disagree with__
 
 Feelings:
 
