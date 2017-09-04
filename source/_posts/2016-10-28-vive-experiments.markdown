@@ -56,6 +56,8 @@ I played around with a control scheme for a real-time game where the player grab
 
 I'd like to go back and explore that more at some point.
 
+I built a couple more toys exploring simple interfaces to [SuperCollider](https://en.wikipedia.org/wiki/SuperCollider) but I lost the recordings. I mapped positions in space to synth inputs, drew shapes with the controllers and had a wave looping around a space that would send inputs to SC as it passed. This created a simple language for drawing compositions in 3D.
+
 ### Tools
 
 All the above experiments were developed in Unity. I also tried Unreal Engine and Stingray. I really disliked all three.
