@@ -44,9 +44,9 @@ There's an interesting design problem when it comes to using both hands. If each
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4R-hkq2ApgQ" frameborder="0" allowfullscreen></iframe>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/kU92H76c4TM" frameborder="0" allowfullscreen></iframe>
-
 I also allowed the player to rotate themselves in a similar way. This turned out to be a really bad idea. The first time I tested it I immediately had to take off the headset and sit down. It's really interesting that the linear motion and zooming are totally fine, but rotation is instantly bad.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kU92H76c4TM" frameborder="0" allowfullscreen></iframe>
 
 Another direction I thought about was strategy games. There are very few good 3D strategy games on the desktop because it's incredibly hard to understand and control a 3D scene with 2D input and display. 
 
