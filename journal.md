@@ -15048,3 +15048,5 @@ ERROR system_capture_2 not a valid port
 ```
 
 Already spent a few hours on this and it looks like Sam is drowning in linux support requests, so let's just stick with 2.8 for a while.
+
+And now my sound doesn't work.
