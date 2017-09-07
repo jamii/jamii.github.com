@@ -14,7 +14,7 @@ MathJax.Hub.Config({
 </script>
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
-</script> 
+</script>
 
 This is a concatenation of work journals from various projects and points in time. It's in chronological order, but doesn't start using dates until about a year in.
 
@@ -2867,7 +2867,7 @@ jamie@wanderer:~/code/imp/src$ perf stat -e cycles,instructions,branches,branch-
    138,966,714,020      instructions              #    0.39  insns per cycle          (83.33%)
     19,330,421,477      branches                                                      (83.33%)
        335,132,522      branch-misses             #    1.73% of all branches          (83.33%)
-               407      context-switches                                            
+               407      context-switches
      3,865,389,150      cache-references                                              (83.33%)
      2,242,127,883      cache-misses              #   58.005 % of all cache refs      (83.33%)
 
@@ -2925,7 +2925,7 @@ nothing
    172,704,455,804      instructions              #    0.37  insns per cycle          (83.33%)
     30,037,830,863      branches                                                      (83.34%)
        448,233,381      branch-misses             #    1.49% of all branches          (83.34%)
-            18,070      context-switches                                            
+            18,070      context-switches
      5,017,726,390      cache-references                                              (83.34%)
      2,915,696,296      cache-misses              #   58.108 % of all cache refs      (83.33%)
 
@@ -2943,20 +2943,20 @@ jamie@wanderer:~/code/imp/src$ sudo perf record -e context-switches --call-graph
 ...
 jamie@wanderer:~/code/imp/src$ sudo perf report -g graph --no-children
 
--   99.57%  julia          [kernel.kallsyms]  [k] schedule                                           
-   - schedule                                                                                        
-      - 70.90% retint_careful                                                                        
-           9.08% 0x7f80f5a386bc                                                                      
-           9.03% 0x7f80f4aa715f                                                                      
-           7.37% 0x7f80f4aa7d85                                                                      
-           6.09% 0x7f80f4aa8964                                                                      
-           3.19% 0x7f80f5a383c5                                                                      
-           2.85% 0x7f80f5a38a8d                                                                      
-           2.47% 0x7f80f5a387fb                                                                      
-           2.47% 0x7f80f5a383fa                                                                      
-           2.23% 0x7f80f5a387f4                                                                      
-           2.23% 0x7f80f5a383f3   
-    etc...        
+-   99.57%  julia          [kernel.kallsyms]  [k] schedule
+   - schedule
+      - 70.90% retint_careful
+           9.08% 0x7f80f5a386bc
+           9.03% 0x7f80f4aa715f
+           7.37% 0x7f80f4aa7d85
+           6.09% 0x7f80f4aa8964
+           3.19% 0x7f80f5a383c5
+           2.85% 0x7f80f5a38a8d
+           2.47% 0x7f80f5a387fb
+           2.47% 0x7f80f5a383fa
+           2.23% 0x7f80f5a387f4
+           2.23% 0x7f80f5a383f3
+    etc...
 ```
 
 Gee, thanks perf.
@@ -2984,7 +2984,7 @@ jamie@wanderer:~$ perf stat -e cycles,instructions,branches,branch-misses,contex
    163,202,516,794      instructions              #    0.45  insns per cycle          (83.33%)
     28,053,778,030      branches                                                      (83.33%)
        418,751,631      branch-misses             #    1.49% of all branches          (83.33%)
-               848      context-switches                                            
+               848      context-switches
      4,859,874,620      cache-references                                              (83.33%)
      2,563,913,645      cache-misses              #   52.757 % of all cache refs      (83.33%)
 
@@ -3056,7 +3056,7 @@ jamie@wanderer:~/code/imp$ perf stat -e cycles,instructions,branches,branch-miss
    120,350,860,733      instructions              #    0.37  insns per cycle          (83.33%)
     19,325,072,668      branches                                                      (83.33%)
        328,275,527      branch-misses             #    1.70% of all branches          (83.34%)
-               855      context-switches                                            
+               855      context-switches
      3,829,953,580      cache-references                                              (83.34%)
      2,075,840,379      cache-misses              #   54.200 % of all cache refs      (83.34%)
 
@@ -3117,7 +3117,7 @@ jamie@wanderer:~/code/imp$ perf stat -e cycles,instructions,branches,branch-miss
    132,453,050,158      instructions              #    0.33  insns per cycle          (83.33%)
     21,660,806,420      branches                                                      (83.33%)
        375,102,742      branch-misses             #    1.73% of all branches          (83.34%)
-             1,341      context-switches                                            
+             1,341      context-switches
      3,932,521,463      cache-references                                              (83.34%)
      2,337,178,854      cache-misses              #   59.432 % of all cache refs      (83.33%)
 ```
@@ -3161,7 +3161,7 @@ jamie@wanderer:~/code/imp$ perf stat -e cycles,instructions,branches,branch-miss
    120,094,681,100      instructions              #    0.35  insns per cycle          (83.32%)
     19,321,743,906      branches                                                      (83.33%)
        329,449,114      branch-misses             #    1.71% of all branches          (83.33%)
-             1,915      context-switches                                            
+             1,915      context-switches
      3,868,027,630      cache-references                                              (83.34%)
      2,160,131,618      cache-misses              #   55.846 % of all cache refs      (83.34%)
 ```
@@ -3726,7 +3726,7 @@ Performance counter stats for '../target/release/imp':
    26,539,799,614      instructions              #    0.26  insns per cycle          (83.32%)
     4,320,044,658      branches                                                      (83.33%)
        59,527,376      branch-misses             #    1.38% of all branches          (83.34%)
-              326      context-switches                                            
+              326      context-switches
     1,250,325,036      cache-references                                              (83.33%)
       926,747,895      cache-misses              #   74.121 % of all cache refs      (83.34%)
 
@@ -3738,7 +3738,7 @@ Performance counter stats for process id '16164':
    31,434,058,110      instructions              #    0.21  insns per cycle          (83.33%)
     4,811,978,240      branches                                                      (83.33%)
        57,565,871      branch-misses             #    1.20% of all branches          (83.34%)
-              521      context-switches                                            
+              521      context-switches
     1,324,801,988      cache-references                                              (83.34%)
       920,160,263      cache-misses              #   69.456 % of all cache refs      (83.33%)
 
@@ -3990,9 +3990,9 @@ This work has taken longer than I expected. There are a few more things I would 
 
 I have a plan and it starts with some sorted arrays.
 
-Ideally I would just throw some tuples or structs into an array and sort it. Unfortunately, Julia still has this restriction on structs that contain pointers. Everything is happy as long as I stick to PODs but as soon as I want to have, say, a string column, I suddenly end up with an array of pointers to heap-allocated rows. Which is not what I want at all. 
+Ideally I would just throw some tuples or structs into an array and sort it. Unfortunately, Julia still has this restriction on structs that contain pointers. Everything is happy as long as I stick to PODs but as soon as I want to have, say, a string column, I suddenly end up with an array of pointers to heap-allocated rows. Which is not what I want at all.
 
-``` julia 
+``` julia
 r2 = [(id::Int64, id::Int64) for id in ids]
 @time sort!(r2, alg=QuickSort)
 # 0.056419 seconds (5 allocations: 240 bytes)
@@ -4013,13 +4013,13 @@ r2 = [Row(id::Int64, string(id)::ASCIIString) for id in ids]
 
 We can get round this by flipping the layout into columns, but we still need to sort it. Julia's standard sort function only requires length, getindex and setindex:
 
-``` julia 
+``` julia
 type Columns2{A,B} <: Columns{Row2{A,B}}
   as::Vector{A}
   bs::Vector{B}
 end
 
-function Base.length{A,B}(c2::Columns2{A,B}) 
+function Base.length{A,B}(c2::Columns2{A,B})
   length(c2.as)
 end
 
@@ -4035,7 +4035,7 @@ end
 
 But these still have to return something row-like which leaves us with exactly the same problem:
 
-``` julia 
+``` julia
 c2 = Columns2([id::Int64 for id in ids], [id::Int64 for id in ids])
 @time sort!(c2, alg=QuickSort)
 # 0.056417 seconds (5 allocations: 240 bytes)
@@ -4049,28 +4049,28 @@ I would enjoy Julia a lot more if this wasn't a thing.
 
 So, let's just brute-force a workaround. I'll copy the sorting code from the base library and generate different versions of it for every number of columns, using multiple variables to hold the values instead of tuples or structs.
 
-``` julia 
+``` julia
 function define_columns(n)
   cs = [symbol("c", c) for c in 1:n]
   ts = [symbol("C", c) for c in 1:n]
   tmps = [symbol("tmp", c) for c in 1:n]
-  
+
   :(begin
-  
-  @inline function lt($(cs...), i, j) 
-    @inbounds begin 
+
+  @inline function lt($(cs...), i, j)
+    @inbounds begin
       $([:(if !isequal($(cs[c])[i], $(cs[c])[j]); return isless($(cs[c])[i], $(cs[c])[j]); end) for c in 1:(n-1)]...)
       return isless($(cs[n])[i], $(cs[n])[j])
     end
   end
-  
-  @inline function lt2($(cs...), $(tmps...), j) 
-    @inbounds begin 
+
+  @inline function lt2($(cs...), $(tmps...), j)
+    @inbounds begin
       $([:(if !isequal($(tmps[c]), $(cs[c])[j]); return isless($(tmps[c]), $(cs[c])[j]); end) for c in 1:(n-1)]...)
       return isless($(tmps[n]), $(cs[n])[j])
     end
   end
-  
+
   @inline function swap2($(cs...), i, j)
     @inbounds begin
       $([:(begin
@@ -4091,9 +4091,9 @@ function define_columns(n)
     end) for c in 1:n]...)
   end
   end
-  
+
   # sorting cribbed from Base.Sort
-  
+
   function insertion_sort!($(cs...), lo::Int, hi::Int)
       @inbounds for i = lo+1:hi
         j = i
@@ -4144,9 +4144,9 @@ function define_columns(n)
 
   function quicksort!($(cs...), lo::Int, hi::Int)
       @inbounds while lo < hi
-          if hi-lo <= 20 
+          if hi-lo <= 20
             insertion_sort!($(cs...), lo, hi)
-            return 
+            return
           end
           j = partition!($(cs...), lo, hi)
           if j-lo < hi-j
@@ -4159,7 +4159,7 @@ function define_columns(n)
       end
       return
   end
-  
+
   function quicksort!{$(ts...)}(cs::Tuple{$(ts...)})
     quicksort!($([:(cs[$c]) for c in 1:n]...), 1, length(cs[1]))
     return cs
@@ -4174,7 +4174,7 @@ end
 
 It's not pretty. But...
 
-``` julia 
+``` julia
 c2 = ([id::Int64 for id in ids], [id::Int64 for id in ids])
 @time quicksort!(c2)
 # 0.017385 seconds (4 allocations: 160 bytes)
@@ -4188,53 +4188,53 @@ Onwards.
 
 ### 2016 Jul 28
 
-I kinda thought that Julia specialized on closures, but this turns out not to be true in the current release. So I upgraded to v0.5-rc0 and then spent most of the day persuading Juno to cooperate. I lost a lot of time before realizing that the Ubuntu 'nightly' PPA hasn't been updated in two months. After switching to the generic linux build and patching Juno in a few places it mostly works now, apart from a weird issue where displaying results inline in Atom sometimes leaves Julia spinning for minutes. 
+I kinda thought that Julia specialized on closures, but this turns out not to be true in the current release. So I upgraded to v0.5-rc0 and then spent most of the day persuading Juno to cooperate. I lost a lot of time before realizing that the Ubuntu 'nightly' PPA hasn't been updated in two months. After switching to the generic linux build and patching Juno in a few places it mostly works now, apart from a weird issue where displaying results inline in Atom sometimes leaves Julia spinning for minutes.
 
 But with that out of the way, we can write a really cute version of leapfrog triejoin:
 
-``` julia 
+``` julia
 # gallop cribbed from http://www.frankmcsherry.org/dataflow/relational/join/2015/04/11/genericjoin.html
-function gallop{T}(column::Vector{T}, value::T, lo::Int64, hi::Int64, cmp) 
+function gallop{T}(column::Vector{T}, value::T, lo::Int64, hi::Int64, cmp)
   if (lo < hi) && cmp(column[lo], value)
     step = 1
     while (lo + step < hi) && cmp(column[lo + step], value)
-      lo = lo + step 
+      lo = lo + step
       step = step << 1
     end
-    
+
     step = step >> 1
     while step > 0
       if (lo + step < hi) && cmp(column[lo + step], value)
-        lo = lo + step 
+        lo = lo + step
       end
       step = step >> 1
     end
-    
+
     lo += 1
   end
-  lo 
-end 
+  lo
+end
 
 @inline function intersect{T,N}(handler, cols::NTuple{N, Vector{T}}, los::Vector{Int64}, his::Vector{Int64})
-  # assume los/his are valid 
+  # assume los/his are valid
   # los inclusive, his exclusive
   n = length(cols)
   local value::T
   value = cols[n][los[n]]
   inited = false
-  while true 
-    for c in 1:n 
+  while true
+    for c in 1:n
       if inited && (cols[c][los[c]] == value)
         matching_his = [gallop(cols[c], value, los[c], his[c], <=) for c in 1:n]
         handler(value, los, matching_his)
         los[c] = matching_his[c]
         # TODO can we set los = matching_his without breaking the stop condition?
-      else 
+      else
         los[c] = gallop(cols[c], value, los[c], his[c], <)
       end
       if los[c] >= his[c]
-        return 
-      else 
+        return
+      else
         value = cols[c][los[c]]
       end
     end
@@ -4245,8 +4245,8 @@ end
 
 It's really unoptimised at the moment - I need to reuse allocations, remove bounds/null checks, unroll loops etc. But it seems to work:
 
-``` julia 
-function f() 
+``` julia
+function f()
   edges_x = [[1, 2, 3, 3, 4], [2, 3, 1, 4, 2]]
   edges_y = [[1, 2, 3, 3, 4], [2, 3, 1, 4, 2]]
   edges_z = [[1, 2, 2, 3, 4], [3, 1, 4, 2, 3]]
@@ -4266,7 +4266,7 @@ It needed a bit of help typing `value` for some reason, and it insists on boxing
 
 Ooops, the anonymous functions aren't inlined. Can fix that pretty easily:
 
-``` julia 
+``` julia
 @time intersect((edges_x[1], edges_z[1]), (1,1), (n,n), @inline function (x, x_los, x_his)
   intersect((edges_x[2], edges_y[1]), (x_los[1],1), (x_his[1],n), @inline function (y, y_los, y_his)
     intersect((edges_y[2], edges_z[2]), (y_los[2], x_los[2]), (y_his[2], x_his[2]), @inline function (z, z_los, z_his)
@@ -4278,22 +4278,22 @@ end)
 
 I had to change the syntax because `@inline` is fussy about about what it accepts. I guess it wasn't intended for use with anonymous functions, because they were specialized on there was no opportunity to inline them anyway.
 
-I cleaned up most of the obvious allocations by changing arrays to tuples, and unpacking them in the function body. That requires unrolling the inner loops too, which is probably not harmful. 
+I cleaned up most of the obvious allocations by changing arrays to tuples, and unpacking them in the function body. That requires unrolling the inner loops too, which is probably not harmful.
 
-``` julia 
+``` julia
 @generated function intersect{T,N}(cols::NTuple{N, Vector{T}}, los::NTuple{N, Int64}, his::NTuple{N, Int64}, handler)
-  # assume los/his are valid 
+  # assume los/his are valid
   # los inclusive, his exclusive
   quote
     $(Expr(:meta, :inline))
-    @inbounds begin 
+    @inbounds begin
       local value::$T
       @nextract $N col cols
-      @nextract $N lo los 
-      @nextract $N hi his 
+      @nextract $N lo los
+      @nextract $N hi his
       value = col_1[lo_1]
       inited = false
-      while true 
+      while true
         @nexprs $N c->
         begin
           if inited && (col_c[lo_c] == value)
@@ -4301,12 +4301,12 @@ I cleaned up most of the obvious allocations by changing arrays to tuples, and u
             handler(value, (@ntuple $N lo), (@ntuple $N matching_hi))
             lo_c = matching_hi_c
             # TODO can we set los = matching_his without breaking the stop condition?
-          else 
+          else
             lo_c = gallop(col_c, value, lo_c, hi_c, <)
           end
           if lo_c >= hi_c
-            return 
-          else 
+            return
+          else
             value = col_c[lo_c]
           end
           inited = true
@@ -4320,10 +4320,10 @@ end
 It's nice that the facilities exist to do this kind of code rewriting, but I wouldn't have to do it in the first place if I could just mutate some stack-allocated tuple-like thing. Like a grownup.
 
 Annoyingly, there is still a lot of allocation going on. Looking at the generated code it seems that, while all the anonymous functions have been inlined, the closures are still being created. And heap-allocated :(
-  
+
 It also looks like any values that are closed over become boxed, presumably because Julia can't guarantee that the closure doesn't escape the lifetime of the current stackframe. But the box doesn't get a type and that messed up downsteam inference - note the return type of `f` is `ANY` rather than `Int64`.
 
-``` julia 
+``` julia
 function f(xs)
   const t = 0
   foreach(xs) do x
@@ -4341,7 +4341,7 @@ Variables:
   #43::Relation.##43#44
 
 Body:
-  begin 
+  begin
       t::CORE.BOX = $(Expr(:new, :(Core.Box)))
       (Core.setfield!)(t::CORE.BOX,:contents,0)::Int64 # line 213:
       #43::Relation.##43#44 = $(Expr(:new, :(Relation.##43#44), :(t)))
@@ -4357,7 +4357,7 @@ It looks like Julia's closures just aren't there yet.
 
 I managed a macro-y version that does the trick, producing zero allocations in the main body. The nice `@nexprs` macro I was using before doesn't interact well with the macro hygienisation so I have to do stuff by hand, with much additional syntax.
 
-``` julia 
+``` julia
 function unpack(expr)
   assert(expr.head == :tuple)
   for value in expr.args
@@ -4375,9 +4375,9 @@ macro intersect(cols, los, ats, his, next_los, next_his, handler)
   next_his = unpack(next_his)
   n = length(cols)
   quote
-    # assume los/his are valid 
+    # assume los/his are valid
     # los inclusive, his exclusive
-    @inbounds begin 
+    @inbounds begin
       $([
       quote
         $(esc(ats[c])) = $(esc(los[c]))
@@ -4389,7 +4389,7 @@ macro intersect(cols, los, ats, his, next_los, next_his, handler)
       while !finished
         $([
         quote
-          if fixed == $n 
+          if fixed == $n
             $([
             quote
               $(esc(next_los[c2])) = $(esc(ats[c2]))
@@ -4398,12 +4398,12 @@ macro intersect(cols, los, ats, his, next_los, next_his, handler)
             end
             for c2 in 1:n]...)
             $handler # TODO huge code duplication
-          else 
+          else
             $(esc(ats[c])) = gallop($(esc(cols[c])), value, $(esc(ats[c])), $(esc(his[c])), <)
           end
           if $(esc(ats[c])) >= $(esc(his[c]))
             finished = true
-          else 
+          else
             next_value = $(esc(cols[c]))[$(esc(ats[c]))]
             fixed = (value == next_value) ? fixed+1 : 1
             value = next_value
@@ -4419,7 +4419,7 @@ end
 
 This is fast but awful to look at, so I played around with closures some more. I discovered that boxing of closed-over variables only happens if a stack-allocated thing is mutated. Heap-allocated things propagate their types just fine. (I'm sure I had a case where a stack-allocated thing got boxed without being mutated. Not sure if I imagined it or if the nest of closures was confusing the mutation analysis.)
 
-``` julia 
+``` julia
 function f(xs)
   t = [0]
   foreach(xs) do x
@@ -4429,7 +4429,7 @@ function f(xs)
 end
 ```
 
-``` julia 
+``` julia
 Variables:
   #self#::Relation.#f
   xs::Array{Int64,1}
@@ -4437,7 +4437,7 @@ Variables:
   #267::Relation.##267#268{Array{Int64,1}}
 
 Body:
-  begin 
+  begin
       t::Array{Int64,1} = $(Expr(:invoke, LambdaInfo for vect(::Int64, ::Vararg{Int64,N}), :(Base.vect), 0)) # line 215:
       #267::Relation.##267#268{Array{Int64,1}} = $(Expr(:new, Relation.##267#268{Array{Int64,1}}, :(t)))
       SSAValue(0) = #267::Relation.##267#268{Array{Int64,1}}
@@ -4446,12 +4446,12 @@ Body:
   end::Int64
 ```
 
-This is reflected in the emitted code - the non-boxed version has a constant 6 allocations whereas the boxed version allocates for each x in xs. 
+This is reflected in the emitted code - the non-boxed version has a constant 6 allocations whereas the boxed version allocates for each x in xs.
 
 To avoid having to create closures on each nexted iteration, I moved all the state variables to heap-allocated arrays at the top of the query.
 
 ``` julia
-function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector{Int64}, Vector{Int64}}, edges_xz::Tuple{Vector{Int64}, Vector{Int64}}) 
+function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector{Int64}, Vector{Int64}}, edges_xz::Tuple{Vector{Int64}, Vector{Int64}})
   cols = (edges_xy[1], edges_xy[2], Int64[], edges_yz[1], edges_yz[2], Int64[], edges_xz[1], edges_xz[2], Int64[])
   los = [1 for _ in 1:length(cols)]
   ats = [1 for _ in 1:length(cols)]
@@ -4460,44 +4460,44 @@ function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector
 
   @time begin
     intersect(cols, los, ats, his, (1, 7)) do
-      intersect(cols, los, ats, his, (2, 4)) do 
+      intersect(cols, los, ats, his, (2, 4)) do
         intersect(cols, los, ats, his, (5, 8)) do
           count[1] += 1
-        end 
-      end 
+        end
+      end
     end
   end
-  
+
   count[1]
 end
 ```
 
 Those nested closures still get created every time though (even though they are all identical) causing many many heap allocations. Rewriting like this fixed the problem:
 
-``` julia 
-function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector{Int64}, Vector{Int64}}, edges_xz::Tuple{Vector{Int64}, Vector{Int64}}) 
+``` julia
+function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector{Int64}, Vector{Int64}}, edges_xz::Tuple{Vector{Int64}, Vector{Int64}})
   cols = (edges_xy[1], edges_xy[2], Int64[], edges_yz[1], edges_yz[2], Int64[], edges_xz[1], edges_xz[2], Int64[])
   los = [1 for _ in 1:length(cols)]
   ats = [1 for _ in 1:length(cols)]
   his = [length(cols[i])+1 for i in 1:length(cols)]
   count = [0]
-  
+
   cont4 = () -> count[1] += 1
   cont3 = () -> intersect(cont4, cols, los, ats, his, (5, 8))
   cont2 = () -> intersect(cont3, cols, los, ats, his, (2, 4))
   cont1 = () -> intersect(cont2, cols, los, ats, his, (1, 7))
-  
+
   @time cont1()
-  
+
   count[1]
 end
 ```
 
 Now `intersect` gets to be a normal function again.
 
-``` julia 
+``` julia
 function intersect(next, cols, los, ats, his, ixes)
-  # assume los/his are valid 
+  # assume los/his are valid
   # los inclusive, his exclusive
   @inbounds begin
     for ix in ixes
@@ -4506,7 +4506,7 @@ function intersect(next, cols, los, ats, his, ixes)
     n = length(ixes)
     value = cols[ixes[n]][ats[ixes[n]]]
     fixed = 1
-    while true 
+    while true
       for ix in ixes
         if fixed == n
           for ix2 in ixes
@@ -4515,12 +4515,12 @@ function intersect(next, cols, los, ats, his, ixes)
             ats[ix2] = his[ix2+1]
           end
           next()
-        else 
+        else
           ats[ix] = gallop(cols[ix], value, ats[ix], his[ix], <)
         end
         if ats[ix] >= his[ix]
-          return 
-        else 
+          return
+        else
           next_value = cols[ix][ats[ix]]
           fixed = (value == next_value) ? fixed+1 : 1
           value = next_value
@@ -4535,9 +4535,9 @@ This is only slightly slower than the macro version.
 
 Belatedly, I realise that now that the state is kept outside the function I could just have avoided the closures all together:
 
-``` julia 
+``` julia
 function start_intersect(cols, los, ats, his, ixes)
-  # assume los/his are valid 
+  # assume los/his are valid
   # los inclusive, his exclusive
   @inbounds begin
     for ix in ixes
@@ -4551,7 +4551,7 @@ function next_intersect(cols, los, ats, his, ixes)
     fixed = 1
     n = length(ixes)
     value = cols[n][ats[ixes[n]]]
-    while true 
+    while true
       for c in 1:n
         ix = ixes[c]
         if fixed == n
@@ -4562,12 +4562,12 @@ function next_intersect(cols, los, ats, his, ixes)
             ats[ix2] = his[ix2+1]
           end
           return true
-        else 
+        else
           ats[ix] = gallop(cols[c], value, ats[ix], his[ix], <)
         end
         if ats[ix] >= his[ix]
           return false
-        else 
+        else
           next_value = cols[c][ats[ix]]
           fixed = (value == next_value) ? fixed+1 : 1
           value = next_value
@@ -4582,8 +4582,8 @@ Wish I had thought of that two days ago.
 
 The setup is now kind of ugly, but the query compiler is going to be handling this anyway.
 
-``` julia 
-function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector{Int64}, Vector{Int64}}, edges_xz::Tuple{Vector{Int64}, Vector{Int64}}) 
+``` julia
+function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector{Int64}, Vector{Int64}}, edges_xz::Tuple{Vector{Int64}, Vector{Int64}})
   cols_x = [edges_xy[1], edges_xz[1]]
   cols_y = [edges_xy[2], edges_yz[1]]
   cols_z = [edges_yz[2], edges_xz[2]]
@@ -4594,7 +4594,7 @@ function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector
   ats = [1 for _ in 1:9]
   his = [length(cols_x[1])+1 for i in 1:9]
   count = 0
-  
+
   @time begin
     start_intersect(cols_x, los, ats, his, ixes_x)
     while next_intersect(cols_x, los, ats, his, ixes_x)
@@ -4611,7 +4611,7 @@ function f(edges_xy::Tuple{Vector{Int64}, Vector{Int64}}, edges_yz::Tuple{Vector
       end
     end
   end
-  
+
   count
 end
 ```
@@ -4620,12 +4620,12 @@ end
 
 I had some time this evening so I hashed out the core codegen.
 
-To write code I have to figure out what data to compute, how to compute it, how to store it, in what order to compute it, how to organise the code, what to name things etc. I find that if I just sit down with an editor and try to do this all at once I spend a lot of time context switching, which manifests as these mental stack overflows where I just go blank for a while. 
+To write code I have to figure out what data to compute, how to compute it, how to store it, in what order to compute it, how to organise the code, what to name things etc. I find that if I just sit down with an editor and try to do this all at once I spend a lot of time context switching, which manifests as these mental stack overflows where I just go blank for a while.
 
 Over the last year or so, I gradually started to batch these tasks together. I start by choosing a couple of examples and writing down the inputs and outputs. Then I sketch out what data will help me to get from input to output.
 
 ``` julia
-q = quote 
+q = quote
   edge(a,b)
   edge(b,c)
   edge(c,a)
@@ -4641,13 +4641,13 @@ a => (r1, c1), (r3, c2)
 b => ...
 c => ...
 
-var order 
+var order
 
 indexes
 r1 => (1,2)
 ...
 
-ixes 
+ixes
 r1, c1 => 1
 r1, c2 => 2
 r1, end => 3
@@ -4666,8 +4666,8 @@ los, ats = 1
 his = length(cols[r][c])
 results = []
 
-start_intersect 
-while next_intersect 
+start_intersect
+while next_intersect
   a = cols[1][2][los[3]]
   ...
      push!(results, (a,b,c))
@@ -4679,9 +4679,9 @@ Then I pick names and topo-sort the chunks of data. That whole plan then goes on
 ``` julia
 function plan(query, variables)
   relations = [line.args[1] for line in query.args if line.head != :line]
-  
+
   sources = Dict()
-  for (clause, line) in enumerate(query.args) 
+  for (clause, line) in enumerate(query.args)
     if line.head != :line
       assert(line.head == :call)
       for (column, variable) in enumerate(line.args[2:end])
@@ -4690,14 +4690,14 @@ function plan(query, variables)
       end
     end
   end
-  
+
   sort_orders = Dict()
-  for variable in variables 
+  for variable in variables
     for (clause, column) in sources[variable]
       push!(get!(()->[], sort_orders, clause), column)
     end
   end
-  
+
   ixes = Dict()
   next_ix = 1
   for (clause, columns) in sort_orders
@@ -4708,7 +4708,7 @@ function plan(query, variables)
     ixes[(clause, :buffer)] = next_ix
     next_ix += 1
   end
-  
+
   column_inits = Vector(length(ixes))
   for ((clause, column), ix) in ixes
     if column == :buffer
@@ -4718,7 +4718,7 @@ function plan(query, variables)
       column_inits[ix] = :(copy($(esc(clause_name))[$column]))
     end
   end
-  
+
   sorts = []
   for (clause, columns) in sort_orders
     sort_ixes = [ixes[(clause, column)] for column in columns]
@@ -4726,9 +4726,9 @@ function plan(query, variables)
     sort = :(quicksort!(tuple($(sort_args...))))
     push!(sorts, sort)
   end
-  
+
   variable_inits = []
-  for variable in variables 
+  for variable in variables
     clauses_and_columns = sources[variable]
     variable_ixes = [ixes[(clause, column)] for (clause, column) in clauses_and_columns]
     variable_columns = [:(columns[$ix]) for ix in variable_ixes]
@@ -4738,7 +4738,7 @@ function plan(query, variables)
     end
     push!(variable_inits, variable_init)
   end
-  
+
   setup = quote
     columns = tuple($(column_inits...))
     $(sorts...)
@@ -4748,7 +4748,7 @@ function plan(query, variables)
     $(variable_inits...)
     results = []
   end
-  
+
   function body(variable_ix)
     if variable_ix <= length(variables)
       variable = variables[variable_ix]
@@ -4762,14 +4762,14 @@ function plan(query, variables)
           $(body(variable_ix + 1))
         end
       end
-    else 
+    else
       quote
         push!(results, tuple($([esc(variable) for variable in variables]...)))
-      end 
+      end
     end
   end
-          
-  quote 
+
+  quote
     $setup
     @time $(body(1))
     results
@@ -4779,13 +4779,13 @@ end
 
 With a crappy little macro we can now write the previous query as:
 
-``` julia 
+``` julia
 macro query(variables, query)
   plan(query, variables.args)
 end
 
-function f(edge) 
-  @query([a,b,c], 
+function f(edge)
+  @query([a,b,c],
   begin
     edge(a,b)
     edge(b,c)
@@ -4794,7 +4794,7 @@ function f(edge)
 end
 ```
 
-Thats the basics. The next big steps are embedding an expression language and choosing the variable ordering automatically.  
+Thats the basics. The next big steps are embedding an expression language and choosing the variable ordering automatically.
 
 EDIT: I found a little more time, so here is the chinook query from earlier in the year:
 
@@ -4848,8 +4848,8 @@ end
 function filter(filters, tail)
   if length(filters) == 0
     tail
-  else 
-    quote 
+  else
+    quote
       if $(filters[1])
         $(filter(filters[2:end], tail))
       end
@@ -4864,7 +4864,7 @@ function body(variable_ix)
 end
 ```
 
-Equations are a bit trickier. An expression like `a == b + 1` could be treated as a filter on the results, but in many cases it would be much better to run it as soon as `b` is assigned, before wasting time generating many `a`s. On the other hand, that limits the compiler to variable orders where `b` comes before `a`, which may be inefficient. 
+Equations are a bit trickier. An expression like `a == b + 1` could be treated as a filter on the results, but in many cases it would be much better to run it as soon as `b` is assigned, before wasting time generating many `a`s. On the other hand, that limits the compiler to variable orders where `b` comes before `a`, which may be inefficient.
 
 One of my core goals is to make performance predictable, so rather than deciding this in the compiler with some heuristic I'm going to have the programmer communicate intent directly. `a == b + 1` is a filter that will be run once `a` and `b` are both defined. `a = b + 1` is an assignment that forces `b` to be assigned before `a` and that will be run just before the intersection for `a`. In a true relational language this distinction wouldn't exist, but I want to be pragmatic for now.
 
@@ -4904,7 +4904,7 @@ end
 
 Now we can do:
 
-``` julia 
+``` julia
 begin
   pn = "Heavy Metal Classic"
   playlist(p, pn)
@@ -4921,7 +4921,7 @@ What next? I have some ideas about variable ordering, but I need a lot more exam
 
 Projection is really easy - we can just reuse the same building blocks:
 
-``` julia 
+``` julia
 metal = @query([pn, p, t, al, a, an],
 begin
   pn = "Heavy Metal Classic"
@@ -4933,17 +4933,17 @@ begin
 end
 )
 
-metal_projected = @query([an], 
+metal_projected = @query([an],
 begin
   metal(_, _, _, _, _, an)
 end)
 ```
 
-While I was doing that, I noticed that I'm returning columns of type `Any`. Fixing that is pretty tricky, because I don't actually know the type of the variables when I generate the query code. I'm relying on Julia's type inference, but type inference only happens after I generate code. I could wait until the first result to initialize the columns, but that doesn't work for queries with no results. 
+While I was doing that, I noticed that I'm returning columns of type `Any`. Fixing that is pretty tricky, because I don't actually know the type of the variables when I generate the query code. I'm relying on Julia's type inference, but type inference only happens after I generate code. I could wait until the first result to initialize the columns, but that doesn't work for queries with no results.
 
 Let's just work around it for now by allowing the user to specify the types in the query:
 
-``` julia 
+``` julia
 function plan(query, typed_variables)
   variables = []
   variable_types = []
@@ -4954,18 +4954,18 @@ function plan(query, typed_variables)
     elseif isa(typed_variable, Expr) && typed_variable.head == :(::)
       push!(variables, typed_variable.args[1])
       push!(variable_types, typed_variable.args[2])
-    else 
+    else
       throw("Variable must be a symbol (with optional type annotation)")
     end
-  end 
-  ... 
+  end
+  ...
      $(symbol("results_", variable)) = Vector{$(variable_type)}()
   ...
 end
 ```
 
 ``` julia
-@join([a,b,c], [a::Int64,b::Int64,c::Int64], 
+@join([a,b,c], [a::Int64,b::Int64,c::Int64],
 begin
   edge(a,b)
   a < b
@@ -4977,7 +4977,7 @@ end)
 
 We can also do Yannakis-style queries:
 
-``` julia 
+``` julia
 function who_is_metal2(album, artist, track, playlist_track, playlist)
   i1 = @query([pn::String, p::Int64],
   begin
@@ -4985,22 +4985,22 @@ function who_is_metal2(album, artist, track, playlist_track, playlist)
     playlist(p, pn)
   end)
   i2 = @query([p::Int64, t::Int64],
-  begin 
+  begin
     i1(_, p)
     playlist_track(p, t)
   end)
   i3 = @query([t::Int64, al::Int64],
-  begin 
+  begin
     i2(_, t)
     track(t, _, al)
   end)
   i4 = @query([al::Int64, a::Int64],
-  begin 
+  begin
     i3(_, al)
     album(al, _, a)
   end)
   i5 = @query([a::Int64, an::String],
-  begin 
+  begin
     i4(_, a)
     artist(a, an)
   end)
@@ -5026,7 +5026,7 @@ end)
 
 Into this:
 
-``` 
+```
 begin  # /home/jamie/imp/src/Imp.jl, line 586:
     begin  # /home/jamie/imp/src/Imp.jl, line 411:
         begin  # /home/jamie/imp/src/Imp.jl, line 333:
@@ -5109,7 +5109,7 @@ end
 
 It only aggregates after the last variable in the ordering that is returned, so if I want to aggregate over variables that are earlier in the ordering I need to apply another join to the result.
 
-``` julia 
+``` julia
 result = @join([p, pn, t],
 [p::Int64, pn::String, t::Int64, al::Int64, price::Float64],
 (0.0,+,price::Float64),
@@ -5135,7 +5135,7 @@ Ok, I finally got this nailed down. There were a bunch of little things I had to
 
 The inputs to queries are sets, but the query effectively projects out the columns it cares about. That didn't matter before, but for aggregates we care about the number of results, not just the values. Now I count the number of repeated solutions:
 
-``` julia 
+``` julia
 repeats = 1
 for buffer_ix in buffer_ixes
   repeats = :($repeats * (his[$buffer_ix] - los[$buffer_ix]))
@@ -5145,7 +5145,7 @@ body = :(aggregate = $(aggregate_add)(aggregate, $aggregate_expr, $repeats))
 
 The `aggregate_add` is now required to take a third argument that gives an exponent to the operation.
 
-``` julia 
+``` julia
 @inline add_exp(a, b, n) = a + (b * n)
 @inline mul_exp(a, b, n) = a * (b ^ n)
 ```
@@ -5162,12 +5162,12 @@ function plan_query(returned_variables, typed_variables, aggregate, query)
   push!(project_variables, :prev_aggregate)
   push!(project_variable_types, aggregate_type)
   project_aggregate = [aggregate_zero, aggregate_add, :prev_aggregate]
-  project_query = quote 
+  project_query = quote
     intermediate($(project_variables...))
   end
   project_return_ix = length(returned_variables) + 1
   project = plan_join(returned_variables, project_aggregate, aggregate_type, project_variables, project_variable_types, project_return_ix, project_query)
-  quote 
+  quote
     let $(esc(:intermediate)) = let; $join; end
       $project
     end
@@ -5177,7 +5177,7 @@ end
 
 The default aggregate just counts the number of results:
 
-``` julia 
+``` julia
 macro query(returned_variables, typed_variables, query)
   :(@query($returned_variables, $typed_variables, (0, add_exp, 1::Int64), $query))
 end
@@ -5189,7 +5189,7 @@ end
 
 Now we can ask questions like how many times each artist appears on a given playlist:
 
-``` julia 
+``` julia
 @query([pn, an],
 [pn::String, p::Int64, t::Int64, al::Int64, a::Int64, an::String],
 begin
@@ -5201,7 +5201,7 @@ begin
 end)
 ```
 
-I've been putting off dealing with hygiene in the planner, but I spent about an hour on a hygiene bug today so I suppose I should move that up the todo list. 
+I've been putting off dealing with hygiene in the planner, but I spent about an hour on a hygiene bug today so I suppose I should move that up the todo list.
 
 I also have to do something about caching sorted relations, and then I think I have enough to try the [Join Order Benchmark](http://www.vldb.org/pvldb/vol9/p204-leis.pdf). It uses the IMDB dataset (which is about 3.6GB of strings) and asks questions such as:
 
@@ -5257,11 +5257,11 @@ WHERE cn1.country_code != '[us]'
   AND ml.linked_movie_id = mi_idx2.movie_id
   AND ml.linked_movie_id = mc2.movie_id
   AND mi_idx2.movie_id = mc2.movie_id;
-``` 
+```
 
 Or:
 
-``` sql 
+``` sql
 SELECT MIN(mc.note) AS production_note,
        MIN(t.title) AS movie_title,
        MIN(t.production_year) AS movie_year
@@ -5319,11 +5319,11 @@ loading CSV files into the database
 ERROR: unable to import CSV file imdb/csv/imdb/csv/complete_cast.csv: could not open file "imdb/csv/imdb/csv/complete_cast.csv" for reading: No such file or directory
 ```
 
-It created all the csv files just fine and then somehow mangled the filenames before trying to load them. Trying to just run the csv->db step ran into a different set of errors (which I lost by closing the wrong window :), so let's run it again with the row-by-row insert option. 
+It created all the csv files just fine and then somehow mangled the filenames before trying to load them. Trying to just run the csv->db step ran into a different set of errors (which I lost by closing the wrong window :), so let's run it again with the row-by-row insert option.
 
 In the meantime, I tried to load the livejournal dataset into Julia, which caused the atom plugin to blowup:
 
-``` 
+```
 /home/jamie/.atom/packages/julia-client/lib/connection/local.coffee:16
 RangeError: Invalid string length
     at Socket.<anonymous> (/home/jamie/.atom/packages/julia-client/lib/connection/local.coffee:16:26)
@@ -5362,7 +5362,7 @@ Debugging by guessing - not a thing.
 
 Still working through various problems getting IMDbPY to work.
 
-``` 
+```
 ERROR: unable to import CSV file /home/jamie/imdb/csv/movie_link.csv: null value in column "movie_id" violates not-null constraint
 DETAIL:  Failing row contains (15021, null, 101237, 12).
 CONTEXT:  COPY movie_link, line 15021: "15021,NULL,101237,12"
@@ -5436,7 +5436,7 @@ Eugh, and the csv files themselves have backslash-escaped strings that Julia can
 \copy name to 'job/name.csv' csv escape '"'
 \copy person_info to 'job/person_info.csv' csv escape '"'
 \copy role_type to 'job/role_type.csv' csv escape '"'
-\copy title to 'job/title.csv' csv escape '"' 
+\copy title to 'job/title.csv' csv escape '"'
 ```
 
 Let's grab the first query from the benchmark and get a feel for long it takes.
@@ -5446,63 +5446,63 @@ postgres=# prepare q1a as SELECT MIN(mc.note) AS production_note, MIN(t.title) A
 ERROR:  prepared statement "q1a" already exists
 Time: 0.356 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 6.213 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 6.578 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 6.109 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 6.317 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 6.187 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 5.794 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 5.536 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
 
 Time: 5.981 ms
 postgres=# execute q1a;
-             production_note             |    movie_title     | movie_year 
+             production_note             |    movie_title     | movie_year
 -----------------------------------------+--------------------+------------
  (as Indo-British Films Ltd.) (presents) | A Clockwork Orange |       1934
 (1 row)
@@ -5510,11 +5510,11 @@ postgres=# execute q1a;
 Time: 6.122 ms
 ```
 
-So around 6ms. 
+So around 6ms.
 
 ```
 postgres=# EXPLAIN ANALYZE execute q1a;
-                                                                                 QUERY PLAN                                                                                 
+                                                                                 QUERY PLAN
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  Aggregate  (cost=30010.08..30010.09 rows=1 width=45) (actual time=5.704..5.704 rows=1 loops=1)
    ->  Nested Loop  (cost=6482.03..30010.06 rows=3 width=45) (actual time=0.098..5.658 rows=142 loops=1)
@@ -5598,7 +5598,7 @@ end
 
 This reads the schema I dumped out of postgres and builds a normalized set of relations (taking advantage of the fact that every table in the dataset has a single integer as it's primary key). I'm normalizing it this way to avoid having to represent with null entries directly. Possible future feature.
 
-I'm using the stdlib csv reading function, which generates a single big array containing all the data, meaning that if there are any strings then all the integers have to be boxed too and everything goes to poop.  
+I'm using the stdlib csv reading function, which generates a single big array containing all the data, meaning that if there are any strings then all the integers have to be boxed too and everything goes to poop.
 
 The csv reading code also returns `SubString`s - pointers to slices of the mmaped file - rather than allocating individual strings. But this seems unrealistic - I don't actually expect real-world data to arrive all in one nice contiguous file. So I'm reallocating them all as individual strings.
 
@@ -5653,11 +5653,11 @@ function read_job()
 end
 ```
 
-Woah, way way faster. 
+Woah, way way faster.
 
 Weirdly, unpacking the results into individual variable names blows up with an out-of-memory error.
 
-``` julia 
+``` julia
 person_info,person_info_person_id,person_info_info_type_id,person_info_info,person_info_note,title,title_title,title_imdb_index,title_kind_id,title_production_year,title_imdb_id,title_phonetic_code,title_episode_of_id,title_season_nr,title_episode_nr,title_series_years,title_md5sum,link_type,link_type_link,cast_info,cast_info_person_id,cast_info_movie_id,cast_info_person_role_id,cast_info_note,cast_info_nr_order,cast_info_role_id,movie_info_idx,movie_info_idx_movie_id,movie_info_idx_info_type_id,movie_info_idx_info,movie_info_idx_note,name,name_name,name_imdb_index,name_imdb_id,name_gender,name_name_pcode_cf,name_name_pcode_nf,name_surname_pcode,name_md5sum,info_type,info_type_info,aka_name,aka_name_person_id,aka_name_name,aka_name_imdb_index,aka_name_name_pcode_cf,aka_name_name_pcode_nf,aka_name_surname_pcode,aka_name_md5sum,movie_info,movie_info_movie_id,movie_info_info_type_id,movie_info_info,movie_info_note,role_type,role_type_role,aka_title,aka_title_movie_id,aka_title_title,aka_title_imdb_index,aka_title_kind_id,aka_title_production_year,aka_title_phonetic_code,aka_title_episode_of_id,aka_title_season_nr,aka_title_episode_nr,aka_title_note,aka_title_md5sum,complete_cast,complete_cast_movie_id,complete_cast_subject_id,complete_cast_status_id,movie_keyword,movie_keyword_movie_id,movie_keyword_keyword_id,kind_type,kind_type_kind,movie_link,movie_link_movie_id,movie_link_linked_movie_id,movie_link_link_type_id,company_name,company_name_name,company_name_country_code,company_name_imdb_id,company_name_name_pcode_nf,company_name_name_pcode_sf,company_name_md5sum,keyword,keyword_keyword,keyword_phonetic_code,comp_cast_type,comp_cast_type_kind,char_name,char_name_name,char_name_imdb_index,char_name_imdb_id,char_name_name_pcode_nf,char_name_surname_pcode,char_name_md5sum,movie_companies,movie_companies_movie_id,movie_companies_company_id,movie_companies_company_type_id,movie_companies_note,company_type,company_type_kind = relations
 ```
 
@@ -5670,7 +5670,7 @@ The reason I wanted to unpack everything is that the query compiler currently ca
 ``` julia
 function plan(...)
   ...
-  quote 
+  quote
     # TODO pass through any external vars too to avoid closure boxing grossness
     function query($([symbol("relation_", clause) for clause in relation_clauses]...))
       $setup
@@ -5684,7 +5684,7 @@ end
 
 So the generated code will look like:
 
-``` julia 
+``` julia
 function query(relation_1, ...)
   ...
 end
@@ -5693,7 +5693,7 @@ query(db[:person_info, :person_id], ...)
 
 Now I'll load the imdb data into a dict of relations, and then try to serialize it so I don't have to do it again:
 
-``` julia 
+``` julia
 job = @time read_job()
 
 open("../job/imp.bin", "w") do f
@@ -5706,13 +5706,13 @@ end
 
 140GB of temporary allocations. Something in there is still a mess.
 
-``` julia 
+``` julia
 job = @time deserialize(open("../job/imp.bin"))
 # 700.359796 seconds (943.00 M allocations: 50.969 GB, 78.30% gc time)
 # OutOfMemoryError()
 ```
 
-So that's weird. It made a big mess of allocations deserializing the data, finished, then about 3 seconds later threw an out of memory error. 
+So that's weird. It made a big mess of allocations deserializing the data, finished, then about 3 seconds later threw an out of memory error.
 
 Later, trying to rebuild the dataset, Julia dies with:
 
@@ -5730,7 +5730,7 @@ After several attempts, JLD manages to both save and load the dataset without ex
 
 I asked to see the results (bearing in mind that the representation is truncated) and...
 
-``` 
+```
 OutOfMemoryError()
  in resize!(::Array{UInt8,1}, ::UInt64) at ./array.jl:470
  in ensureroom at ./iobuffer.jl:194 [inlined]
@@ -5761,7 +5761,7 @@ But if I treat it with kid gloves and never ask to see the actual result, I can 
 ``` julia
 @query([cid, cn],
 [cid::Int64, cn::String],
-begin 
+begin
   job["company_name", "name"](cid, cn)
 end)
 ```
@@ -5772,7 +5772,7 @@ But if I wrap it in a function and run the function I get a bounds error (which 
 
 Let's have a go at query 1a.
 
-``` julia 
+``` julia
 # SELECT MIN(mc.note) AS production_note,
 #        MIN(t.title) AS movie_title,
 #        MIN(t.production_year) AS movie_year
@@ -5796,7 +5796,7 @@ function f()
   @query([],
   [ct_kind::String, ct_id::Int64, mc_id::Int64, mc_note::String, t_id::Int64, mii_id::Int64, it_id::Int64, it_info::String, t_production_year::Int64],
   (3000, min_exp, t_production_year),
-  begin 
+  begin
     ct_kind = "production companies"
     it_info = "top 250 rank"
     job["company_type", "kind"](ct_id, ct_kind)
@@ -5819,7 +5819,7 @@ end
 # 0.118113 seconds (292.96 k allocations: 4.476 MB)
 ```
 
-118ms. Not going to knock postgres off any pedastals just yet. 
+118ms. Not going to knock postgres off any pedastals just yet.
 
 I want to know what's going on with those allocations. There should barely be any. I squelched a few type-inference failures but it didn't change the number of allocations at all, which is weird.
 
@@ -5850,7 +5850,7 @@ function q2a()
   ("zzzzzzzzzzz", min_exp, title::String),
   begin
     de = "[de]"
-    job["company_name", "country_code"](cn_id, de) 
+    job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     job["movie_companies", "company_id"](mc_id, cn_id)
@@ -5868,23 +5868,23 @@ end
 # 0.125623 seconds (108 allocations: 7.250 KB)
 ```
 
-``` 
+```
 postgres=# execute q2a;
-       movie_title        
+       movie_title
 --------------------------
  008 - Agent wider Willen
 (1 row)
 
 Time: 2388.770 ms
 postgres=# execute q2a;
-       movie_title        
+       movie_title
 --------------------------
  008 - Agent wider Willen
 (1 row)
 
 Time: 449.339 ms
 postgres=# execute q2a;
-       movie_title        
+       movie_title
 --------------------------
  008 - Agent wider Willen
 (1 row)
@@ -5902,7 +5902,7 @@ function q2a()
   [cnit::String, k_id::Int64], #, mk_id::Int64, t_id::Int64, mc_id::Int64, cn_id::Int64, de::String, title::String],
   begin
     # de = "[de]"
-    # job["company_name", "country_code"](cn_id, de) 
+    # job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     # job["movie_companies", "company_id"](mc_id, cn_id)
@@ -5918,7 +5918,7 @@ function q2a()
   [cnit::String, k_id::Int64, mk_id::Int64], # t_id::Int64, mc_id::Int64, cn_id::Int64, de::String, title::String],
   begin
     # de = "[de]"
-    # job["company_name", "country_code"](cn_id, de) 
+    # job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     # job["movie_companies", "company_id"](mc_id, cn_id)
@@ -5934,7 +5934,7 @@ function q2a()
   [cnit::String, k_id::Int64, mk_id::Int64, t_id::Int64], #, mc_id::Int64, cn_id::Int64, de::String, title::String],
   begin
     # de = "[de]"
-    # job["company_name", "country_code"](cn_id, de) 
+    # job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     # job["movie_companies", "company_id"](mc_id, cn_id)
@@ -5950,7 +5950,7 @@ function q2a()
   [cnit::String, k_id::Int64, mk_id::Int64, t_id::Int64, mc_id::Int64], # cn_id::Int64, de::String, title::String],
   begin
     # de = "[de]"
-    # job["company_name", "country_code"](cn_id, de) 
+    # job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     # job["movie_companies", "company_id"](mc_id, cn_id)
@@ -5966,7 +5966,7 @@ function q2a()
   [cnit::String, k_id::Int64, mk_id::Int64, t_id::Int64, mc_id::Int64, cn_id::Int64], #, de::String, title::String],
   begin
     # de = "[de]"
-    # job["company_name", "country_code"](cn_id, de) 
+    # job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     job["movie_companies", "company_id"](mc_id, cn_id)
@@ -5982,7 +5982,7 @@ function q2a()
   [cnit::String, k_id::Int64, mk_id::Int64, t_id::Int64, mc_id::Int64, cn_id::Int64, de::String, title::String],
   begin
     de = "[de]"
-    job["company_name", "country_code"](cn_id, de) 
+    job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     job["movie_companies", "company_id"](mc_id, cn_id)
@@ -6006,21 +6006,21 @@ PREPARE
 Time: 0.468 ms
 postgres=# execute q2a_distinct
 postgres-# ;
- movie_title 
+ movie_title
 -------------
         4127
 (1 row)
 
 Time: 455.719 ms
 postgres=# execute q2a_distinct;
- movie_title 
+ movie_title
 -------------
         4127
 (1 row)
 
 Time: 450.318 ms
 postgres=# execute q2a_distinct;
- movie_title 
+ movie_title
 -------------
         4127
 (1 row)
@@ -6034,7 +6034,7 @@ function q2a()
   [cnit::String, k_id::Int64, mk_id::Int64, t_id::Int64, mc_id::Int64, cn_id::Int64, de::String, title::String],
   begin
     de = "[de]"
-    job["company_name", "country_code"](cn_id, de) 
+    job["company_name", "country_code"](cn_id, de)
     cnit = "character-name-in-title"
     job["keyword", "keyword"](k_id, cnit)
     job["movie_companies", "company_id"](mc_id, cn_id)
@@ -6061,7 +6061,7 @@ postgres=# prepare q1a_distinct as SELECT count(distinct t.production_year) AS m
 ERROR:  prepared statement "q1a_distinct" already exists
 Time: 0.715 ms
 postgres=# explain analyze execute q1a_distinct;
-                                                                                 QUERY PLAN                                                                                 
+                                                                                 QUERY PLAN
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  Aggregate  (cost=30010.06..30010.07 rows=1 width=4) (actual time=9.987..9.987 rows=1 loops=1)
    ->  Nested Loop  (cost=6482.03..30010.06 rows=3 width=4) (actual time=0.314..9.934 rows=142 loops=1)
@@ -6094,14 +6094,14 @@ postgres=# explain analyze execute q1a_distinct;
 
 Time: 10.551 ms
 postgres=# execute q1a_distinct;
- movie_year 
+ movie_year
 ------------
          57
 (1 row)
 
 Time: 20.732 ms
 postgres=# execute q1a_distinct;
- movie_year 
+ movie_year
 ------------
          57
 (1 row)
@@ -6111,11 +6111,11 @@ Time: 18.280 ms
 
 The execution plan is a bit bushy so I can't copy it perfectly without caching or factorisation, but I can approximate it with this ordering.
 
-``` julia 
+``` julia
 function q1a()
   @query([t_production_year],
   [it_info::String, it_id::Int64, mii_id::Int64, t_id::Int64, ct_id::Int64, ct_kind::String, mc_id::Int64, mc_note::String, t_production_year::Int64],
-  begin 
+  begin
     ct_kind = "production companies"
     it_info = "top 250 rank"
     job["company_type", "kind"](ct_id, ct_kind)
@@ -6153,7 +6153,7 @@ function q3a()
   mi_infos = Set(["Sweden", "Norway", "Germany", "Denmark", "Swedish", "Denish", "Norwegian", "German"])
   @query([t_title],
   [mi_info::String, mi_id::Int64, k_keyword::String, k_id::Int64, mk_id::Int64, t_id::Int64, t_production_year::Int64, t_title::String],
-  begin 
+  begin
     job["keyword", "keyword"](k_id, k_keyword)
     contains(k_keyword, "sequel") == true
     job["movie_info", "info"](mi_id, mi_info)
@@ -6174,7 +6174,7 @@ It touches `movie_info` which is one of the biggest tables in the dataset at ~15
 
 But if I index a similarly-sized relation full of random integers:
 
-``` julia 
+``` julia
 edge = Relation((rand(1:Int64(1E5), Int64(15E6)), rand(1:Int64(1E5), Int64(15E6))))
 @time index(edge, [1,2])
 # 2.178177 seconds (146.18 k allocations: 235.030 MB, 0.84% gc time)
@@ -6190,7 +6190,7 @@ edge = Relation(([1 for _ in 1:Int64(15E6)], String[string(i) for i in rand(1:In
 
 Sorting the text version of movie_info at the terminal works ok:
 
-``` 
+```
 jamie@machine:~$ time sort job/movie_info.csv > /dev/null
 
 real	0m8.972s
@@ -6198,7 +6198,7 @@ user	0m30.316s
 sys	0m4.148s
 ```
 
-So what's the deal? Why does this take seconds when `movie_info` takes hours or more? 
+So what's the deal? Why does this take seconds when `movie_info` takes hours or more?
 
 Maybe there's a bug in my quicksort? Let's print the lo/hi for each recursive call and see if it's getting stuck somewhere.
 
@@ -6239,13 +6239,13 @@ Look at that, recursive calls to `quicksort!` on a bunch of single element subar
 
 Let's look at the function I copied from the stdlib. There is some weirdness in here where it sorts the smallest partition first and then recurs on the larger partition.
 
-``` julia 
+``` julia
 function quicksort!($(cs...), lo::Int, hi::Int)
   write(test, string(lo, " ", hi, "\n"))
   @inbounds while lo < hi
-    if hi-lo <= 20 
+    if hi-lo <= 20
       insertion_sort!($(cs...), lo, hi)
-      return 
+      return
     end
     j = partition!($(cs...), lo, hi)
     if j-lo < hi-j
@@ -6284,7 +6284,7 @@ end
 
 Let's try just picking pivots at random.
 
-``` julia 
+``` julia
 function partition!($(cs...), lo::Int, hi::Int)
   @inbounds begin
     pivot = rand(lo:hi)
@@ -6305,7 +6305,7 @@ end
 function quicksort!($(cs...), lo::Int, hi::Int)
   @inbounds if hi-lo <= 0
     return
-  elseif hi-lo <= 20 
+  elseif hi-lo <= 20
     insertion_sort!($(cs...), lo, hi)
   else
     j = partition!($(cs...), lo, hi)
@@ -6315,11 +6315,11 @@ function quicksort!($(cs...), lo::Int, hi::Int)
 end
 ```
 
-Not totally sure that's correct, but I haven't found any mis-sorts so far. 
+Not totally sure that's correct, but I haven't found any mis-sorts so far.
 
 Sorting becomes slightly slower, maybe around 10%, not enough to make me care, because:
 
-``` julia 
+``` julia
 @time index(job["movie_info", "info"], [1,2])
 # 1.450726 seconds (210.51 k allocations: 235.458 MB)
 ```
@@ -6330,7 +6330,7 @@ function q3a()
   mi_infos = Set(["Sweden", "Norway", "Germany", "Denmark", "Swedish", "Denish", "Norwegian", "German"])
   @query([t_title],
   [k_keyword::String, k_id::Int64, mk_id::Int64, t_id::Int64, t_title::String, t_production_year::Int64, mi_id::Int64, mi_info::String],
-  begin 
+  begin
     job["keyword", "keyword"](k_id, k_keyword)
     contains(k_keyword, "sequel") == true
     job["movie_info", "info"](mi_id, mi_info)
@@ -6355,28 +6355,28 @@ postgres=# prepare q3a_distinct as SELECT count(distinct t.title) AS movie_title
 PREPARE
 Time: 5.955 ms
 postgres=# execute q3a_distinct;
- movie_title 
+ movie_title
 -------------
          105
 (1 row)
 
 Time: 2596.093 ms
 postgres=# execute q3a_distinct;
- movie_title 
+ movie_title
 -------------
          105
 (1 row)
 
 Time: 220.938 ms
 postgres=# execute q3a_distinct;
- movie_title 
+ movie_title
 -------------
          105
 (1 row)
 
 Time: 187.519 ms
 postgres=# execute q3a_distinct;
- movie_title 
+ movie_title
 -------------
          105
 (1 row)
@@ -6388,7 +6388,7 @@ About 2x faster than postgres on this one. Imp is a bit handicapped atm because 
 
 I wrote q4a early while waiting on q3a, so let's try that too.
 
-``` julia 
+``` julia
 function q4a()
   @query([mii_info],
   [k_keyword::String, k_id::Int64, mk_id::Int64, t_id::Int64, t_production_year::Int64, it_info::String, it_id::Int64, mii_id::Int64, mii_info::String],
@@ -6421,28 +6421,28 @@ postgres=# prepare q4a_distinct as SELECT count(distinct mi_idx.info) AS rating,
 PREPARE
 Time: 0.420 ms
 postgres=# execute q4a_distinct;
- rating |                movie_title                 
+ rating |                movie_title
 --------+--------------------------------------------
      45 | 20-seiki shônen: Dai 2 shô - Saigo no kibô
 (1 row)
 
 Time: 226.453 ms
 postgres=# execute q4a_distinct;
- rating |                movie_title                 
+ rating |                movie_title
 --------+--------------------------------------------
      45 | 20-seiki shônen: Dai 2 shô - Saigo no kibô
 (1 row)
 
 Time: 123.440 ms
 postgres=# execute q4a_distinct;
- rating |                movie_title                 
+ rating |                movie_title
 --------+--------------------------------------------
      45 | 20-seiki shônen: Dai 2 shô - Saigo no kibô
 (1 row)
 
 Time: 119.281 ms
 postgres=# execute q4a_distinct;
- rating |                movie_title                 
+ rating |                movie_title
 --------+--------------------------------------------
      45 | 20-seiki shônen: Dai 2 shô - Saigo no kibô
 (1 row)
@@ -6450,7 +6450,7 @@ postgres=# execute q4a_distinct;
 Time: 123.111 ms
 ```
 
-A little over 2x faster than postgres. 
+A little over 2x faster than postgres.
 
 That's all I have time for today. What next? I could keep going with these benchmarks and setup proper harnesses and tune postgres properly so they are, you know, actual benchmarks and not just a for loop and some guess work. I could fix the query syntax, which is painful and error-prone and would be nice to fix before writing out 100-odd queries. I could add some automated tests instead of hand-checking things against sql.
 
@@ -6464,7 +6464,7 @@ First, naming the tables is verbose and error prone eg `job["company_type", "kin
 
 Second, the bulk of each the queries so far consists of chains of lookups which are difficult to follow in this form (and in sql too). Compare:
 
-``` sql 
+``` sql
 FROM company_type AS ct,
      info_type AS it,
      movie_companies AS mc,
@@ -6486,7 +6486,7 @@ WHERE ct.kind = 'production companies'
 title.movie_info.info_type.info = 'top 250 rank'
 title.movie_companies.company_type.kind = 'production_companies'
 title.movie_companies.note = note
-!note.like('%(as Metro-Goldwyn-Mayer Pictures)%') and 
+!note.like('%(as Metro-Goldwyn-Mayer Pictures)%') and
   (note.like('%(co-production)%') || note.like('%(presents)%'))
 ```
 
@@ -6516,7 +6516,7 @@ So, back to the problem. I could make this nicer with a combination of foreign k
 name(title.id) -> string
 name(company.id) -> string
 
-t::title 
+t::title
 t.name # resolves to name(title.id) -> string
 ```
 
@@ -6524,7 +6524,7 @@ This is really appealing because it recovers the SQL-style namespacing, but allo
 
 A year or two ago I would probably have jumped in and started working on this. These days I'm a bit warier.
 
-This system requires a database schema, which is known at compile time. I have to write a type-inference algorithm. There needs to be some way to report ambiguous names to the user. It only works for foreign-key joins, so there needs to be some separate system for disambiguating other joins. It's not obviously open to extension. And all I get for that effort is slightly less typing. 
+This system requires a database schema, which is known at compile time. I have to write a type-inference algorithm. There needs to be some way to report ambiguous names to the user. It only works for foreign-key joins, so there needs to be some separate system for disambiguating other joins. It's not obviously open to extension. And all I get for that effort is slightly less typing.
 
 A mistake I used to make far too often is to make design decisions like these based only on how the value of the outcome, rather than on the effort-value ratio.
 
@@ -6532,7 +6532,7 @@ Let's do something much simpler. We can clean up the chaining by switching the s
 
 We'll still allow arbitrary Julia expressions as relation names,. So depending on how the relations are stored in Julia we could write any one of:
 
-``` 
+```
 title < movie_info_title > movie_info_type < info_type_info = "top 250 rank"
 title < Job.movie_info.title > Job.movie_info.type < Job.info_type.info = "top 250 rank"
 title < job["movie_info", "title"] > job["movie_info", "type"] < job["info_type", "info"] = "top 250 rank"
@@ -6547,7 +6547,7 @@ x::Int64 = y + 1 # assignment
 true = x > y # filter
 ```
 
-This is becoming a theme in Imp - handling only the core value-adding parts myself and fobbing everything else off on Julia. It's very similar to how [Terra](http://terralang.org/) handles low-level coding but delegates namespaces, packaging, macros, polymorphism etc to Lua. 
+This is becoming a theme in Imp - handling only the core value-adding parts myself and fobbing everything else off on Julia. It's very similar to how [Terra](http://terralang.org/) handles low-level coding but delegates namespaces, packaging, macros, polymorphism etc to Lua.
 
 
 (We could maybe even add a macro system to allow eg:
@@ -6561,13 +6561,13 @@ Where `path` is some user-defined function that reads a schema, figures out the 
 Let's write out the first few JOB queries in this imagined syntax, to see how it behaves:
 
 ``` julia
-q1a = @query(production_year) begin 
+q1a = @query(production_year) begin
   "top 250 rank" < info_type.info < movie_info.info_type < movie_info
   movie_info > movie_info.movie_id > title
   title > title.production_year > production_year
   title < movie_companies.movie_id < movie_company
   movie_company > movie_companies.company_type > company_type.kind > "production companies"
-  movie_company > movie_companies.note > note 
+  movie_company > movie_companies.note > note
   true = !contains(note, "as Metro-Goldwyn-Mayer Pictures") && (contains(note, "co-production") || contains(note, "presents")
 end
 ```
@@ -6578,7 +6578,7 @@ You might notice that I don't really need `<`, since eg `title < movie_companies
 
 The `true = ...` is gross though. Maybe I should pick a symbol that's less commonly used in Julia, like `|>` or `>>`, and declare that any line containing that symbol is an Imp line. I wish I could use `->` and `<-` but Julia doesn't parse those as functions calls.
 
-``` julia 
+``` julia
 julia> :(foo -> bar -> baz)
 :(foo->begin  # none, line 1:
             bar->begin  # none, line 1:
@@ -6593,25 +6593,25 @@ julia> :(foo <- bar <- baz)
 Hmmm, let's see:
 
 ``` julia
-q1a = @query(production_year) begin 
+q1a = @query(production_year) begin
   "top 250 rank" << info_type.info << movie_info.info_type << movie_info
   movie_info >> movie_info.movie_id >> title
   title >> title.production_year >> production_year
   title << movie_companies.movie_id << movie_company
   movie_company >> movie_companies.company_type >> company_type.kind >> "production companies"
-  movie_company >> movie_companies.note >> note 
+  movie_company >> movie_companies.note >> note
   !contains(note, "as Metro-Goldwyn-Mayer Pictures") && (contains(note, "co-production") || contains(note, "presents"))
 end
 ```
 
 ``` julia
-q1a = @query(production_year) begin 
+q1a = @query(production_year) begin
   "top 250 rank" <| info_type.info <| movie_info.info_type <| movie_info
   movie_info |> movie_info.movie_id |> title
   title |> title.production_year |> production_year
   title <| movie_companies.movie_id <| movie_company
   movie_company |> movie_companies.company_type |> company_type.kind |> "production companies"
-  movie_company |> movie_companies.note |> note 
+  movie_company |> movie_companies.note |> note
   !contains(note, "as Metro-Goldwyn-Mayer Pictures") && (contains(note, "co-production") || contains(note, "presents"))
 end
 ```
@@ -6622,44 +6622,44 @@ Let's check the other queries:
 
 ``` julia
 q2a = @query(name) begin
-  "character-name-in-title" <| keyword.keyword <| movie_keyword.keyword_id <| movie_keyword.movie_id |> title 
-  title |> title.name |> name 
+  "character-name-in-title" <| keyword.keyword <| movie_keyword.keyword_id <| movie_keyword.movie_id |> title
+  title |> title.name |> name
   title <| movie_companies.movie_id |> movie_companies.company_id |> company_name.country_code |> "[de]"
 end
 
 infos = Set(["Sweden", "Norway", "Germany", "Denmark", "Swedish", "Denish", "Norwegian", "German"])
-q3a = @query(name) begin 
+q3a = @query(name) begin
   contains(keyword, "sequel")
-  keyword <| keyword.keyword <| movie_keyword.keyword_id |> movie_keyword.movie_id |> title 
-  title |> title.name |> name 
+  keyword <| keyword.keyword <| movie_keyword.keyword_id |> movie_keyword.movie_id |> title
+  title |> title.name |> name
   title |> title.production_year |> production_year
-  production_year > 2005 
-  title <| movie_info.movie_id |> movie_info.info |> info 
+  production_year > 2005
+  title <| movie_info.movie_id |> movie_info.info |> info
   info in infos
 end
 
-q4a = @query(info) begin 
+q4a = @query(info) begin
   contains(keyword, "sequel")
-  keyword <| keyword.keyword <| movie_keyword.keyword_id |> move_keyword.movie_id |> title 
+  keyword <| keyword.keyword <| movie_keyword.keyword_id |> move_keyword.movie_id |> title
   title |> title.production_year |> production_year
-  production_year > 2005 
-  "rating" <| info_type.info <| movie_info.info_type_id <| movie_info 
-  movie_info |> move_info.info |> info 
+  production_year > 2005
+  "rating" <| info_type.info <| movie_info.info_type_id <| movie_info
+  movie_info |> move_info.info |> info
   info > "5.0"
 end
 ```
 
 Hmmm. It's fine for these bidirectional edges, but it doesn't really work for single column relations eg `vertex(v)`.
 
-Here's a different idea. `keyword <| keyword.keyword <| movie_keyword.keyword_id |> move_keyword.movie_id |> title` could be written as `keyword.keyword(keyword, t1); movie_keyword.keyword_id(t1, t2);  movie_keyword.movie_id(t2, title)` in a more traditional syntax. There's the risk of accidentally reusing a temporary variable, but maybe I could make them line- or block- scoped. 
+Here's a different idea. `keyword <| keyword.keyword <| movie_keyword.keyword_id |> move_keyword.movie_id |> title` could be written as `keyword.keyword(keyword, t1); movie_keyword.keyword_id(t1, t2);  movie_keyword.movie_id(t2, title)` in a more traditional syntax. There's the risk of accidentally reusing a temporary variable, but maybe I could make them line- or block- scoped.
 
 ``` julia
-q1a = @query(production_year) begin 
-  info_type.info(t1, "top 250 rank"); movie_info.info_type(movie_info, t1); 
+q1a = @query(production_year) begin
+  info_type.info(t1, "top 250 rank"); movie_info.info_type(movie_info, t1);
   movie_info.movie_id(movie_info, title)
   title.production_year(title, production_year)
   movie_companies.movie_id(movie_company, title)
-  movie_companies.company_type(movie_company, t1); company_type.kind(t1, "production companies") 
+  movie_companies.company_type(movie_company, t1); company_type.kind(t1, "production companies")
   movie_companies.note(movie_company, note)
   !contains(note, "as Metro-Goldwyn-Mayer Pictures") && (contains(note, "co-production") || contains(note, "presents"))
 end
@@ -6670,17 +6670,17 @@ Weirdly, I don't find that as readable. The former had this nice visual emphasis
 Part of the problem in any case is that the JOB schema is pretty distorted to avoid multiple allocations of the same string, but since we're running in-memory we can just share pointers. With a nicer schema:
 
 ``` julia
-q4a = @query(rating) begin 
+q4a = @query(rating) begin
   true = contains(keyword, "sequel")
   movie_keyword(movie, keyword)
   movie_production_year(movie, production_year)
-  true = production_year > 2005 
+  true = production_year > 2005
   movie_info(movie, "rating", rating)
   true = rating > "5.0"
 end
 ```
 
-Which is totally readable. 
+Which is totally readable.
 
 But what about my variable ordering? Picking the first occurence works ok here, but is that flexible enough in general? Maybe I'll allow adding hints inline if I find a need.
 
@@ -6688,23 +6688,23 @@ So, actually, all I really need to change is to allow inline constants (which I'
 
 ### 2016 Aug 14
 
-Some quick little ergonomic improvements tonight. 
+Some quick little ergonomic improvements tonight.
 
 I moved type annotations from the variable ordering to the return statement, which is the only place they are now needed and also doubles up as a schema for views. This also simplifed the code for `plan_query` to:
 
-``` julia 
+``` julia
 function plan_query(returned_typed_variables, aggregate, variables, query)
   join = plan_join(returned_typed_variables, aggregate, variables, query)
 
   project_variables = map(get_variable_symbol, returned_typed_variables)
   push!(project_variables, :prev_aggregate)
-  project_aggregate = [aggregate[1], aggregate[2], :(prev_aggregate::$(get_variable_type(aggregate[3])))]  
-  project_query = quote 
+  project_aggregate = [aggregate[1], aggregate[2], :(prev_aggregate::$(get_variable_type(aggregate[3])))]
+  project_query = quote
     intermediate($(project_variables...))
   end
   project = plan_join(returned_typed_variables, project_aggregate, project_variables, project_query)
-  
-  quote 
+
+  quote
     let $(esc(:intermediate)) = let; $join; end
       $project
     end
@@ -6712,16 +6712,16 @@ function plan_query(returned_typed_variables, aggregate, variables, query)
 end
 ```
 
- I added some code to the compiler that allows writing Julia constants or expressions where Imp variables should be. 
- 
- ``` julia 
- for clause in relation_clauses 
+ I added some code to the compiler that allows writing Julia constants or expressions where Imp variables should be.
+
+ ``` julia
+ for clause in relation_clauses
    line = query.args[clause]
    for (ix, arg) in enumerate(line.args)
      if ix > 1 && !isa(arg, Symbol)
        variable = gensym("variable")
        line.args[ix] = variable
-       assignment_clauses[variable] = arg 
+       assignment_clauses[variable] = arg
        callable_at = 1 + maximum(push!(indexin(collect_variables(arg), variables), 0))
        insert!(variables, 1, variable)
      end
@@ -6731,29 +6731,29 @@ end
 
 I created nicer names for the various JOB tables.
 
-``` julia 
+``` julia
 for (table_name, column_name) in keys(job)
-  @eval begin 
+  @eval begin
     $(symbol(table_name, "_", column_name)) = job[$table_name, $column_name]
     export $(symbol(table_name, "_", column_name))
   end
 end
 ```
 
-I rewrote each job query so that the order in which in each variable first appears matches the variable ordering I chose, and then changed `plan_query` to use this ordering directly. It also allows simply mentioning a variable to insert in the order. 
+I rewrote each job query so that the order in which in each variable first appears matches the variable ordering I chose, and then changed `plan_query` to use this ordering directly. It also allows simply mentioning a variable to insert in the order.
 
 ``` julia
 variables = []
 for clause in 1:length(query.args)
   line = query.args[clause]
-  if clause in hint_clauses 
+  if clause in hint_clauses
     push!(variables, line)
   elseif clause in relation_clauses
     for (ix, arg) in enumerate(line.args)
       if ix > 1 && !isa(arg, Symbol)
         variable = gensym("variable")
         line.args[ix] = variable
-        assignment_clauses[variable] = arg 
+        assignment_clauses[variable] = arg
         insert!(variables, 1, variable) # only handles constants atm
       elseif ix > 1 && isa(arg, Symbol)
         push!(variables, arg)
@@ -6771,7 +6771,7 @@ The job queries now look like:
 ``` julia
 function q1a()
   @query([t_production_year::Int64],
-  begin 
+  begin
     info_type_info(it_id, "top 250 rank")
     movie_info_idx_info_type_id(mii_id, it_id)
     movie_info_idx_movie_id(mii_id, t_id)
@@ -6793,7 +6793,7 @@ function q2a()
     movie_keyword_movie_id(mk_id, t_id)
     movie_companies_movie_id(mc_id, t_id)
     movie_companies_company_id(mc_id, cn_id)
-    company_name_country_code(cn_id, "[de]") 
+    company_name_country_code(cn_id, "[de]")
     title_title(t_id, title)
   end)
 end
@@ -6802,7 +6802,7 @@ function q3a()
   # "Denish" is in original too
   mi_infos = Set(["Sweden", "Norway", "Germany", "Denmark", "Swedish", "Denish", "Norwegian", "German"])
   @query([t_title::String],
-  begin 
+  begin
     k_keyword
     @when contains(k_keyword, "sequel")
     keyword_keyword(k_id, k_keyword)
@@ -6836,7 +6836,7 @@ function q4a()
 end
 ```
 
-The remaining grossness is mostly just the awful table/variable names from the original benchmark. I'm ok with that. 
+The remaining grossness is mostly just the awful table/variable names from the original benchmark. I'm ok with that.
 
 I'm going on a long climbing trip, so the next few weeks will be sparse.
 
@@ -6844,7 +6844,7 @@ I'm going on a long climbing trip, so the next few weeks will be sparse.
 
 Fixed a sorting bug - choosing the pivot at random breaks the invariant that there is always at least one element smaller or larger than the pivot, so the partitioning can run off the end of the array.
 
-``` 
+```
 diff --git a/src/Data.jl b/src/Data.jl
 index bccfa6f..1088331 100644
 --- a/src/Data.jl
@@ -6866,19 +6866,19 @@ index bccfa6f..1088331 100644
 
 I added support for `in` so that we can write things like:
 
-``` julia 
+``` julia
 @query([x,y],
 begin
   x in 1:10
   y in 1:10
-  @when x < y 
+  @when x < y
 end)
 ```
 
 It works almost identically to `=`, except that it loops over the result of the expression instead of assigning.
 
-``` julia 
-body = quote 
+``` julia
+body = quote
   for $(esc(variable)) in $(esc(loop_clauses[variable]))
     if assign($variable_columns, los, ats, his, $variable_ixes, $(esc(variable)))
       $body
@@ -6893,20 +6893,20 @@ I also removed a limitation of the variable ordering detection where it only loo
 
 ### 2016 Aug 30
 
-Going to start looking at UI. I'll need to do more work on queries and dataflow along the way, but I think it will be helpful to do add features as they are required by real programs, rather than planning them in advance and finding later that they aren't quite right. 
+Going to start looking at UI. I'll need to do more work on queries and dataflow along the way, but I think it will be helpful to do add features as they are required by real programs, rather than planning them in advance and finding later that they aren't quite right.
 
-I'm going with HTML just because it's familiar and widely supported. 
+I'm going with HTML just because it's familiar and widely supported.
 
 With Blink.jl and Hiccup.jl it's really easy to get a window up and display content:
 
-``` julia 
+``` julia
 w = Window()
 body!(w, Hiccup.div("#foo.bar", "Hello World"))
 ```
 
 Handling events is a bit harder. There is a [issue thread](https://github.com/JunoLab/Blink.jl/issues/57) but I'm just reproducing the same error as the person asking the question. To the debugger! Which I haven't used before...
 
-``` julia 
+``` julia
 using Gallium
 breakpoint(Blink.ws_handler)
 ```
@@ -6921,9 +6921,9 @@ unknown function (ip: 0x7f9323b5a5c9)
 
 Bah. To be fair, I have a pretty janky setup with various packages running at weird versions on top of a Julia RC. When Julia 0.5 is released I'll clean it up and try the debugger again.
 
-Instead I just poke around in the source code and eventually figure out that the data sent back has to be a dict, and that there is a baked-in magic function in `@js` for making such. 
+Instead I just poke around in the source code and eventually figure out that the data sent back has to be a dict, and that there is a baked-in magic function in `@js` for making such.
 
-``` julia 
+``` julia
 x = [1,2]
 @js_ w document.getElementById("my_button").onclick = () -> Blink.msg("press", d(("foo", $x)))
 handle(w, "press") do args...
@@ -6931,11 +6931,11 @@ handle(w, "press") do args...
 end
 ```
 
-But I want these callbacks to be specified by values in the dom, not by a separate side-effect. 
+But I want these callbacks to be specified by values in the dom, not by a separate side-effect.
 
 ``` julia
 function event(table_name, values)
-  Blink.jsexpr(quote 
+  Blink.jsexpr(quote
     Blink.msg("event", d(("table", $table_name), ("values", $values)))
   end).s
 end
@@ -6948,7 +6948,7 @@ end
 function Window(event_tables)
   w = Window()
   event_number = 1
-  handle(w, "event") do args 
+  handle(w, "event") do args
     values = args["values"]
     insert!(values, 1, event_number)
     event_number += 1
@@ -6970,7 +6970,7 @@ body!(w, button("#my_button", Dict(:onclick => @event clicked("my_button")), "cl
 
 I haven't actually implemented `push!` yet for relations, so let's do that too. I'm still just using sorted arrays so this is a little hacky. It'll do for now.
 
-``` julia 
+``` julia
 function Base.push!{T}(relation::Relation{T}, values)
   assert(length(relation.columns) == length(values))
   for ix in 1:length(values)
@@ -6984,11 +6984,11 @@ end
 
 Uh, but I don't have a proper dataflow yet and I'll want to run things on each event, so maybe this is poorly thought out. Let's add a callback to the window:
 
-``` julia 
+``` julia
 function Blink.Window(flow, event_tables)
   w = Window()
   event_number = 1
-  handle(w, "event") do args 
+  handle(w, "event") do args
     values = args["values"]
     insert!(values, 1, event_number)
     push!(event_tables[args["table"]], values)
@@ -7004,7 +7004,7 @@ macro Window(flow, event_tables...)
 end
 ```
 
-``` julia 
+``` julia
 clicked = Relation((Int64[], String[]))
 @Window(clicked) do w, event_number
   body!(w, button("#my_button", Dict(:onclick => @event clicked("my_button")), "clicked $event_number times"))
@@ -7013,7 +7013,7 @@ end
 
 Somehow I ended up tidying up code and setting up proper tests. There doesn't seem to be much builtin structure for tests so I just have a scratch file to run things from:
 
-``` julia 
+``` julia
 include("src/Data.jl")
 include("src/Query.jl")
 include("src/UI.jl")
@@ -7042,20 +7042,20 @@ function run(num_x, num_y, num_mines)
   @relation mine_count(Int64, Int64) => Int64
   @relation cleared(Int64, Int64)
   @relation clicked(Int64) => Int64, Int64
-  
-  @query begin 
+
+  @query begin
     + state() = :game_ok
   end
-  
+
   while length(mine) < num_mines
-    @query begin 
+    @query begin
       x = rand(1:num_x)
       y = rand(1:num_y)
       + mine(x,y)
-    end 
+    end
   end
-  
-  @query begin 
+
+  @query begin
     x in 1:num_x
     y in 1:num_y
     c = count(
@@ -7066,15 +7066,15 @@ function run(num_x, num_y, num_mines)
     )
     + mine_count(x, y) = c
   end
-  
+
   @Window(clicked) do display, event_number
     @query begin
       clicked($event_number) = (x, y)
       + cleared(x, y)
     end
-    
+
     fix!(cleared) do
-      @query begin 
+      @query begin
         cleared(x,y)
         mine_count(x,y,0)
         nx in -1:1
@@ -7083,14 +7083,14 @@ function run(num_x, num_y, num_mines)
         + cleared(x+nx, y+ny)
       end)
     end
-    
-    @query 
+
+    @query
       clicked($event_number) = (x, y)
       mine(x,y)
       + state() = :game_over
     end
-    
-    @query begin 
+
+    @query begin
       state() = state
       x in 1:num_x
       y in 1:num_y
@@ -7108,21 +7108,21 @@ function run(num_x, num_y, num_mines)
       @group x node = v_box(node)
       + display() = node
     end
-    
+
   end
 end
 ```
 
 This requires:
 
-* a relation macro that records a functional dependecy 
-* query syntax updated to match 
-* syntax for upsert into a relation 
+* a relation macro that records a functional dependecy
+* query syntax updated to match
+* syntax for upsert into a relation
 * (probably also want delete)
 * with change tracking to handle fix!
-* better aggregates / subqueries / negation 
+* better aggregates / subqueries / negation
 
-The last point is a design problem that has been bugging me for ages, so it bears some thinking about. 
+The last point is a design problem that has been bugging me for ages, so it bears some thinking about.
 
 Fundeps / upsert is simpler, but it does move Imp away from being a general purpose library. It probably won't be hard to support a separate macro that just returns results though.
 
@@ -7130,7 +7130,7 @@ I was imagining that eg `+ mine_count(x, y) = c` would replace any existing valu
 
 Well, let's start with something I do know how to implement:
 
-``` julia 
+``` julia
 type Relation{T <: Tuple} # where T is a tuple of columns
   columns::T
   indexes::Dict{Vector{Int64},T}
@@ -7142,11 +7142,11 @@ end
 # @relation height_at(Int64, Int64) = Float64
 # @relation married(String, String)
 # @relation state() = (Int64, Symbol)
-macro relation(expr) 
+macro relation(expr)
   if expr.head == :(=)
     name_and_keys = expr.args[1]
     vals_expr = expr.args[2]
-  else 
+  else
     name_and_keys = expr
     vals_expr = Expr(:tuple)
   end
@@ -7154,23 +7154,23 @@ macro relation(expr)
   name = name_and_keys.args[1]
   assert(isa(name, Symbol))
   keys = name_and_keys.args[2:end]
-  for key in keys 
+  for key in keys
     assert(isa(key, Symbol))
   end
   if vals_expr.head == :block
     vals_expr = vals_expr.args[2]
   end
-  if isa(vals_expr, Symbol) 
+  if isa(vals_expr, Symbol)
     vals = [vals_expr]
-  else 
+  else
     assert(vals_expr.head == :tuple)
     vals = vals_expr.args
   end
-  for val in vals 
+  for val in vals
     assert(isa(val, Symbol))
   end
   typs = [keys..., vals...]
-  quote 
+  quote
     columns = tuple($([:(Vector{$typ}()) for typ in typs]...))
     indexes = Dict{Vector{Int64}, typeof(columns)}()
     $(esc(name)) = Relation(columns, indexes, Type[$(keys...)], Type[$(vals...)])
@@ -7180,17 +7180,17 @@ end
 
 ### 2016 Sep 1
 
-Next thing I need is a way to merge relations, with the values from the more recent version winning key collisions. I also threw in a function that checks the fundep invariant. 
+Next thing I need is a way to merge relations, with the values from the more recent version winning key collisions. I also threw in a function that checks the fundep invariant.
 
-``` julia 
+``` julia
 function define_keys(n, num_keys)
   olds = [symbol("old", c) for c in 1:n]
   news = [symbol("new", c) for c in 1:n]
   results = [symbol("result", c) for c in 1:n]
   ts = [symbol("C", c) for c in 1:n]
-  
-  quote 
-  
+
+  quote
+
     function merge_sorted!{$(ts...)}(old::Tuple{$(ts...)}, new::Tuple{$(ts...)}, result::Tuple{$(ts...)}, num_keys::Type{Val{$num_keys}})
       @inbounds begin
         $([:($(olds[c]) = old[$c]) for c in 1:n]...)
@@ -7209,7 +7209,7 @@ function define_keys(n, num_keys)
           elseif c == 1
             $([:(push!($(results[c]), $(news[c])[new_at])) for c in 1:n]...)
             new_at += 1
-          else 
+          else
             $([:(push!($(results[c]), $(olds[c])[old_at])) for c in 1:n]...)
             old_at += 1
           end
@@ -7224,14 +7224,14 @@ function define_keys(n, num_keys)
         end
       end
     end
-    
+
     function assert_no_dupes_sorted{$(ts...)}(result::Tuple{$(ts...)}, num_keys::Type{Val{$num_keys}})
       $([:($(results[c]) = result[$c]) for c in 1:n]...)
       for at in 2:length($(results[1]))
         assert(c_cmp($(results[1:num_keys]...), $(results[1:num_keys]...), at, at-1) == 1)
       end
     end
-    
+
   end
 end
 
@@ -7263,16 +7263,16 @@ There's all kinds of grossness in here, similar to the sort functions before, de
 
 First, let's add some microbenchmarks to make sure I don't screw anything up.
 
-``` julia 
+``` julia
 function bench()
   srand(999)
   x = rand(Int64, 10000)
   @show @benchmark quicksort!((copy($x),))
-  
+
   srand(999)
   y = [string(i) for i in rand(Int64, 10000)]
   @show @benchmark quicksort!((copy($y),))
-  
+
   srand(999)
   x = unique(rand(1:10000, 10000))
   y = rand(1:10000, length(x))
@@ -7284,7 +7284,7 @@ end
 ```
 
 ``` julia
-@benchmark(quicksort!((copy($(Expr(:$, :x))),))) = BenchmarkTools.Trial: 
+@benchmark(quicksort!((copy($(Expr(:$, :x))),))) = BenchmarkTools.Trial:
   samples:          8320
   evals/sample:     1
   time tolerance:   5.00%
@@ -7295,7 +7295,7 @@ end
   median time:      545.95 μs (0.00% GC)
   mean time:        599.23 μs (4.81% GC)
   maximum time:     11.10 ms (92.95% GC)
-@benchmark(quicksort!((copy($(Expr(:$, :y))),))) = BenchmarkTools.Trial: 
+@benchmark(quicksort!((copy($(Expr(:$, :y))),))) = BenchmarkTools.Trial:
   samples:          1025
   evals/sample:     1
   time tolerance:   5.00%
@@ -7306,7 +7306,7 @@ end
   median time:      4.72 ms (0.00% GC)
   mean time:        4.87 ms (0.48% GC)
   maximum time:     14.11 ms (58.82% GC)
-@benchmark(merge($(Expr(:$, :a)),$(Expr(:$, :b)))) = BenchmarkTools.Trial: 
+@benchmark(merge($(Expr(:$, :a)),$(Expr(:$, :b)))) = BenchmarkTools.Trial:
   samples:          10000
   evals/sample:     1
   time tolerance:   5.00%
@@ -7319,7 +7319,7 @@ end
   maximum time:     7.80 ms (97.17% GC)
 ```
 
-The only functions that actually pull a row onto the stack are `cmp`, `lt`, `lt2`, `swap` and `insertion_sort!`. First let's rewrite insertion sort to use swapping, and see if doubling the number of writes slows things down appreciably. 
+The only functions that actually pull a row onto the stack are `cmp`, `lt`, `lt2`, `swap` and `insertion_sort!`. First let's rewrite insertion sort to use swapping, and see if doubling the number of writes slows things down appreciably.
 
 ``` julia
 function insertion_sort!($(cs...), lo::Int, hi::Int)
@@ -7336,16 +7336,16 @@ end
 Any change to the benchmarks is within the range of noise. `lt2` was only used in `insertion_sort!`, so that leaves us with just `cmp`, `lt` and `swap`. `lt` is redundant.
 
 ``` julia
-@inline function c_cmp($(olds...), $(news...), old_at, new_at) 
-  @inbounds begin 
-    $([quote 
+@inline function c_cmp($(olds...), $(news...), old_at, new_at)
+  @inbounds begin
+    $([quote
       c = cmp($(olds[c])[old_at], $(news[c])[new_at])
       if c != 0; return c; end
     end for c in 1:(n-1)]...)
     return cmp($(olds[n])[old_at], $(news[n])[new_at])
   end
 end
- 
+
 @inline function swap($(cs...), i, j)
   @inbounds begin
     $([quote
@@ -7359,12 +7359,12 @@ end
 
 Both of these need the loops to be unrolled because the type of `tmp` changes on each iteration. Without unrolling, it will get the type `Any` which will cause it to heap-allocate eg integers that were allocated as values in the array.
 
-``` julia 
+``` julia
 @generated function cmp_in{T <: Tuple}(xs::T, ys::T, x_at::Int64, y_at::Int64)
   n = length(T.parameters)
   quote
     $(Expr(:meta, :inline))
-    @inbounds begin 
+    @inbounds begin
       $([:(result = cmp(xs[$c][x_at], ys[$c][y_at]); if result != 0; return result; end) for c in 1:(n-1)]...)
       return cmp(xs[$n][x_at], ys[$n][y_at])
     end
@@ -7375,8 +7375,8 @@ end
   n = length(T.parameters)
   quote
     $(Expr(:meta, :inline))
-    @inbounds begin 
-      $([quote 
+    @inbounds begin
+      $([quote
         let tmp = xs[$c][i]
           xs[$c][i] = xs[$c][j]
           xs[$c][j] = tmp
@@ -7387,11 +7387,11 @@ end
 end
 ```
 
-I'm no longer unpacking the tuple of columns, so I can use `@generated` to generate them on the fly rather than `for n in 1:10; eval(define_columns(n)); end`. 
+I'm no longer unpacking the tuple of columns, so I can use `@generated` to generate them on the fly rather than `for n in 1:10; eval(define_columns(n)); end`.
 
 Now I can make the rest of the sorting code into normal functions:
 
-``` julia 
+``` julia
 function insertion_sort!{T <: Tuple}(cs::T, lo::Int, hi::Int)
   @inbounds for i = lo+1:hi
     j = i
@@ -7422,7 +7422,7 @@ end
 function quicksort!{T <: Tuple}(cs::T, lo::Int, hi::Int)
   @inbounds if hi-lo <= 0
     return
-  elseif hi-lo <= 20 
+  elseif hi-lo <= 20
     insertion_sort!(cs, lo, hi)
   else
     j = partition!(cs, lo, hi)
@@ -7440,8 +7440,8 @@ end
 
 This adds a bunch of tuple accesses to the hot path, so let's check if it hurt the benchmarks:
 
-``` julia 
-@benchmark(quicksort!((copy($(Expr(:$, :x))),))) = BenchmarkTools.Trial: 
+``` julia
+@benchmark(quicksort!((copy($(Expr(:$, :x))),))) = BenchmarkTools.Trial:
   samples:          8569
   evals/sample:     1
   time tolerance:   5.00%
@@ -7452,7 +7452,7 @@ This adds a bunch of tuple accesses to the hot path, so let's check if it hurt t
   median time:      556.94 μs (0.00% GC)
   mean time:        582.50 μs (3.39% GC)
   maximum time:     7.47 ms (91.25% GC)
-@benchmark(quicksort!((copy($(Expr(:$, :y))),))) = BenchmarkTools.Trial: 
+@benchmark(quicksort!((copy($(Expr(:$, :y))),))) = BenchmarkTools.Trial:
   samples:          1335
   evals/sample:     1
   time tolerance:   5.00%
@@ -7463,7 +7463,7 @@ This adds a bunch of tuple accesses to the hot path, so let's check if it hurt t
   median time:      3.68 ms (0.00% GC)
   mean time:        3.74 ms (0.47% GC)
   maximum time:     10.67 ms (58.69% GC)
-@benchmark(merge($(Expr(:$, :a)),$(Expr(:$, :b)))) = BenchmarkTools.Trial: 
+@benchmark(merge($(Expr(:$, :a)),$(Expr(:$, :b)))) = BenchmarkTools.Trial:
   samples:          7918
   evals/sample:     1
   time tolerance:   5.00%
@@ -7488,7 +7488,7 @@ new_key = new[1:num_keys]
 And julia doesn't infer the correct types. Easily fixed though - I'll just pass them as args instead of `num_keys`.
 
 ``` julia
-@benchmark(merge($(Expr(:$, :a)),$(Expr(:$, :b)))) = BenchmarkTools.Trial: 
+@benchmark(merge($(Expr(:$, :a)),$(Expr(:$, :b)))) = BenchmarkTools.Trial:
   samples:          10000
   evals/sample:     1
   time tolerance:   5.00%
@@ -7505,7 +7505,7 @@ Eh, that'll do.
 
 ### 2016 Sep 2
 
-Now I have to deal with aggregates. In terms of expressivity, what I really want are first-class relations within the query language. But I don't want to actually materialize or allow them to end up in the output, because that just brings back all of the pointer-chasing problems of high-level languages. 
+Now I have to deal with aggregates. In terms of expressivity, what I really want are first-class relations within the query language. But I don't want to actually materialize or allow them to end up in the output, because that just brings back all of the pointer-chasing problems of high-level languages.
 
 One option would be something like [T-LINQ](http://homepages.inf.ed.ac.uk/jcheney/publications/cheney13icfp.pdf) which allows first-class sets in queries but guarantees to normalize them away before execution. I like the principle, but the small addendum in the paper about not being able to normalize aggregates makes it seem like more work is necessary.
 
@@ -7513,7 +7513,7 @@ What I'm going to do instead is to make queries return an iterator instead of ex
 
 Sidenote: I just noticed that Julia has a neat feature that I really wanted when working on Strucjure - you can embed pointers directly into an ast:
 
-``` julia 
+``` julia
 xs = [1,2,3]
 
 q = let ys = xs
@@ -7587,7 +7587,7 @@ while ...
   a = ...
   while ...
     b = ...
-    need_more_results = true 
+    need_more_results = true
     while need_more_results && ...
       c = ...
       while need_more_results && ...
@@ -7603,7 +7603,7 @@ end
 While working on this I spent hours tracking down a subtle bug. `assign` does not bail out if the value is not found but a higher value is. This doesn't cause any test failures because the later aggregate handling multiplies the aggregate value by number of matching rows in each table. If the value is missing the number of matching rows is 0, so the aggregate is 0 and is not returned. Fixing this yields some mild speedups:
 
 ``` julia
-@benchmark(q1a()) = BenchmarkTools.Trial: 
+@benchmark(q1a()) = BenchmarkTools.Trial:
   samples:          2932
   evals/sample:     1
   time tolerance:   5.00%
@@ -7614,7 +7614,7 @@ While working on this I spent hours tracking down a subtle bug. `assign` does no
   median time:      1.68 ms (0.00% GC)
   mean time:        1.70 ms (0.92% GC)
   maximum time:     17.64 ms (86.49% GC)
-@benchmark(q2a()) = BenchmarkTools.Trial: 
+@benchmark(q2a()) = BenchmarkTools.Trial:
   samples:          79
   evals/sample:     1
   time tolerance:   5.00%
@@ -7625,7 +7625,7 @@ While working on this I spent hours tracking down a subtle bug. `assign` does no
   median time:      63.79 ms (0.00% GC)
   mean time:        64.01 ms (0.36% GC)
   maximum time:     71.39 ms (13.57% GC)
-@benchmark(q3a()) = BenchmarkTools.Trial: 
+@benchmark(q3a()) = BenchmarkTools.Trial:
   samples:          42
   evals/sample:     1
   time tolerance:   5.00%
@@ -7636,7 +7636,7 @@ While working on this I spent hours tracking down a subtle bug. `assign` does no
   median time:      119.76 ms (0.00% GC)
   mean time:        119.83 ms (0.00% GC)
   maximum time:     122.71 ms (0.00% GC)
-@benchmark(q4a()) = BenchmarkTools.Trial: 
+@benchmark(q4a()) = BenchmarkTools.Trial:
   samples:          109
   evals/sample:     1
   time tolerance:   5.00%
@@ -7653,11 +7653,11 @@ Then I removed the aggregates from inside the query handling and replaced them w
 
 ### 2016 Sep 9
 
-I'm back from my climbing trip now, so Imp dev should return to it's usual rhythm. 
+I'm back from my climbing trip now, so Imp dev should return to it's usual rhythm.
 
 First thing is a syntactic tweak - moving returned variables to the end of the query. It's cleaner visually and it removes a lot of punctuation.
 
-``` julia 
+``` julia
 function who_is_metal()
   @query begin
     playlist(playlist, "Heavy Metal Classic")
@@ -7672,11 +7672,11 @@ end
 
 I'm also playing around with nesting queries for aggregation.
 
-``` julia 
+``` julia
 function cost_of_playlist()
   @query begin
     playlist(p, pn)
-    tracks = @query begin 
+    tracks = @query begin
       p = p
       playlist_track(p, t)
       track(t, _, _, _, _, _, _, _, price)
@@ -7690,7 +7690,7 @@ end
 
 I don't like the current implementation at all. It allocates a new relation on each loop, only to aggregate over it and throw it away. I don't want to get bogged down in this forever though, so I'm going to leave it for now and revisit it when I look at factorizing queries.
 
-That `p = p` is caused by a scoping issue. I can't tell at the moment whether `p` is being used as a variable or as a constant from an outside scope, so I have to create a new `p` to resolve the ambiguity. The ideal way to fix this would be if macros could query what variables are defined in their enclosing scope, but I think this may be impossible in Julia because declarations can float upwards - a later macro could create a new variable that is available in this macro. So instead I'll just explicitly escape variables eg `$p` for constant, `p` for variable. 
+That `p = p` is caused by a scoping issue. I can't tell at the moment whether `p` is being used as a variable or as a constant from an outside scope, so I have to create a new `p` to resolve the ambiguity. The ideal way to fix this would be if macros could query what variables are defined in their enclosing scope, but I think this may be impossible in Julia because declarations can float upwards - a later macro could create a new variable that is available in this macro. So instead I'll just explicitly escape variables eg `$p` for constant, `p` for variable.
 
 I also fixed a minor bug that caused a crash on queries that don't return any results. I've been aware of it for a while but it was only worth fixing once I started working on sub-queries.
 
@@ -7699,20 +7699,20 @@ With several more hours of unrecorded bug-fixing, I finally have a working versi
 ``` julia
 function run(num_x, num_y, num_mines)
   srand(999)
-  
+
   @relation state() = Symbol
   @relation mine(Int64, Int64)
   @relation mine_count(Int64, Int64) = Int64
   @relation cleared(Int64, Int64)
   @relation clicked(Int64) = (Int64, Int64)
   @relation display() = Hiccup.Node
-  
-  @merge! state begin 
+
+  @merge! state begin
     s = :game_in_progress
     return (s::Symbol,)
   end
-  
-  @fix! mine begin 
+
+  @fix! mine begin
     mines = @query begin
       mine(x, y)
       return (x::Int64, y::Int64)
@@ -7721,30 +7721,30 @@ function run(num_x, num_y, num_mines)
     x = rand(1:num_x)
     y = rand(1:num_y)
     return (x::Int64, y::Int64)
-  end 
-  
-  @merge! mine_count begin 
+  end
+
+  @merge! mine_count begin
     x in 1:num_x
     y in 1:num_y
     neighbouring_mines = @query begin
       nx in (x-1):(x+1)
       ny in (y-1):(y+1)
       @when (nx != x) || (ny != y)
-      mine(nx, ny) 
+      mine(nx, ny)
       return (nx::Int64, ny::Int64)
     end
     c = length(neighbouring_mines)
     return (x::Int64, y::Int64, c::Int64)
   end
-  
+
   @Window(clicked) do window, event_number
-    
+
     @merge! cleared begin
       clicked($event_number, x, y)
       return (x::Int64, y::Int64)
     end
-    
-    @fix! cleared begin 
+
+    @fix! cleared begin
       cleared(x,y)
       mine_count(x,y,0)
       nx in (x-1):(x+1)
@@ -7754,8 +7754,8 @@ function run(num_x, num_y, num_mines)
       @when (nx != x) || (ny != y)
       return (nx::Int64, ny::Int64)
     end
-    
-    @merge! state begin 
+
+    @merge! state begin
       num_cleared = length(@query begin
         cleared(x,y)
         return (x::Int64, y::Int64)
@@ -7764,28 +7764,28 @@ function run(num_x, num_y, num_mines)
       s = :game_won
       return (s::Symbol,)
     end
-    
+
     @merge! state begin
       clicked($event_number, x, y)
       mine(x,y)
       s = :game_lost
       return (s::Symbol,)
     end
-    
+
     node = vbox(map(1:num_y) do y
-      return hbox(map(1:num_x) do x  
+      return hbox(map(1:num_x) do x
         current_state = state.columns[1][1]
-        is_cleared = exists(@query begin 
-          cleared($x,$y) 
+        is_cleared = exists(@query begin
+          cleared($x,$y)
           e = true
           return (e::Bool,)
         end)
-        is_mine = exists(@query begin 
-          mine($x,$y) 
-          e = true 
+        is_mine = exists(@query begin
+          mine($x,$y)
+          e = true
           return (e::Bool,)
         end)
-        count = (@query begin 
+        count = (@query begin
           mine_count($x,$y,count)
           return (count::Int64,)
         end).columns[1][1]
@@ -7799,11 +7799,11 @@ function run(num_x, num_y, num_mines)
        end
      end)
    end)
-    
+
    Blink.body!(window, node)
-    
+
   end
-  
+
   (state, mine, mine_count, clicked, display, cleared)
 end
 
@@ -7817,9 +7817,9 @@ There's a ton of minor stuff to fix before I'll consider this finished:
 * Queries support `relation(keys) => value` syntax
 * Declare merge in return statement
 * Remove need for type declarations in merged returns
-* Allow returning expressions, not just symbols 
+* Allow returning expressions, not just symbols
 * Sort only by keys in query, so that we can have non-sortable objects as values
-* Distinguish empty set from set containing empty tuple 
+* Distinguish empty set from set containing empty tuple
 
 I also want to reduce the noise of inner aggregates, but I have no good ideas right now.
 
@@ -7831,11 +7831,11 @@ I figured out how to hook into Julia's type inference at runtime. The simple way
 Base.return_types(() -> ..., [])[1]
 ```
 
-This executes at runtime and Julia can't infer the return type. I think that works fine if I move it outside the function that wraps the query. 
+This executes at runtime and Julia can't infer the return type. I think that works fine if I move it outside the function that wraps the query.
 
 Another option is:
 
-``` julia 
+``` julia
 @generated function infer_type(closure, args...)
   m = Core.Inference._methods_by_ftype(Tuple{closure, (arg.parameters[1] for arg in args)...}, 1)[1]
   _, ty, inferred = Core.Inference.typeinf(m[3], m[1], m[2], false)
@@ -7875,7 +7875,7 @@ y = x + 1
 
 It's a bit sketchy, because the Julia folks keep warning everyone that type inference is not stable/predictable and that runtime behaviour shouldn't depend on inference. But as far as I'm concerned, allocating ints on the stack vs making a bajillion heap allocations *is* important runtime behavior, so I'm *already* a hostage to type inference and/or manual assertions. Throwing an error on pushing to a weirdly typed array is much less annoying than trying to allocate 100gb of Int64 objects and crashing my machine.
 
-The actual implementation of this plan was simple enough, but the type inference really struggles with subqueries and I can't figure out why. A large part of the problem is that the generated code is pretty verbose, so it's really hard for me to work through the lowered, inferred ast and find problems. I think I'm going to abandon inference for now. I'll finish the rest of the bullet points, then clean up the compiler and then try inference again. 
+The actual implementation of this plan was simple enough, but the type inference really struggles with subqueries and I can't figure out why. A large part of the problem is that the generated code is pretty verbose, so it's really hard for me to work through the lowered, inferred ast and find problems. I think I'm going to abandon inference for now. I'll finish the rest of the bullet points, then clean up the compiler and then try inference again.
 
 ### 2016 Sep 12
 
@@ -7884,7 +7884,7 @@ Let's figure out what I want the emitted code to look like.
 ``` julia
 @query begin
   playlist(p, pn)
-  tracks = @query begin 
+  tracks = @query begin
     playlist_track($p, t)
     track(t, _, _, _, _, _, _, _, price)
     return (t::Int64, price::Float64)
@@ -7906,7 +7906,7 @@ infer_pn() = infer(columns_pn)
 begin # subquery init
   index_playlist_track = index(esc(playlist_track), [1, 2])
   index_track = index(esc(track), [1, 9])
-  
+
   @inline function eval_tmp1(p) = p
   columns_tmp1 = tuple(index_playlist_track[1])
   infer_tmp1() = infer(columns_tmp1, infer_p())
@@ -7916,7 +7916,7 @@ begin # subquery init
 
   columns_price = tuple(index_track[9])
   infer_price() = infer(columns_price)
-  
+
   @inline function query2_outer(results_t, results_price, p)
     for tmp1 in intersect(columns_tmp1, eval_tmp1(p))
       for t in intersect(columns_t)
@@ -7969,7 +7969,7 @@ The first step is to clean up the compiler itself, while still generating the sa
 
 ### 2016 Sep 13
 
-I have the cleaned up compiler working now, and it's a relief to have done it. 
+I have the cleaned up compiler working now, and it's a relief to have done it.
 
 However, the generated code is not identical - there is a significant slowdown in some of the JOB queries. It looks like the cause is that I'm no longer lifting constants to the top of the variable order. Easily fixed.
 
@@ -7996,14 +7996,14 @@ function plan_join(query)
       push!(clauses, clause)
     end
   end
-  
+
   # check all assignments are to single vars
   for clause in clauses
     if typeof(clause) in [In, Assign]
       @assert isa(clause.var, Symbol)
     end
   end
-  
+
   # add a return if needed
   returns = [clause for clause in clauses if typeof(clause) == Return]
   if length(returns) == 0
@@ -8013,7 +8013,7 @@ function plan_join(query)
   else
     error("Too many returns: $returns")
   end
-  
+
   # rewrite expressions nested in Row
   old_clauses = clauses
   clauses = []
@@ -8025,7 +8025,7 @@ function plan_join(query)
           clause.vars[ix] = var
           value = @match expr begin
             Expr(:$, [value], _) => value
-            value => value 
+            value => value
           end
           insert!(clauses, 1, Assign(var, value, collect_vars(value)))
         end
@@ -8033,50 +8033,50 @@ function plan_join(query)
     end
     push!(clauses, clause)
   end
-  
+
   # collect vars created in this query
   created_vars = Set()
   for clause in clauses
     if typeof(clause) in [Row]
       for var in clause.vars
         push!(created_vars, var)
-      end 
+      end
     end
     if typeof(clause) in [Assign, In]
       push!(created_vars, clause.var)
     end
   end
   delete!(created_vars, :_) # _ is a wildcard, not a real var
-  
+
   # collect vars mentioned in this query, in order of mention
   mentioned_vars = []
-  for clause in clauses 
+  for clause in clauses
     if typeof(clause) in [Row, When, Assign, In]
       for var in clause.vars
         push!(mentioned_vars, var)
-      end 
+      end
     end
     if typeof(clause) in [Assign, In, Hint]
       push!(mentioned_vars, clause.var)
     end
   end
-  
+
   # use mention order to decide execution order
   vars = unique((var for var in mentioned_vars if var in created_vars))
-  
+
   # collect clauses that assign a value to a var before intersect
   var_assigned_by = Dict()
   for clause in clauses
     if typeof(clause) in [Assign, In]
-      @assert !haskey(var_assigned_by, clause.var) # only one assignment per var 
+      @assert !haskey(var_assigned_by, clause.var) # only one assignment per var
       var_assigned_by[clause.var] = clause
     end
   end
-  
+
   # for each var, collect list of relation/column pairs that need to be intersected
   sources = Dict(var => Tuple{Int64, Int64}[] for var in vars)
   for (clause_ix, clause) in enumerate(clauses)
-    if typeof(clause) == Row 
+    if typeof(clause) == Row
       for (var_ix, var) in enumerate(clause.vars)
         if var != :_
           push!(sources[var], (clause_ix, var_ix))
@@ -8084,15 +8084,15 @@ function plan_join(query)
       end
     end
   end
-  
+
   # for each Row clause, figure out what order to sort the index in
   sort_orders = Dict(clause_ix => Int64[] for clause_ix in 1:length(clauses))
-  for var in vars 
+  for var in vars
     for (clause_ix, var_ix) in sources[var]
       push!(sort_orders[clause_ix], var_ix)
     end
   end
-  
+
   # assign a slot in the los/ats/his arrays for each relation/column pair
   ixes = Tuple{Int64, Any}[]
   for (clause_ix, var_ixes) in sort_orders
@@ -8102,19 +8102,19 @@ function plan_join(query)
     push!(ixes, (clause_ix, :buffer))
   end
   ix_for = Dict(column => ix for (ix, column) in enumerate(ixes))
-  
+
   # --- codegen ---
-  
+
   # for each Row clause, get the correct index
   index_inits = []
   for (clause_ix, clause) in enumerate(clauses)
-    if typeof(clause) == Row 
+    if typeof(clause) == Row
       order = sort_orders[clause_ix]
       index_init = :($(Symbol("index_$clause_ix")) = index($(Symbol("relation_$clause_ix")), $order))
       push!(index_inits, index_init)
     end
   end
-  
+
   # for each var, collect up the columns to be intersected
   columns_inits = []
   for var in vars
@@ -8122,17 +8122,17 @@ function plan_join(query)
     columns_init = :($(Symbol("columns_$var")) = [$(columns...)])
     push!(columns_inits, columns_init)
   end
-  
+
   # for each var, make list of ixes into the global state
   ixes_inits = []
-  for var in vars 
+  for var in vars
     ixes_init = :($(Symbol("ixes_$var")) = $([ix_for[source] for source in sources[var]]))
     push!(ixes_inits, ixes_init)
   end
-  
+
   # initialize arrays for storing results
   results_inits = []
-  for (ix, var) in enumerate(return_clause.vars) 
+  for (ix, var) in enumerate(return_clause.vars)
     if return_clause.name == ()
       typ = return_clause.typs[ix]
     else
@@ -8141,7 +8141,7 @@ function plan_join(query)
     result_init = :($(Symbol("results_$var")) = Vector{$typ}())
     push!(results_inits, result_init)
   end
-  
+
   # initilize global state
   los = [1 for _ in ixes]
   ats = [1 for _ in ixes]
@@ -8149,11 +8149,11 @@ function plan_join(query)
   for (clause_ix, var_ix) in ixes
     if var_ix == :buffer
       push!(his, 0)
-    else 
+    else
       push!(his, :(length($(Symbol("index_$clause_ix"))[$var_ix]) + 1))
     end
   end
-  
+
   # combine all the init steps
   init = quote
     $(index_inits...)
@@ -8164,7 +8164,7 @@ function plan_join(query)
     ats = [$(ats...)]
     his = [$(his...)]
   end
-  
+
   # figure out at which point in the variable order each When clause can be run
   whens = [[] for _ in vars]
   for clause in clauses
@@ -8173,28 +8173,28 @@ function plan_join(query)
       push!(whens[var_ix], clause.expr)
     end
   end
-  
+
   # figure out at which point in the variable order we have all the variables we need to return
   return_after = maximum(push!(indexin(return_clause.vars, vars), 0))
-  
-  # store results 
+
+  # store results
   body = quote
     $([:(push!($(Symbol("results_$var")), $(esc(var))))
     for var in return_clause.vars]...)
     need_more_results = false
   end
-  
+
   # build up the main loop from the inside out
   for var_ix in length(vars):-1:1
     var = vars[var_ix]
     var_columns = Symbol("columns_$var")
     var_ixes = Symbol("ixes_$var")
-    
+
     # run any When clauses
     for when in whens[var_ix]
       body = :(if $(esc(when)); $body; end)
     end
-    
+
     # after return_after, only need to find one solution, not all solutions
     if var_ix == return_after
       body = quote
@@ -8203,7 +8203,7 @@ function plan_join(query)
       end
     end
     need_more_results = var_ix > return_after ? :need_more_results : true
-    
+
     # find valid values for this variable
     clause = get(var_assigned_by, var, ())
     if typeof(clause) == Assign
@@ -8215,11 +8215,11 @@ function plan_join(query)
         end
       end
     elseif typeof(clause) == In
-      body = quote 
+      body = quote
         let
           local iter = $(esc(clause.expr))
           local state = start(iter)
-          local $(esc(var)) 
+          local $(esc(var))
           while $need_more_results && !done(iter, state)
             ($(esc(var)), state) = next(iter, state)
             if assign($var_columns, los, ats, his, $var_ixes, $(esc(var)))
@@ -8228,7 +8228,7 @@ function plan_join(query)
           end
         end
       end
-    else 
+    else
       result_column = ix_for[sources[var][1]]
       body = quote
         start_intersect($var_columns, los, ats, his, $var_ixes)
@@ -8237,17 +8237,17 @@ function plan_join(query)
             $body
           end
         end
-      end 
+      end
     end
-    
+
   end
-  
+
   query_symbol = gensym("query")
   relation_symbols = [Symbol("relation_$clause_ix") for (clause_ix, clause) in enumerate(clauses) if typeof(clause) == Row]
   relation_names = [esc(clause.name) for clause in clauses if typeof(clause) == Row]
   result_symbols = [Symbol("results_$var") for var in return_clause.vars]
-          
-  code = quote 
+
+  code = quote
     function $query_symbol($(relation_symbols...))
       $init
       $body
@@ -8255,19 +8255,19 @@ function plan_join(query)
     end
     $query_symbol($(relation_names...))
   end
-  
+
   (code, return_clause)
 end
 
 function plan_query(query)
   (join, return_clause) = plan_join(query)
-  
-  (project, _) = plan_join(quote 
+
+  (project, _) = plan_join(quote
     intermediate($(return_clause.vars...))
     return intermediate($(return_clause.vars...)) # returning to intermediate is just a temporary hack to convey types
   end)
-  
-  quote 
+
+  quote
     let $(esc(:intermediate)) = let; $join; end
       $((return_clause.name == ()) ? project : :(merge!($(esc(return_clause.name)), $project)))
     end
@@ -8275,7 +8275,7 @@ function plan_query(query)
 end
 ```
 
-Now to start cleaning up the generated code. First step is to remove the second join and do the deduping in the `Relation` constructor instead. 
+Now to start cleaning up the generated code. First step is to remove the second join and do the deduping in the `Relation` constructor instead.
 
 ``` julia
 function Relation{T}(columns::T)
@@ -8296,7 +8296,7 @@ end
 Some slight slowdowns on queries that produce a large number of intermediate results, but nothing that bothers me too much:
 
 ``` julia
-@benchmark(q1a()) = BenchmarkTools.Trial: 
+@benchmark(q1a()) = BenchmarkTools.Trial:
   samples:          3016
   evals/sample:     1
   time tolerance:   5.00%
@@ -8307,7 +8307,7 @@ Some slight slowdowns on queries that produce a large number of intermediate res
   median time:      1.66 ms (0.00% GC)
   mean time:        1.66 ms (0.00% GC)
   maximum time:     3.17 ms (0.00% GC)
-@benchmark(q2a()) = BenchmarkTools.Trial: 
+@benchmark(q2a()) = BenchmarkTools.Trial:
   samples:          73
   evals/sample:     1
   time tolerance:   5.00%
@@ -8318,7 +8318,7 @@ Some slight slowdowns on queries that produce a large number of intermediate res
   median time:      68.82 ms (0.00% GC)
   mean time:        69.36 ms (0.46% GC)
   maximum time:     95.58 ms (24.48% GC)
-@benchmark(q3a()) = BenchmarkTools.Trial: 
+@benchmark(q3a()) = BenchmarkTools.Trial:
   samples:          43
   evals/sample:     1
   time tolerance:   5.00%
@@ -8329,7 +8329,7 @@ Some slight slowdowns on queries that produce a large number of intermediate res
   median time:      115.70 ms (0.00% GC)
   mean time:        116.35 ms (0.00% GC)
   maximum time:     120.57 ms (0.00% GC)
-@benchmark(q4a()) = BenchmarkTools.Trial: 
+@benchmark(q4a()) = BenchmarkTools.Trial:
   samples:          108
   evals/sample:     1
   time tolerance:   5.00%
@@ -8353,7 +8353,7 @@ infer_tracks(infer_p()) # inferred result type is Any
 ```
 
 I finally found the bug. At some point I had typed `$(Symbol("infer_$var()"))` rather than `$(Symbol("infer_$var"))()`. The latter creates a call to the function `infer_p`. The former creates a load of the variable `infer_p()`, which is nonsense. But both print the same way when the ast is rendered! And, weirdly, the type inference for the former produced `Any`, instead of producing `Union{}` which would have clued me in to the fact that I was producing nonsense code.
-  
+
 But it's fixed now. I have type inference.
 
 ``` julia
@@ -8363,21 +8363,21 @@ const num_y = 4
 @relation mine(Int64, Int64)
 
 function neighbours()
-  @query begin 
+  @query begin
     x in 1:num_x
     y in 1:num_y
     neighbouring_mines = @query begin
       nx in (x-1):(x+1)
       ny in (y-1):(y+1)
       @when (nx != x) || (ny != y)
-      mine(nx, ny) 
+      mine(nx, ny)
     end
     c = length(neighbouring_mines)
     return (x, y) => c
   end
 end
 
-Base.return_types(neighbours) 
+Base.return_types(neighbours)
 # [Data.Relation{Tuple{Array{Int64,1},Array{Int64,1},Array{Int64,1}}}]
 ```
 
@@ -8411,7 +8411,7 @@ end
 
 Which means the UI can now happen in Imp too. Here is the whole minesweeper:
 
-``` julia 
+``` julia
 @relation state() => Symbol
 @relation mine(Int64, Int64)
 @relation mine_count(Int64, Int64) => Int64
@@ -8422,26 +8422,26 @@ Which means the UI can now happen in Imp too. Here is the whole minesweeper:
 @relation row(Int64) => Hiccup.Node
 @relation grid() => Hiccup.Node
 
-@query begin 
+@query begin
   return state() => :game_in_progress
 end
 
 while length(@query mine(x,y)) < num_mines
-  @query begin 
+  @query begin
     nx = rand(1:num_x)
     ny = rand(1:num_y)
     return mine(nx, ny)
-  end 
+  end
 end
 
-@query begin 
+@query begin
   x in 1:num_x
   y in 1:num_y
   neighbouring_mines = @query begin
     nx in (x-1):(x+1)
     ny in (y-1):(y+1)
     @when (nx != x) || (ny != y)
-    mine(nx, ny) 
+    mine(nx, ny)
   end
   c = length(neighbouring_mines)
   return mine_count(x, y) => c
@@ -8453,7 +8453,7 @@ end
     clicked($event_number) => (x, y)
     return cleared(x, y)
   end
-  
+
   fix(cleared) do
     @query begin
       cleared(x,y)
@@ -8466,19 +8466,19 @@ end
       return cleared(nx, ny)
     end
   end
-  
-  @query begin 
+
+  @query begin
     num_cleared = length(@query cleared(x,y))
     @when num_cleared + num_mines >= num_x * num_y
     return state() => :game_won
   end
-  
+
   @query begin
     clicked($event_number) => (x, y)
     mine(x,y)
     return state() => :game_lost
   end
-  
+
   @query begin
     state() => current_state
     x in 1:num_x
@@ -8497,24 +8497,24 @@ end
     end)::Hiccup.Node
     return cell(x,y) => cell_node
   end
-  
+
   @query begin
     y in 1:num_y
     row_node = hbox((@query cell(x,$y) => cell_node).columns[3])::Hiccup.Node
     return row(y) => row_node
   end
-  
+
   @query begin
     grid_node = vbox((@query row(y) => row_node).columns[2])::Hiccup.Node
     return grid() => grid_node
   end
-  
+
   Blink.body!(window, grid.columns[1][1])
-  
+
 end
 ```
 
-Still a couple of ugly parts. 
+Still a couple of ugly parts.
 
 * Those `::Hiccup.Node`s are necessary because the compiler infers `Union{Hiccup.Node, Void}` otherwise. Haven't figured that out yet.
 
@@ -8522,14 +8522,14 @@ Still a couple of ugly parts.
 
 * The call to `Blink.body!` should happen in the UI lib.
 
-The first one appears to be an inference problem. I figured out a way to simplify the inference stage. While doing that, I discovered that I had broken the JOB queries some time ago and somehow not noticed. I could bisect the problem, but I've changed the representation of relations a few times in the past days so I would have to rebuild the JOB dataset on every commit, which takes about 30 minutes each time. 
+The first one appears to be an inference problem. I figured out a way to simplify the inference stage. While doing that, I discovered that I had broken the JOB queries some time ago and somehow not noticed. I could bisect the problem, but I've changed the representation of relations a few times in the past days so I would have to rebuild the JOB dataset on every commit, which takes about 30 minutes each time.
 
 Maybe I can just figure it out by comparing smaller queries to postgres.
 
 The smallest query that disagrees with postgres is:
 
 ``` julia
-@query begin 
+@query begin
   info_type_info(it_id, "top 250 rank")
   movie_info_idx_info_type_id(mii_id, it_id)
   movie_info_idx_movie_id(mii_id, t_id)
@@ -8595,7 +8595,7 @@ function foo()
 end
 ```
 
-``` julia 
+``` julia
 Variables:
   #self#::Minesweeper.#foo
   bb::HICCUP.NODE{TAG}
@@ -8604,7 +8604,7 @@ Variables:
   y::ANY
 
 Body:
-  begin 
+  begin
       bb::HICCUP.NODE{TAG} = $(Expr(:invoke, LambdaInfo for #button#1(::Array{Any,1}, ::Function, ::String, ::Vararg{String,N}), :(Minesweeper.#button#1), :((Core.ccall)(:jl_alloc_array_1d,(Core.apply_type)(Core.Array,Any,1)::Type{Array{Any,1}},(Core.svec)(Core.Any,Core.Int)::SimpleVector,Array{Any,1},0,0,0)::Array{Any,1}), :(Minesweeper.button), "")) # line 167:
       t::TYPE{_<:HICCUP.NODE} = (Minesweeper.typeof)(bb::HICCUP.NODE{TAG})::TYPE{_<:HICCUP.NODE} # line 168:
       x::ANY = ((Core.apply_type)(Minesweeper.Vector,t::TYPE{_<:HICCUP.NODE})::TYPE{_<:ARRAY{_<:HICCUP.NODE,1}})()::ANY # line 169:
@@ -8623,7 +8623,7 @@ cell.columns[3][1] # HICCUP.NODE{TAG}
 [cell.columns[3][1]] # ANY
 ```
 
-`ANY` is not quite the same as `Any`. In user annotations, the former indicates not to specialize on this type at all. I'm guessing that the all-caps in `HICCUP.NODE{TAG}` means something similar. 
+`ANY` is not quite the same as `Any`. In user annotations, the former indicates not to specialize on this type at all. I'm guessing that the all-caps in `HICCUP.NODE{TAG}` means something similar.
 
 So the core issue seems to be that if you have an array of an abstract type and you take something out of it and put it in a new array, Julia just bails out entirely. I don't know why it behaves this way, but I can at least work around it by just never taking anything out of an array during inference. I make the results vectors like this now:
 
@@ -8640,7 +8640,7 @@ I spent today mostly deciding what to do next. I want to publish some sort of pr
 
 ### 2016 Sep 17
 
-I spent a few hours getting the JOB data into SQLite, figuring out how to use SQLite.jl and running benchmarks. 
+I spent a few hours getting the JOB data into SQLite, figuring out how to use SQLite.jl and running benchmarks.
 
 ``` julia
 import SQLite
@@ -8659,9 +8659,9 @@ function bench_sqlite()
 end
 ```
 
-For postgres I'm instead just running the queries through bash, but using the execution times from EXPLAIN ANALYZE instead of the @benchmark time. 
+For postgres I'm instead just running the queries through bash, but using the execution times from EXPLAIN ANALYZE instead of the @benchmark time.
 
-``` julia 
+``` julia
 function bench_pg()
   medians = []
   for q in 1:4
@@ -8680,9 +8680,9 @@ end
 
 I've also changed the Imp JOB data to use exactly the same schema as the other databases, so queries now look like:
 
-``` julia 
+``` julia
 function q1a()
-  @query begin 
+  @query begin
     info_type(it_id, "top 250 rank")
     movie_info_idx(mii_id, t_id, it_id, _, _)
     title(t_id, title, _, _, production_year)
@@ -8699,7 +8699,7 @@ They're all broken now though, so it's debugging time.
 
 I added some tests against SQLite to help out.
 
-``` julia 
+``` julia
 db = SQLite.DB("../job/job.sqlite")
 for q in 1:4
   results_imp = eval(Symbol("q$(q)a"))()
@@ -8716,13 +8716,13 @@ end
 
 ### 2016 Sep 19
 
-Only have a few hours today. Debugging time. 
+Only have a few hours today. Debugging time.
 
-Q1 and Q3 don't work. Q2 and Q4 do. All of them worked before I changed the schema and rewrote the queries to match. 
+Q1 and Q3 don't work. Q2 and Q4 do. All of them worked before I changed the schema and rewrote the queries to match.
 
 I want to narrow the failure down to a single incorrect row, so let's add:
 
-``` julia 
+``` julia
 function diff_sorted!{T <: Tuple, K <: Tuple}(old::T, new::T, old_key::K, new_key::K, old_only::T, new_only::T)
   @inbounds begin
     old_at = 1
@@ -8737,7 +8737,7 @@ function diff_sorted!{T <: Tuple, K <: Tuple}(old::T, new::T, old_key::K, new_ke
       elseif c == 1
         push_in!(new_only, new, new_at)
         new_at += 1
-      else 
+      else
         push_in!(old_only, old, old_at)
         old_at += 1
       end
@@ -8754,7 +8754,7 @@ function diff_sorted!{T <: Tuple, K <: Tuple}(old::T, new::T, old_key::K, new_ke
 end
 
 function diff{T}(old::Relation{T}, new::Relation{T})
-  @assert old.num_keys == new.num_keys 
+  @assert old.num_keys == new.num_keys
   order = collect(1:length(old.columns))
   old_index = index(old, order)
   new_index = index(new, order)
@@ -8784,7 +8784,7 @@ Test Failed
 
 I have a sudden suspicion. Maybe I don't track ixes correctly when there are `_`s in between variables.
 
-Let's dump the ixes for Q1. 
+Let's dump the ixes for Q1.
 
 ``` julia
 ixes = Tuple{Int64,Any}[(7,2),(7,1),(7,:buffer),(4,3),(4,2),(4,:buffer),(9,:buffer),(2,:buffer),(3,2),(3,1),(3,:buffer),(5,1),(5,2),(5,5),(5,:buffer),(8,:buffer),(6,2),(6,4),(6,5),(6,:buffer),(1,:buffer)]
@@ -8857,7 +8857,7 @@ Wait, so it does match the whole query. Let's just confirm that in postgres too.
 
 ```
 postgres=# select distinct info_type.info, title.title from title, movie_info_idx, info_type where info_type.info = 'top 250 rank' and title.id = 2499084 and info_type.id = movie_info_idx.info_type_id and movie_info_idx.movie_id = title.id;
-     info     |              title              
+     info     |              title
 --------------+---------------------------------
  top 250 rank | Who's Afraid of Virginia Woolf?
 ```
@@ -8865,7 +8865,7 @@ postgres=# select distinct info_type.info, title.title from title, movie_info_id
 ```
 sqlite> select distinct info_type.info, title.title from title, movie_info_idx, info_type where info_type.info = 'top 250 rank' and title.id = 2499084 and info_type.id = movie_info_idx.info_type_id and movie_info_idx.movie_id = title.id;
 top 250 rank|Who's Afraid of Virginia Woolf?
-sqlite> 
+sqlite>
 ```
 
 Oh, did I check the company type?
@@ -8934,7 +8934,7 @@ end
 
 ```
 postgres=# select title.title, movie_companies.company_type_id from title, movie_companies where title.id = 2499084 and movie_companies.movie_id = title.id;
-              title              | company_type_id 
+              title              | company_type_id
 ---------------------------------+-----------------
  Who's Afraid of Virginia Woolf? |               1
  Who's Afraid of Virginia Woolf? |               1
@@ -8960,7 +8960,7 @@ postgres=# select title.title, movie_companies.company_type_id from title, movie
 (21 rows)
 
 postgres=# select * from company_type where company_type.id in (1,2);
- id |         kind         
+ id |         kind
 ----+----------------------
   1 | distributors
   2 | production companies
@@ -8971,25 +8971,25 @@ Maybe it's the LIKE patterns that I'm messing up? Let's modify Q1A to specify th
 
 ```
 postgres=# SELECT distinct mc.note AS production_note, (t.title) AS movie_title, (t.production_year), ct.kind, it.info AS movie_year FROM company_type AS ct, info_type AS it, movie_companies AS mc, movie_info_idx AS mi_idx, title AS t WHERE ct.kind = 'production companies' AND it.info = 'top 250 rank' AND mc.note  not like '%(as Metro-Goldwyn-Mayer Pictures)%' and (mc.note like '%(co-production)%' or mc.note like '%(presents)%') AND ct.id = mc.company_type_id AND t.id = mc.movie_id AND t.id = mi_idx.movie_id AND mc.movie_id = mi_idx.movie_id AND it.id = mi_idx.info_type_id and t.id = 2499084;
- production_note | movie_title | production_year | kind | movie_year 
+ production_note | movie_title | production_year | kind | movie_year
 -----------------+-------------+-----------------+------+------------
 (0 rows)
 
 postgres=# SELECT distinct mc.note AS production_note, (t.title) AS movie_title, (t.production_year), ct.kind, it.info AS movie_year FROM company_type AS ct, info_type AS it, movie_companies AS mc, movie_info_idx AS mi_idx, title AS t WHERE ct.kind = 'production companies' AND it.info = 'top 250 rank' AND ct.id = mc.company_type_id AND t.id = mc.movie_id AND t.id = mi_idx.movie_id AND mc.movie_id = mi_idx.movie_id AND it.id = mi_idx.info_type_id and t.id = 2499084;
-production_note                      |           movie_title           | production_year |         kind         |  movie_year  
+production_note                      |           movie_title           | production_year |         kind         |  movie_year
 ----------------------------------------------------------+---------------------------------+-----------------+----------------------+--------------
 (uncredited)                                             | Who's Afraid of Virginia Woolf? |            1966 | production companies | top 250 rank
 (presents: Ernest Lehman's production of Edward Albee's) | Who's Afraid of Virginia Woolf? |            1966 | production companies | top 250 rank
 (2 rows)
 
 postgres=# SELECT distinct mc.note AS production_note, (t.title) AS movie_title, (t.production_year), ct.kind, it.info AS movie_year FROM company_type AS ct, info_type AS it, movie_companies AS mc, movie_info_idx AS mi_idx, title AS t WHERE ct.kind = 'production companies' AND it.info = 'top 250 rank' AND ct.id = mc.company_type_id AND t.id = mc.movie_id AND t.id = mi_idx.movie_id AND mc.movie_id = mi_idx.movie_id AND it.id = mi_idx.info_type_id and t.id = 2499084 and mc.note like '%presents%';
-production_note                      |           movie_title           | production_year |         kind         |  movie_year  
+production_note                      |           movie_title           | production_year |         kind         |  movie_year
 ----------------------------------------------------------+---------------------------------+-----------------+----------------------+--------------
 (presents: Ernest Lehman's production of Edward Albee's) | Who's Afraid of Virginia Woolf? |            1966 | production companies | top 250 rank
 (1 row)
 
 postgres=# SELECT distinct mc.note AS production_note, (t.title) AS movie_title, (t.production_year), ct.kind, it.info AS movie_year FROM company_type AS ct, info_type AS it, movie_companies AS mc, movie_info_idx AS mi_idx, title AS t WHERE ct.kind = 'production companies' AND it.info = 'top 250 rank' AND ct.id = mc.company_type_id AND t.id = mc.movie_id AND t.id = mi_idx.movie_id AND mc.movie_id = mi_idx.movie_id AND it.id = mi_idx.info_type_id and t.id = 2499084 and mc.note like '%(presents)%';
- production_note | movie_title | production_year | kind | movie_year 
+ production_note | movie_title | production_year | kind | movie_year
 -----------------+-------------+-----------------+------+------------
 (0 rows)
 ```
@@ -9006,7 +9006,7 @@ Test Failed
    Evaluated: (String[],) == (String["Austin Powers 4","Teeny-Action Volume 7"],)
 ```
 
-Imp returns 105 rows. SQLite returns 107 rows. Postgres returns 105 rows. That sounds like I messed up my data sources. 
+Imp returns 105 rows. SQLite returns 107 rows. Postgres returns 105 rows. That sounds like I messed up my data sources.
 
 Oh well, let's blow everything away and rebuild, to make sure I have a consistent set of data.
 
@@ -9020,18 +9020,18 @@ length(Job.q3a())
 
 ```
 postgres=# SELECT count(distinct t.title) FROM keyword AS k, movie_info AS mi, movie_keyword AS mk, title AS t WHERE k.keyword  like '%sequel%' AND mi.info  IN ('Sweden', 'Norway', 'Germany', 'Denmark', 'Swedish', 'Denish', 'Norwegian', 'German') AND t.production_year > 2005 AND t.id = mi.movie_id AND t.id = mk.movie_id AND mk.movie_id = mi.movie_id AND k.id = mk.keyword_id;
- count 
+ count
 -------
    105
 (1 row)
 ```
- 
+
 ```
 sqlite> SELECT count(distinct t.title) FROM keyword AS k, movie_info AS mi, movie_keyword AS mk, title AS t WHERE k.keyword  like '%sequel%' AND mi.info  IN ('Sweden', 'Norway', 'Germany', 'Denmark', 'Swedish', 'Denish', 'Norwegian', 'German') AND t.production_year > 2005 AND t.id = mi.movie_id AND t.id = mk.movie_id AND mk.movie_id = mi.movie_id AND k.id = mk.keyword_id;
 107
 ```
 
-Well there you go. 
+Well there you go.
 
 Let's pick one of the extra rows and see what's going on.
 
@@ -9042,13 +9042,13 @@ sqlite> SELECT distinct t.title, k.keyword, mi.info, t.production_year FROM keyw
 
 ```
 postgres=# SELECT title.production_year FROM title where title.title = 'Austin Powers 4';
- production_year 
+ production_year
 -----------------
-                
+
 (1 row)
 ```
 
-Oh dear. The production year is null and SQLite thinks null > 2005. Imp and Postgres both think that if there is no production year it can't be > 2005. 
+Oh dear. The production year is null and SQLite thinks null > 2005. Imp and Postgres both think that if there is no production year it can't be > 2005.
 
 ...
 
@@ -9060,7 +9060,7 @@ function test()
   @test Base.return_types(q2a) == [Relation{Tuple{Vector{String}}}]
   @test Base.return_types(q3a) == [Relation{Tuple{Vector{String}}}]
   @test Base.return_types(q4a) == [Relation{Tuple{Vector{String}, Vector{String}}}]
-  
+
   # db = SQLite.DB("../imdb/imdb.sqlite")
   # for q in 1:4
   #   results_imp = eval(Symbol("q$(q)a"))()
@@ -9070,10 +9070,10 @@ function test()
   #   num_columns = length(results_imp.columns)
   #   results_sqlite = Relation(tuple((frame[ix].values for ix in 1:num_columns)...), num_columns)
   #   (imp_only, sqlite_only) = Data.diff(results_imp, results_sqlite)
-  #   @show q 
+  #   @show q
   #   @test imp_only.columns == sqlite_only.columns # ie both empty - but @test will print both otherwise
   # end
-  
+
   for q in 1:4
     results_imp = eval(Symbol("q$(q)a"))()
     query = rstrip(readline("../job/$(q)a.sql"))
@@ -9085,7 +9085,7 @@ function test()
     num_columns = length(results_imp.columns)
     results_pg = Relation(tuple((frame[ix].data for ix in 1:num_columns)...), num_columns)
     (imp_only, pg_only) = Data.diff(results_imp, results_pg)
-    @show q 
+    @show q
     @test imp_only.columns == pg_only.columns # ie both empty - but @test will print both otherwise
   end
 end
@@ -9099,12 +9099,12 @@ Ok, what next? Completing all the JOB queries has to come last, because I want t
 
 ### 2016 Sep 20
 
-I have a few different index data-structures in mind. Coming up with a interface that can efficiently support joins on any of them is tricky. 
+I have a few different index data-structures in mind. Coming up with a interface that can efficiently support joins on any of them is tricky.
 
 The first thing I want to find out is how much it would cost me to switch from TrieJoin to GenericJoin. I can do that just by rewriting the intersection.
 
 ``` julia
-body = quote 
+body = quote
   let
     local iter = shortest($var_columns, los, ats, his, $var_ixes)
     local state = start(iter)
@@ -9122,7 +9122,7 @@ end
 Times after are 0.58 47 170 110, times before were 0.30 31 82 54. I'm seeing a lot of allocations, so maybe those subarrays are a problem. Let's try just returning the ixes.
 
 ``` julia
-body = quote 
+body = quote
   let
     local min_i = shortest(los, ats, his, $var_ixes)
     local column = $var_columns[min_i]
@@ -9148,7 +9148,7 @@ Actually though, in both cases I need to skip repeated values so `at += 1` needs
 
 Altogether it looks like about 2x the time, which makes sense because the `assign` repeats work done by iteration. Maybe if we were a little smarter we could remove that. Let's add a parameter to `assign` that skips whichever column we're drawing from.
 
-``` julia 
+``` julia
 function assign(cols, los, ats, his, ixes, value, skip)
   @inbounds begin
     n = length(ixes)
@@ -9171,7 +9171,7 @@ end
 ```
 
 ``` julia
-body = quote 
+body = quote
   @inbounds let
     local min_i = shortest(los, ats, his, $var_ixes)
     local ix = $var_ixes[min_i]
@@ -9190,9 +9190,9 @@ body = quote
   end
 ```
 
-Now we get 0.38 34 73 44. That's actually somewhat better than the original. I'm confused. 
+Now we get 0.38 34 73 44. That's actually somewhat better than the original. I'm confused.
 
-Perhaps lookups in the job queries almost always succeed, because most of them are foreign key joins, so the leapfrog part of triejoin just ends up being wasted work? 
+Perhaps lookups in the job queries almost always succeed, because most of them are foreign key joins, so the leapfrog part of triejoin just ends up being wasted work?
 
 But counting triangles also shows a similar improvement, from 636ms to 598ms. Really not sure what to make of that.
 
@@ -9226,9 +9226,9 @@ end
 
 I'm using the `Val{1}` to specify the column, making the return type predictable.
 
-I don't really like breaking up the iter interface into done/next. I would rather have a `foreach` and pass a closure, but if `index_1` and `index_2` have different types this risks blowing up the amount of code generated at each step. It seems best to stick to a single path through the query. 
+I don't really like breaking up the iter interface into done/next. I would rather have a `foreach` and pass a closure, but if `index_1` and `index_2` have different types this risks blowing up the amount of code generated at each step. It seems best to stick to a single path through the query.
 
-So now I need to implement this iterator interface for sorted arrays. 
+So now I need to implement this iterator interface for sorted arrays.
 
 ``` julia
 type Index{T}
@@ -9304,7 +9304,7 @@ end
 function finger(index)
   Finger{1}(1, length(index[1])+1)
 end
-  
+
 function Base.length{C}(index, finger::Finger{C})
   # not technically correct - may be repeated values
   finger.hi - finger.lo
@@ -9344,7 +9344,7 @@ end
 
 Times (on battery power, so not super trustworthy) are 0.57 160 79 48. Allocation numbers are really high, especially for q2a. Maybe things are not ending up on the stack as I'd hoped.
 
-Aha, `head` also needs to be generated, again because the type inference sees `C-1` as opaque. Battery power numbers now are 0.35 33 62 35. Happy with that. 
+Aha, `head` also needs to be generated, again because the type inference sees `C-1` as opaque. Battery power numbers now are 0.35 33 62 35. Happy with that.
 
 Allocations are still much higher than I expected though. How do I debug this...
 
@@ -9411,7 +9411,7 @@ Took a bit of fiddling, but I can use the down_finger as the iterator for the lo
 function finger(index)
   Finger{0}(1, length(index[1])+1)
 end
-  
+
 function Base.length{C}(index, finger::Finger{C})
   # not technically correct - may be repeated values
   finger.hi - finger.lo
@@ -9427,7 +9427,7 @@ end
 end
 
 @generated function Base.start{C}(index, finger::Finger{C})
-  quote 
+  quote
     column = index[$(C+1)]
     hi = gallop(column, column[finger.lo], finger.lo, finger.hi, <=)
     Finger{$(C+1)}(finger.lo, hi)
@@ -9449,7 +9449,7 @@ function head{C}(index, finger::Finger{C})
 end
 ```
 
-Still have 5m allocations though. 
+Still have 5m allocations though.
 
 ``` julia
 function foo()
@@ -9461,7 +9461,7 @@ function foo()
 end
 ```
 
-This doesn't allocate at all. So fingers definitely *can* be stack-allocated. The lowered code doesn't look any different to me. Not sure what else to do. 
+This doesn't allocate at all. So fingers definitely *can* be stack-allocated. The lowered code doesn't look any different to me. Not sure what else to do.
 
 Inlining all the finger functions has no effect.
 
@@ -9473,9 +9473,9 @@ Yesterday was a bit long, so I want to just try a few simple things today and sw
 
 Unlike the type system, there's no insight into how Julia decides whether or not to stack-allocate something, so I've just been repeatedly guessing. I could really do with a tool that explains the decision. I sent a question to the mailing list, asking if there is a better debugging process than just trying things at random.
 
-Judging by the order of occurence, it looks like the allocations are for `start` and `project` but not for `next`. 
+Judging by the order of occurence, it looks like the allocations are for `start` and `project` but not for `next`.
 
-Poking around inside the llvm bitcode I'm about 50% confident that the allocation for `next` is being reusued, but it's still not on the stack. But while I'm in there I notice that there are a lot of checks for undefined variables. 
+Poking around inside the llvm bitcode I'm about 50% confident that the allocation for `next` is being reusued, but it's still not on the stack. But while I'm in there I notice that there are a lot of checks for undefined variables.
 
 Of course - if the compiler can't prove that a variable might be null, it can't possibly stack-allocate it. So what if I just zero out the fingers at the beginning:
 
@@ -9487,7 +9487,7 @@ Down to 2.5m allocations. Excellent. That also explains why messing with `switch
 
 Solving the same problem for `var` reduces the allocations to 32. Happy days.
 
-Bench numbers 0.33 28 60 34. 
+Bench numbers 0.33 28 60 34.
 
 Let's comb through the llvm bitcode a little more to make sure there are no other surprises, and then I'll move on.
 
@@ -9525,7 +9525,7 @@ end
 @inline function finger(relation::Relation, index, finger, col_ix)
   Finger(index[col_ix-1], 0, 0)
 end
-  
+
 function Base.length(finger::Finger)
   # not technically correct - may be repeated values
   finger.hi - finger.lo
@@ -9563,8 +9563,8 @@ starts = [:(start($finger, $down_finger)) for (finger, down_finger) in fingers]
 projects = [:((ix == $ix) || project($finger, $down_finger, $(esc(var)))) for (ix, (finger, down_finger)) in enumerate(fingers)]
 heads = [:(head($finger, $down_finger)) for (finger, down_finger) in fingers]
 nexts = [:(next($finger, $down_finger)) for (finger, down_finger) in fingers]
-body = quote 
-  let 
+body = quote
+  let
     local ix = @min_by_length($(fingers...))
     local more = @switch ix $(starts...)
     local $(esc(var))
@@ -9585,13 +9585,13 @@ I finished the core of the nested relations implementation, but it's currently m
 
 ### 2016 Sep 24
 
-Feeling a little unmotivated today so I'm working on fixing minor annoyances in my environment. 
+Feeling a little unmotivated today so I'm working on fixing minor annoyances in my environment.
 
-I fixed palm detection on my touchpad, disabled the unity multi-touch gestures that I keep using by accident, and in the process accidentally fixed a race condition where some of my window manager keyboard shortcuts would get swallowed. 
+I fixed palm detection on my touchpad, disabled the unity multi-touch gestures that I keep using by accident, and in the process accidentally fixed a race condition where some of my window manager keyboard shortcuts would get swallowed.
 
 ``` bash
-jamie@machine:~$ sudo cat /etc/modprobe.d/synaptics.conf 
-blacklist i2c-designware-platform    
+jamie@machine:~$ sudo cat /etc/modprobe.d/synaptics.conf
+blacklist i2c-designware-platform
 jamie@machine:~$ tail -n 2 .bashrc
 pkill syndaemon
 syndaemon -i 0.2 -K -d
@@ -9675,7 +9675,7 @@ On the second line, it finds `b=2` from one of the fingers and then projects in 
 
 Ah, the project doesn't fail, it hits `a<b` on the next line. I forgot about those.
 
-Next we go to `a=2` which is legit, but then somehow hit `b=2` again. 
+Next we go to `a=2` which is legit, but then somehow hit `b=2` again.
 
 Aha - `next` needs to set `down_finger.index` as well as `down_finger.state`. Oops.
 
@@ -9689,7 +9689,7 @@ Nested hashtables now work ok for simple queries, but they are far too memory in
 
 Totally forgot to diarize today.
 
-I made a Franken-hashtable today that uses the sorted columns as backing storage, and builds a hashtable of ranges pointing into each column. 
+I made a Franken-hashtable today that uses the sorted columns as backing storage, and builds a hashtable of ranges pointing into each column.
 
 ``` julia
 type Index{C}
@@ -9713,23 +9713,23 @@ Peeking at the code for a simple query, it looks like the types in the indexes a
 
 Times are still poor. Let's have the hashtable lookup bail out early on empty slots - forgot to include that earlier.
 
-Numbers are still not great. 0.64 110 190 140. 
+Numbers are still not great. 0.64 110 190 140.
 
 ### 2016 Sep 29
 
 I still sometimes run out of memory when trying to run the benchmarks with hashtables. Which is ridiculous. It's a 6GB dataset on disk but the columns alone are taking up 20GB in memory. I've been putting off dealing with that for a while, but it looks like it's time.
 
-Julia can measure memory allocation by line, but that's just going to tell me that the allocation all comes from loading the huge datasets into memory. 
+Julia can measure memory allocation by line, but that's just going to tell me that the allocation all comes from loading the huge datasets into memory.
 
 Let's just load a single file as one string and see what happens:
 
 ``` bash
-jamie@machine:~/imp$ du -h ../imdb/movie_info.csv 
+jamie@machine:~/imp$ du -h ../imdb/movie_info.csv
 920M	../imdb/movie_info.csv
 ```
 
 ``` julia
-@time begin 
+@time begin
   s = readstring(open("../imdb/movie_info.csv"))
   nothing
 end
@@ -9739,8 +9739,8 @@ end
 (The weird construction is so that the Atom plugin doesn't try to render the whole string. It really needs some way to lazily render large data-structures.)
 
 ``` bash
-PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND     
-842 jamie     20   0 10.485g 1.947g  63168 R  99.7  6.2   0:37.76 julia 
+PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+842 jamie     20   0 10.485g 1.947g  63168 R  99.7  6.2   0:37.76 julia
 ```
 
 ``` julia
@@ -9758,17 +9758,17 @@ job = @time read_job("movie_info")
 ```
 
 ``` bash
-PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND  
-2652 jamie     20   0 11.562g 5.583g  13140 S   0.0 17.9   1:12.23 julia 
+PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+2652 jamie     20   0 11.562g 5.583g  13140 S   0.0 17.9   1:12.23 julia
 ```
 
-``` julia 
+``` julia
 gc()
 ```
 
 ``` bash
 PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
-2652 jamie     20   0 9896544 3.560g  13732 S   0.0 11.4   1:14.83 julia  
+2652 jamie     20   0 9896544 3.560g  13732 S   0.0 11.4   1:14.83 julia
 ```
 
 So ~3.5gb just to split it into strings. That seems wrong.
@@ -9839,7 +9839,7 @@ function read_job()
           minval, maxval = minimum(numbers), maximum(numbers)
           typ = first(typ for typ in [Int8, Int16, Int32, Int64] if (minval > typemin(typ)) && (maxval < typemax(typ)))
           column = convert(Vector{typ}, numbers)
-        else 
+        else
           interned = Dict{String, String}()
           column = String[get!(interned, line, line) for line in lines]
         end
@@ -9879,7 +9879,7 @@ function read_job()
           maxval = maximum(numbers)
           typ = first(typ for typ in [Int8, Int16, Int32, Int64] if (minval > typemin(typ)) && (maxval < typemax(typ)))
           push!(columns, convert(Vector{typ}, numbers))
-        else 
+        else
           interned = Dict{String, String}()
           for ix in 1:length(lines)
             lines[ix] = get!(interned, lines[ix], lines[ix])
@@ -9928,7 +9928,7 @@ function read_job()
           maxval = maximum(numbers)
           typ = first(typ for typ in [Int8, Int16, Int32, Int64] if (minval > typemin(typ)) && (maxval < typemax(typ)))
           push!(columns, convert(Vector{typ}, numbers))
-        else 
+        else
           push!(columns, lines)
         end
       end
@@ -9947,9 +9947,9 @@ It looks like the [fix](https://github.com/JuliaLang/julia/pull/18632) for this 
 
 For some reason JLD is now hanging when I try to save the columns. I tried Feather. which [crashed](https://github.com/JuliaStats/Feather.jl/issues/21). I tried HDF5 but now it's hanging before I even get to saving. Is my SSD dying? So frustrating.
 
-I've spent 10 days now working on indexes. It feels like it's been a meandering and aimless slog. I think the reason for this is that I don't have a concrete problem to solve. I only wanted indexes at this point for a 'fair' comparison with sqlite so that I can write a progress report without feeling dishonest. 
+I've spent 10 days now working on indexes. It feels like it's been a meandering and aimless slog. I think the reason for this is that I don't have a concrete problem to solve. I only wanted indexes at this point for a 'fair' comparison with sqlite so that I can write a progress report without feeling dishonest.
 
-Engineering is mostly about tradeoffs. To decide which tradeoffs to make I need concrete use-cases against which to evaluate them and a good-enough point so I know when to stop working. The most common mistake I make in programming is to try and build something without those. I end up constantly changing my mind, flailing back and forth between different designs. It's stressful and exhausting. 
+Engineering is mostly about tradeoffs. To decide which tradeoffs to make I need concrete use-cases against which to evaluate them and a good-enough point so I know when to stop working. The most common mistake I make in programming is to try and build something without those. I end up constantly changing my mind, flailing back and forth between different designs. It's stressful and exhausting.
 
 So no more indexes. Let's do the minimum possible to finish:
 
@@ -9957,7 +9957,7 @@ So no more indexes. Let's do the minimum possible to finish:
 * Return to single indexes per column
 * Write all benchmarks
 * Benchmark insert time
-* Measure import and load time 
+* Measure import and load time
 * Write report
 * Write benchmark repro
 * Fix minesweeper
@@ -9967,7 +9967,7 @@ Hashed indexes are gone.
 
 Bunch of faff with serialization - most Julia serialization libraries I tried don't work. Still have horrible load times. But I have the original dataframes saved and back to single indexes.
 
-Bench times for single indexes: 3.04 58.5 99.5 52.5. Looking all the way back, I previously had 1.66 68.8 116 46 for single indexes. 
+Bench times for single indexes: 3.04 58.5 99.5 52.5. Looking all the way back, I previously had 1.66 68.8 116 46 for single indexes.
 
 I added the first 26 of 116 queries. Very time-consuming work.
 
@@ -10162,7 +10162,7 @@ While both of those are running, let's look through the queries that do poorly a
 
 11b. 3.9x slower. Unclear. Maybe scan company name table?
 
-15c. 5.8x slower. Unclear. 
+15c. 5.8x slower. Unclear.
 
 15d. 4.6x slower. Unclear.
 
@@ -10174,7 +10174,7 @@ While both of those are running, let's look through the queries that do poorly a
 
 23c. 1.5x slower. Internet release too far down?
 
-24a. 1.1x slower. 
+24a. 1.1x slower.
 
 30c. 1.5x slower. Probably should have started from keywords, not genres.
 
@@ -10188,7 +10188,7 @@ Imp would definitely benefit from having range lookups (eg 2000 <= production_ye
 
 I have a suspicion that factorized queries would do better. In a lot of the query plans I was having to choose which joins to repeatedly evaluate, when a factorized query wouldn't have to repeat any of them. There are also places where I suspect that I'm repeatedly visiting the same keys.
 
-Rerunning the benchmarks now with the extra indexes. I'm expecting to see pg and sqlite to overtake Imp. 
+Rerunning the benchmarks now with the extra indexes. I'm expecting to see pg and sqlite to overtake Imp.
 
 ### 2016 Oct 5
 
@@ -10307,7 +10307,7 @@ Rerunning the benchmarks now with the extra indexes. I'm expecting to see pg and
 33c 741.256199 50.125 822.530545
 ```
 
-Both postgres and sqlite do worse on some queries if you give them the option of using more indexes. I think I knew this theoretically but I'm still really shocked to see it happen so easily. 
+Both postgres and sqlite do worse on some queries if you give them the option of using more indexes. I think I knew this theoretically but I'm still really shocked to see it happen so easily.
 
 SQLite also does really well on some of these queries, but when I look into individual examples I find that it does so by returning the wrong answers. That's not ideal.
 
@@ -10637,7 +10637,7 @@ Aggregate  (cost=3988.02..3988.03 rows=1 width=84)
               Index Cond: (id = mc2.company_id)
 ```
 
-Not all that different. It puts the production year and country code higher up than I did, but copying that doesn't help much. 
+Not all that different. It puts the production year and country code higher up than I did, but copying that doesn't help much.
 
 I thought maybe the problem here is that I hitting all the movie_companies and all the infos before I get to return, so there are going to be huge numbers of dupes. But no, I'm only producing 114 rows total for 96 unique results.
 
@@ -10645,7 +10645,7 @@ Oh, I guess I'm also redoing all the t1 work for every t2 company. That seems li
 
 ``` julia
 function q33c_factored()
-  rating_type = @query begin 
+  rating_type = @query begin
     info_type.info(it, "rating")
     return (it::Int8,)
   end
@@ -10704,7 +10704,7 @@ end
 ```
 
 ```
-@benchmark(q33c_factored()) = BenchmarkTools.Trial: 
+@benchmark(q33c_factored()) = BenchmarkTools.Trial:
   samples:          1957
   evals/sample:     1
   time tolerance:   5.00%
@@ -10723,7 +10723,7 @@ That's about 20x faster than postgres and 320x faster than the original. Maybe I
 
 ### 2016 Oct 6
 
-I wrote up my results so far and showed them to a few people, and everyone I showed it to said that the report was too short and didn't make sense without going into the code. 
+I wrote up my results so far and showed them to a few people, and everyone I showed it to said that the report was too short and didn't make sense without going into the code.
 
 But the code is really ugly. So I further delaying the report by going back to clean things up.
 
@@ -10760,7 +10760,7 @@ function intersect_at(intersection, ranges)
       push!(intersection.buffer, projected_ranges)
     end
     ranges = map((old, new) -> new.stop:old.stop, ranges, projected_ranges)
-  end 
+  end
   intersection.buffer
 end
 
@@ -10837,9 +10837,9 @@ I can't get proper benchmarks because I'm on a bus and benchmarking without main
 
 I'm also down to about 600 lines of code, of which maybe 200 can be deleted once unboxing improves.
 
-Argh. I was seeing really big slowdowns on some of the queries and started to panic a little, but it turns out I forgot to include the `return_after` optimization when I changed to bfs. This uglifies the code again. It would be prettier to wrap the return_after part in a function and call return to break out of the loop, but then I would lose the ability to easily check the code with `@code_warntype`. 
+Argh. I was seeing really big slowdowns on some of the queries and started to panic a little, but it turns out I forgot to include the `return_after` optimization when I changed to bfs. This uglifies the code again. It would be prettier to wrap the return_after part in a function and call return to break out of the loop, but then I would lose the ability to easily check the code with `@code_warntype`.
 
-``` julia 
+``` julia
 if typeof(clause) == Assign
   body = (quote let
     local $(esc(var)) = $(esc(clause.expr))
@@ -10941,7 +10941,7 @@ New benchmarks:
 "15c" 3.69 s
 "15d" 2.99 s
 "16a" 21.67 ms
-"16b" 8.35 s 
+"16b" 8.35 s
 "16c" 566.33 ms
 "16d" 449.61 ms
 "17a" 2.05 s
@@ -10999,7 +10999,7 @@ New benchmarks:
 "33c" 5.10 ms
 ```
 
-Following the advice of [malisper](https://github.com/malisper) I disabled the genetic optimizer in postgres, increasing the query planning time to multiple seconds but dramatically improving the quality of the plans. I also increased the size of `shared_buffers` to 8gb and added an assertion in the benchmark harness that there are no buffer misses. 
+Following the advice of [malisper](https://github.com/malisper) I disabled the genetic optimizer in postgres, increasing the query planning time to multiple seconds but dramatically improving the quality of the plans. I also increased the size of `shared_buffers` to 8gb and added an assertion in the benchmark harness that there are no buffer misses.
 
 ``` julia
 function bench_pg(qs = query_names())
@@ -11021,7 +11021,7 @@ function bench_pg(qs = query_names())
         println(result)
         @assert false
       end
-      push!($times, time) 
+      push!($times, time)
     end evals=3
     @show trial
     push!(medians, median(times))
@@ -11044,11 +11044,11 @@ I finished up the report. Just waiting for a last round of feedback and some non
 
 Ok, let's get going again.
 
-Last month I used the benchmark against postgres as a goal to work towards. I wrote the blog post first and then spent the month working to make everything in it true. 
+Last month I used the benchmark against postgres as a goal to work towards. I wrote the blog post first and then spent the month working to make everything in it true.
 
-Today I started doing the same for the project as whole. I put up a [sketch](https://github.com/jamii/jamii.github.com/blob/master/_drafts/imp.markdown) of what I want the eventual overview to look like. 
+Today I started doing the same for the project as whole. I put up a [sketch](https://github.com/jamii/jamii.github.com/blob/master/_drafts/imp.markdown) of what I want the eventual overview to look like.
 
-I also need to pick another short-term goal. I'm leaning towards building a simple stock exchange and trading interface. It's the kind of thing that someone might want to do in a spreadsheet, but it's made difficult by the variable size collections and quantity of data. 
+I also need to pick another short-term goal. I'm leaning towards building a simple stock exchange and trading interface. It's the kind of thing that someone might want to do in a spreadsheet, but it's made difficult by the variable size collections and quantity of data.
 
 Here's a sketch of the core logic for a single market:
 
@@ -11081,9 +11081,9 @@ end
 
 `@minimum` doesn't currently exist and is awkward to fake using `=` and `@query`, so now is a good time to figure out what to do with aggregates in general.
 
-I want to think of aggregates in general as functions that take a query and return a new relation (possibly containing only one row in the case of simple aggregates like sum), but ideally without having to allocate the intermediate relation. 
+I want to think of aggregates in general as functions that take a query and return a new relation (possibly containing only one row in the case of simple aggregates like sum), but ideally without having to allocate the intermediate relation.
 
-Meanwhile, I belatedly discovered that Julia has an undocumented goto macro, which means I don't have to manually desugar loops in order to break out in a controlled way. 
+Meanwhile, I belatedly discovered that Julia has an undocumented goto macro, which means I don't have to manually desugar loops in order to break out in a controlled way.
 
 ### 2016 Oct 25
 
@@ -11092,10 +11092,10 @@ Here are some things that I might want to do with a query:
 * Materialize the results into a relation
 * Aggregate the results into a single value
 * Take the first result, last results, 42nd-57th results etc
-* Check whether a specific value is in the results 
-* Materialize the factorized results, without computing the full results 
+* Check whether a specific value is in the results
+* Materialize the factorized results, without computing the full results
 
-At the moment I'm struggling because I'm mashing them all into a single chunk of codegen. The original triejoin paper instead defines an trie iterator protocol that both indexes and queries implement. If I did something similar, I could just generate code for the iterator and implement the materialization, aggregates, first/last/range etc as functions of the query. 
+At the moment I'm struggling because I'm mashing them all into a single chunk of codegen. The original triejoin paper instead defines an trie iterator protocol that both indexes and queries implement. If I did something similar, I could just generate code for the iterator and implement the materialization, aggregates, first/last/range etc as functions of the query.
 
 That feels like another huge compiler time-sink though. Not sure that I want to dive into that again.
 
@@ -11106,11 +11106,11 @@ Wow, a month without any real work. For the sake of just getting something done,
 ``` julia
 function debug(relation)
   @relation displaying() => (Int64, String)
-  
+
   @query return displaying() => (0, relation[1][1])
-  
+
   @Window(displaying) do window, event_number
-    
+
     header = @query begin
       relation(name) => _
       displayed = @exists displaying() => (_, $name)
@@ -11118,7 +11118,7 @@ function debug(relation)
       node = button(Dict(:onclick => @event(displaying() => name), :style => style), name)
       return (name::String,) => node::Node
     end
-    
+
     grid = @query begin
       displaying() => (_, name)
       relation(name) => relation
@@ -11127,9 +11127,9 @@ function debug(relation)
       node = vbox(map((v) -> Hiccup.div(Dict(:style=>style), string(v)), relation[c]))
       return (c::Int64,) => node::Node
     end
-    
+
     Blink.body!(window, vbox([hbox(header[2]), hbox(grid[2])]))
-    
+
   end
 end
 ```
@@ -11140,11 +11140,11 @@ It required tweaking a couple of things elsewhere. Most notably, I changed event
 
 Got most of the way towards making the tables editable, but got bogged down in the details of passing data back and forth between Julia and the browser. I didn't really think through events properly.
 
-### 2016 Nov 9 
+### 2016 Nov 9
 
 Really crude awful committing now works for the editor. I never got around to writing a delete function for relations so it only does the right thing if the unique key is left unchanged.
 
-I tried to switch to Escher for the dom diffing but after a few hours ended up with just a [handful of filed issues](https://github.com/shashi/Escher.jl/issues/created_by/jamii) and no hello world. 
+I tried to switch to Escher for the dom diffing but after a few hours ended up with just a [handful of filed issues](https://github.com/shashi/Escher.jl/issues/created_by/jamii) and no hello world.
 
 Trying to update some of the other packages I rely on and finding that package manager is hanging when trying to clone. Cloning the same url directly with git at the command line works fine. No idea what's going on there.
 
@@ -11236,7 +11236,7 @@ flow = Flow()
 flow[:foo] = @relation ...
 flow[:bar] = @relation ...
 
-# set up views 
+# set up views
 setviews(flow, [
   :quux => @view ...
 ])
@@ -11248,9 +11248,9 @@ watch(flow) do _, cached
 end
 ```
 
-Then re-evalling any part of the file results in updates to the currently open window, without blowing any state away. 
+Then re-evalling any part of the file results in updates to the currently open window, without blowing any state away.
 
-Right now this can't handle fixpoints or unions, because I've been doing those imperatively before, and it doesn't handle subqueries/aggregates because their metadata doesn't get parsed up in the view. Those are fixable. 
+Right now this can't handle fixpoints or unions, because I've been doing those imperatively before, and it doesn't handle subqueries/aggregates because their metadata doesn't get parsed up in the view. Those are fixable.
 
 It also doesn't handle loops over time. The way that Dedalus and Eve handle time is by having a single, serial timeline built in to the language. (Eve has plans for distributed execution, but I don't think they've published anything yet). Time is used to break non-monotonic fixpoints, but also for efficient mutation and for functions that are more easily expressed in sequential form. Tying the latter to the single timeline seems problematic.
 
@@ -11263,7 +11263,7 @@ Quickly added subqueries to the syntax. Instead of writing:
 ``` julia
 @view begin
   playlist(p, pn)
-  tracks = @query begin 
+  tracks = @query begin
     playlist_track($p, t)
     track(t, _, _, _, _, _, _, _, price)
     return (t::Int64, price::Float64)
@@ -11278,7 +11278,7 @@ I can now write:
 ``` julia
 @view begin
   playlist(p, pn)
-  @query begin 
+  @query begin
     playlist_track(p, t)
     track(t, _, _, _, _, _, _, _, price)
     return (t::Int64, price::Float64)
@@ -11439,14 +11439,14 @@ world[:row] = @relation (Int64,) => Hiccup.Node
 world[:tab] = @relation (String,) => Hiccup.Node
 world[:window] = @relation () => Hiccup.Node
 
-begin 
+begin
   setflow(world, Sequence([
-    @create begin 
+    @create begin
       name in map(string, keys(world.outputs))
       node = button(Dict(:onclick=>@event displaying() => name), name)
       return tab(name) => node
     end
-  
+
     @create begin
       displaying() => name
       columns = world[Symbol(name)].columns
@@ -11458,7 +11458,7 @@ begin
       cell = Hiccup.div(Dict(:style=>style), render_value(value))
       return cell(c, r) => cell
     end
-    
+
     @merge begin
       displaying() => name
       columns = world[Symbol(name)].columns
@@ -11469,14 +11469,14 @@ begin
       node = Hiccup.div(Dict(:style=>style), string(typ))
       return cell(c, 0) => node
     end
-    
+
     @create begin
       cell(_, r) => _
       @query cell(c, r) => cell_node
       row = hbox(cell_node)
       return row(r) => row
     end
-  
+
     @create begin
       @query tab(name) => tab_node
       tabs = hbox(tab_node)
@@ -11484,14 +11484,14 @@ begin
       rows = vbox(row_node)
       window = vbox([tabs, rows])
       return window() => window
-    end 
+    end
   ]))
 end
 
 window(world)
 ```
 
-Live updating works nicely. 
+Live updating works nicely.
 
 It's missing row editing, but that didn't really work properly in the previous version anyway. Next thing I need to do is figure out how to handle how to deal with user input correctly.
 
@@ -11518,7 +11518,7 @@ Somehow I managed to figure out that the culprit was that `@js(window, morphdom(
 
 I found a problem with my approach to handling state. I wanted to have mutations occur only in event handlers, but the event handlers produce json and I need arbitrary Julia values. I could probably fix that by putting julia code strings in the event handler and evalling it on the server. Or I could just generate some unique id and store the events client-side. That seems more sensible. But then how do I get values out of eg textboxes?
 
-The core problem here is the asynchrony between server and the client. The client knows what the current value of the textbox is. The server knows how to interpret the value. If other mutations have happened in the meantime, the server may have forgotten what the client is currently seeing, and might wrongly interpret the event (this is the problem with naive applications of CQRS where the events are things like "user 7 clicked on button 42"). 
+The core problem here is the asynchrony between server and the client. The client knows what the current value of the textbox is. The server knows how to interpret the value. If other mutations have happened in the meantime, the server may have forgotten what the client is currently seeing, and might wrongly interpret the event (this is the problem with naive applications of CQRS where the events are things like "user 7 clicked on button 42").
 
 I think it's clear that any model that allows mutation at all is still going to be subject to subtle asynchrony bugs, but I want to continue to allow it for now so that I don't have to figure out how to deal with time yet.
 
@@ -11528,13 +11528,13 @@ Maybe I should try to write a blog post on the problem to clear up my thinking.
 
 ### 2016 Dec 21
 
-So I just gave up and introduced arbitrary state. I don't like it, but I don't see a way around it right now. Maybe I'll end up with something like Elm where the view and update functions are separated. 
+So I just gave up and introduced arbitrary state. I don't like it, but I don't see a way around it right now. Maybe I'll end up with something like Elm where the view and update functions are separated.
 
 I moved all the query code into the `@merge` macro, which works like before, and created `@state` and `@fresh` macros for creating stateful and stateless tables. (`@fresh` is a shitty name but `@view` is already taken in Julia. Maybe `@stateful` and `@transient`?)
 
-With those I now have pretty decent editing working, but I'm having to splice in javascript to get the most recent state out of the textbox. 
+With those I now have pretty decent editing working, but I'm having to splice in javascript to get the most recent state out of the textbox.
 
-``` julia 
+``` julia
 @merge begin
   displaying() => name
   editing() => (name, c, r, value)
@@ -11542,27 +11542,27 @@ With those I now have pretty decent editing working, but I'm having to splice in
   style = "height: 2em; flex: $(100/length(columns))%"
   onkeydown = """
     if (event.which == 13) {
-      Blink.msg('event', {'table': 'editing', 'values': ['$name', $c, $r, this.value]}); 
-      Blink.msg('event', {'table': 'committed', 'values': [true]}); 
+      Blink.msg('event', {'table': 'editing', 'values': ['$name', $c, $r, this.value]});
+      Blink.msg('event', {'table': 'committed', 'values': [true]});
       return false;
     }
     if (event.which == 27) {
       Blink.msg('event', {'table': 'editing', 'values': ['', 0, 0, '']});
       return false;
-    } 
+    }
   """
   cell = textarea(Dict(:style=>style, :rows=>1, :onkeydown=>onkeydown), value)
   return cell(c, r) => cell
 end
 ```
 
-There's a similar problem in the other direction where if anything causes the flow to refresh, the textbox gets reset. 
+There's a similar problem in the other direction where if anything causes the flow to refresh, the textbox gets reset.
 
 Both problems are caused by the fact that I don't have synchronous access to the dom, so the model and the view can get out of sync. I could get synchronous access either by porting Imp to js or by using a native toolkit. Or I could figure out a way to deal with asynchronous access.
 
 ### 2016 Dec 26
 
-The UI-as-a-value-embedded-in-the-debugger thing I was pushing for was interesting but a) it caused major problems with not having a vdom <-> dom bijection and b) when pressed I couldn't come up with any actual usecases that weren't just buttons. So let's scrap it and go with the flat relational representation that we used in Eve since way back in early 2014. 
+The UI-as-a-value-embedded-in-the-debugger thing I was pushing for was interesting but a) it caused major problems with not having a vdom <-> dom bijection and b) when pressed I couldn't come up with any actual usecases that weren't just buttons. So let's scrap it and go with the flat relational representation that we used in Eve since way back in early 2014.
 
 Every DOM node gets a unique id:
 
@@ -11607,7 +11607,7 @@ post = Sequence([
     node(id) => (root, ix, kind, class, text)
     return sorted_node(1, root, ix, id, kind, class, text)
   end
-  
+
   Fixpoint(
     @merge begin
       sorted_node(level, _, _, parent, _, _, _)
@@ -11638,7 +11638,7 @@ function render(parent, ix, id, kind, className, textContent) {
 }
 ```
 
-The next thing I have to do is make this incremental. It's not too hard - just diff the new sorted_nodes table against the old and then do deletions before insertions. 
+The next thing I have to do is make this incremental. It's not too hard - just diff the new sorted_nodes table against the old and then do deletions before insertions.
 
 I've ported the readonly parts of the table interface to this model:
 
@@ -11652,7 +11652,7 @@ end
   return node(@id(:tabs)) => (@id(:top), 1, "div", "hbox", "")
 end
 
-@merge begin 
+@merge begin
   ix_name in enumerate(keys(world.state))
   ix = ix_name[1]
   name = ix_name[2]
@@ -11689,14 +11689,14 @@ end
   # style = "height: 2em; flex: $(100/length(columns))%"
   # onkeydown = """
   #   if (event.which == 13) {
-  #     Blink.msg('event', {'table': 'editing', 'values': ['$name', $c, $r, this.value]}); 
-  #     Blink.msg('event', {'table': 'committed', 'values': [true]}); 
+  #     Blink.msg('event', {'table': 'editing', 'values': ['$name', $c, $r, this.value]});
+  #     Blink.msg('event', {'table': 'committed', 'values': [true]});
   #     return false;
   #   }
   #   if (event.which == 27) {
   #     Blink.msg('event', {'table': 'editing', 'values': ['', 0, 0, '']});
   #     return false;
-  #   } 
+  #   }
   # """
   # cell = textarea(Dict(:style=>style, :rows=>1, :onkeydown=>onkeydown), value)
   return node(@id(:cells, r, c)) => (@id(:cells, r), c, "textarea", "flex1", string(value))
@@ -11731,7 +11731,7 @@ post = Sequence([
     node(id) => (root, ix, kind, _, _)
     return sorted_node(1, root, ix, id, kind)
   end
-  
+
   Fixpoint(
     @merge begin
       sorted_node(level, _, _, parent, _,)
@@ -11739,16 +11739,16 @@ post = Sequence([
       return sorted_node(level+1, parent, ix, id, kind)
     end
   )
-  
+
   @transient class(Id, String)
-  
+
   @merge begin
     node(id) => (_, _, _, class, _)
     return class(id, class)
   end
-  
+
   @transient text(Id, String)
-  
+
   @merge begin
     node(id) => (_, _, _, _, text)
     return text(id, text)
@@ -11778,12 +11778,12 @@ Then the client just rolls through and applies the diffs:
 function render(removed, parent, ix, id, kind, classNameId, className, textContentId, textContent) {
     trash = document.createElement(kind[i]);
     document.getElementById("root").appendChild(trash);
-    
+
     for (var i = removed.length - 1; i >= 0; i--) {
         node = document.getElementById(removed[i]);
         trash.appendChild(node);
     }
-    
+
     for (var i = 0; i < parent.length; i++) {
         node = document.getElementById(id[i]);
         if (node == null) {
@@ -11799,19 +11799,19 @@ function render(removed, parent, ix, id, kind, classNameId, className, textConte
         parentNode = document.getElementById(parent[i])
         parentNode.insertBefore(node, parentNode.children[ix[i]]);
     }
-    
+
     for (var i = 0; i < classNameId.length; i++) {
         node = document.getElementById(classNameId[i]);
         node.className = className[i];
     }
-    
+
     for (var i = 0; i < textContentId.length; i++) {
         node = document.getElementById(textContentId[i]);
         if (node.children.length == 0) {
             node.textContent = textContent[i];
         }
     }
-    
+
     trash.remove();
 }
 ```
@@ -11915,7 +11915,7 @@ end
 
 The rendering breaks in hard to reproduce ways, and it took me a while to figure out why. `node.style = oldNode.style` silently doesn't work. It just erases the style of node. The correct incantation is `node.style = oldNode.style.cssText`.
 
-### 2016 Dec 28 
+### 2016 Dec 28
 
 I ported the minesweeper example to the new flow/UI system. It's noticably faster - building the hiccup.jl vdom was the majority of the runtime in the previous version, which is daft.
 
@@ -11925,7 +11925,7 @@ I also hooked in the table browser so I can poke about inside the minesweeper st
 
 (Been a while. Was working on a parallel project. Details later.)
 
-Having to create ids for every dom node sucks. It's boilerplate. 
+Having to create ids for every dom node sucks. It's boilerplate.
 
 Also don't like that because I don't have a way to nest queries, I can't directly represent the nested structure of the dom and instead have to break it up into multiple queries.
 
@@ -11936,7 +11936,7 @@ Could solve the last problem by introducing nested queries to Imp, and I still w
   login(session) do
     [input "type"="text" "placeholder"="What should we call you?"]
   end
-  
+
   chat(session) do
     [div
       message(message, text, time) do
@@ -11953,7 +11953,7 @@ Could solve the last problem by introducing nested queries to Imp, and I still w
 
 Anything that looks like a datalog clause eg `login(session)` repeats the template inside it for every row, sorted in the order that the variables appear. Nested clauses implicitly join against all their ancestors, uh, which makes this a bad example because there are no joins. Later...
 
-In my other project these get compiled into a bunch of datalog views that generate a relational dom model much like the one I used in imp, but once I had it working I realized that now I have templates it would be much simpler to just read data out of the relations and interpret the templates directly, rather than doing all the fiddly codegen. 
+In my other project these get compiled into a bunch of datalog views that generate a relational dom model much like the one I used in imp, but once I had it working I realized that now I have templates it would be much simpler to just read data out of the relations and interpret the templates directly, rather than doing all the fiddly codegen.
 
 ``` julia
 # dumb slow version just to get the logic right
@@ -12025,11 +12025,11 @@ Is there some 80% solution? Let's look at the most common use-cases:
 
 1 doesn't require anything interesting to happen on the client. 2 will spam the server with data if we create an event on every button press, so we really want the client to look at the keypress first. 3 has to both submit a server event and call a js function, which ideally we would like to do without an extra roundtrip.
 
-Splicing stuff into js functions seems like the only thing that will handle all three nicely. We just need to make the syntax cleaner and the avoid the cost of creating many similar functions. 
+Splicing stuff into js functions seems like the only thing that will handle all three nicely. We just need to make the syntax cleaner and the avoid the cost of creating many similar functions.
 
 If we tag specific relations as events then we can create js functions for them and write `"onclick" = "add_message($next_id, this.value)"`.
 
-Avoiding many similar functions seems to *have* a feasible solution, which means I can put it off doing it until it actually becomes a problem. 
+Avoiding many similar functions seems to *have* a feasible solution, which means I can put it off doing it until it actually becomes a problem.
 
 Julia parses `"add_message($next_id, this.value)"` as `Expr(:string, "add_message(", :next_id, ", this.value)")` so it will be easy detect in the template parser.
 
@@ -12040,7 +12040,7 @@ I added support for string interpolation everywhere the template accepts string,
   login(session) do
     [input "type"="text" "placeholder"="What should we call you?"]
   end
-  
+
   chat(session) do
     [div
       message(message, text, time) do
@@ -12051,8 +12051,8 @@ I added support for string interpolation everywhere the template accepts string,
       end
     ]
     next_message(id) do
-      [input 
-        "type"="text" 
+      [input
+        "type"="text"
         "placeholder"="What do you want to say?"
         "onkeydown"="if (event.keypress == 13) {new_message($id, this.value)}"
         ]
@@ -12064,8 +12064,8 @@ I added support for string interpolation everywhere the template accepts string,
 But now that I look at it I realize that with my intended diff semantics, this will replace the input node every time the next message id changes. Which would be fine except that that also wipes the contents of the input. It's the same problem for all the approaches I came up with above - the core problem is that we can't change attributes without replacing the node. Maybe I need to be able to move the query inside the node?
 
 ``` julia
-[input 
-  "type"="text" 
+[input
+  "type"="text"
   "placeholder"="What do you want to say?"
   next_message(id) do "onkeydown"="if (event.keypress == 13) {new_message($id, this.value)}" end
 ]
@@ -12076,8 +12076,8 @@ I'd have to change the syntax and the interpeter, and it will make diffs a bit m
 It would also incidentally add the ability to do stuff like:
 
 ``` julia
-[button 
-  style("funky", k, v) do k=v end 
+[button
+  style("funky", k, v) do k=v end
   "bring the funk"
 ]
 ```
@@ -12091,7 +12091,7 @@ Oh, I guess tags too. Let's make tags interpolatable.
   login(session) do
     ["input" "type"="text" "placeholder"="What should we call you?"]
   end
-  
+
   chat(session) do
     ["div"
       message(message, text, time) do
@@ -12103,7 +12103,7 @@ Oh, I guess tags too. Let's make tags interpolatable.
     ]
     next_message(id) do
       ["input"
-        "type"="text" 
+        "type"="text"
         "placeholder"="What do you want to say?"
         "onkeydown"="if (event.keypress == 13) {new_message($id, this.value)}"
         ]
@@ -12129,7 +12129,7 @@ Decided to require string escaping rather than allowing raw symbols. Makes less 
   login(session) do
     [input placeholder="What should we call you?"]
   end
-  
+
   chat(session) do
     [div
       message(message, text, time) do
@@ -12162,7 +12162,7 @@ type View
   watchers::Set{Any}
 end
 
-function View() 
+function View()
   template = quote [div] end
   View(template, parse_template(template), Set{Any}())
 end
@@ -12180,7 +12180,7 @@ function Flows.watch(watcher, view::View)
 end
 ```
 
-Render the whole template each time and use [diffhtml](https://diffhtml.org/) to patch the dom. 
+Render the whole template each time and use [diffhtml](https://diffhtml.org/) to patch the dom.
 
 ``` julia
 function render(window, view, state)
@@ -12267,13 +12267,13 @@ view = View()
 
 world[:chat] = Relation((["my session"],), 1)
 
-begin 
+begin
   set_flow!(world, Sequence([
     @stateful login(String)
     @stateful chat(String)
     @stateful message(Int64) => (String, DateTime)
     @event new_message(String)
-    
+
     @merge begin
       new_message(text)
       @query begin
@@ -12287,7 +12287,7 @@ begin
       login(session) do
         [input placeholder="What should we call you?"]
       end
-    
+
       chat(session) do
         [div
           message(message, text, time) do
@@ -12338,20 +12338,20 @@ With sessions we can now handle logging in:
 ``` julia
 set_flow!(world, Sequence([
   UI.pre
-  
+
   @stateful username(String) => String
   @stateful message(Int64) => (String, String, DateTime)
-  
+
   @transient not_logged_in(String)
-  
+
   @event new_login() => (String, String)
   @event new_message() => (String, String)
-  
+
   @merge begin
     new_login() => (session, username)
     return username(session) => username
   end
-  
+
   @merge begin
     new_message() => (session, text)
     @query begin
@@ -12359,7 +12359,7 @@ set_flow!(world, Sequence([
     end
     return message(1 + length(id)) => (session, text, now())
   end
-  
+
   @merge begin
     session(session)
     @query username(session) => un # TODO hygiene bug :(
@@ -12370,12 +12370,12 @@ set_flow!(world, Sequence([
 set_template!(view, quote
   [div
     not_logged_in(session) do
-      [input 
+      [input
         placeholder="What should we call you?"
         onkeydown="if (event.which == 13) {new_login('$session', this.value)}"
         ]
     end
-  
+
     username(session, _) do
       [div
         [span "$username"]
@@ -12413,16 +12413,16 @@ set_head!(view, quote
       display: flex;
       flex-direction: column;
     }
-    
+
     .vbox * {
       flex: 1 1 auto;
     }
-    
+
     .hbox {
       display: flex;
       flex-direction: row;
     }
-    
+
     .hbox * {
       flex: 1 1 auto;
     }
@@ -12431,21 +12431,21 @@ end)
 set_body!(view, quote
   [div
     not_logged_in(session) do
-      [div 
+      [div
         class="hbox"
-        [input 
+        [input
           style="margin: 50vh 30vw;"
           placeholder="What should we call you?"
           onkeydown="if (event.which == 13) {new_login('$session', this.value)}"
         ]
       ]
     end
-  
+
     username(session, username) do
-      [div 
+      [div
         class="vbox"
         style="height: 80vh; width: 80vw; margin: 10vh 10vw;"
-        [div 
+        [div
           style="height: 100%; overflow: scroll;"
           [table
             style="width: 100%;"
@@ -12464,7 +12464,7 @@ set_body!(view, quote
           style="width: 100%; height: 2em"
           placeholder="What do you want to say?"
           onkeydown="if (event.which == 13) {new_message('$session', this.value); this.value=''}"
-        ] 
+        ]
       ]
     end
   ]
@@ -12477,7 +12477,7 @@ A nice touch for complex styles would be to concatenate multiple attributes.
 function interpret_node(parent, node::AttributeNode, bound_vars, state)
   key = interpret_value(node.key, bound_vars)
   val = interpret_value(node.val, bound_vars)
-  parent.attrs[key] = string(get(parent.attrs, key, ""), val) 
+  parent.attrs[key] = string(get(parent.attrs, key, ""), val)
 end
 ```
 
@@ -12485,7 +12485,7 @@ So everything is pretty now. What next?
 
 Would be nice to scrollIntoView on new elements. Can we fit that into the existing event system?
 
-Not without the cooperation of the dom patching. At some point I'll have to replace diffhtml with my own thing, and when I do that I can implement synthetic events like onmount. 
+Not without the cooperation of the dom patching. At some point I'll have to replace diffhtml with my own thing, and when I do that I can implement synthetic events like onmount.
 
 Not sure what to do next. Ideas:
 
@@ -12505,9 +12505,9 @@ set_flow!(world, Sequence([
 
   @stateful order(id::Order) => (time::DateTime, price::Dec64, quantity::Int64, side::Side)
   @stateful matched(buy::Order, sell::Order) => (price::Dec64, quantity::Int64)
-  
+
   @event new_order(price::String, quantity::String, side::String)
-  
+
   @merge begin
     new_order(price_string, quantity_string, side_string)
     time = now()
@@ -12520,12 +12520,12 @@ set_flow!(world, Sequence([
     @query order(id) => (_,_,_,_)
     return order(1+length(id)) => (time, price, quantity, side)
   end
-  
+
   @transient remaining(side::Side, price::Dec64, time::DateTime, id::Order) => quantity::Int64
-  
+
   Fixpoint(Sequence([
     @clear remaining
-  
+
     @merge begin
       order(order) => (time, price, quantity, side)
       @query matched(order, matched_buy) => (_, bought_quantity)
@@ -12534,7 +12534,7 @@ set_flow!(world, Sequence([
       @when remaining > 0
       return remaining(side, price, time, order) => remaining
     end
-    
+
     @merge begin
       @query remaining(Buy, buy_price, buy_time, buy_order) => buy_quantity
       @query remaining(Sell, sell_price, sell_time, sell_order) => sell_quantity
@@ -12548,18 +12548,18 @@ set_flow!(world, Sequence([
       return matched(buy_order[b], sell_order[s]) => (price, quantity)
     end
   ]))
-  
+
   @transient to_buy(price::Dec64) => (printed_price::String, quantity::Int64)
-  
+
   @merge begin
     remaining(Buy, price, _, _) => _
     @query remaining(Buy, price, time, order) => quantity
     printed_price = @sprintf("%.4f", Float64(Dec64(price)))
     return to_buy(price) => (printed_price, sum(quantity))
   end
-  
+
   @transient to_sell(neg_price::Dec64) => (printed_price::String, quantity::Int64)
-  
+
   @merge begin
     remaining(Sell, price, _, _) => _
     @query remaining(Sell, price, time, order) => quantity
@@ -12586,7 +12586,7 @@ set_body!(view, quote
       ]
       to_sell(_, price, quantity) do
         [tr [td "$price"] [td "$quantity"]]
-      end 
+      end
     ]
   ]
 end)
@@ -12681,17 +12681,17 @@ Ah, hang on, positioning doesn't work right with nested query nodes. Hmmm.... th
 The fragment function needs to take a chunk of template like:
 
 ``` julia
-[li 
-  [div 
-    class="view" 
-    [input 
-      class="toggle" 
-      "type"="checkbox" 
+[li
+  [div
+    class="view"
+    [input
+      class="toggle"
+      "type"="checkbox"
       checked(todo) do
         checked="true"
       end
       onclick="toggle($todo)"
-    ] 
+    ]
     [label "$text" ondblclick="start_editing('$session', $todo)"]
     [button class="destroy" onclick="delete_todo($todo)"]
   ]
@@ -12766,7 +12766,7 @@ end
 
 function concat_fragment(fragment)
   new_fragment = Union{Symbol, String}[]
-  for value in fragment 
+  for value in fragment
     if isa(value, String) && (length(new_fragment) > 0) && isa(new_fragment[end], String)
       new_fragment[end] = string(new_fragment[end], value)
     else
@@ -12794,7 +12794,7 @@ Ok, now I have to think about positioning. Tomorrow?
 
 ### 2017 Jun 19
 
-I figured out why I'm having so much trouble making this incremental. There's really two steps involved. 
+I figured out why I'm having so much trouble making this incremental. There's really two steps involved.
 
 We start off with a template:
 
@@ -12855,12 +12855,12 @@ And finally flatten the query nodes to produce a DOM tree:
 
 The flattening is a complicated interleaving of rows from the various relations. Before having a clear picture of these two steps in my mind I was conflating the flattened tree with the intermediate tree.
 
-The way to deal with this is to reify and incrementally maintain the intermediate state separately from the final state. 
+The way to deal with this is to reify and incrementally maintain the intermediate state separately from the final state.
 
 It's kind of fiddly, because we want to be able to write as much of the code as possible generically, rather than generating it all, but we don't have a good way to deal with tuples of varying lengths. So we'll generate code that handles the sorting and generates some kind of id for each tuple (probably a hash).
 
 ``` julia
-@query begin 
+@query begin
   foo(w)
   id = id(1, w)
   return foo_id(w) => id
@@ -12888,7 +12888,7 @@ end
 
 # etc...
 ```
- 
+
 And then we can do the flattening generically.
 
 ``` julia
@@ -12926,7 +12926,7 @@ end
 The fixpoint there is not quite right, but you get the idea.
 
 I wonder what kind of data model and query compiler would allow writing all of the code generically, treating the template as pure data...
- 
+
 ### 2017 Jul 3
 
 I figured out a nicer way to do it. I thought of using some kind of sort key before, but couldn't figure out how to make the type stable. I spent a bunch of time thinking about algebraic types without realizing that I could just use nulls. Funny how you can get stuck in one line of thinking.
@@ -12982,7 +12982,7 @@ function collect_sort_key(node::QueryNode, parent_vars, key, keyed_children)
   vars = unique(vcat(parent_vars, node.vars))
   new_vars = vars[(1+length(parent_vars)):end]
   start_ix = length(key)
-  push!(key, new_vars) 
+  push!(key, new_vars)
   end_ix = length(key)
   collect_sort_key(node.children, vars, key, keyed_children)
   key[start_ix:end_ix] .= nothing
@@ -13016,7 +13016,7 @@ And now for each group we need to spit out queries that collect nodes from the i
 (It occurs to me that it would be much nicer to structure this as a series of smaller passes that elaborates fields on each node, but that's too big a change to make right now.)
 
 ``` julia
-function key_expr(elem) 
+function key_expr(elem)
   @match typeof(elem) begin
     Integer => elem
     Symbol => :(Nullable($elem))
@@ -13051,7 +13051,7 @@ A couple of bugfixes later, here is a single group:
   visible(session, todo) do
     text(todo, text) do
       displaying(session, todo) do
-        [li 
+        [li
           ...
         ]
       end
@@ -13072,7 +13072,7 @@ end
 quote  # /home/jamie/imp/src/UI.jl, line 304:
     node_10782481008382097060(session) => parent_id # /home/jamie/imp/src/UI.jl, line 305:
     node_18031626605480411109(session,todo,text) => child_id # /home/jamie/imp/src/UI.jl, line 306:
-    return group_10782481008382097060(1,Nullable(todo),1,Nullable(text),2,0,1) 
+    return group_10782481008382097060(1,Nullable(todo),1,Nullable(text),2,0,1)
 end
 ```
 
@@ -13101,7 +13101,7 @@ Now it runs. Kind of hard to tell if it's right just by looking though.
 
 Todo:
 
-* hookup client side 
+* hookup client side
 * retrieve types from world
 * compact fragments to handle text and fixed attributes
 * handle query attributes
@@ -13146,7 +13146,7 @@ function render(window, view, world, session)
       (n, i) -> begin
         if (i < length(new_parent_ids)) && (new_parent_ids[i] == new_parent_ids[i+1])
           sibling = new_child_ids[i+1]
-        else 
+        else
           sibling = nothing
         end
         push!(creates, (new_parent_ids[i], sibling, new_child_ids[i], new_contents[i]))
@@ -13352,7 +13352,7 @@ function render(delete_parents, delete_ixes, html_create_parents, html_create_ix
 }
 ```
 
-It sort of works. I can add one todo and it shows up on screen, but if I add another it just deletes the first. 
+It sort of works. I can add one todo and it shows up on screen, but if I add another it just deletes the first.
 
 Oh, I need the whole chain of variables inside groups - not just the local variables. Now it works!
 
@@ -13415,13 +13415,13 @@ Couldn't resist benchmarking against the classic Om blogpost. Not very reliable 
 
 I removed the watchers stuff, made View wrap World and then just wrapped all the mutation functions. Watchers are a thing I stole from clojure and they always seem like a good idea at first, but in the long run life is always better with linear control flow. Debugging is so much easier if you can follow code by just reading it in a straight line, rather than having to keep track of where callbacks were created.
 
-Now templates have access to the World when they are being compiled, so I have the opportunity to pass type information through. But first I have to fix some new heisenbug inside Blink. Once again I have rpcs being called on the server and not showing up on the client. 
+Now templates have access to the World when they are being compiled, so I have the opportunity to pass type information through. But first I have to fix some new heisenbug inside Blink. Once again I have rpcs being called on the server and not showing up on the client.
 
 I'm seriously fed up with Blink. The api is great but the constant dropping and hanging is killing my productivity.
 
 Much debugging later, I've stripped out Blink and I'm using raw websockets. I don't think my threading is correct at the moment, but it's at least working well enough for development. The biggest annoyance I have at the moment is closing old versions of the server - it seems that old modules don't get GCed so I can't use finalizers, and I can't close things manually because I lose the reference when I recompile. I'll figure both out later.
 
-Passing types through from the state moves my crude benchmark from 100ms + 9mb to 20ms + 5mb. The number of allocations is still huge, so I figure that `Nullable{String}` is probably landing on the heap. 
+Passing types through from the state moves my crude benchmark from 100ms + 9mb to 20ms + 5mb. The number of allocations is still huge, so I figure that `Nullable{String}` is probably landing on the heap.
 
 ``` julia
 function f()
@@ -13452,7 +13452,7 @@ Ok, that doesn't actually work, because the Nullables still get created and dump
 default{T <: Number}(::Type{T}) = zero(T)
 default(::Type{String}) = ""
 
-function key_expr(elem) 
+function key_expr(elem)
   @match elem begin
     _::Integer => elem
     (_::Symbol, _::Type) => elem[1]
@@ -13501,7 +13501,7 @@ Base.getfield(_::Tuple{Array{String,1},Array{UInt64,1}},1)::UNION{ARRAY{STRING,1
 
 Seriously? You can't figure out what type that is?
 
-The solution is bizaare. I changed `:(eltype($(return_clause.name)[$ix]))` to `:(eltype($(return_clause.name).columns[$ix]))` - but it had already done that inlining itself in the generated code. 
+The solution is bizaare. I changed `:(eltype($(return_clause.name)[$ix]))` to `:(eltype($(return_clause.name).columns[$ix]))` - but it had already done that inlining itself in the generated code.
 
 Didn't help much though.
 
@@ -13510,8 +13510,8 @@ I notice that init_flow causes a fair bit of allocation too, which is weird beca
 ``` julia
 function init_flow(flow::ANY, world::World)
   t = typeof(flow)
-  if t == Create 
-    if flow.is_transient || !haskey(world.state, flow.output_name) 
+  if t == Create
+    if flow.is_transient || !haskey(world.state, flow.output_name)
       world.state[flow.output_name] = copy(flow.empty)
     end
     if flow.is_event
@@ -13586,7 +13586,7 @@ render: 25.35ms
 roundtrip: 55.82ms
 ```
 
-50-60ms of which around half is rendering client-side. 
+50-60ms of which around half is rendering client-side.
 
 One thing that's really noticeable is that `run_flow(view.compiled,...)` is at ~10ms down from ~50ms. I didn't change anything though. Weird.
 
@@ -13639,7 +13639,7 @@ None of those things were actually on my todo list, so it's still:
 The way I want to refactor this is similar to the compiler - identify everything by ids and store all the actual data in tables. The parser will spit out a list of ids in preorder and a parents table and then nothing else needs to be recursive.
 
 ``` julia
-typealias Splice Vector{Union{String, Symbol}} 
+typealias Splice Vector{Union{String, Symbol}}
 
 immutable AttributeNode
   key::Splice
@@ -13657,7 +13657,7 @@ immutable QueryNode
 end
 
 typealias Node Union{AttributeNode, FixedNode, QueryNode}
-  
+
 immutable Parsed
   nodes::Vector{Node} # in pre-order
   parents::Vector{Int64} # parent[1] = 0, arbitrarily
@@ -13675,7 +13675,7 @@ end
 function parse(expr)
   nodes = Vector{Node}()
   parents = Vector{Int64}()
-  
+
   parse_stack = Vector{Tuple{Int64, Any}}()
   push!(parse_stack, (0, expr))
   while !isempty(parse_stack)
@@ -13685,7 +13685,7 @@ function parse(expr)
       Expr(:block, [Expr(:line, _, _), expr], _) => begin
         push!(parse_stack, (parent, expr))
       end
-      Expr(:vect || :vcat || :hcat, exprs, _) => begin 
+      Expr(:vect || :vcat || :hcat, exprs, _) => begin
         for expr in exprs
           push!(parse_stack, (parent, expr))
         end
@@ -13714,7 +13714,7 @@ function parse(expr)
       end
     end
   end
-  
+
   Parsed(nodes, parents)
 end
 ```
@@ -13724,7 +13724,7 @@ That worked first time. Except that all the nodes came out in reverse order. I..
 Aha:
 
 ``` julia
-Expr(:vect || :vcat || :hcat, exprs, _) => begin 
+Expr(:vect || :vcat || :hcat, exprs, _) => begin
   push!(parse_stack, (parent, exprs))
 end
 ```
@@ -13792,7 +13792,7 @@ The next part is figuring out how to calculate keys, but I'm out of brainpower f
 
 ### 2017 Jul 13
 
-Trying to upgrade to Julia 0.6 today, since kmsquire kindly upgraded Match.jl this week. 
+Trying to upgrade to Julia 0.6 today, since kmsquire kindly upgraded Match.jl this week.
 
 Representation of some Exprs changed. Relatively easy to fix apart from the typical problems with macro errors not giving stack traces or even a line number
 
@@ -13804,11 +13804,11 @@ Well, that was a simple change:
 outputs::Vector{Relation} = Base.invokelatest(flow.eval, map((name) -> world.state[name], flow.input_names)...)
 ```
 
-Some keyword changes. 
+Some keyword changes.
 
 `isopen(::HttpServer.Server)` [disappeared](https://github.com/JuliaWeb/HttpServer.jl/pull/119).
 
-Fix a couple of deprecation warnings and we're done. 
+Fix a couple of deprecation warnings and we're done.
 
 Quick benchmark update:
 
@@ -13851,7 +13851,7 @@ function compile(node, parent, column_type::Function)
       _::FixedNode => fixed_parent[id] = my_parent
     end
   end
-  
+
   vars = Dict{Int64, Vector{Symbol}}(0 => [:session])
   types = Dict{Int64, Vector{Type}}(0 => [String])
   free_vars = Dict{Int64, Vector{Symbol}}(0 => [:session])
@@ -13872,7 +13872,7 @@ function compile(node, parent, column_type::Function)
       end
     end
   end
-  
+
   num_children = Dict{Int64, Int64}(id => 0 for id in 0:length(node))
   ix = Dict{Int64, Int64}()
   family = Dict{Int64, Vector{Int64}}(id => Vector{Int64}() for (_, id) in fixed_parent)
@@ -13885,7 +13885,7 @@ function compile(node, parent, column_type::Function)
       push!(ancestors[id], id)
     end
   end
-  
+
   key = Dict{Int64, Vector{Union{Int64, Type, Tuple{Symbol, Type}}}}()
   for (my_fixed_parent, my_family) in family
     base_key = Vector{Union{Int64, Type, Tuple{Symbol, Type}}}()
@@ -13976,7 +13976,7 @@ for (my_fixed_parent, my_family) in family
       @assert !haskey(key, lo_id)
       my_key = key[lo_id] = copy(base_key)
       for hi_id in my_family
-        if (hi_id == my_fixed_parent) || (node[hi_id] isa QueryNode) 
+        if (hi_id == my_fixed_parent) || (node[hi_id] isa QueryNode)
           if lineage[hi_id, lo_id] == 0
             append!(my_key, free_types[hi_id])
             push!(my_key, 0)
@@ -14040,7 +14040,7 @@ Variables:
   itemT::Int64
 
 Body:
-  begin 
+  begin
       $(Expr(:inbounds, false))
       # meta: location dict.jl Type 104
       SSAValue(6) = $(Expr(:invoke, MethodInstance for fill!(::Array{UInt8,1}, ::UInt8), :(Base.fill!), :($(Expr(:foreigncall, :(:jl_alloc_array_1d), Array{UInt8,1}, svec(Any, Int64), Array{UInt8,1}, 0, 16, 0))), :((Base.checked_trunc_uint)(UInt8, 0)::UInt8)))
@@ -14207,7 +14207,7 @@ jamie@machine:~/imp$ cat src/*.mem | sort -h | tail
      3264   for (output_name, output) in zip(flow.output_names, outputs)
      3520   Relation(deduped, num_keys, Dict{Vector{Int}, typeof(deduped)}(order => deduped))
      3920     columns = tuple(((ix in order) ? copy(column) : empty(column) for (ix, column) in enumerate(relation.columns))...)
-     4944   foreach_diff(old_index, new_index, old_index[1:old.num_keys], new_index[1:new.num_keys], 
+     4944   foreach_diff(old_index, new_index, old_index[1:old.num_keys], new_index[1:new.num_keys],
      7040   get!(relation.indexes, order) do
      7856   result_columns::T = tuple((empty(column) for column in old.columns)...)
     30784   typeof(coll)()
@@ -14224,7 +14224,7 @@ It's also putting a lot on Relation and merge, both of which make sense.
 function f()
   Data.Relation(([1,2,3], [4,5,6]), 1)
 end
-  
+
 @time f()
 
 0.000022 seconds (34 allocations: 2.391 KiB)
@@ -14297,7 +14297,7 @@ render: 27.93ms
 roundtrip: 115.9ms
 ```
 
-The UI sections only take twice as long to do 10x the work, which further confirms my suspicion that I'm paying a lot of overhead in there somewhere, if I could just track it down. 
+The UI sections only take twice as long to do 10x the work, which further confirms my suspicion that I'm paying a lot of overhead in there somewhere, if I could just track it down.
 
 What next? The UI stuff is still pretty far from being ready for real use, but I also have a ton of code debt in the underlying layers that is making life hard. And further, I know that the next thing I want to work on is graphical interfaces to Imp, which is going to be hard with the syntax-heavy all-at-once compilers I have right now. I need a more compositional query language.
 
@@ -14345,9 +14345,9 @@ More work on the draft, plus a couple of bugfixes in Todo.jl.
 
 I worked on some simple benchmarks to put in the post. It's a bit tricky to frame so that it doesn't come off as claiming to be super-amazing-fast-you-should-use-this-in-your-startup.
 
-Also, I tried to explain the performance and found that I couldn't, so I ended up spending a bunch of time on runtime and allocation profiling, which then inevitably led to optimization. 
+Also, I tried to explain the performance and found that I couldn't, so I ended up spending a bunch of time on runtime and allocation profiling, which then inevitably led to optimization.
 
-I found that almost all the time in the code is spent in quicksort, either from indexes or creating relations. A bunch of the remaining time is spent in merging. Now I check to see if things are sorted before sorting them (because queries often accidentally return things in sorted order) and I check if I'm merging against empty relations. 
+I found that almost all the time in the code is spent in quicksort, either from indexes or creating relations. A bunch of the remaining time is spent in merging. Now I check to see if things are sorted before sorting them (because queries often accidentally return things in sorted order) and I check if I'm merging against empty relations.
 
 That cut about 50% off the runtime. To get the rest I'm probably going to have to rethink how I store relations. Which was going to be coming down the line when I worked on incremental maintenance anyway.
 
@@ -14369,7 +14369,7 @@ Yet. More. Editing.
 
 ### 2017 Jul 28
 
-And up it goes. 
+And up it goes.
 
 I think I'm reaching the limits of what can usefully be explained with text. Going forwards, I'm going to try creating animated debuggers for everything I build. I suspect it will be a similar amount of effort to the constant rewriting of examples that went into this post but with much more versatility.
 
@@ -14377,16 +14377,16 @@ I think I'm reaching the limits of what can usefully be explained with text. Goi
 
 I spent this week deciding what to work on for the next 3-6 months. I always find this difficult. When I'm actually working on something concrete I find it pretty easy to schedule and prioritize work, but choosing a direction is so open-ended that it's easy to become paralyzed with indecision.
 
-I settled on a somewhat meta- direction. I always complained at Eve that I didn't know who our users were and so didn't have clear goals for design but I've been perpetuating that bad habit in Imp. 
+I settled on a somewhat meta- direction. I always complained at Eve that I didn't know who our users were and so didn't have clear goals for design but I've been perpetuating that bad habit in Imp.
 
-I spoke to a couple of people who would be interested in using Imp in their day-to-day work if it were actually ready, and I also went through a bunch of imaginary users. 
+I spoke to a couple of people who would be interested in using Imp in their day-to-day work if it were actually ready, and I also went through a bunch of imaginary users.
 
 Long-term, I can divide the desired features into two rough groups:
 
 * Acquiring, exploring and manipulating data (import tools, schemas, visual browser, query editor, graphs etc)
 * Deploying stateful, collaborative services (deployment/sharing, persistence, collaborative editing of data and/or code, version control, permissions)
 
-There's a third group that revolves around building websites/apps, which is the current focus of Eve, but I'm much less interested in that. Apps are a means to an end, the end is most often 'shared datastore + reasonable interface' and a big chunk of the time I suspect that that end is better served by some standard interface with the odd plugin rather than requiring people to build all their interactions from scratch. It's the wrong level of abstraction for most day-to-day problems. 
+There's a third group that revolves around building websites/apps, which is the current focus of Eve, but I'm much less interested in that. Apps are a means to an end, the end is most often 'shared datastore + reasonable interface' and a big chunk of the time I suspect that that end is better served by some standard interface with the odd plugin rather than requiring people to build all their interactions from scratch. It's the wrong level of abstraction for most day-to-day problems.
 
 That means that my focus on reactivity is probably misplaced. It's really cool and interesting that you can build webapps with a declarative, order-lite language, but it's not actually that relevant to the problems that I'm trying to solve.
 
@@ -14451,7 +14451,7 @@ Old versions of Eve had some crude but good enough solutions to 2. We tried 7 an
 
 Currents versions of Eve seem to have settled down on 1,4,5. 6 is there but they seem to be leaning towards something more templatey like me.
 
-Think about the size of other projects. Git = 3. Sqlite = 1,2,4,5. Fieldbook/Airtable/Ragic = 1,2,7.  
+Think about the size of other projects. Git = 3. Sqlite = 1,2,4,5. Fieldbook/Airtable/Ragic = 1,2,7.
 
 If one of Fieldbook/Airtable/Ragic was open-source I would have a much better starting platform. Building that would be valuable in its own right, but UI is definitely not my strong point.
 
@@ -14465,7 +14465,7 @@ I can't run Julia on my phone. Not natively, not in the browser. So in the long 
 
 I'm considering using sqlite as a starting point. It would let me get up and running without porting all the Imp runtime, and would solve persistence too. But there may be enough unexpected niggles that it's not a time saver overall.
 
-I also have to decide whether to use the android UI or to stick with all-html. The latter will make it easier to support multiple platforms but there is enough of a performance cost that react-native exists. 
+I also have to decide whether to use the android UI or to stick with all-html. The latter will make it easier to support multiple platforms but there is enough of a performance cost that react-native exists.
 
 Speaking of react-native, would that a good way to bridge between Rust and Android?
 
@@ -14485,9 +14485,9 @@ http://developer.telerik.com/featured/nativescript-works/
 
 Both seem to be pretty complicated. Android has an XML layout thing, so it must have some data-centric way to building UI. Oh, wait:
 
-> For performance reasons, view inflation relies heavily on pre-processing of XML files that is done at build time. Therefore, it is not currently possible to use LayoutInflater with an XmlPullParser over a plain XML file at runtime; it only works with an XmlPullParser returned from a compiled resource (R.something file.) 
+> For performance reasons, view inflation relies heavily on pre-processing of XML files that is done at build time. Therefore, it is not currently possible to use LayoutInflater with an XmlPullParser over a plain XML file at runtime; it only works with an XmlPullParser returned from a compiled resource (R.something file.)
 
-But maybe? 
+But maybe?
 
 https://stackoverflow.com/questions/1754714/android-and-reflection
 
@@ -14509,11 +14509,11 @@ No decision reached yet, but I have at least a good idea of what the options are
 * react native - lots of complexity, probably too hard to glue together wihout using their entire renderer
 * native and jni - simple, but requires hand-coding or reflection for api
 
-I'm leaning towards the latter. It will at least give me simple apps with a sensible complexity load. 
+I'm leaning towards the latter. It will at least give me simple apps with a sensible complexity load.
 
 ### 2017 Aug 13
 
-Got the Rust tools installed and semi-working. VS Code seems to be the best supported editor. Had to install https://fonts.google.com/download?family=Droid%20Sans%20Mono to make it readable.  
+Got the Rust tools installed and semi-working. VS Code seems to be the best supported editor. Had to install https://fonts.google.com/download?family=Droid%20Sans%20Mono to make it readable.
 
 ### 2017 Aug 16
 
@@ -14521,7 +14521,7 @@ Somewhat paralyzed by data model decisions. LBs [constructor predicates](https:/
 
 There is a natural symettry between the two. Entities-as-a-bag-of-AVs allows building n-way relationships out of the 2-way relationships that EAV provides. Relational models allow n-way relationships from the start, but if you want to do any metaprogramming you're going to end up with some sort of column-n-of-row function, which is effectively interpreting the relational model as it would be implemented in EAV.
 
-Neither lends itself more to a particular level of structure. A relational model could just be a set of arbitrary-length named tuples. An EAV model could require types for every entity and attribute. 
+Neither lends itself more to a particular level of structure. A relational model could just be a set of arbitrary-length named tuples. An EAV model could require types for every entity and attribute.
 
 Both require information about relationship caridinality to be expressed separately too (although I suppose an EAV model where is always many-to-one is possible, I've never seen it in practice).
 
@@ -14664,3 +14664,387 @@ And then I realize that I made mutually recursive types, and this is rust land s
 ```
 
 Gonna have to reflect stuff after all.
+
+### 2017 Sep 7
+
+Ah, missed *some* days.
+
+Rusty Imp is coming along slowly.
+
+Spent some time investigating TiddlyWiki.
+
+Today, playing with sonic-pi. Have to build from source to get the latest version (which has mic input).
+
+sudo apt-get purge libaubio4*
+sudo apt-get install libsndfile-dev
+build-ubuntu-app
+
+qjackctl &
+# hit run
+./sonic-pi
+
+hangs on splash screen
+
+sudo pkill -9 jack
+sudo pasuspender -- jackd -R -d alsa
+
+there is a `<defunct> scsynth` hanging around so maybe it's not starting correctly?
+
+but I can start it just fine by itself:
+
+```
+jamie@machine:~$ scsynth -u 10000
+Found 0 LADSPA plugins
+*** ERROR: open directory failed '/home/jamie/.local/share/SuperCollider/synthdefs'
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+JackDriver: client name is 'SuperCollider'
+SC_AudioDriver: sample rate = 48000.000000, driver's block size = 1024
+Cannot use real-time scheduling (RR/5)(1: Operation not permitted)
+JackClient::AcquireSelfRealTime error
+SuperCollider 3 server ready.
+Zeroconf: registered service 'SuperCollider'
+```
+
+Ok, found some log files:
+
+```
+==> /home/jamie/.sonic-pi/log/processes.log <==
+No pids store found here: /tmp/sonic-pi-pids
+Exiting
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+[GUI] - Detecting port numbers...
+[GUI] - GUI OSC listen port 4558
+[GUI] -    port: 4558 [OK]
+[GUI] - Server OSC listen port 4557
+[GUI] -    port: 4557 [OK]
+[GUI] - Server incoming OSC cues port 4559
+[GUI] -    port: 4559 [OK]
+[GUI] - Scsynth port 4556
+[GUI] -    port: 4556 [OK]
+[GUI] - Server OSC out port 4558
+[GUI] - GUI OSC out port 4557
+[GUI] - Scsynth send port 4556
+[GUI] - Erlang router port 4560
+[GUI] -    port: 4560 [OK]
+[GUI] - OSC MIDI out port 4561
+[GUI] -    port: 4561 [OK]
+[GUI] - OSC MIDI in port 4562
+[GUI] -    port: 4562 [OK]
+[GUI] - Init script completed
+[GUI] - using default editor colours
+[GUI] - launching Sonic Pi Server:
+[GUI] - starting UDP OSC Server on port 4558...
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+[GUI] - UDP OSC Server ready and listening
+
+==> /home/jamie/.sonic-pi/log/debug.log <==
+
+==> /home/jamie/.sonic-pi/log/processes.log <==
+Creating pids store: /tmp/sonic-pi-pids
+Started [2382] [-] ruby -E utf-8 /home/jamie/sonic-pi-3.0.1/app/gui/qt/../../../app/server/bin/sonic-pi-server.rb -u 4557 4558 4556 4556 4559 4560 4561 4562 [-] /tmp/sonic-pi-pids/2382
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+[GUI] - Ruby server pid registered: 2382
+[GUI] - waiting for Sonic Pi Server to boot...
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+Sonic Pi server booting...
+Using protocol: udp
+Detecting port numbers...
+Send port: 4558
+Listen port: 4557
+  - OK
+Scsynth port: 4556
+  - OK
+Scsynth send port: 4556
+  - OK
+OSC cues port: 4559
+  - OK
+Erlang port: 4560
+  - OK
+OSC MIDI out port: 4561
+  - OK
+OSC MIDI in port: 4562
+  - OK
+Booting server...
+
+
+Booting Sonic Pi
+----------------
+
+Booting on Linux
+Jackd not running on system. Starting...
+tail: '/home/jamie/.sonic-pi/log/scsynth.log' has become inaccessible: No such file or directory
+tail: '/home/jamie/.sonic-pi/log/scsynth.log' has appeared;  following new file
+Boot - Starting the SuperCollider server...
+Boot - scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096
+
+==> /home/jamie/.sonic-pi/log/debug.log <==
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot connect to server socket err = No such file or directory
+Cannot connect to server request channel
+
+==> /home/jamie/.sonic-pi/log/processes.log <==
+Started [2406] [-] scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096 [-] /tmp/sonic-pi-pids/2406
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+Started [2406] [-] scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096 [-] /tmp/sonic-pi-pids/2406
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+# Starting SuperCollider 2017-09-07 15:59:48
+Found 0 LADSPA plugins
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot create RT messagebuffer thread: Operation not permitted (1)
+Retrying messagebuffer thread without RT scheduling
+Messagebuffer not realtime; consider enabling RT scheduling for user
+no message buffer overruns
+Cannot create RT messagebuffer thread: Operation not permitted (1)
+Retrying messagebuffer thread without RT scheduling
+Messagebuffer not realtime; consider enabling RT scheduling for user
+no message buffer overruns
+Cannot create RT messagebuffer thread: Operation not permitted (1)
+Retrying messagebuffer thread without RT scheduling
+Messagebuffer not realtime; consider enabling RT scheduling for user
+no message buffer overruns
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+jackdmp 1.9.11
+Copyright 2001-2005 Paul Davis and others.
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+Copyright 2004-2014 Grame.
+jackdmp comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+JACK server starting in realtime mode with priority 10
+self-connect-mode is "Don't restrict self connect requests"
+audio_reservation_init
+Acquire audio card Audio0
+creating alsa driver ... hw:0|hw:0|1024|2|44100|0|0|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 1024 frames (23.2 ms), buffer = 2 periods
+ALSA: final selected sample format for capture: 32bit integer little-endian
+ALSA: use 2 periods for capture
+ALSA: final selected sample format for playback: 32bit integer little-endian
+ALSA: use 2 periods for playback
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot use real-time scheduling (RR/10)(1: Operation not permitted)
+AcquireSelfRealTime error
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+JackDriver: client name is 'SuperCollider'
+SC_AudioDriver: sample rate = 44100.000000, driver's block size = 1024
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot use real-time scheduling (RR/5)(1: Operation not permitted)
+JackClient::AcquireSelfRealTime error
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+SuperCollider 3 server ready.
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+Boot - SuperCollider booted successfully.
+Boot - Connecting to the SuperCollider server...
+Boot - Sending /status to server: 127.0.0.1:4556
+Boot - Receiving ack from scsynth
+Boot - Server connection established
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+JackDriver: max output latency 46.4 ms
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+ERROR system_capture_1 not a valid port
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+ERROR system_capture_2 not a valid port
+JackEngine::XRun: client = SuperCollider was not finished, state = Running
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+JackEngine::XRun: client = SuperCollider was not finished, state = Triggered
+JackAudioDriver::ProcessGraphAsyncMaster: Process error
+Unknown error...
+terminate called after throwing an instance of 'Jack::JackTemporaryException'
+  what():
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+............................................................
+[GUI] - Critical error! Could not boot Sonic Pi Server.
+```
+
+Looks like Jack is sad?
+
+No, that's apparently just caused by it's parent exiting - <http://jack-audio.10948.n7.nabble.com/Re-LAU-jackd-terminates-on-its-own-td19503.html>. So the problem is elsewhere.
+
+With `pasuspender -- jackd -R -d alsa`
+
+```
+==> /home/jamie/.sonic-pi/log/processes.log <==
+
+
+Clearing pids: ["2406", "2382"]
+
+Clearing [2406]
+  -- command scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096
+  -- removing /tmp/sonic-pi-pids/2406
+  -- unable to get ProcTable info for: 2406
+  -- process: 2406 not running
+
+Clearing [2382]
+  -- command ruby -E utf-8 /home/jamie/sonic-pi-3.0.1/app/gui/qt/../../../app/server/bin/sonic-pi-server.rb -u 4557 4558 4556 4556 4559 4560 4561 4562
+  -- removing /tmp/sonic-pi-pids/2382
+  -- unable to get ProcTable info for: 2382
+  -- process: 2382 not running
+
+Finished clearing pids
+
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+[GUI] - Detecting port numbers...
+[GUI] - GUI OSC listen port 4558
+[GUI] -    port: 4558 [OK]
+[GUI] - Server OSC listen port 4557
+[GUI] -    port: 4557 [OK]
+[GUI] - Server incoming OSC cues port 4559
+[GUI] -    port: 4559 [OK]
+[GUI] - Scsynth port 4556
+[GUI] -    port: 4556 [OK]
+[GUI] - Server OSC out port 4558
+[GUI] - GUI OSC out port 4557
+[GUI] - Scsynth send port 4556
+[GUI] - Erlang router port 4560
+[GUI] -    port: 4560 [OK]
+[GUI] - OSC MIDI out port 4561
+[GUI] -    port: 4561 [OK]
+[GUI] - OSC MIDI in port 4562
+[GUI] -    port: 4562 [OK]
+[GUI] - Init script completed
+[GUI] - using default editor colours
+[GUI] - launching Sonic Pi Server:
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+[GUI] - starting UDP OSC Server on port 4558...
+[GUI] - UDP OSC Server ready and listening
+
+==> /home/jamie/.sonic-pi/log/debug.log <==
+
+==> /home/jamie/.sonic-pi/log/processes.log <==
+Started [3058] [-] ruby -E utf-8 /home/jamie/sonic-pi-3.0.1/app/gui/qt/../../../app/server/bin/sonic-pi-server.rb -u 4557 4558 4556 4556 4559 4560 4561 4562 [-] /tmp/sonic-pi-pids/3058
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+[GUI] - Ruby server pid registered: 3058
+[GUI] - waiting for Sonic Pi Server to boot...
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+Sonic Pi server booting...
+Using protocol: udp
+Detecting port numbers...
+Send port: 4558
+Listen port: 4557
+  - OK
+Scsynth port: 4556
+  - OK
+Scsynth send port: 4556
+  - OK
+OSC cues port: 4559
+  - OK
+Erlang port: 4560
+  - OK
+OSC MIDI out port: 4561
+  - OK
+OSC MIDI in port: 4562
+  - OK
+Booting server...
+
+
+Booting Sonic Pi
+----------------
+
+Booting on Linux
+tail: '/home/jamie/.sonic-pi/log/scsynth.log' has been replaced;  following new file
+Jackd already running. Not starting another server...
+Boot - Starting the SuperCollider server...
+Boot - scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+Cannot use real-time scheduling (RR/5)(1: Operation not permitted)
+JackClient::AcquireSelfRealTime error
+
+==> /home/jamie/.sonic-pi/log/debug.log <==
+
+==> /home/jamie/.sonic-pi/log/processes.log <==
+Started [3080] [-] scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096 [-] /tmp/sonic-pi-pids/3080
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+Started [3080] [-] scsynth -u 4556 -m 131072 -a 1024 -D 0 -R 0 -l 1 -i 16 -o 16 -b 4096 [-] /tmp/sonic-pi-pids/3080
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+# Starting SuperCollider 2017-09-07 16:03:36
+Found 0 LADSPA plugins
+JackDriver: client name is 'SuperCollider'
+SC_AudioDriver: sample rate = 48000.000000, driver's block size = 1024
+SuperCollider 3 server ready.
+
+==> /home/jamie/.sonic-pi/log/server-output.log <==
+Boot - SuperCollider booted successfully.
+Boot - Connecting to the SuperCollider server...
+Boot - Sending /status to server: 127.0.0.1:4556
+Boot - Receiving ack from scsynth
+Boot - Server connection established
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+
+==> /home/jamie/.sonic-pi/log/scsynth.log <==
+JackDriver: max output latency 42.7 ms
+
+==> /home/jamie/.sonic-pi/log/server-errors.log <==
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+ERROR system_capture_1 not a valid port
+Cannot lock down 82274202 byte memory area (Cannot allocate memory)
+ERROR system_capture_2 not a valid port
+
+==> /home/jamie/.sonic-pi/log/gui.log <==
+............................................................
+[GUI] - Critical error! Could not boot Sonic Pi Server.
+```
+
+Already spent a few hours on this and it looks like Sam is drowning in linux support requests, so let's just stick with 2.8 for a while.
