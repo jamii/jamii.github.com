@@ -15050,3 +15050,130 @@ ERROR system_capture_2 not a valid port
 Already spent a few hours on this and it looks like Sam is drowning in linux support requests, so let's just stick with 2.8 for a while.
 
 And now my sound doesn't work.
+
+### 2017 Sep 11
+
+Yesterday I got a basic compiler and parser working and hooked it up the the UI.
+
+Not super keen on Nom for parsing - code is hard to read and error messages are hard to deal with. I tried Pest too, but it was a pain to set up and the documentation is not illuminating.
+
+Today is a tooling day. I'm getting really annoyed by unreliable tools, feature churn and broken muscle memory. Pretty much all the main tools I use day-to-day have serious issues. I want tools that are reliable and responsive and will still be here in five years time. I think the most likely way to achieve that is to avoid monolithic tools as much as possible. I shouldn't have to switch editors to get support for a new language.
+
+I upgraded Ubuntu. I was planning to stay on 16.04 for a while longer, but it's getting increasingly hard to build code that relies on having newish header files around. Took most of the day, but nothing major seems to have broken.
+
+Unity has been discontinued and will be replaced by Gnome 3 in November. I mostly use it for the nicely animated window manager. Some of the window management shortcuts are timing dependent - they do different things depending on whether or not the menu UI popped up in time. I used to use i3. I still have my old config. Switching back is a relief.
+
+Gnome-terminal takes a couple of seconds to start. I often use disposable terminals, so that's annoying. st doesn't support deleting with the delete key. Terminology has insane UI. Xfce4-terminal starts faster than I can continue typing. Alacritty is even faster and feels like it has less typing latency, but it doesn't support mouse scrolling or copy/paste. Sakura feels equally fast and doesn't seem to be missing anything obvious.
+
+### 2017 Sep 12
+
+Continuing.
+
+I touch-type, but if I lose position I look at the keyboard. Currently I have a US layout but a German keyboard, so this gives me the wrong answer. I bought a plastic marker to black out the keys and installed a typing tutor, which I'll practice with on tools days.
+
+I used emacs for a long time, and then sublime because after a summer holiday I had forgetten 5+ years of emacs knowledge, and then atom for the Julia plugin and now visual studio code for the Rust plugin. The latter two are both unpleasant. Atom is slow enough that it messes with my typing. VSC has a ton of weird bugs like randomly jumping to the end of the file every few minutes, and it wastes a lot of screen space. Neither can handle opening the same file in multiple windows.
+
+What do I want?
+
+* Low latency, reliable interaction - no pauses for autocomplete or highlighting
+* Multiple cursors
+* Open same file in multiple windows
+* Easy to extend
+
+Atom:
+
+* journal - ~20s, unusable, with highlighting off is merely laggy
+* main.rs - typing is ok
+* multiple cursors - yes
+* multiple views - yes, but only within one window
+* other - interactions other than typing feel laggy
+
+VSC:
+
+* journal - ~2s, typing is ok
+* main.rs - typing with completions is ok
+* multiple cursors - yes
+* multiple views - only within one window
+* other - some weird interaction bugs eg sometimes randomly jumps to the bottom of the file
+
+Intellij:
+
+* journal - even with zero latency mode I can start typing, go make a cup of tea, and still have characters appearing when I get back
+* main.rs - typing on a single line is ok, inserting or deleting lines is ~1s, completions can't keep up with typing
+
+Brackets:
+
+* couldn't install - missing crypto libs on ubuntu 17.04
+
+Howl:
+
+* journal - opens instantly, highlighting is fast, completions have to be turned off
+* main.rs - lexing broken, typing with completions is laggy, otherwise smooth
+* multiple cursors - no
+* multiple views - only within one window
+* other - really nice ui for commands, completions are fast everywhere except in editor window, outline view is nice but slightly broken for markdown
+
+Kakoune:
+
+* journal - ~5s, unusable with highlighting on, typing with completions is laggy, smooth with both off
+* main.rs - opens instantly, typing with completions is laggy
+* multiple cursors - designed around them
+* multiple views - yes, client-server
+* other - really interesting multiple-cursor mechanisms, tries to be self-documenting, like the i3-style unixy extensions, probably high learning curve
+
+Geany:
+
+* journal - opens instantly, typing is smooth with highlighting (no completions)
+* main.rs - opens instantly, typing is smooth with highlighting and completions
+* multiple cursors - no
+* multiple views - no
+
+Textadept:
+
+* journal - opens instantly, typing is smooth with highlighting (no completions)
+* main.rs - opens instantly, typing is smooth with highlighting (no completions)
+* multiple cursors - as a package which I didn't test
+* multiple views - only within same window, occasionally feel out of sync
+* other - rust module doesn't seem to work at all but generates no error messages
+
+Neovim:
+
+* journal - opens instantly, typing is smooth with highlighting (no completions)
+* main.rs - opens instantly, typing is smooth with highlighting (no completions)
+* multiple cursors - as a package which I didn't test
+* multiple views - only within same window (despite client-server arch)
+* other - couldn't get language server plugin installed to test completions, probably high learning curve
+
+Sublime:
+
+* journal - opens instantly, typing is smooth (no completions), highlighting is broken
+* main.rs - opens instantly, typing is smooth with highlighting, laggy with completions
+* multiple cursors - the original?
+* multiple views - yes, but you have to explicitly ask for it or you'll get two copies
+
+Kakoune and Howl are the most promising, but either would need some serious work before being usable. I'll stick with VSC for now but try writing an extension for both Kakoune and Howl next week.
+
+### 2017 Sep 13
+
+Need to figure out syntax. Currently just have 'e a v' but I need to handle creating new entities, and I want to handle chaining attributes and functions too.
+
+Previous version of Imp just had relations, but for modelling I think it's worth separating into entities and attributes. Can treat entity creation as function from args to id, and then use the same syntax for functions in general.
+
+Just need a way to distinguish between creating to an entity and asking if one exists.
+
+Didn't really get anywhere - got derailed again with indecision about how to approach this project.
+
+Poked at more editors in the evening.
+
+Emacs:
+
+* journal - opens instantly, scrolling is laggy, typing is smooth with highlighting, laggy if completions are turned on
+* main.rs - opens instantly, typing is smooth with highlighting and completions from racer
+* multiple cursors - as a package which I didn't test
+* multiple views - yes, via emacsclient -t
+* other - keep getting caught in M-x with the modal time-delayed error screen
+
+I played around a bit with config and extra packages and I'm actually pretty happy with my setup already. 
+
+It's funny how the old muscle memory comes back, but I think I'll probably heavily alter the keys to be more CUA-like. It's all very well having a million commands at your fingertips, but I'll probably only remember ten of them and then hit all the rest by accident. Not to mention being unable to use any other program if I redevelop that muscle memory.
+
