@@ -15177,3 +15177,8 @@ I played around a bit with config and extra packages and I'm actually pretty hap
 
 It's funny how the old muscle memory comes back, but I think I'll probably heavily alter the keys to be more CUA-like. It's all very well having a million commands at your fingertips, but I'll probably only remember ten of them and then hit all the rest by accident. Not to mention being unable to use any other program if I redevelop that muscle memory.
 
+### 2017 Sep 18
+
+Put together a little live-coding plugin for Imp, where the editor sends code to the Imp server as you type, and sends cursor position so you can ask questions by pointing at things. 
+
+Unfortunately way too slow to be a pleasant experience. Bunch of that is plumbing problems, but even with that out of the way it's taking 2s to run the TodoMVC UI tick. Which is really weird, because it was ~9ms back when I finished working on it. Did I break something?
