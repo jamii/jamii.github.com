@@ -15182,3 +15182,35 @@ It's funny how the old muscle memory comes back, but I think I'll probably heavi
 Put together a little live-coding plugin for Imp, where the editor sends code to the Imp server as you type, and sends cursor position so you can ask questions by pointing at things. 
 
 Unfortunately way too slow to be a pleasant experience. Bunch of that is plumbing problems, but even with that out of the way it's taking 2s to run the TodoMVC UI tick. Which is really weird, because it was ~9ms back when I finished working on it. Did I break something?
+
+### 2017 Sep 19
+
+Sketched out a staged query compiler for the Julia version of Imp, but in the end I'm starting to add up just how much time I've spent working around the limitations of Julia and questioning whether it makes sense for my current goals. Right now I just want to get something running that I can use myself, with a live, responsive UI. 
+
+So I cloned the same live-coding plugin for the nascent Rust version of Imp. It's way snappier.
+
+Of course, that still leaves a lot of implementation work to get the language up to par with the Julia version...
+
+### 2017 Sep 20
+
+Started trying to implement constants and functions but got bogged down in details. Ended up refactoring the compiler a ton. In a better position for functions now, but I kinda resent the loss of time.
+
+### 2017 Sep 21
+
+Got variables and constants working. 
+
+Also improved the error reporting, so that even if the runtime panics I still get a printout of as much of the parsing, compiling and executing as possible. Makes debugging a lot easier.
+
+### 2017 Sep 22
+
+Buried in paperwork and phone calls today. No imp.
+
+### 2017 Sep 25
+
+I've gotten out of the habit of writing here. Backfilled Sep 19 to today.
+
+The interpeter side of functions was pretty easy. 
+
+Could get away with just adding them to the current parser, but I'm going to want to make it more general anyway. Kind of getting fed up with Nom, so I'm just going to recursive descent by hand for the most part. It'll make it easier to return as many errors as possible, rather than just bailing out at the first.
+
+Bogged myself down in design decisions that probably don't matter either way. Still no parser :(
