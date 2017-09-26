@@ -15214,3 +15214,9 @@ The interpeter side of functions was pretty easy.
 Could get away with just adding them to the current parser, but I'm going to want to make it more general anyway. Kind of getting fed up with Nom, so I'm just going to recursive descent by hand for the most part. It'll make it easier to return as many errors as possible, rather than just bailing out at the first.
 
 Bogged myself down in design decisions that probably don't matter either way. Still no parser :(
+
+### 2017 Sep 26
+
+More yak-shaving, followed by backing off the whole design and trying to alter things incrementally. As I should have done to begin with.
+
+Radical idea - no breaking changes that take more than one hour.
