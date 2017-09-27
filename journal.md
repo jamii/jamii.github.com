@@ -15220,3 +15220,65 @@ Bogged myself down in design decisions that probably don't matter either way. St
 More yak-shaving, followed by backing off the whole design and trying to alter things incrementally. As I should have done to begin with.
 
 Radical idea - no breaking changes that take more than one hour.
+
+### 2017 Sep 27
+
+I have a loop somewhere in my parser. 
+
+Rust does not print traces on stack overflow, and it does something gnarly to its stack during overflow that prevents gdb from giving a useful trace. 
+
+I want to wrap the nom combinators in something that will print out the name, but I can't get it to typecheck as a function or to parse as a macro. This shouldn't be hard.
+
+``` rust
+fn trace<'a, P, O: 'a>(msg: &str, parser: P) -> impl Fn(&'a [u8]) -> O
+where
+    P: Fn(&'a [u8]) -> O,
+{
+    |input| {
+        println!("{}", msg);
+        parser(input)
+    }
+}
+```
+
+```
+error[E0564]: only named lifetimes are allowed in `impl Trait`, but `` was found in the type `[closure@src/main.rs:591:5: 594:6 msg:&&str, parser:&P]`
+   --> src/main.rs:587:49
+    |
+587 | fn trace<'a, P, O: 'a>(msg: &str, parser: P) -> impl Fn(&'a [u8]) -> O
+    |    
+```
+
+This typechecks, but the nom macros can't handle calling it.
+
+``` rust
+fn trace<'a, P: 'static>(msg: &'static str, parser: P) -> impl Fn(&'a [u8]) -> ExprAst + 'static
+where
+    P: Fn(&'a [u8]) -> ExprAst,
+{
+    move |input| {
+        println!("{}", msg);
+        parser(input)
+    }
+}
+```
+
+```
+error: no rules expected the token `(`
+   --> src/main.rs:627:41
+    |
+627 | named!(expr_ast(&[u8]) -> ExprAst, trace("expr", do_parse!(
+    |                                         ^
+
+error: Could not compile `imp`.
+```
+
+Starting to think that maybe using nom was not the pragmatic choice after all.
+
+Worked out where the recursion is by hand. Not impressed. Shit like this is supposed to be what computers are for.
+
+Omg nom is a streaming parser so I have to explicitly tell it for every rule that it's ok to stop at the end of the file. 
+
+Tried using lalrpop. Their own example got bogged down in an infinite loop.
+
+I was really hoping to get this done in one day. Tomorrow, back to hand-written recursive descent. It may be long and gruelling, but at least when it breaks I stand a chance of fixing it.
