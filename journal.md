@@ -15282,3 +15282,9 @@ Omg nom is a streaming parser so I have to explicitly tell it for every rule tha
 Tried using lalrpop. Their own example got bogged down in an infinite loop.
 
 I was really hoping to get this done in one day. Tomorrow, back to hand-written recursive descent. It may be long and gruelling, but at least when it breaks I stand a chance of fixing it.
+
+Ok, nm, I actually managed to hack around it. I'm in a rush to get stuff demoable, so I can come back and make it pretty later.
+
+### 2017 Sep 28
+
+Got the whole compiler working today, functions and all. I planned it out on paper and then sat down and implemented it without changing my mind about anything. Only took about 10 mins of debugging to get all my examples running correctly. Good day. More of this!
