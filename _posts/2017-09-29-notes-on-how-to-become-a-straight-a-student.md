@@ -9,7 +9,7 @@ Pseudo-work - looks like working, isn't effective
 
 Work = time * focus
 
-Time management
+Time management:
   * Carry list to write down todos
   * Every morning:
     * Move todos to some day on calendar
