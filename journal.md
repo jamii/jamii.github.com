@@ -15288,3 +15288,9 @@ Ok, nm, I actually managed to hack around it. I'm in a rush to get stuff demoabl
 ### 2017 Sep 28
 
 Got the whole compiler working today, functions and all. I planned it out on paper and then sat down and implemented it without changing my mind about anything. Only took about 10 mins of debugging to get all my examples running correctly. Good day. More of this!
+
+### 2017 Sep 29
+
+Bogged down in school stuff today. Debugged moodle, figured out my timetable, read the course handbook. 
+
+[Read stuff](http://scattered-thoughts.net/blog/2017/09/29/notes-on-how-to-become-a-straight-a-student/).
