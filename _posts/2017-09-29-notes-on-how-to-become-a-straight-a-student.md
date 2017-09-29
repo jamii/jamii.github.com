@@ -9,13 +9,13 @@ Pseudo-work - looks like working, isn't effective
 
 Work = time * focus
 
-## Time management
+Time management
   * Carry list to write down todos
   * Every morning:
     * Move todos to some day on calendar
     * Schedule time for all of todays todos
   
-## Procrastination
+Procrastination:
   * Every evening, write down any failed todos and reasons
   * Hydrate, eat well, don't abuse caffeine
   * Make an event out of worst tasks
@@ -24,8 +24,10 @@ Work = time * focus
     * No distractions
   * Habit - find a one hour slot per day that is always distraction-free, always use it for the same task
   * If overtime is likely, schedule in advance and make an event
+  
+Study early, in isolation, with hourly breaks
 
-## Notes
+Notes:
   * Keep every handout, in one place
   * Nontechnical notes:
     * Identify main ideas - question, evidence, conclusion
@@ -44,25 +46,24 @@ Work = time * focus
     * Ask classmates
     * Ask the internet
 
-## Assignments
+Assignments:
   * Work constantly - any free time during working hours should be used to stay ahead
   * Don't read everything - prioritize favored sources
   * [Learn to read](http://scattered-thoughts.net/blog/2016/08/15/notes-on-how-to-read-a-book/)
   * Prime problems
   * Collect stuck problems for TA, office hours, group sessions
 
-## Retaining
-  * Study early, in isolation, with hourly breaks
+Retaining:
   * Collect questions and problems from notes
   * Answer out loud or on paper
   * Remove easy questions
   * Repeat until no questions left
   
-## Memorizing
+Memorizing:
   * Use flash cards
   * Train in odd moments eg bus journeys, queues, between classes
 
-## Papers
+Papers:
   * Pick a topic
   * Get a second opinion eg prof - is this a reasonable plan
   * Skim and annotate sources, follow citations
