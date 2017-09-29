@@ -24,8 +24,6 @@ Work = time * focus
     * No distractions
   * Habit - find a one hour slot per day that is always distraction-free, always use it for the same task
   * If overtime is likely, schedule in advance and make an event
-  
-Study early, in isolation, with hourly breaks
 
 ## Notes
   * Keep every handout, in one place
@@ -54,6 +52,7 @@ Study early, in isolation, with hourly breaks
   * Collect stuck problems for TA, office hours, group sessions
 
 ## Retaining
+  * Study early, in isolation, with hourly breaks
   * Collect questions and problems from notes
   * Answer out loud or on paper
   * Remove easy questions
