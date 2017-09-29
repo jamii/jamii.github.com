@@ -49,7 +49,7 @@ Notes
 Assignments
   * Work constantly - any free time during working hours should be used to stay ahead
   * Don't read everything - prioritize favored sources
-  [* Learn to read](http://scattered-thoughts.net/blog/2016/08/15/notes-on-how-to-read-a-book/)
+  * [Learn to read](http://scattered-thoughts.net/blog/2016/08/15/notes-on-how-to-read-a-book/)
   * Prime problems
   * Collect stuck problems for TA, office hours, group sessions
 
