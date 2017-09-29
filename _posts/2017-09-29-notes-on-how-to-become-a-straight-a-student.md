@@ -73,4 +73,4 @@ Papers
   * Fill in text
   * One pass to clean up argument structure
   * One pass out loud to clean up awkward/wrong grammar
-  * One pass for sanity * checking
+  * One pass for sanity checking
