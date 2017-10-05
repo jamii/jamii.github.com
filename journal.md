@@ -15277,7 +15277,7 @@ Starting to think that maybe using nom was not the pragmatic choice after all.
 
 Worked out where the recursion is by hand. Not impressed. Shit like this is supposed to be what computers are for.
 
-Omg nom is a streaming parser so I have to explicitly tell it for every rule that it's ok to stop at the end of the file. 
+Omg nom is a streaming parser so I have to explicitly tell it for every rule that it's ok to stop at the end of the file. \
 
 Tried using lalrpop. Their own example got bogged down in an infinite loop.
 
@@ -15294,3 +15294,13 @@ Got the whole compiler working today, functions and all. I planned it out on pap
 Bogged down in school stuff today. Debugged moodle, figured out my timetable, read the course handbook. 
 
 [Read stuff](http://scattered-thoughts.net/blog/2017/09/29/notes-on-how-to-become-a-straight-a-student/).
+
+### 2017 Oct 02
+
+School all day. Nothing exciting to report.
+
+### 2017 Oct 03
+
+Got a little done on the flight today. Sketched out my talk for Thursday. Fixed up older Imp examples. Added merging to the rust version, so asserts actually do something now.
+
+Ran into an interesting compiler bug, saved at e31a019afee74866e07ade6c34562a31a2f97844. Will see later if I can narrow it down.

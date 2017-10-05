@@ -108,7 +108,7 @@ insert into sent_at select next_message, now() from results;
 commit;
 ```
 
-Imp is built on top of [Julia](https://julialang.org/). The queries are [compiled to Julia code](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) and can use any Julia types and functions. The `DateTime` and the `now()` function used above are part of the Julia standard library. 
+Imp is built on top of [Julia](https://julialang.org/). The queries are [compiled to Julia code](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) and can use any Julia types and functions. The `DateTime` type and the `now()` function used above are part of the Julia standard library. 
 
 ## Previous approaches
 
