@@ -5,6 +5,7 @@ layout: page
 
 <div class="posts-list">
   {% for post in site.posts %}
+  {% unless post.hidden %}
   <article class="post-link">
     <a href="{{ post.url | prepend: site.baseurl }}">
       <div>
@@ -13,5 +14,8 @@ layout: page
       </div>
     </a>
   </article>
+  {% endunless %}
   {% endfor %}
 </div>
+
+  
