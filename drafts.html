@@ -1,11 +1,11 @@
 ---
-title: Posts
+title: Drafts
 layout: page
 ---
 
 <div class="posts-list">
   {% for post in site.posts %}
-  {% unless post.hidden %}
+  {% if post.hidden %}
   <article class="post-link">
     <a href="{{ post.url | prepend: site.baseurl }}">
       <div>
@@ -14,7 +14,7 @@ layout: page
       </div>
     </a>
   </article>
-  {% endunless %}
+  {% endif %}
   {% endfor %}
 </div>
 
