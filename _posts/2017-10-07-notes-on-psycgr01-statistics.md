@@ -4,6 +4,10 @@ title: 'Notes on ''PSYCGR01: Statistics'''
 hidden: true
 ---
 
+<https://www.ucl.ac.uk/lifesciences-faculty-php/courses/viewcourse.php?coursecode=PSYCGR01>
+
+> This course provides a thorough introduction to the General Linear Model, which incorporates analyses such as multiple regression, ANOVA, ANCOVA, repeated-measures ANOVA. We will also cover extensions to linear mixed-effects models and logistic regression. All techniques will be discussed within a general framework of building and comparing statistical models. Practical experience in applying the methods will be developed through exercises with the statistics package SPSS. 
+
 ## [Lecture 1](https://moodle.ucl.ac.uk/course/view.php?id=11131)
 
 Ignore cookbook approach, do model comparison.
