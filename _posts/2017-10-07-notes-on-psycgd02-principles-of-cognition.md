@@ -97,3 +97,91 @@ Review:
 
 * Recount three main periods of history.
 * Explain levels of models, with examples.
+
+## [Automaticity of Social Behavior: Direct Effects of Trait Construct and Stereotype Activation on Action](https://s3.amazonaws.com/academia.edu.documents/32183592/bargh__chen__burrows.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&Expires=1507410409&Signature=cbU%2B6KSCi8jGZWoV4Qriqi9OH%2BA%3D&response-content-disposition=inline%3B%20filename%3DAutomaticity_of_Social_Behavior_Direct_E.pdf)
+
+(Paired with the more recent failed replication.)
+
+Arguing that non-conscious priming can strongly affect behavior.
+
+Experiment 1:
+
+* 34 undergrads
+* Use scrambled sentence test with words that prime rude/polite/neutral
+* All experimenters blinded
+* Sent to another room for next test, where waiting confederate is asking experimenter questions
+* Time how long it takes them to interrupt
+* Huge effect sizes: almost 2x mean time, <20% vs >60% interruptions within 10min cutoff
+* No significant differences in reported perceptions of experimenters politeness
+* __Should we trust reports of politeness? It's a bad idea to call your professor rude!__
+* __Effect sizes are enormous. If a few words can double impatience, what could listening to angry music on the journey do? If we're so strongly susceptible to small influences, how is there room for personality? How do we have any resistance to marketing?__
+
+Experiment 2:
+
+* Two successful iterations!
+* 30 + 30 undergrads
+* Same setup, but priming elderly/neutral (without priming slow)
+* Timed how long subjects took to walk to the next room
+* Much smaller effect size - mean 7.30s -> 8.28s
+* __Near identical results in both iterations!__
+* __Elderly -> slow? I get thinking about rudeness making me rude, but thinking about elderly making me slow seems a much bigger stretch. Thinking about predators makes me want to eat meat? Being chased by a tiger and stop for a steak sandwich?__
+* Followup experiment with 19 undergrads found only 1 noticed the elderly priming
+
+* 33 undergrads
+* Do elderly priming, then Affect-Arousal Scale
+* Primed group were in slightly more positive mood, but not significantly
+* __Uses this to defend against the idea that they walked slower because sad, but seems bizarre that they are affected so much that they move differently but not so much that they feel differently.__
+
+Experiment 3:
+
+* 41 non-African-American undergrads
+* Long boring computer task. 
+* Flash either African-American or Caucasian face before each trial. 
+* On 130th claim error and say they have to start again. Experimenter explains error, but is blinded.
+* Facial expression caught by camera and rated by blinded experimenter.
+* Only two subjects reported seeing the faces when asked and couldn't identify which they saw
+* __Both experimenter in room and raters of pictures gave near-identical results!__
+* But no difference in self-reported racial prejudice.
+
+Argues that this works where subliminal adverts for pepsi don't because they directly activate traits which contain behavior whereas pepsi just activates the pepsi representation. __So elderly -> walk slow but pepsi -/> drink pepsi?__ Also because there is some activation energy to get up and buy coke, whereas they setup situations where the action was already required and the only difference was in accessibility. So priming for hostility will make people more likely to react to an annoying trigger but not to be randomly hostile.
+
+Note that results for behavior here are stronger than their previous results for judgments, but would assume that judgments mediate behavior. But in ex1 there was no effect on perception of the experimenter. And little evidence so far for judgment mediating behavior.
+
+## [Behavioral Priming: It’s all in the Mind, but Whose Mind?](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0029081)
+
+Failed replication of previous paper.
+
+Reasons to doubt original:
+
+* Only two indirect replications.
+* Small sample sizes.
+* Evidence from neuroscience suggests that top-down attention and bottom-up saliency are both required for the spreading activations that are used to explain priming. 
+* Experimenter who administered the task was not blinded enough - authors found that it was easy to accidentally glimpse the task sheet (__original describes them as being in a closed envelope?__)
+* Measuring time with a stopwatch is susceptible to bias
+* Not clear exactly what participants where asked afterwards - aware of stimulus vs aware of response vs aware of link.
+
+Experiment 1:
+
+* 120 (French) undergrads
+* Task sheets in a closed envelope, opened by subjects
+* Experimenters assigned to subjects are random
+* Experimenters follow a strict script
+* Walking speed recorded by infrared beam
+* No significant difference in walking times
+* Four students reported being aware of the elderly-ness
+* Primed group chose pictures of old people significantly more often in forced choice test
+* No experimenters reported having any specific expectations about subject behavior
+
+Experiment 2:
+
+* 50 subjects, 10 experimenters
+* Half of experimenters told that primed participants will walk slower, other half told faster
+* Experimenters were unblinded
+* First subject for each experimenter was a confederate who behaved to confirm this expectation
+* Experimenters measured with stopwatch
+* For stopwatch times, fast+prime went faster and slow+prime went slower.
+* For infrared times, slow+prime went slightly slower and fast+prime was same as fast+control.
+
+Most subjects were aware of the prime (__but it said 6%...__) and are in psych course so might be expected to be suspicious. 
+
+__Priming via social cues is way more believable to me than priming via word choice. Clear selective pressure for understanding and reacting to social cues.__
