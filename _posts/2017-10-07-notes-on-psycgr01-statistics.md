@@ -36,7 +36,7 @@ Proportional reduction in error $PRE = \frac{\operatorname{SSE}(C) - \operatorna
 
 F-score for GLM: $F = \frac{\left(\frac{\mathrm{RSS}_1 - \mathrm{RSS}_2}{p_2 - p_1}\right)}{\left(\frac{\mathrm{RSS}_2}{n - p_2}\right)} \sim F(p_2 - p_1, n - p_2)$
 
-F-test: reject null if $\P_\mathrm{null}(F > F_\mathrm{observed}) < \alpha$. Fixes $P(\mathrm{Type1}) = \alpha$. Produces tradeoff curve between $P(\mathrm{Type2})$ and real effect size.
+F-test: reject null if $P_\mathrm{null}(F > F_\mathrm{observed}) < \alpha$. Fixes $P(\mathrm{Type1}) = \alpha$. Produces tradeoff curve between $P(\mathrm{Type2})$ and real effect size.
 
 95% confidence interval of estimate = on 95% of samples, confidence interval falls around true population value = reject null if (1-$\alpha$) confidence interval does not contain null.
 
