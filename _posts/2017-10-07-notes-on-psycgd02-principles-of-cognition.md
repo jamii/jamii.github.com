@@ -98,7 +98,7 @@ Review:
 * Recount three main periods of history.
 * Explain levels of models, with examples.
 
-## [Automaticity of Social Behavior: Direct Effects of Trait Construct and Stereotype Activation on Action](https://s3.amazonaws.com/academia.edu.documents/32183592/bargh__chen__burrows.pdf?AWSAccessKeyId=AKIAIWOWYYGZ2Y53UL3A&Expires=1507410409&Signature=cbU%2B6KSCi8jGZWoV4Qriqi9OH%2BA%3D&response-content-disposition=inline%3B%20filename%3DAutomaticity_of_Social_Behavior_Direct_E.pdf)
+## [Automaticity of Social Behavior: Direct Effects of Trait Construct and Stereotype Activation on Action](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.333.7523&rep=rep1&type=pdf)
 
 (Paired with the more recent failed replication.)
 
