@@ -32,9 +32,9 @@ Efficient estimators:
 
 Model is model of population (__which implies that we can include sampling method in inference if we think we can accurately model the bias__).
 
-Proportional reduction in error $PRE = \frac{\operatorname{SSE}(C) - \operatorname{SSE}(A), \operatorname{SSE}(C)}$. On population is usually denoted $\eta^2$.
+Proportional reduction in error $PRE = \frac{\operatorname{SSE}(C) - \operatorname{SSE}(A)}{\operatorname{SSE}(C)}$. On population is usually denoted $\eta^2$.
 
-F-score for GLM: $F = \frac{\left(\frac{\mathrm{RSS}_1 - \mathrm{RSS}_2, p_2 - p_1}\right), \left(\frac{\mathrm{RSS}_2, n - p_2}\right)} \sim F(p_2 - p_1, n - p_2)$
+F-score for GLM: $F = \frac{\left(\frac{\mathrm{RSS}_1 - \mathrm{RSS}_2}{p_2 - p_1}\right)}{\left(\frac{\mathrm{RSS}_2}{n - p_2}\right)} \sim F(p_2 - p_1, n - p_2)$
 
 F-test: reject null if $\P_\mathrm{null}(F > F_\mathrm{observed}) < \alpha$. Fixes $P(\mathrm{Type1}) = \alpha$. Produces tradeoff curve between $P(\mathrm{Type2})$ and real effect size.
 
