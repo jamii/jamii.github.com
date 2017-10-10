@@ -211,3 +211,201 @@ But:
 * Most of the legwork is done by grad students anyway
 
 Try to structure experiments with multiple competing hypotheses where any given result would support some hypothesis and weaken the others.
+
+## [The Cognitive Neuroscience of Human Memory Since H.M.](https://pdfs.semanticscholar.org/981b/7074fcb20d0b1366c7a0d2660085ddbcf465.pdf)
+
+Intro:
+
+* Current categories used in memory took time to establish - non-obvious.
+* Specific impairments from lesions rather than general degradation shows that brain is structured and specialized.
+
+Hippocampus:
+
+* Hippocampal volume reduction of ~40% is common in memory-impaired patients - may be maximum cell loss ie 60% remaining is just dead tissue.
+* Damage to other regions can also impair memory.
+
+HM:
+
+* Learned a motor skill => memory not one single unit
+* Reasoning and perception intact => memory not required for reasoning/perception
+* Could sustain attention and had short-term recall => damaged ares not required for working memory
+* Had memories from before surgery => long-term storage not in damaged areas
+
+Other patients:
+
+* Perceptual priming still works
+* Can learn in Bayesian fashion, but not explicit memorization
+* Learned skills are rigid, fail if task is modified
+
+Declarative: facts, representations, conscious recall, compare/contrast memories
+Non-declarative memory: unconscious performance, black box
+
+Visual perception:
+
+* Initially thought to require memory in some cases, but...
+* Tests accidentally benefit from memory
+* Often damage to adjacent vision-processing areas
+* Requires better imaging/locating of lesions to clear up confusion
+  
+Immediate and working memory:
+
+* HM limited to 6 digit recall, but could maintain memory for 15 mins
+* => Immediate memory not time-limited, but maintenance-limited
+* Demonstrated in other patients - they do fine on tasks where distractions impair healthy subjects (working memory) but fail on tasks where distractions are fine for healthy subjects (long-term memory)
+* Open question - are there tasks that can be handled by working memory but are still impaired by hippocampus damage
+  * Debate around path integration - unclear whether subjects are each using same process and representation
+
+Remote memory:
+
+* HM initially had autobiographical memory
+* (Later in life was limited to factual recall, but later MRIs also showed changes since initial event)
+* Many other patients also have autobiographical memory.
+* In patients without, often unclear how far damage extends and whether it might affect other areas
+
+Working theory of long-term memory::
+
+* Medial temporal lobes deal with creating and maintaining declarative memories
+* Sensory memories stored in same area that initially processed them
+  * Supported by many individual patients eg 'colorblind painter' - after damage that removed color perception, could no longer remember colors except declaratively
+* Recall consists of tying all of these together
+  * Supported by various fMRI studies
+* Initially requires hippocampus, but over years memories reorganized, stored more permanently by changes across neocortex that tie these areas together
+
+Structure::
+
+* Working theory - organized by semantic categories
+  * eg JBR lost memory of things identified by attributes but not things identified by function
+* Recollection = what was in specific memory?
+* Familiarity = was prompt in any memory?
+* Hippocampus damaged patients are impaired on both old/new task (familiarity + some recollection) and free recall (recollection)
+* Combine old/new with recall of which source - patients have less instances of familiarity without recall => damage is not recall only
+
+Group studies average out individual variation - allows studying less obvious effects
+
+## [Finding the engram](https://pdfs.semanticscholar.org/2696/57152b4666ebd489ee54c2ab17534bb72496.pdf)
+
+Engram def=
+
+* Persistance - persistent physical change in brain resulting from specific experience
+* Ecphory - automatic retrieval in presence of cue
+* Content - reflects what happened and what can be retrived
+* Dormancy - exists (but dormant) even when encoding and retrieval not active
+
+The hunt:
+
+* Moving target eg reconsolidation
+* Many learning-related changes observed in brain eg synaptic, chemical, epigenetic. 
+* Different persistence periods. 
+* Not clear if related to engrams.
+* Often don't predict retrieval success.
+* Dominant theory - stronger connections between neurons that are active during encoding - neuronal ensemble
+
+Sharp-wave ripple events in hippocampus:
+
+* Multi-unit recordings in rodents, fMRI in humans
+* Replay observed during tasks, resting and sleeping
+* Strength of replay correlates with later retrieval performance
+* Disrupting waves impairs subsequent expression
+* Some progress on correlating content
+* Related sensory cues may trigger replay
+* Hard to observe dormancy
+
+Tracking: 
+
+* Non-specific lesions only caused retrieval failure when wide areas damaged => memories are distributed
+  * But overtrained rats => resilient memories
+  * But may have accidentally damaged hippocampus with large lesions
+* Would like to lesion specific ensembles
+* Tagging shows that some same neurons active during both encoding and retrieval (~10%, >chance, possibly collateral tagging during encoding)
+* Neurons with higher levels of CREB are more often recruited into ensemble
+* Neurons with virally over-expressed CREB are more often recruited into ensemble
+* More CREB -> more excitable
+* Increasing excitability via various other methods also has same effect
+* Allocate-and-erase - ablating (__killing?__) artificially excitable neurons reduces retrieval performance without affecting future learning 
+  * Even if only one brain region is targeted => some parts of ensemble have key roles
+* Tag-and-erase - tag active neurons, apply inhibitors (__how are these targeted?__), same effect
+* Worries about collateral tagging resolved:
+  * Tag 1st experience
+  * Silence during 2nd 
+  * 2nd still learned but 1st is gone => not enough collateral tagging to interfere with 2nd task
+
+Activating:
+
+* Uncontrolled experiments with focal electrical stimulation during surgery
+* Tag-and-manipulate / allocate-and-manipulate - re-triggers learned behavior even in unrelated contexts
+* In both cases, activation seems to spread from initial site to entire ensemble
+* Can create false associations:
+  * Tag ensemble in context 1
+  * Activate in context 2 and shock mice
+  * Learned fear response in context 1
+  * No fear response in context 2
+* Even indirectly
+  * Tag ensemble in context 1
+  * Tag ensemble during shock
+  * Repeatedly active both in context 2
+  * Learned fear response in context 2
+  * No fear response in context 1
+* Artificial activation paired with chemical that inhibits reconsolidation removes association
+* So far stimuli limited to fear/reward and response limited to freeze/approach/avoid - need more complex tasks to test episodic memory
+
+## [Memory, navigation and theta rhythm in the hippocampal-entorhinal system](https://pdfs.semanticscholar.org/d18c/c66f7f87e041dec544a0b843496085ab54e1.pdf)
+
+__Having a lot of trouble with this paper. Needs much more time and depth.__
+
+Navigation:
+
+* Allocentric / map-based navigation - static representation, navigate by external landmarks
+* Egocentric navigation / path integration - track motion, estimate path from origin
+* Hippocampus and entorhinal cortex support both declarative memory and navigation
+* Semantic memory (data independent of temporal context) ~ allocentric navigation
+* Episodic memory (first-person experiences in context) ~ egocentric navigation
+* Semantic memory abstracts repeated patterns in episodic memory ~ allocentric maps abstract repeated paths and observations
+
+Implementation possibilities:
+
+* Place cells in hippocampus - fire at specific locations in space - possibly encode position or distance?
+* Grid cells in medial entorhinal cortex - fire in repeating hexagonal pattern in space - different scales - possibly coordinate system?
+* Head direction cells - ?
+* Border cells - ?
+* __This is too complicated to skim__
+* Firing patterns are not simple - small changes in environment can result in large change in firing patterns - provides high-dimensional code for storing many different envs?
+
+* Insects manage to navigate with much simpler circuits / less storage. 
+* Massive excess capacity in mammals might be related to reuse for different kinds of memory.
+* Might also enable 'maps' of semantic knowledge
+* __cf spatial metaphors in language__
+* Recognition and recall associated with unique firing patterns in that area for each object/event
+
+* If episodic memories are stored similarly to paths through environment, might explain time-asymmetry and temporal contiguity (recalling one events makes it easier to recall other events that are nearby in time)
+
+* 
+Neuronal assembly sequences:
+
+* __Patterns of activation in time?__
+* Generated continuously even when environment and body signals are kept constant
+* Can predict correct/incorrect moves in maze seconds before motor event
+* Maybe used to organize episodic memory
+* Are chunked, just like paths and memory
+  * Limits error in long sequences
+  * __Is chunking like a hash tree?__
+
+__Some complex ideas about implementation in theta waves that I can't follow, but apparently explains:__
+
+* Fine resolution near recalled event/location, coarse structure elsewhere
+* Limited number of concurrently recalled events/locations
+* Long-distance jumps between events/locations (__related to chunking?__)
+* Compressed recall eg episodic recall tends to focus around highlights/lowlights rather than being linear in time
+* Why episodic recall plays out in real-time - tied to same mechanism that implements subjective time tracking
+
+__Maybe this explains why word-vec works? Are we just reverse-engineering the minds spatial relationships?__
+
+Questions:
+
+* Encoding/meaning of firing patterns
+* Other animals have similar cells but that are not theta modulated - do they have some substitute system?
+* What does the representation space look like (size, layout)?
+* How does the cell layout vary between rodents and primates? Do some areas grow out of proportion?
+* ?
+* Does awareness of recollections require only the prefontal cortex, or also interaction with the rest of the cerebral cortex.
+
+[The role of the hippocampus in navigation is memory](http://sci-hub.cc/10.1152/jn.00005.2017)
