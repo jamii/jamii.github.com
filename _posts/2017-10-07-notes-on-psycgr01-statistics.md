@@ -39,3 +39,12 @@ F-score for GLM: $F = \frac{\left(\frac{\mathrm{RSS}_1 - \mathrm{RSS}_2, p_2 - p
 F-test: reject null if $\P_\mathrm{null}(F > F_\mathrm{observed}) < \alpha$. Fixes $P(\mathrm{Type1}) = \alpha$. Produces tradeoff curve between $P(\mathrm{Type2})$ and real effect size.
 
 95% confidence interval of estimate = on 95% of samples, confidence interval falls around true population value = reject null if (1-$\alpha$) confidence interval does not contain null.
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
+</script>
