@@ -185,3 +185,29 @@ Experiment 2:
 Most subjects were aware of the prime (__but it said 6%...__) and are in psych course so might be expected to be suspicious. 
 
 __Priming via social cues is way more believable to me than priming via word choice. Clear selective pressure for understanding and reacting to social cues.__
+
+## [Lecture 2](https://moodle.ucl.ac.uk/pluginfile.php/3694895/mod_resource/content/3/Scientific Reasoning.pdf)
+
+Scientific reasoning. Psi hypothesis as running example.
+
+Base-rate fallacy vs significance testing.
+
+Successful replication could just mean replicating the mistakes of the original.
+
+In a replication aim to improve on original methods or test some new factor - more likely to be received in good faith and more likely to generate new insight beyond back-and-forth.
+
+A good successfully replication can falsify a hypothesis by more accurately identifying the mechanism behind the effect eg previous paper replicated slow walking, but showed that the effect disappeared under proper blinding.
+
+Defenses of priming:
+
+* Hidden moderators
+* Experienced researchers
+
+But:
+
+* Then the original effect is less powerful/robust than claimed 
+* Post-hoc reasoning - just a hypothesis until tested
+* Administering questionnaires is not that hard
+* Most of the legwork is done by grad students anyway
+
+Try to structure experiments with multiple competing hypotheses where any given result would support some hypothesis and weaken the others.
