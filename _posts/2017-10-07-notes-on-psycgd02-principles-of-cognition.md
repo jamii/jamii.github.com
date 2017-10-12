@@ -212,6 +212,10 @@ But:
 
 Try to structure experiments with multiple competing hypotheses where any given result would support some hypothesis and weaken the others.
 
+Review:
+
+* What should an ideal replication aim to do?
+
 ## [The Cognitive Neuroscience of Human Memory Since H.M.](https://pdfs.semanticscholar.org/981b/7074fcb20d0b1366c7a0d2660085ddbcf465.pdf)
 
 Intro:
