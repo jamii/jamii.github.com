@@ -409,3 +409,68 @@ Questions:
 * Does awareness of recollections require only the prefontal cortex, or also interaction with the rest of the cerebral cortex.
 
 [The role of the hippocampus in navigation is memory](http://sci-hub.cc/10.1152/jn.00005.2017)
+
+Place cells, grid cells etc seem to imply that the hippocampus provides navigation. Paper argues that the evidence actually shows that it provides general cognitive maps and that navigation is just one usecase.
+
+Navigation strategies:
+
+* Search
+  * No active goal orientation
+  * Just movement and goal recognition
+* Target approaching
+  * Orienting towards observable goal
+* Guidance
+  * Towards pre-calculated goal location
+  * eg defined by relationship between multiple landmarks
+  * Requires some spatial computation, and thereafter is just target approaching
+* Wayfinding
+  * Recognizing and approaching landmarks
+  * Joining landmarks into route
+  * Joining routes together into topological map
+* Survey / metric navigation
+  * Embed known routes/maps into common frame of reference
+  * Supports novel routes, detours, shortcuts
+  
+Rats with hippocampal lesions:
+
+* Can handle route navigation (eg turn left a T) - presumably recognition-triggered
+* Can handle alternating routes - again presumably recognition-triggered - but not if delays are inserted
+* Can handle guidance navigation with single route (eg water maze task - memorizing location of invisible platform relative to objects on wall - same starting point)
+* Can't handle guidance navigation with multiple routes (eg water maze task with different starting points)
+* Can't handle survey navigation (eg maze rotated after learning)
+* May or may not be able to handle path integration
+  * (and both rats and humans suck at it anyway)
+  * In one experiment, humans could but rats couldn't
+  * In another, rats were impaired even when visual cues existed => maybe the problem is forgetting where the goal is
+  * Recording studies haven't found compelling evidence of hippocampal neurons involved in path integration
+  * Grid cell firing patterns degrade in the dark => they don't work well with path integration alone
+  
+Humans with hippocampal lesions:
+
+* Can navigate by reading a map
+* Can handle guidance navigation and path integration, so long as fits in working memory
+* Can describe routes in areas they knew before damage
+
+Working theory: 
+
+* Hippocampus is required for survey navigation.
+* But survey navigation is sometimes used even when lower-level strategies would suffice, explaining failures on simpler tasks
+  * eg when foraging for food in open field, see firing patterns in grid cells et al, see place cells fire in sequence when navigating to regular food drops, seee map updates when goal locations change
+  * eg when disoriented animals reorient, they use local geometry even if prominent landmark is available
+* Hippocampus probably not required for path integration, except to remember starting point and goal
+
+Evidence that different spatial mappings are used for different tasks within the same environment.
+
+Hippocampus maps abstract spaces:
+
+* Rats with lesions can learn direct SR but not transitive
+* Humans with lesions have higher deficits for order of events than for direct recall
+* Rats with lesions can recognize odors but not recall order in which they were presented
+* Interesting signals in human brains when presented with social or associative problems
+* Similarly to in spatial tasks, some memory tasks engage hippocampal relational processing even when not required (__this paragraph seems to contradict itself?__)
+
+Imaging suggests that hippocampus is not continuously involved when using cognitive maps in navigation, but only when learning or when planning/altering routes.
+
+Speculation that hippocampus originally evolved for navigation but was co-opted for abstract relationships. (__How does hippocampus size vary across species?__).
+
+
