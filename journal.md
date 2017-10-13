@@ -15304,3 +15304,19 @@ School all day. Nothing exciting to report.
 Got a little done on the flight today. Sketched out my talk for Thursday. Fixed up older Imp examples. Added merging to the rust version, so asserts actually do something now.
 
 Ran into an interesting compiler bug, saved at e31a019afee74866e07ade6c34562a31a2f97844. Will see later if I can narrow it down.
+
+### 2017 Oct 12
+
+Was in Toronto all last week. In school Mon/Tue this week. Wed and a chunk of today got eaten by office setup in my new house. 
+
+Today I started looking at differential dataflow. Frank has a bunch of datalog examples but they all go through the Rust compiler. But he's fairly sure it should be possible to write an interpreter that dynamically builds dataflow graphs without recompiling. I got his graph example working on my machine and made sure I understand how it all works. Seems plausible.
+
+Gonna timebox this to working by the end of next week, and one more week to hook it up to the editor plugin.
+
+### 2017 Oct 13
+
+Thoroughly confused today by rust continuously telling me that some trait wasn't implemented on my type. Turns out, after much head-scratching, that cargo won't always protect you from accidentally depending on two different versions of the same library. So I implemented lib1::Trait and tried to pass it to a library that expected lib2::Trait. The error message that results didn't unpack the impl chain enough to actually name that library, so it was totally unhelpful. Apparently this is a known issue. 
+
+Compiled a simple query by hand, and made some progress towards doing it automatically. Got bogged down for a bit in the mismatch between my stateful interpreter and the stateless dataflow.
+
+
