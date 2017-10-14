@@ -2,6 +2,7 @@
 layout: "post"
 title: "Notes on 'Probability and Computing'"
 date: "2017-01-14 12:06"
+hidden: true
 ---
 
 ### 1. Events and Probability

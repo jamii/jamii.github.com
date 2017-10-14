@@ -2,6 +2,7 @@
 layout: "post"
 title: "Notes on 'Probability Theory: The Logic of Science'"
 date: "2017-03-29 15:55"
+hidden: true
 ---
 
 <https://smile.amazon.com/dp/0521592712>
