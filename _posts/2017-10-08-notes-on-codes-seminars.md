@@ -59,10 +59,91 @@ General points:
 * Be wary of subjective scales, especially for between-subjects designs.
 * Treat '...demonstrates...' and '...clearly shows...' as warning signs that the evidence is weak and the author is compensating (as opposed to '...suggests...' or '...supports...')
 
+## [Childhood forecasting of a small segment of the population with large economic burden](https://moffittcaspi.com/sites/moffittcaspi.com/files/field/publication_uploads/Caspi_NHB_Childhood%20Forecasting%202016.pdf)
+
+Lede: Small% of Dunedin Longitudinal Study account for large% of government cost sectors. 45min test at age 3, longitudinal data both weakly predict membership.
+
+Authors:
+
+* Most authors from Duke, one from NZ.
+
+Story:
+
+* Categories with high costs for society: injury, obesity, smoking, hospital stays, welfare, single-parent families, long-term medication, criminal convictions. 
+* Costs within each sector are heavily skewed
+* Not independent - small number of people fill many categories. 
+* Can predict these people fairly well with childhood tests.
+* Which implies that childhood interventions could prevent.
+
+Totally plausible, apart from last which they ack, so main question is how useful is this test.
+
+* Are the methods replicable?
+* Will it generalize across generations and regions?
+* Is the analysis over-fitted?
+* Is it worth using over simpler methods?
+
+Method:
+
+* Dunedin Longitudinal Study
+* 1037 people, population representative (NZ), 1972-3 birth cohort, birth to 38yo, 95% retention
+* Risk predictors measured at time, not post-hoc
+* 20% of cohort account for bignum% of various cost sectors
+* Define top 20% in each cost sector as high-risk group (because Pareto)
+  * __Top 20% by what measure?__
+* Risk factors
+  * SES
+  * maltreatment
+  * low IQ
+  * low self-control
+* Subjective 'brain health' exam at 3
+* Poisson regression for brain health vs cost sectors. All significant except injury claims just outside. AUC .56-.73
+  * __Note lack of correlation between significance and AUC - need to work out the relationship.__
+* Negative binomial regression for brain health vs number of cost sectors. Significant.
+  * __Think model here is binomial with parameter per person, and different weightings on each sector.__
+* Decision procedure = ?. __Presumably cutoff on score?__
+* Significantly ? for brain health vs multiple cost sectors 
+* All approaching AUC=0.8 which is apparently typical standard for medical intervention
+* Sensitivity analysis - leave out each sector, still good => not down to good predictions on one sector
+  * __But strong causal correlations across multiple cost sectors__
+
+Methods replicable?:
+
+* Subjective exam - picking up on other factors? 
+* Exam depends on examiner expertise?
+
+Generalization:
+
+* Survey is 'population representative'
+* NZ similar income inequality, health expenditure to UK/US and has national health care and strong welfare
+* Variation over time?
+* Thematically consistent with other results
+
+Over-fitting:
+
+* Not preregistered, post-hoc predictions, no hold-out
+* Much unmentioned data - http://dunedinstudy.otago.ac.nz/studies/assessment-phases/the-assessments
+  * Other risk factors eg birth weight, 
+  * Other cost sectors eg mental health, dental health, self-harm, gambling
+* Choices of coding 
+  * Risk factors eg factor analysis, variables included, coding
+  * Cost sectors
+* Why is 'multiple cost sectors' easier to predict?
+
+But
+
+* But pretty similar scores across many presented models
+
+Usefulness:
+
+* Compare to simpler model eg birth weight, grades, income, teacher predictions
+* No causal analysis, but some interventions just target correlates and see success anyway
+* Multi-wave risk measurement is impractical
+
 ## Paper-reading checklist
 
-* Story
+* Contents
   * Authors
+  * Story
   * Method 
     * Blinding
     * Measurement
