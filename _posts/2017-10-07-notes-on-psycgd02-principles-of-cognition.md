@@ -502,3 +502,39 @@ Experiment suggesting that periodicity can be observed even for abstract spaces,
 Something analogous to space cells for time observed in rats.
 
 __TODO figure out review__
+
+## [Uniting the Tribes of Fluency to Form a Metacognitive Nation](https://web.princeton.edu/sites/opplab/papers/alteropp09.pdf)
+
+Theory: the difficulty of a cognitive task (from fluent to non-fluent) is used as a meta-cognitive cue that feeds into other judgments via 'naive theories' aka heuristics.
+
+Fluency:
+
+* Perceptual
+  * Physical eg illegible text, varying contrast
+  * Temporal eg briefly flashed images
+* Memory
+  * Retrieval eg availability heuristic
+  * Encoding eg memorization techniques
+* Embodied (__not connected to judgments by the references here__)
+  * Facial expressions eg smiling in math class
+  * Body feedback eg mirror writing 
+* Linguistic
+  * Phonological eg pronounceable vs unpronounceable letter strings
+  * Lexical eg familiar vs unfamiliar synonyms
+  * Syntactic eg sentence tree structure
+  * Orthographic eg using other alphabets, 12% vs twelve percent (__reading latex?__)
+* Conceptual eg priming with structurally similar explanations, semantic coherence
+* Spatial reasoning eg rotating shapes (__not connected to judgments by the references here__)
+* Imagery eg imagining hypothetical scenarios
+* Decision eg jam choices 
+
+Judgments:
+
+* Truth
+* Liking
+* Confidence
+
+Discounting - if fluency is recognized, subject corrects and may even over-correct.
+
+__Seems like discounting provides a lot of adjustment room in this theory. How to falsify? Could try varying eg legibility over a wide scale and looking for a discounting effect.__
+
