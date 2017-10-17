@@ -477,4 +477,28 @@ Imaging suggests that hippocampus is not continuously involved when using cognit
 
 Speculation that hippocampus originally evolved for navigation but was co-opted for abstract relationships. (__How does hippocampus size vary across species?__).
 
+## [Lecture 3](https://moodle.ucl.ac.uk/pluginfile.php/4345907/mod_resource/content/5/Memory%20and%20Navigation.pdf)
 
+Divide into declarative vs non-declarative memory no longer seems to be carving at the joints:
+
+* HM couldn't learn maze routes but could learn mirror drawing.
+* House task - recall vs recognition of complex spatial arrangements (front doors and porches). Suddenly recall tanks for patients.
+* Patients impaired at statistical learning of relationships and associations.
+* Mountain task - normal when matching color/time-of-day but impaired when matching arrangement/rotation.
+* Lesioned rats can detect novel objects and novel placements but can't pair placement with background context.
+
+Pattern separator vs pattern completer. 
+
+* Old/new task -> old/similar/new task. 
+* Old people struggle at pattern separation (old vs similar). 
+* CA1 responds to any difference, CA3/DG responds to degree of difference.
+
+Patients learn facts at school, have high IQ and get good grades.
+
+Use fMRI to detect 60% periodicity in humans when navigating => grid cells. Periodicity correlates with success on spatial memory task.
+
+Experiment suggesting that periodicity can be observed even for abstract spaces, by pairing a coordinate system with bird pictures of varying neck and leg length.
+
+Something analogous to space cells for time observed in rats.
+
+__TODO figure out review__
