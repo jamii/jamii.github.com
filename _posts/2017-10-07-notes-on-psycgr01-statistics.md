@@ -81,8 +81,8 @@ Conventionally:
 $1-\alpha$ confidence interval for slope $b_j \pm \sqrt{\frac{F_{1,n-p;\alpha}\mathrm{MSE}}{(n-1)S^2_{X_j}(1-R^2_j)}}$ where:
 
 * $\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p}$
-* Sample variance $S^2_{X_j} = \frac{\sum_{i=1}^n(X_j,i - \bar{X}_j)^2}{n-1}$
-* $R^2_j$ is PRE of model $X_{j,i} = b_0 + \prod_{k \neq j} b_k X_{k,i} + e_i$ vs model $X_{j,i}=b_0 + e_i$ (proportion of variance of $X_j$ that can be explained by other predictors) 
+* Sample variance $$S^2_{X_j} = \frac{\sum_{i=1}^n(X_j,i - \bar{X}_j)^2}{n-1}$$
+* $$R^2_j$$ is PRE of model $$X_{j,i} = b_0 + \prod_{k \neq j} b_k X_{k,i} + e_i$$ vs model $$X_{j,i}=b_0 + e_i$$ (proportion of variance of $$X_j$$ that can be explained by other predictors) 
 
 $(1 - R^2_j)$ also called tolerance - how uniquely useful is $X_j$
 
