@@ -59,3 +59,38 @@ Review:
 * Define f-score.
 * Define f-test.
 * Define confidence interval.
+
+## [Lecture 3](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=3)
+
+Multiple regression.
+
+Test for unique effect of $X_i$ by comparing with model where $\beta_i=0$.
+
+Omnibus test - testing multiple parameters at once.
+
+$R^2$ - squared multiple correlation coefficient - 'coefficient of determination' - 'proportion of variance explained' - PRE of model over $Y_i = \beta_0 + \epsilon_i$.
+
+$\eta^2$ - true value of PRE in population. Unbiased estimate $\hat{\eta}^2 = 1 - \frac{(1 - \mathrm{PRE})(n - \mathrm{PC})}{n - \mathrm{PA}}$.
+
+Conventionally:
+
+* Small effect $\eta^2=.03$
+* Medium effect $\eta^2=.13$
+* Large effect $\eta^2=.26$
+
+$1-\alpha$ confidence interval for slope $b_j \pm \sqrt{\frac{F_{1,n-p;\alpha}\mathrm{MSE}}{(n-1)S^2_{X_j}(1-R^2_j)}}$ where:
+
+* $\mathrm{MSE} = \frac{\mathrm{SSE}}{n-p}$
+* Sample variance $S^2_{X_j} = \frac{\sum_{i=1}^n(X_j,i - \bar{X}_j)^2}{n-1}$
+* $R^2_j$ is PRE of model $X_{j,i} = b_0 + \prod_{k \neq j} b_k X_{k,i} + e_i$ vs model $X_{j,i}=b_0 + e_i$ (proportion of variance of $X_j$ that can be explained by other predictors) 
+
+$(1 - R^2_j)$ also called tolerance - how uniquely useful is $X_j$
+
+Model search:
+
+* Enter - add variables in blocks
+* Forwards - start with best predictor, keep adding next best until PRE not significant
+* Backwards - start with all, keep removing worst until PRE becomes significant
+* Stepwise - forwards but may also remove parameters that fall beneath some threshold
+
+Better to rely on theory
