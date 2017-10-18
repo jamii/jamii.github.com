@@ -15319,4 +15319,22 @@ Thoroughly confused today by rust continuously telling me that some trait wasn't
 
 Compiled a simple query by hand, and made some progress towards doing it automatically. Got bogged down for a bit in the mismatch between my stateful interpreter and the stateless dataflow.
 
+### 2017 Oct 16
 
+School all day. Blah.
+
+### 2017 Oct 17
+
+School notes and reading. 
+
+Read [this thing](https://web.princeton.edu/sites/opplab/papers/alteropp09.pdf) about fluency and discounting. Discounting sounds to me like a general purpose excuse for your experiment not working, and large chunks of the citations in the paper look like noise mining.
+
+I realized that I could actually test this by using some fluency mechanism that I can vary continuously. The theory predicts that if I start legible and gradually make it less and less legible, I'll see a fluency effect which gradually increases until the stimulus becomes too obvious and it plummets back to baseline or below.
+
+Mturk person-hours cost about minimum wage, so if I can come up with a task that takes ~10s per question I can get ~60 datapoints per $1. I need to check what the range of effect sizes is in previous questions, but I'm guessing I can get reasonable power for <$100. 
+
+### 2017 Oct 18
+
+Back to dataflow stuff. I got individual queries working in a fairly hacky inefficient way. I can see how I could naively join blocks together, but I'm not sure how to treat it as an iteration, so that I get a single incrementally maintained store for the eavs rather than a separate store per block.
+
+I guess I should ask Frank and just do the naive thing in the meantime.
