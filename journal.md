@@ -15335,6 +15335,6 @@ Mturk person-hours cost about minimum wage, so if I can come up with a task that
 
 ### 2017 Oct 18
 
-Back to dataflow stuff. I got individual queries working in a fairly hacky inefficient way. I can see how I could naively join blocks together, but I'm not sure how to treat it as an iteration, so that I get a single incrementally maintained store for the eavs rather than a separate store per block.
+Back to dataflow stuff. I got individual queries working in a fairly hacky inefficient way. I naively join blocks together, but I'm not sure how to treat it as an iteration, so that I get a single incrementally maintained store for the eavs rather than a separate store per block.
 
-I guess I should ask Frank and just do the naive thing in the meantime.
+Maybe I can just index the variables and stream the eavs through.
