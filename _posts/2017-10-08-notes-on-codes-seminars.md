@@ -189,3 +189,12 @@ Usefulness:
   * Publication bias, file-drawer effect
   
 Maybe Bayes net?
+
+## Seminar 2
+
+Missed points:
+
+* Also used admin db alongside survey
+* Risk ratio = treatment risk : control risk
+* Binary categorization of cost sector = lost granularity
+* Didn't attempt to establish incremental validity
