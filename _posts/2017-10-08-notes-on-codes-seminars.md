@@ -194,13 +194,21 @@ fMRI experiment:
 Comments: 
 
 * Behavioral experiment seems solid, even with small n
-* If we use true/false rather than correct/incorrect, are the results still significant? ie are they just guessing?
-* Made sure effect was replicated before using it
+  * If we use true/false rather than correct/incorrect, are the results still significant? ie are they just guessing?
+  * Made sure effect was replicated before using it
 * No idea how to judge fMRI analysis
 * Conclusions seem weak
 * What is a typical effect size in this sort of experiment?
 * 2013 - post-dead-salmon. No mention of correction for multiple comparisons.
 * Is localization legit?
+
+## Seminar 3
+
+* Uses localization to avoid need for multiple comparison correction
+* Assumes Thatcherization detection == facial expression detection
+* Why not just test upside-down expressions?
+* Doesn't establish that those regions are involved with facial expression, maybe downstream (cf reverse inference)
+* Effectively comparing p-values between areas, rather than direct comparison, should use anova and multiple comparison correction (evidence of absence vs absence of evidence)
 
 ## Paper-reading checklist
 
@@ -221,6 +229,8 @@ Comments:
     * Mechanism
     * Limits of generalization
     * Related work
+    
+Why design the experiment this way?
     
 * Links
   * Authors
