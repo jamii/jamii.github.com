@@ -194,10 +194,13 @@ fMRI experiment:
 Comments: 
 
 * Behavioral experiment seems solid, even with small n
+* If we use true/false rather than correct/incorrect, are the results still significant? ie are they just guessing?
+* Made sure effect was replicated before using it
 * No idea how to judge fMRI analysis
 * Conclusions seem weak
 * What is a typical effect size in this sort of experiment?
 * 2013 - post-dead-salmon. No mention of correction for multiple comparisons.
+* Is localization legit?
 
 ## Paper-reading checklist
 
