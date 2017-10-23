@@ -37,6 +37,8 @@ Efficient estimators:
 * Sum of absolute errors -> median
 * Sum of squared errors -> mean
 
+$MSE = \sum (Y_i - \hat{Y}_i)^2 / n - p$. TODO Why degrees of freedom?
+
 Review:
 
 * What is inference?
@@ -48,7 +50,7 @@ Model is model of population (__which implies that we can include sampling metho
 
 Proportional reduction in error $PRE = \frac{\operatorname{SSE}(C) - \operatorname{SSE}(A)}{\operatorname{SSE}(C)}$. On population is usually denoted $\eta^2$.
 
-F-score for GLM: $F = \frac{\left(\frac{\mathrm{RSS}_1 - \mathrm{RSS}_2}{p_2 - p_1}\right)}{\left(\frac{\mathrm{RSS}_2}{n - p_2}\right)} \sim F(p_2 - p_1, n - p_2)$
+F-score for GLM: $F = \frac{\mathrm{PRE} / (\mathrm{PA} - \mathrm{PC})}{(1-\mathrm{PRE})/(n - \mathrm{PA})} \sim F(\mathrm{PA} - \mathrm{PC}, n - \mathrm{PA})$
 
 F-test: reject null if $P_\mathrm{null}(F > F_\mathrm{observed}) < \alpha$. Fixes $P_\mathrm{null}(\mathrm{Type1}) = \alpha$. Produces tradeoff curve between $P_\mathrm{null}(\mathrm{Type2})$ and real effect size.
 
@@ -94,3 +96,5 @@ Model search:
 * Stepwise - forwards but may also remove parameters that fall beneath some threshold
 
 Better to rely on theory
+
+Note, for null model $Y_i = b_0 + \epsilon $ we get $SSE = (n - 1)\operatorname{Var}(Y_i)$

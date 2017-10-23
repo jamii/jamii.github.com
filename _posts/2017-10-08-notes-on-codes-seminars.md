@@ -139,6 +139,66 @@ Usefulness:
 * No causal analysis, but some interventions just target correlates and see success anyway
 * Multi-wave risk measurement is impractical
 
+## Seminar 2
+
+Missed points:
+
+* Also used admin db alongside survey
+* Risk ratio = treatment risk : control risk
+* Binary categorization of cost sector = lost granularity
+* Didn't attempt to establish incremental validity
+
+## [The Thatcher Illusion Reveals Orientation Dependence in Brain Regions Involved in Processing Facial
+Expressions](http://journals.sagepub.com/doi/full/10.1177/0956797613501521)
+
+Story:
+
+* Thatcher illusion => face recognition and expression recognition may be independent. 
+* Replicated failure to distinguish inverted Thatcherized faces
+* Used adaptation test to try to separate responsible brain areas
+* Previous studies couldn't find differential response - credit adaptation design for their results
+* __Results seem vague to me__
+
+Behavioral experiment:
+
+* 10 subjects, 2 runs of 108 trials
+* Face pairs varying along:
+  * normal-normal / normal-Thatcher / Thatcher-Thatcher
+  * same-identity / different-identity
+  * upright / inverted
+* Presented for 800ms
+* Subjects asked whether the faces are different
+* Accuracy drops only for same-identity inverted normal-Thatcher - huge effect
+
+fMRI experiment:
+
+* 27 subjects
+* Picked regions of interest by localizer scan across faces/objects/places/scrambled-faces.
+* Present block of 6 different faces, each block from one of:
+  * normal-normal / normal-Thatcher (alternating) / Thatcher-Thatcher
+  * same-identity / different-identity
+  * upright / inverted
+* 6 conditions * 6 runs = 36 blocks
+* Asked participants to detect red dot on images, to maintain attention (95% accuracy)
+* Lots of details about fMRI setup - I have no idea
+* Saw no significant details between left/right hemisphere voxels, so combined them
+* STS shows release from adaptation for upright images which differ only in Thatcherization
+  * => expression recognition?
+  * Other results agree that STS most sensitive to changes in expression when face stays same
+* FFA shows (weak) release from adaptation for upright/inverted images which differ only in Thatcherization 
+  * => facial recognition?
+  * Other results show FFA has reduced response for recognizing inverted faces, so surprising
+* OFA shows no significant release from adaptation
+* (Note not every region present was localized in every subject)
+
+Comments: 
+
+* Behavioral experiment seems solid, even with small n
+* No idea how to judge fMRI analysis
+* Conclusions seem weak
+* What is a typical effect size in this sort of experiment?
+* 2013 - post-dead-salmon. No mention of correction for multiple comparisons.
+
 ## Paper-reading checklist
 
 * Contents
@@ -189,12 +249,3 @@ Usefulness:
   * Publication bias, file-drawer effect
   
 Maybe Bayes net?
-
-## Seminar 2
-
-Missed points:
-
-* Also used admin db alongside survey
-* Risk ratio = treatment risk : control risk
-* Binary categorization of cost sector = lost granularity
-* Didn't attempt to establish incremental validity
