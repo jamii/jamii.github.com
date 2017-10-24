@@ -538,3 +538,30 @@ Discounting - if fluency is recognized, subject corrects and may even over-corre
 
 __Seems like discounting provides a lot of adjustment room in this theory. How to falsify? Could try varying eg legibility over a wide scale and looking for a discounting effect.__
 
+## [Lecture 4](https://moodle.ucl.ac.uk/pluginfile.php/3716951/mod_resource/content/3/Mental%20construction%20slides.pdf)
+
+Fluency can induce:
+
+* familiarity 
+* likability
+* dis-likability (but not replicated).
+* perception of light or darker image (but not replicated)
+* judgments of fame (abolished by eating popcorn)
+* judgments of danger (abolished by eating popcorn)
+* volume of background noise
+
+Familiarity seems like a reasonable heuristic - exposure => fluency, so assume fluency => exposure. 
+
+Explanation for the popcorn is that it prevents subvocalisation so can't judge pronunciation fluency of words.
+
+Others make less sense to me.
+
+__Notable that the class was typically split when asked to predict outcome of experiments ie proposed mechanism is so vague that either outcome is plausible.__
+
+Other 'constructs':
+
+* Subjects reconstruct past to create useful narratives
+* Subjects claim even under strong pressure to remember seeing events that only their partner saw
+* Subjects remember seeing words when only related words were present
+
+__Not worth reviewing, not confident in results.__

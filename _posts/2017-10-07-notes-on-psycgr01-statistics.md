@@ -98,3 +98,42 @@ Model search:
 Better to rely on theory
 
 Note, for null model $Y_i = b_0 + \epsilon $ we get $SSE = (n - 1)\operatorname{Var}(Y_i)$
+
+## [Lecture 4](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=4)
+
+GLM assumptions:
+
+1. Normality - $\epsilon_i \sim Normal$
+2. Unbiasedness - $\epsilon_i$ has mean 0
+3. Homoscedasticity - $\epsilon_i$ has constant variance (per i)
+4. Independence - $\epsilon_i$ are pairwise independent
+
+Histogram of residuals should be roughly normal (1).
+
+Should be no relationship in residual vs predicted graph (2,3).
+
+Quantile-quantile plot - $Y_i$ vs $Q_i$ where $Q_i$ s.t. $P(Y \leq Q_i) = \hat{p}_i \approx p(Y \leq Y_i)$ ie quantiles vs cdf of normal distribution. If $Y_i$ are normal than should be roughly straight.
+
+Shapiro-Wilk or Kolmogorov-Smirnov tests for normality.
+
+Breush-Pagan or Koenker or Levene test for homoscedasticity.
+
+Randomized control or sequential dependence test for independence.
+
+Transform dependent variables to achieve 1,3. Transform predictor to achieve 2.
+
+Outlier detection:
+
+* Mahalanobis distance - distance of data point from center
+* Leverage - weight of data point in parameter estimate
+* Studentized deleted residual - ?
+* Cook's distance - does omission of a data point change model predictions
+
+Outlier tests run on all data points, so need multiple comparison correction.
+
+Multicollinearity - as $R^2_j \xrightarrow 1$ the confidence interval $\xrightarrow \infty$. Detection:
+
+* Tolerance or variance inflation factor
+* Correlation matrix
+
+
