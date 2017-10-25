@@ -15338,3 +15338,57 @@ Mturk person-hours cost about minimum wage, so if I can come up with a task that
 Back to dataflow stuff. I got individual queries working in a fairly hacky inefficient way. I naively join blocks together, but I'm not sure how to treat it as an iteration, so that I get a single incrementally maintained store for the eavs rather than a separate store per block.
 
 Maybe I can just index the variables and stream the eavs through.
+
+### 2017 Oct 19 
+
+Bunch of talking with Frank about about indexing. Convinced him that what I want is possible and he went away to try it out. 
+
+### 2017 Oct 20
+
+In the meantime, just trying to understand some example problems:
+
+https://highlyscalable.wordpress.com/2015/03/10/data-mining-problems-in-retail/
+
+https://www.kaggle.com/c/favorita-grocery-sales-forecasting
+
+### 2017 Oct 23
+
+School all day. Bunch of stuff about fluency that I still find dubious. 
+
+### 2017 Oct 24
+
+Mostly got eaten by social stuff and napping. Managed to finish most of my notes and reading, but no time to work on the experiment or prep for the exam next week. Will have to sneak it in somewhere.
+
+### 2017 Oct 25
+
+Finished reading early in the morning. 
+
+Refactored both the interpreter and the dataflow branches so that I can have them as two backends for the same parser/planner/stdlib.
+
+Painful switching from `Cow<Value>` to `Value<'a>` with an internal `Cow<str>`. Not sure if it was a good idea - every time I put a lifetime in a type it ends up causing extra work later on. Already had problems where I can't implement Borrow or ToOwned because the lifetimes don't quite work out. So now I have:
+
+``` rust
+impl<'a> Value<'a> {
+    // for various reasons, we can't implement Borrow, Clone or ToOwned usefully
+
+    pub fn really_borrow(&'a self) -> Self {
+        match self {
+            &Value::Boolean(bool) => Value::Boolean(bool),
+            &Value::Integer(integer) => Value::Integer(integer),
+            &Value::String(ref string) => Value::String(Cow::Borrowed(string.borrow())),
+            &Value::Entity(entity) => Value::Entity(entity),
+        }
+    }
+
+    pub fn really_to_owned(&self) -> Value<'static> {
+        match self {
+            &Value::Boolean(bool) => Value::Boolean(bool),
+            &Value::Integer(integer) => Value::Integer(integer),
+            &Value::String(ref string) => Value::String(Cow::Owned(string.as_ref().to_owned())),
+            &Value::Entity(entity) => Value::Entity(entity),
+        }
+    }
+}
+```
+
+But this will let me save a lot of storage space in the near future by storing single-type columns and just using `Value` as an interface type inside query execution.
