@@ -565,3 +565,77 @@ Other 'constructs':
 * Subjects remember seeing words when only related words were present
 
 __Not worth reviewing, not confident in results.__
+
+## [Understanding face recognition](http://www.psicologia1.uniroma1.it/repository/13/Bruce_1986_copia.pdf)
+
+Broad view of facial recognition, including processes like retrieving information about the faces owner.
+
+What information might components of facial recognition produce?
+
+* Pictorial - when viewing static photo, reconstruct some 3d representation after correcting for lighting, grain etc
+* Structural - angle/lighting/expression -invariant model of face shape/structure usable for recognition
+  * Identifiable from low-res photos and caricatures
+  * Pictorial vs structural - recognition of photos of strangers faces is impaired by changing angle/lighting => structural representation takes time to build up.
+  * Recognition of familiar faces is less impaired by changes to external features => over long-term representation picks up on more unchangeable details eg feature arrangement vs hair color
+  * Recognition from restricted (eg just eyes) and occluded (eg wearing sunglasses) views => heavy redundancy in structural code
+* Visually-derived semantic eg age, gender, similar faces
+* Identity-specific semantic eg occupation, friends
+  * Slower than recognition alone
+* Name
+  * Separated from identity-specific because it is sometimes uniquely effected by injury
+  * Often get familiarity without identity, or identity without name. But name without identity would be surprising.
+  * Usually try to get name by searching for further identity details, suggests it's attached to identity rather than directly to structural info.
+  * Slower than identity-specific semantic alone
+* Expression 
+* Facial speech - everyone lip-reads a little.
+  * Separated from recognition by injury in both directions
+
+Open questions:
+
+* Finer-grained breakdown of cognitive processes involved.
+* Do we decide that something is a face and then apply facial recognition or vice versa?
+* How is contextual information included? eg not recognizing someone because you didn't expect to see them in that place
+
+## [Are faces special?](https://books.google.co.uk/books?hl=en&lr=&id=2UXx9rdfriQC&oi=fnd&pg=PA149&dq=are+faces+special+robbins&ots=ZEbAtY5Ght&sig=z7wEOT3Omef6RZ062zSTTPp5nI4#v=onepage&q=are%20faces%20special%20robbins&f=false)
+
+Are there dedicated cognitive process for facial processing, or do we just reuse generic object recognition?
+
+Main arguments:
+
+* Face-directed activity in infants => innate
+* Holistic recognition only occurs for faces, not other objects
+* There are face-specific neural representations
+
+Main challenges
+
+* Most experiments test within-class discrimination for faces vs between-class discrimination for objects - may be different processes
+* Expertise hypothesis - maybe similar results for any class that is well practiced eg dog judge recognizing different dogs
+
+Innate:
+
+* Newborn babies can distinguish similar faces even after changing hair and viewpoint
+* Same for young monkeys with no previous exposure to faces
+* But only for upright faces
+* Perceptual narrowing to faces of familiar races occurs
+
+Holistic/configural processing vs within-class discrimination:
+
+* Inversion effects much stronger for faces than within other classes
+* Inversion effects occur for ambiguous patterns that are primed as faces, but not if primed as characters
+* Part-whole effect - much better recognition for face parts when presented in a face vs alone, not for objects
+* Composite effect - much worse recognition for top half with non-matching bottom half than top half alone, not for objects
+* Inversion effects for objects disappear with repeated trials, but not for faces.
+
+Neural:
+
+
+* Monkeys and humans show face-selective cells in large clusters
+* Can be disrupted with TMS
+* Face and object discrimination can be separated by injury
+* FFA is strongly activated by face tasks but (usually) not by object tasks
+
+Expertise:
+
+* No holistic effects found in object experts (eg radiologists, ornithologists)
+
+Argument that too many studies rely on significant vs not-significant, rather than testing interactions.
