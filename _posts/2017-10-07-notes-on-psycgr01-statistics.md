@@ -136,4 +136,4 @@ Multicollinearity - as $R^2_j \xrightarrow 1$ the confidence interval $\xrightar
 * Tolerance or variance inflation factor
 * Correlation matrix
 
-
+Partial correlation between $Y$ and $X_i$ is $\operatorname{sign}(\beta_i) \sqrt{\operatorname{PRE}(M, M-X_i)} = \frac{\operatorname{PRE}(M, NULL) - \operatorname{PRE}(M - X_i, NULL)}{1 - \operatorname{PRE}(M - X_i, NULL)}$ 
