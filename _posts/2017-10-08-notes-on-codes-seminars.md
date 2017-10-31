@@ -210,6 +210,10 @@ Comments:
 * Doesn't establish that those regions are involved with facial expression, maybe downstream (cf reverse inference)
 * Effectively comparing p-values between areas, rather than direct comparison, should use anova and multiple comparison correction (evidence of absence vs absence of evidence)
 
+## Seminar 4
+
+<https://www.testable.org/>
+
 ## Paper-reading checklist
 
 * Contents
@@ -262,3 +266,4 @@ Why design the experiment this way?
   * Publication bias, file-drawer effect
   
 Maybe Bayes net?
+

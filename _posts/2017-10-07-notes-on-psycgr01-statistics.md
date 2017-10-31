@@ -142,3 +142,27 @@ Multicollinearity - as $R^2_j \xrightarrow 1$ the confidence interval $\xrightar
 * Correlation matrix
 
 Partial correlation between $Y$ and $X_i$ is $\operatorname{sign}(\beta_i) \sqrt{\operatorname{PRE}(M, M-X_i)} = \frac{\operatorname{PRE}(M, NULL) - \operatorname{PRE}(M - X_i, NULL)}{1 - \operatorname{PRE}(M - X_i, NULL)}$ 
+
+## [Lecture 5](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=5)
+
+Moderation
+
+* Effect of $X_1$ varies depending on value of $X_2$ 
+* Fit $Y \sim \beta X_1 X_2$
+* Center predictors for moderation. (__Why?__)
+
+Mediation:
+
+* Want to separate direct effect of $X_1$ on $Y$ vs indirect effect via effect on $X_2$
+* Casual steps procedure - fit:
+  * $Y \sim X_1$
+  * $X_2 \sim X_1$
+  * $Y \sim X_1 + X_2$
+  * Do some significance tests TODO!
+  * Often low power
+* Sobel test:
+  * Same, but do some different significance tests TODO!
+  * $Z \sim Normal$ is often a poor approximation - use simulation instead
+* Structural Equation Modeling
+  * TODO!
+
