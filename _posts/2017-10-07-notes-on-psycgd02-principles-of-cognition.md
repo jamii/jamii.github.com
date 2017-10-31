@@ -628,7 +628,6 @@ Holistic/configural processing vs within-class discrimination:
 
 Neural:
 
-
 * Monkeys and humans show face-selective cells in large clusters
 * Can be disrupted with TMS
 * Face and object discrimination can be separated by injury
@@ -639,3 +638,76 @@ Expertise:
 * No holistic effects found in object experts (eg radiologists, ornithologists)
 
 Argument that too many studies rely on significant vs not-significant, rather than testing interactions.
+
+## [Lecture 5](https://moodle.ucl.ac.uk/pluginfile.php/3737861/mod_resource/content/2/UCL_CoDeS_FacePerception.pdf)
+
+Are faces special?
+
+* Functional specificity - specialized mechanisms
+* Neural specificity - implemented in face-selective areas/neurons/cells
+* Holistic - face is not represented as collection of parts, but as single object. (__Tricky to pin down - makes more sense relative to later experiments.__)
+* Configural - face representation depends on spatial configuration of features, not just features alone
+
+Face recognition could be:
+
+* Domain-general object recognition (item-level hypothesis)
+* Domain-specific object recognition (eg expertise hypothesis)
+* Face-specific (face-specificity hypothesis)
+* Some mixture of the above
+
+Behavioral experiments:
+
+* Have to separate 'face' from 'low-level details that happen to occur in faces' - inverted faces are good control
+* Face inversion effect - face recognition impaired much more by inversion than other expert objects
+  * But much more expert in faces than anything else
+  * Experiments testing correlation between degree of expertise and inversion effect have mixed results - still unsettled
+* Face-composite effect - easier to tell if top halves of faces are different when bottom halves are misaligned
+* Part-whole effect - easier to discriminate features in context of whole face, rather than alone
+* (__Face-composite and part-whole seem directly opposed?__)
+* Both effects much stronger for faces vs objects of expertise
+* Measures of degree of holistic processing? Comparing strengths of effects within subjects:
+  * Inversion ~ part-whole = 0.28
+  * Inversion ~ composite = -0.03
+  * Part-whole ~ composite = 0.05
+  * Inversion ~ face recognition = 0.42
+  * Part-whole ~ face recognition = 0.25
+  * Composite ~ face recognition = 0.04
+  * Would expect strong correlations all round
+
+Neural experiments:
+
+* In FMRI, FFA reacts more strongly to faces vs objects
+* Low-level features? Faces vs scrambled faces.
+* Item-level recognition? Faces vs houses/porches.
+* Animate objects? Faces vs hands.
+* But stronger response for inverted faces. 
+  * __More processing for triggered-but-failed recognition?__
+* Similar results for other objects categories in other areas - indicates other specificities?
+  * Places
+  * Visual words
+  * Bodies
+  * Other peoples thoughts
+* Similar results for single-cell recordings in monkeys
+* Can find cells which react linearly to continuous changes in several of many face features
+* Deep brain stimulation results in mis-recognition
+* Face space (Chang & Tsao 2017)
+  * Use PCA to choose vectors in face space
+  * Found faces cells that react only to single vectors
+  * Can reconstruct faces from cell responses
+
+Medical cases:
+
+* Prosopagnosia (developmental in ~2% of population)
+  * Module defect or the tail of a bell curve?
+  * Most visible symptom of general object agnosia? Some prosopagnosiacs have normal object recognition
+  * Impairment of item-level recognition? Some prosopagnosiacs have normal item-level recognition
+  * Impaired recognition of visually similar forms? Some prosopagnosiacs score normally on differentiation of morphed objects, as long as they are not faces
+  * Impaired recognition of objects-of-expertise? WJ learned to recognize sheep at expert levels after injury.
+* Some subjects with object agnosia can recognize faces made out of vegetables, but can't recognize the vegetables => independent mechanisms, not superset
+
+Innate:
+
+* Babies orient more towards face-like arrangements
+* Subject with upside-down head shows normal recognition accuracy on inverted faces, and > inverted accuracy on normal faces
+  * (__Surprised by interpretation. Also, maybe vision is flipped upstream?__)
+

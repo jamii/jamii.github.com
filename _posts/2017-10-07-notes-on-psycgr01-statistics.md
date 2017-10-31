@@ -104,9 +104,14 @@ Note, for null model $Y_i = b_0 + \epsilon $ we get $SSE = (n - 1)\operatorname{
 GLM assumptions:
 
 1. Normality - $\epsilon_i \sim Normal$
+  * Biased predictions
 2. Unbiasedness - $\epsilon_i$ has mean 0
+  * Biased test results
 3. Homoscedasticity - $\epsilon_i$ has constant variance (per i)
+  * Unbiased parameter estimates (__?__)
+  * Biased test results
 4. Independence - $\epsilon_i$ are pairwise independent
+  * Model mis-specification
 
 Histogram of residuals should be roughly normal (1).
 
