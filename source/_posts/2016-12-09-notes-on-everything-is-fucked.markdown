@@ -104,9 +104,9 @@ __Skipped - didn't want to buy the book.__
 Randomized experiments reveal causation, but not mechanisms. Want to be able to determine mediating variables. Typical approach is to use this model:
 
 $$
-M_i = \alpha_1 + aX_i + e_i1\\
-Y_i = \alpha_2 + cX_i + e_i2\\
-Y_i = \alpha_3 + dX_i + bM_i + e_i3
+M_i = \alpha_1 + aX_i + e_{i1}\\
+Y_i = \alpha_2 + cX_i + e_{i2}\\
+Y_i = \alpha_3 + dX_i + bM_i + e_{i3}
 $$
 
 X affects M and Y, and M affects Y. We want to know how much X affects Y directly ($$d$$) vs indirectly through M ($$ab$$).

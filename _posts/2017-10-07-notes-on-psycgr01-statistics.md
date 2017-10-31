@@ -151,18 +151,23 @@ Moderation
 * Fit $Y \sim \beta X_1 X_2$
 * Center predictors for moderation. (__Why?__)
 
-Mediation:
+Mediation (cf [Mediation Analysis](https://sci-hub.bz/http://www.annualreviews.org/doi/abs/10.1146/annurev.psych.58.110405.085542)):
 
 * Want to separate direct effect of $X_1$ on $Y$ vs indirect effect via effect on $X_2$
-* Casual steps procedure - fit:
-  * $Y \sim X_1$
-  * $X_2 \sim X_1$
-  * $Y \sim X_1 + X_2$
-  * Do some significance tests TODO!
+* Fit $$
+M = i_1 + aX + e_1\\
+Y = i_2 + cX + e_2\\
+Y = i_3 + dX + bM_i + e_3
+$$
+* Casual steps procedure
+  * Test a is significant vs null
+  * Test c is significant vs null
+  * Test b is significant vs without b
+  * Test d is not significant vs without d
   * Often low power
 * Sobel test:
-  * Same, but do some different significance tests TODO!
+  * Test $Z = ab \sim Normal$
   * $Z \sim Normal$ is often a poor approximation - use simulation instead
-* Structural Equation Modeling
-  * TODO!
+* [Structural Equation Modeling](https://en.wikipedia.org/wiki/Structural_equation_modeling)
 
+__Caution - [Don't Expect An Easy Answer](http://www2.psych.ubc.ca/~schaller/528Readings/BullockGreenHa2010.pdf)__
