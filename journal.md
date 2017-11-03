@@ -15392,3 +15392,179 @@ impl<'a> Value<'a> {
 ```
 
 But this will let me save a lot of storage space in the near future by storing single-type columns and just using `Value` as an interface type inside query execution.
+
+### 2017 Oct 26
+
+Backfilled.
+
+Converted the EAV frontend to a relational system, so that we can use it as a baseline for other projects.
+
+### 2017 Oct 27
+
+Backfilled.
+
+Switched the storage to a relational system too.
+
+### 2017 Oct 30
+
+Backfilled.
+
+School. 
+
+### 2017 Oct 31
+
+Backfilled.
+
+Stats exam. With a calculator and statistical table printouts, like it's the fucking 1800s.
+
+Most of the rest of the day spent using that as an excuse to procrastinate.
+
+### 2017 Nov 1
+
+Backfilled.
+
+Benchmarking infrastructure. Went down some major rabbit hole trying to get the `cargo bench` to run dynamically generated benchmarks. It worked, but it was a mess. Replaced with
+
+``` rust
+fn bench<F, T>(name: String, f: F)
+    where
+        F: Fn() -> T,
+    {
+        let samples = ::test::bench::benchmark(|b: &mut Bencher| b.iter(&f));
+        println!("{} ... {}", name, ::test::fmt_bench_samples(&samples));
+    }
+    
+fn main() {
+    let args: Vec<String> = ::std::env::args().into_iter().collect();
+    let args: Vec<&str> = args.iter().map(|s| &**s).collect();
+    match *args {
+        [_, "bench"] => bench::bench_all(),
+        ...
+    }
+}
+```
+
+Which is what I should have done the first time.
+
+### 2017 Nov 2
+
+Backfilled.
+
+More benchmark nonsense. After fixing many parser and compiler bugs, I got the first JOB query working. Only 7000x slower than the Julia version.
+
+### 2017 Nov 3
+
+Much of that 7000x slower is probably incorrect. What do I need to check before I'm sure what the actual cost is?
+
+* Allocation-free
+* Same join algorithm
+* Same number of calls to gallop
+* Only dispatch on type once in gallop
+* Hand-compiled rust version
+* Roughly same cost profile (eg not string ops that are the main difference)
+
+Have some buffers in the join algorithm that are allocated on each step. Pre-allocating those has a small effect.
+
+I'm using trie-join in the Julia version and something that is not even generic-join in the Rust version. I need to at least pick the smallest range to be generic-join. This makes barely any difference, probably because these are all foreign-key joins.
+
+Then I need to gallop each column forwards rather than resetting on each loop. After a few failed attempts, I remember that I didn't do this before because it's really fiddly. Best bet is probably to fake a stack with variable shadowing.
+
+Hang on a minute. I'm including sorting time. Duh... 7x slower. More things to do:
+
+* Separate indexing from running
+* Time indexing for Julia version
+
+Ok - fake a stack with variable shadowing. About 2x improvement.
+
+Only dispatch once in type in gallop:
+
+``` rust
+fn gallop_le_inner<T1: ::std::borrow::Borrow<T2>, T2: Ord + ?Sized>(
+    values: &[T1],
+    mut lo: usize,
+    hi: usize,
+    value: &T2,
+) -> usize {
+    if lo < hi && values[lo].borrow() < value {
+        let mut step = 1;
+        while lo + step < hi && values[lo + step].borrow() < value {
+            lo = lo + step;
+            step = step << 1;
+        }
+
+        step = step >> 1;
+        while step > 0 {
+            if lo + step < hi && values[lo + step].borrow() < value {
+                lo = lo + step;
+            }
+            step = step >> 1;
+        }
+
+        lo += 1
+    }
+    lo
+}
+
+fn gallop_le(values: &Values, lo: usize, hi: usize, value: &Value) -> usize {
+    match (values, value) {
+        (&Values::Boolean(ref bools), &Value::Boolean(ref bool)) => {
+            gallop_le_inner(bools, lo, hi, bool)
+        }
+        (&Values::Integer(ref integers), &Value::Integer(ref integer)) => {
+            gallop_le_inner(integers, lo, hi, integer)
+        }
+        (&Values::String(ref strings), &Value::String(ref string)) => {
+            gallop_le_inner(strings, lo, hi, string.as_ref())
+        }
+        _ => panic!("Type error: gallop {} in {:?}", value, values),
+    }
+}
+```
+
+About 30% faster.
+
+Let's get the indexing separated from running so I can profile this properly.
+
+```
+pub struct Prepared {
+    indexes: Vec<Relation>,
+    ranges: Vec<LoHi>,
+    locals: Vec<LoHi>,
+    buffers: Vec<LoHi>,
+}
+
+pub fn prepare_block(block: &Block, db: &DB) -> Result<Prepared, String> 
+
+pub fn run_block(block: &Block, prepared: &mut Prepared) -> Result<Vec<Value<'static>>, String> 
+```
+
+Can benchmark it properly now. 1.61ms vs 1.28ms for the julia version.
+
+Figured out how to do conditional logging: `RUST_LOG='imp=debug'`
+
+Figured out how to get valgrind to instrument only a specific functions: `RUST_BACKTRACE=1 valgrind --tool=callgrind --callgrind-out-file=callgrind.out --collect-atstart=no "--toggle-collect=imp::interpreter::run_block" target/release/imp profile`
+
+(EDIT: Nope, that doesn't seem to be the right function name. Nothing collected.)
+
+Tried to port some more queries but got bitten by a compiler bug I already knew about. I key stuff by exprs, but there can be duplicate exprs that get grouped together and mess with the variable ordering. In this case I have two things `= true` that should be executed separately. Fixing it is too involved for today though.
+
+Stuff left to do:
+
+* Fix compiler bug
+* Fix the need to write `= true` for top-level functions
+* Port more queries
+* Add automatic tests for queries
+* Profile Rust and Julia version
+* Hand-compiled Rust version
+
+List of remaining differences:
+
+* Different string ops
+* Imp-J uses TrieJoin, Imp-R uses GenericJoin
+* Imp-J does early return
+* Imp-J sorts and dedups output
+* Imp-R has to clone output strings
+* Imp-J uses a slightly more complicated array structure for columns
+* Different sorting algorithms (only matters for indexing)
+
+For callgrind, about 20m / 300 calls to gallop per Imp-R run of q1a. Can compare that to Imp-J next week.
