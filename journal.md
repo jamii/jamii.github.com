@@ -15568,3 +15568,103 @@ List of remaining differences:
 * Different sorting algorithms (only matters for indexing)
 
 For callgrind, about 20m / 300 calls to gallop per Imp-R run of q1a. Can compare that to Imp-J next week.
+
+### 2017 Nov 06
+
+Holiday.
+
+### 2017 Nov 07
+
+School stuff in theory, procrastination in practice. Mostly reading through 'Principles: Life and Work'.
+
+### 2017 Nov 08
+
+Hand-compiling q1a today. Idea is to take the Prepared struct from the interpreter and then hand-write the loops based on the existing plan:
+
+``` rust
+pub fn q2c(
+    prepared: &Prepared,
+) -> (Vec<i64>, Vec<i64>, Vec<i64>, Vec<String>, Vec<i64>, Vec<i64>) {
+
+    let mut results_k = vec![];
+    let mut results_mk = vec![];
+    let mut results_t = vec![];
+    let mut results_title = vec![];
+    let mut results_mc = vec![];
+    let mut results_cn = vec![];
+
+    let keyword_keyword0 = &prepared.indexes[0].columns[0].as_integers();
+    let keyword_keyword1 = &prepared.indexes[0].columns[1].as_strings();
+    let movie_keyword_keyword0 = &prepared.indexes[1].columns[0].as_integers();
+    let movie_keyword_keyword1 = &prepared.indexes[1].columns[1].as_integers();
+    let movie_keyword_movie0 = &prepared.indexes[2].columns[0].as_integers();
+    let movie_keyword_movie1 = &prepared.indexes[2].columns[1].as_integers();
+    let title_title0 = &prepared.indexes[3].columns[0].as_integers();
+    let title_title1 = &prepared.indexes[3].columns[1].as_strings();
+    let movie_companies_movie0 = &prepared.indexes[4].columns[0].as_integers();
+    let movie_companies_movie1 = &prepared.indexes[4].columns[1].as_integers();
+    let movie_companies_company0 = &prepared.indexes[5].columns[0].as_integers();
+    let movie_companies_company1 = &prepared.indexes[5].columns[1].as_integers();
+    let company_name_country_code0 = &prepared.indexes[6].columns[0].as_integers();
+    let company_name_country_code1 = &prepared.indexes[6].columns[1].as_strings();
+
+    let keyword_keyword_range = (0, keyword_keyword0.len());
+    let movie_keyword_keyword_range = (0, movie_keyword_keyword0.len());
+    let movie_keyword_movie_range = (0, movie_keyword_movie0.len());
+    let title_title_range = (0, title_title0.len());
+    let movie_companies_movie_range = (0, movie_companies_movie0.len());
+    let movie_companies_company_range = (0, movie_companies_company0.len());
+    let company_name_country_code_range = (0, company_name_country_code0.len());
+
+    narrow(company_name_country_code1, company_name_country_code_range, "[sm]", |company_name_country_code_range| {
+        narrow(keyword_keyword1, keyword_keyword_range, "character-name-in-title", |keyword_keyword_range| {
+            // k
+            join2(keyword_keyword0, movie_keyword_keyword1, keyword_keyword_range, movie_keyword_keyword_range, |keyword_keyword_range, movie_keyword_keyword_range| {
+                // mk
+                join2(movie_keyword_keyword0, movie_keyword_movie0, movie_keyword_keyword_range, movie_keyword_movie_range, |movie_keyword_keyword_range, movie_keyword_movie_range| {
+                    // t
+                    join3(movie_keyword_movie1, title_title0, movie_companies_movie1, movie_keyword_movie_range, title_title_range, movie_companies_movie_range, |movie_keyword_movie_range, title_title_range, movie_companies_movie_range| {
+                        // title
+                        join1(title_title1, title_title_range, |title_title_range| {
+                            // mc
+                            join2(movie_companies_movie0, movie_companies_company0, movie_companies_movie_range, movie_companies_company_range, |movie_companies_movie_range, movie_companies_company_range| {
+                                // cn
+                                join2(movie_companies_company1, company_name_country_code0, movie_companies_company_range, company_name_country_code_range, |movie_companies_company_range, _company_name_country_code_range| {
+                                    results_k.push(keyword_keyword0[keyword_keyword_range.0]);
+                                    results_mk.push(movie_keyword_keyword0[movie_keyword_keyword_range.0]);
+                                    results_t.push(movie_keyword_movie1[movie_keyword_movie_range.0]);
+                                    results_title.push(title_title1[title_title_range.0].clone());
+                                    results_mc.push(movie_companies_movie0[movie_companies_movie_range.0]);
+                                    results_cn.push(movie_companies_company1[movie_companies_company_range.0]);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+
+    (
+        results_k,
+        results_mk,
+        results_t,
+        results_title,
+        results_mc,
+        results_cn,
+    )
+}
+```
+
+For q1a and q2c the results are similar - about 30% overhead. Seems likely that the cost of joins is high enough that the overhead of one dispatch per loop is not a big deal. 
+
+I suspect that scalar functions might be more of a big deal though, so I tried a polynomial over two vectors too. Closer to 10x overhead, so that's a problem.
+
+Options:
+
+* Collect intermediate results whenever switching between joins and functions, so the interpreter overhead is only paid once. Still have cost of intermediate results for nested scalars.
+* JIT-compile scalars so they know exactly where on the stack to look. Less complicated that JITing entire queries - only have to arrange data so we can probably get away with just emitting LLVM bitcode.
+
+Can combine the two for extra points.
+
+Also - currently have `Vec<Value>` as the variable stack, but would it make more sense to segment it by type instead?
