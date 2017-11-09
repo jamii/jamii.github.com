@@ -15668,3 +15668,71 @@ Options:
 Can combine the two for extra points.
 
 Also - currently have `Vec<Value>` as the variable stack, but would it make more sense to segment it by type instead?
+
+### 2017 Nov 09
+
+Let's try hardcoding the polynomial as a single function, to get an idea of how much JITing it would help.
+
+```
+baseline	polynomial ...  10,379,060 ns/iter (+/- 1,391,015)
+compiled	polynomial ...  26,416,195 ns/iter (+/- 1,708,934)
+interpreted	polynomial ... 295,634,860 ns/iter (+/- 10,519,509)
+interpreted	polynomial_magic ... 171,333,423 ns/iter (+/- 5,893,485)
+```
+
+That's still pretty slow.
+
+Collect intermediate results and dispatch once?
+
+```
+baseline	polynomial ...  10,396,029 ns/iter (+/- 1,289,018)
+compiled	polynomial ...  26,617,876 ns/iter (+/- 1,960,687)
+compiled	polynomial_intermediate ...  23,427,604 ns/iter (+/- 1,419,429)
+interpreted	polynomial ... 298,961,934 ns/iter (+/- 14,059,010)
+interpreted	polynomial_magic ... 173,026,472 ns/iter (+/- 9,618,527)
+```
+
+Faster. Weirdly. Maybe it's able to vectorize when the math is in it's own loop? I would be surprised.
+
+Also want to try boxing the functions instead of match dispatch. I don't really have any intuition for how that will perform. In my mind dispatching on a tag byte is cheaper than calling a function pointer, but I don't really have any justification for that.
+
+```
+compiled	polynomial_boxfn ...  47,058,110 ns/iter (+/- 2,538,917)
+interpreted	polynomial_magic ... 172,529,240 ns/iter (+/- 5,891,873)
+```
+
+Am surprised.
+
+Is the compiler smart enough to unbox it? Surely not. Let's pull it out of the Prepared just to be sure.
+
+``` rust 
+let boxfn = match &block.constraints[3] {
+    &Constraint::Apply(_, _, ref function) => function.compile(),
+    _ => panic!(),
+};
+```
+
+```
+compiled	polynomial_boxfn ...  44,275,480 ns/iter (+/- 958,181)
+interpreted	polynomial_magic ... 184,241,827 ns/iter (+/- 7,196,916)
+```
+
+Same results. So what's the deal?
+
+Let's compare it to a near-identical compiled loop with a non-boxed fn, just to make sure we're comparing the right thing.
+
+```
+compiled	polynomial_boxfn ...  45,363,566 ns/iter (+/- 780,561)
+compiled	polynomial_fn ...  46,074,598 ns/iter (+/- 1,391,750)
+interpreted	polynomial_magic ... 185,038,151 ns/iter (+/- 8,161,306)
+```
+
+So the actual overhead is elsewhere. There is some extra work for error handling and also a switch on `result_already_fixed`. I tried removing the error handling yesterday (and foolishly didn't write down the results) and only got 270ms -> 210ms. 
+
+But we did find out that the boxfns are not super expensive. Can we set this up so that the only cost at each step is a single boxfn call?
+
+If we move errors out of band - pushing to a error vec rather than returning error - we can opt into them only for fns which need them.
+
+The only additional cost is the fake stack for shared environment, but we can maybe ameliorate that if we are willing to be unsafe.
+
+Another source of overhead in the interpreter - it pushs Value into results rather than i64.
