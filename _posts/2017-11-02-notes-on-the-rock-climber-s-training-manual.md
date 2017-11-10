@@ -189,6 +189,36 @@ Strength:
   * Lateral-to-front raise
   * Bicep curl
 
+Power:
+
+* = strength * speed
+* Gains come from:
+  * Recruitment - more muscle fibers at once
+  * More fast-twitch muscles
+  * Faster slow-twitch muscles
+* Plyometric training
+  * Eccentric -> concentric contraction
+  * Triggers defensive recruitment to protect against stretching
+  * Has to be fast - <0.2s in transition
+* Limit bouldering
+  * 1-2 almost-impossible moves
+  * Days to send, not minutes
+* Campusing
+  * Non-stop movement, no pausing or adjusting
+  * Very high injury risk - don't train if at all damaged
+  * Requires long rest period, up to 2 days
+  * 1 work : 20 rest
+  * Ladders
+    * Matching
+    * Alternating
+    * Max reach
+    * Typewriters
+    * Bumps - max move then continue bumping with reaching hand
+    * Touches - try to descend slowly
+    * Double dyno
+    * Down-and-up
+* Power training should be explosive, max effort/focus/intensity
+* As soon as fatigued, stop training and go home
 
 Training for bouldering:
 
