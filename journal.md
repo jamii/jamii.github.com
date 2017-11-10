@@ -15736,3 +15736,9 @@ If we move errors out of band - pushing to a error vec rather than returning err
 The only additional cost is the fake stack for shared environment, but we can maybe ameliorate that if we are willing to be unsafe.
 
 Another source of overhead in the interpreter - it pushs Value into results rather than i64.
+
+### 2017 Nov 10
+
+Tried staging the whole interpreter by glueing together closures. Made too many changes at once and at least one of them isn't going to work, so I need to roll stuff back a bunch. Sad face.
+
+Must. Learn. Not. To. Change. Everything. At. Once.
