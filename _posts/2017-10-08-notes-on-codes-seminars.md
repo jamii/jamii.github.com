@@ -139,6 +139,59 @@ Usefulness:
 * No causal analysis, but some interventions just target correlates and see success anyway
 * Multi-wave risk measurement is impractical
 
+## Paper-reading checklist
+
+* Contents
+  * Authors
+  * Story
+  * Method 
+    * Blinding
+    * Measurement
+    * Intervention 
+      * eg using distraction to prevent attention
+  * Analysis 
+    * Model
+    * Sample size
+    * Sample characteristics
+    * Effect size
+  * Interpretation
+    * Mechanism
+    * Limits of generalization
+    * Related work
+    
+Why design the experiment this way?
+    
+* Links
+  * Authors
+    * Prior trust in authors
+    * Experimenter experience
+  * Method
+    * Experimenter effect
+    * Measurement error
+    * Validated measurement method?
+    * Validated intervention method?
+      * eg did the distraction actually prevent conscious attention?
+    * Alternative causes of effect
+  * Analysis
+    * Numerical mistakes
+    * Inappropriate use of tests
+    * Broken test assumptions
+    * Estimated effect size on original scale
+    * P-hacking? Funnel plots. R-index.
+  * Interpretation
+    * Plausible mechanism?
+    * Existing support for mechanism
+    * Predicted/plausible effect size
+    * Justify connection between experiment and interpretation
+    * Alternative interpretations of effect
+    
+* Wider
+  * Replications
+  * Consistency with other results
+  * Publication bias, file-drawer effect
+  
+Maybe Bayes net?
+
 ## Seminar 2
 
 Missed points:
@@ -214,56 +267,90 @@ Comments:
 
 <https://www.testable.org/>
 
-## Paper-reading checklist
+## [Power Posing: Brief Nonverbal Displays Affect Neuroendocrine Levels and Risk Tolerance](https://www0.gsb.columbia.edu/mygsb/faculty/research/pubfiles/4679/power.poses_.PS_.2010.pdf)
 
-* Contents
-  * Authors
-  * Story
-  * Method 
-    * Blinding
-    * Measurement
-    * Intervention 
-      * eg using distraction to prevent attention
-  * Analysis 
-    * Model
-    * Sample size
-    * Sample characteristics
-    * Effect size
-  * Interpretation
-    * Mechanism
-    * Limits of generalization
-    * Related work
-    
-Why design the experiment this way?
-    
-* Links
-  * Authors
-    * Prior trust in authors
-    * Experimenter experience
-  * Method
-    * Experimenter effect
-    * Measurement error
-    * Validated measurement method?
-    * Validated intervention method?
-      * eg did the distraction actually prevent conscious attention?
-    * Alternative causes of effect
-  * Analysis
-    * Numerical mistakes
-    * Inappropriate use of tests
-    * Broken test assumptions
-    * Estimated effect size on original scale
-    * P-hacking? Funnel plots. R-index.
-  * Interpretation
-    * Plausible mechanism?
-    * Existing support for mechanism
-    * Predicted/plausible effect size
-    * Justify connection between experiment and interpretation
-    * Alternative interpretations of effect
-    
-* Wider
-  * Replications
-  * Consistency with other results
-  * Publication bias, file-drawer effect
+Experiment:
+
+  * poses powerful
+    * n=75 survey p < .001
+  * effects due to power
+    * n=19 report comfort (p>.80), difficulty (p>.45), painfulness (p>.42)
+  * main experiment
+    * n=42 hold two poses for 1m each (why two?), filler task
+    * video recording to verify that they hold poses
+    * self-reported 'powerful' and 'in-charge'
+      * F(1,41)=9.53 p=.004 r=.44
+    * behavioral - gambling task with equal EV (related to power?)
+      * 86% vs 60%
+    * saliva collection 
+      * depends on time
+      * use gender as covariate
+      * F(1,39)=4.29 p=.045
+      * F(1,38)=7.45 p=.010
+        * (confidence intervals close to 0 for low-power)
+  * extra
+    * n = 49
+    * three more high-power, three more low-power
+    * feelings of power F(1, 48) = 4.38, p < .05, r = .30
+    * risk-taking χ2(1, N = 49) = 4.84, p < .03, Φ = .31
+
+Experimental flaws:
+
+  * low power, not pre-registered
+  * experimenter not blinded, experimenter interaction eg touching limbs 
+
+Conceptual gaps:
+
+  * define 'power'
+  * define 'pose projects power'
+  * pose => power => effects (vs alternate mechanisms)
+  * self-reporting reliable?
+  * does it work if you don't draw attention to it?
   
-Maybe Bayes net?
+No connection to conclusions: 
 
+  * any long-term effects
+  * improved performance in difficult situations
+  * improved health
+  * get used to pose, no effect after time
+
+[High-powered replication](https://www.anatomytrains.com/wp-content/uploads/2016/08/Assessing-the-Robustness-of-Power-Posing-No-Effect-on-Hormones-and-Risk-Tolerance-in-a-Large-Sample-of-Men-and-Women.pdf) replicated self-reported power, but no effect on hormones or risk-taking. 
+
+  * n=100+100
+  * informed participants
+  * poses
+    * longer poses - 3 min
+    * computer instruction = blinded experimenter
+    * different filler task
+  * self-reported power 
+    * t(193) = 2.399, p=.017, Cohens d=0.344
+  * risk-taking tests
+    * gain test, same as original
+    * loss test, flipped framing
+    * 6 choices on each rather than 1
+    * gain t(198)=−1.245, p=.215, Cohen’s d=−0.176
+      * confidence interval does not overlap original -> precise
+    * loss 'not significant'
+  * saliva
+    * testosterone t(196) = −1.405, p=.162, Cohen’s d=−0.200
+    * cortisol t(196)=−1.101, p=.272, Cohen’s d=−0.15
+  * break analysis down by comfort levels, still no effect
+
+[P-curve analysis paper](https://sci-hub.bz/http://journals.sagepub.com/doi/abs/10.1177/0956797616658563?journalCode=pssa)and [blog post](http://datacolada.org/37).
+
+  * 33 published studies
+  * concludes 'evidence for the basic effect seems too fragile to search for moderators or to advocate for people to engage in power posing to better their lives'
+
+Time-reversal heuristic.
+
+## Seminar 5
+
+  * Note footnote on outlier
+  * Later revealed optional stopping
+  * 5 participants excluded, not mentioned in paper
+  * Selective reporting of p-values (but hardly differs)
+  * Selective reporting of self-reported questions
+
+Beware collections of studies varying in sample size without justification - sounds like optional stopping.
+
+(Did they ever release data)?

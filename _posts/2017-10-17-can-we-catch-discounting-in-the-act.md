@@ -33,3 +33,5 @@ Could use gradually increasing difficulty, wait to see if they twig
 Do awareness cues at regular intervals, derange for coding
 
 Best bet so far https://pdfs.semanticscholar.org/7c28/2ebf7502c104deabab2c5f7563058839b6cc.pdf
+
+Stopping rules - http://doingbayesiandataanalysis.blogspot.co.uk/2013/11/optional-stopping-in-data-collection-p.html
