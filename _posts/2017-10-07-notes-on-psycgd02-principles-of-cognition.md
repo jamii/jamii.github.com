@@ -775,3 +775,5 @@ Behavior change:
 * motivation + capacity
 * very resistant eg anti-smoking ads
 * changing environment almost always easier than changing the person
+
+Default mode = social cognition applied to self?
