@@ -157,7 +157,7 @@ Mediation (cf [Mediation Analysis](https://sci-hub.bz/http://www.annualreviews.o
 * Fit $$
 M = i_1 + aX + e_1\\
 Y = i_2 + cX + e_2\\
-Y = i_3 + dX + bM_i + e_3
+Y = i_3 + dX + bM + e_3
 $$
 * Casual steps procedure
   * Test a is significant vs null
@@ -171,3 +171,24 @@ $$
 * [Structural Equation Modeling](https://en.wikipedia.org/wiki/Structural_equation_modeling)
 
 __Caution - [Don't Expect An Easy Answer](http://www2.psych.ubc.ca/~schaller/528Readings/BullockGreenHa2010.pdf)__
+
+## [Lecture 6](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=6)
+
+ANOVA - analysis of variance - modeling differences between group means.
+
+Null model = same means.
+
+Various ways to code indicator variables. Seems unnecessarily complicated vs just using vectors.
+
+Explanations:
+
+* [It's a way to extract an effect size from a factorial anova](http://journals.sagepub.com/doi/full/10.1177/0013164416668950). 
+* Use the codes to create a weighted sum of group means, so we can reduce the significance test to comparing one or two weighted sums rather than all of the means (too many comparisons).
+* Rotates the basis, so our significance tests on each parameter test things we care about directly.
+* Allows comparing against a null-model where the parameters are restricted to some hyperplane.
+
+Eg 2x2 control/diet x male/female. 'Do males lose more weight when dieting' is equiv to 'control/male - diet/male < control/female - diet/female'.
+
+Bayesian equivalent would just be posterior prediction of difference?
+
+Tukey-Kramer to test all possible pairs of groups.
