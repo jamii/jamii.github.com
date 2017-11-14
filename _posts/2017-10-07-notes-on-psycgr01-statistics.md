@@ -178,9 +178,7 @@ ANOVA - analysis of variance - modeling differences between group means.
 
 Null model = same means.
 
-Various ways to code indicator variables. Seems unnecessarily complicated vs just using vectors.
-
-Explanations:
+Various ways to code indicator variables. Seems unnecessarily complicated vs just using vectors. Explanations:
 
 * [It's a way to extract an effect size from a factorial anova](http://journals.sagepub.com/doi/full/10.1177/0013164416668950). 
 * Use the codes to create a weighted sum of group means, so we can reduce the significance test to comparing one or two weighted sums rather than all of the means (too many comparisons).

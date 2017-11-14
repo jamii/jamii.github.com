@@ -711,3 +711,67 @@ Innate:
 * Subject with upside-down head shows normal recognition accuracy on inverted faces, and > inverted accuracy on normal faces
   * (__Surprised by interpretation. Also, maybe vision is flipped upstream?__)
 
+## [Lecture 6](https://moodle.ucl.ac.uk/pluginfile.php/3742047/mod_resource/content/2/MSC-CODES-social-cognition-17.pdf)
+
+__Skipped the reading this week :S__
+
+Social cognition - 'the psychological processes that result from inferring the actual, imagined, or implied mental state of another'
+
+Affect is creeping back into models of decision-making.
+
+Moving away from 2-process model because of neuro evidence - clearly many systems involved.
+
+What makes a process automatic? Not requiring:
+
+* Intent
+* Capacity
+* Effort
+* Awareness
+
+Rare for any given process to hit all 4.
+
+Illusion of agency - maybe intent does not exist.
+
+Debate over value of heuristics vs rationality.
+
+Mentalizing:
+
+* inferring intentions, goals, desires of other mind (or own mind?)
+* typically care about intent and capability (eg warmth, competence etc)
+
+When do we attribute responsibility to an agent for an action?
+
+* Jones says single behavior => specific intent when:
+  * given choice
+  * has capability
+  * departs from behavior of other agents
+  * behaves differently in other contents / with other targets
+* Kelley says behavior over time => disposition when:
+  * departs from behavior of other agents
+  * behaves differently in other contents / with other targets
+  * consistently behaves in this way in this context
+  
+> John laughs at the comedian. No one else laughs at the comedian. John laughs at every comedian. John laughs at the comedian every time. => Behavior is attributable to John, not to comedian
+
+Experimentally, seems to be less sensitive to consensus than other two.
+
+Attribute agency to objects similarly, but not moral status eg 'computer said no' but don't feel bad for throwing the computer away. How do we tell the difference?
+
+Emotions hard to define. 
+
+* Facial expressions are interpreted in context - changing context changes perception
+* No 1-1 mapping from face muscles to emotions - complex signal
+* Much disagreement on mapping emotions to brain regions
+* Anxious reappraisal
+* Self-reported eg happiness easily influenced by context, but discounted if made aware
+* Ability to mimic faces is innate, so universality of expressions could be from cultural transmission
+* Subjects with amygdala lesions can be fear-conditioned but are not aware of being afraid
+* Awareness of own heart rate predicts differing emotional reactions
+
+Dominant theory - emotion as cognitive interpretation of physiological signals
+.
+Behavior change:
+
+* motivation + capacity
+* very resistant eg anti-smoking ads
+* changing environment almost always easier than changing the person
