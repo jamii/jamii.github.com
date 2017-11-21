@@ -25,7 +25,7 @@ Where $\begin{pmatrix}b_1 & b_2\end{pmatrix}$ is chosen to minimize error on the
 
 We want to ask questions like:
 
-* Q1: Is knowing $x_1$ useful if we already know $x_2$
+* Q1: Is knowing $x_1$ useful if we already know $x_2$?
 
 We can answer this by comparing the prediction accuracy of this model against a simpler model:
 
