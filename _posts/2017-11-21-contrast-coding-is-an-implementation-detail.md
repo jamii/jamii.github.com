@@ -40,7 +40,7 @@ The null model is a restricted version of the full model, so it will always have
 
 Unfortunately in psychology we [typically don't have enough data](http://datacolada.org/20) to begin with, so we can't afford to leave any data unseen. Instead we ask a different question:
 
-* Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error?
+* Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?
 
 In this case we can give an exact analytic answer to Q2. (Whether that answer has any bearing on the answer to Q1 is another, much more complicated matter).
 
@@ -61,7 +61,7 @@ If we code the data as $X=\begin{pmatrix}1\\\0\end{pmatrix}$ for subjects in the
 
 Again, answering this question is hard so we're going to substitute a different question:
 
-* Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error?
+* Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?
 
 Unfortunately the nice analytic answer __only works for constraints of the form $b_i = 0$__. To apply it here, we need to [transform the problem](https://en.wikipedia.org/wiki/Change_of_basis) so that has the same form as the previous problem.
 
