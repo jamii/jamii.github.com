@@ -63,7 +63,7 @@ Again, answering this question is hard so we're going to substitute a different 
 
 * Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?
 
-Unfortunately the nice analytic answer __only works for constraints of the form $b_i = 0$__. To apply it here, we need to [transform the problem](https://en.wikipedia.org/wiki/Change_of_basis) so that has the same form as the previous problem.
+Unfortunately the nice analytic answer __only works for constraints of the form $b_i = 0$__. To apply it here, we need to [transform the problem](https://en.wikipedia.org/wiki/Change_of_basis) so that it has the same form as the previous problem.
 
 If we define:
 
@@ -83,7 +83,7 @@ Then we get:
 
 Now we can apply the same analytic solution as before.
 
-The rows of $L$ are called __contrast codes__. But where do they come from? Well, I picked $\begin{pmatrix}1 & {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked an arbitrary othogonal vector for the second row to make $L$ invertible. 
+The rows of $L$ are called __contrast codes__. But where do they come from? Well, I picked $\begin{pmatrix}1 & {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked whatever second row would make $L$ invertible. 
 
 This method works in general as long as L has full rank. Otherwise we are throwing away some dimension of the data, or, equivalently, we are imposing some restriction on $b_i$ in the full model. 
 
