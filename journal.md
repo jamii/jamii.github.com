@@ -15798,7 +15798,7 @@ Gave the talk.
 
 ### 2017 Nov 20
 
-School stuff. Slow day.
+School stuff. Slow day mostly. Really enjoyed learning about [decision by sampling](https://www.dectech.co.uk/our_company/papers/dectech_2006_decision_by_sampling.pdf).
 
 Read talk slides about [Julia and Fortress](https://www.dropbox.com/s/2d8se4mr4hxrra2/Julia17.pdf?dl=0).
 

@@ -190,3 +190,7 @@ Eg 2x2 control/diet x male/female. 'Do males lose more weight when dieting' is e
 Bayesian equivalent would just be posterior prediction of difference?
 
 Tukey-Kramer to test all possible pairs of groups.
+
+## [Lecture 7](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=7)
+
+ANCOVA - analysis of covariance - same as ANOVA but with continuous as well as categorical predictors.
