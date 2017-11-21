@@ -354,3 +354,7 @@ Time-reversal heuristic.
 Beware collections of studies varying in sample size without justification - sounds like optional stopping.
 
 (Did they ever release data)?
+
+## Seminar 6
+
+Naught.

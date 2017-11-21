@@ -15742,3 +15742,104 @@ Another source of overhead in the interpreter - it pushs Value into results rath
 Tried staging the whole interpreter by glueing together closures. Made too many changes at once and at least one of them isn't going to work, so I need to roll stuff back a bunch. Sad face.
 
 Must. Learn. Not. To. Change. Everything. At. Once.
+
+### 2017 Nov 13
+
+School! Social cognition, fun stuff, how do emotions work.
+
+### 2017 Nov 14
+
+Much procrastination, but caught up on notes and stats exercises, leaving reading for later in the week.
+
+### 2017 Nov 15
+
+My rust version of GenericJoin is way nicer than the julia version, so I'm porting some of the design improvements back. Will also give some good apples-to-apples comparison of complexity.
+
+My age-old problem of mutable values getting boxed over rears up again, but I realized that using a Ref half-solves the problem. It's still getting heap-allocated, but it at least carries the type across. 
+
+Came up with a really cutesy version that uses generated functions to do most of the heavy lifting, so the compiler just has to generate:
+
+``` julia
+const x_range_0 = Range(1, length(x_1) + 1)
+const x_range_1 = Range(1, length(x_1) + 1)
+const x_range_2 = Range(1, length(x_1) + 1)
+const y_range_0 = Range(1, length(y_1) + 1)
+const y_range_1 = Range(1, length(y_1) + 1)
+const y_range_2 = Range(1, length(y_1) + 1)
+const results_x = Int64[]
+const results_y = Int64[]
+const results_z = Int64[]
+const j1 = Join_2(x_1, y_1, x_range_0, y_range_0, x_range_1, y_range_1)
+const j2 = Join_1(x_2, x_range_1, x_range_2)
+const j3 = Join_1(y_2, y_range_1, y_range_2)
+@join(j1) do
+  @join(j2) do
+    @join(j3) do
+      @inbounds x = x_2[x_range_2.lo]
+      @inbounds y = y_2[y_range_2.lo]
+      push!(results_x, x)
+      push!(results_y, y)
+      push!(results_z, (x * x) + (y * y) + (3 * x * y))
+    end
+  end
+end
+results_z
+```
+
+It's a bit slow at the moment though. Have to figure out how to avoid jumping all over the heap.
+
+### 2017 Nov 16
+
+Preparing a talk on my experiments in implementation strategies. Pushing pretty hard to do v0 in Julia.
+
+### 2017 Nov 17
+
+Gave the talk.
+
+### 2017 Nov 20
+
+School stuff. Slow day.
+
+Read talk slides about [Julia and Fortress](https://www.dropbox.com/s/2d8se4mr4hxrra2/Julia17.pdf?dl=0).
+
+Went through our nascent language spec.
+
+Tried out automatic differentiation in Imp. Seems to work without modification - props to Julia:
+
+``` julia
+Pkg.add("ForwardDiff")
+
+using ForwardDiff
+using Data
+using Query
+
+function vector_to_relation(vector)
+  Relation((collect(1:length(vector)), vector), 1)
+end
+
+function my_dot(xx, yy) 
+  xx = vector_to_relation(xx)
+  yy = vector_to_relation(yy)
+  zz = @query begin
+    @query begin
+      xx(i, x)
+      yy(i, y)
+      z = x*y
+      return (i, z)
+    end
+    return (sum(z),)
+  end
+  zz.columns[1][1]
+end
+
+xx = rand(10)
+yy = rand(10)
+
+my_dot(xx, yy)
+ForwardDiff.gradient((xx) -> my_dot(xx, yy), xx)
+```
+
+### 2017 Nov 21
+
+Missed much of the day sleeping :(
+
