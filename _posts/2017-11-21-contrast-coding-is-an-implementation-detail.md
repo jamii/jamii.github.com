@@ -85,7 +85,7 @@ Now we can apply the same analytic solution as before.
 
 The rows of $L$ are called __contrast codes__. But where do they come from? Well, I picked $\begin{pmatrix}1 & {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked whatever second row would make $L$ invertible. 
 
-This method works in general as long as L has full rank. Otherwise we are throwing away some dimension of the data, or, equivalently, we are imposing some restriction on $b_i$ in the full model. 
+This method works in general as long as $L$ has full rank. Otherwise we are throwing away some dimension of the data, or, equivalently, we are imposing some restriction on $b_i$ in the full model. 
 
 (Textbooks tend to insist that $L$ be orthogonal too. I *think* the reason for this is that if you can pack all the questions you want to ask into a single orthogonal matrix then the resulting tests will be independent of each other. It doesn't seem to be necessary for single comparisons.)
 
