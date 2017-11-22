@@ -255,10 +255,8 @@ It wasn't all positive though. I struggled with the increasing complexity of the
 2. Even though the closures themselves are typically polymorphic, we need to dispatch on type to get a specialized version of the closure for each type. In the example above we are only dispatching on a single two-way type so it isn't so bad. In the real version I had some MxN dispatches that created [astonishing amounts of boilerplate](https://github.com/jamii/imp/blob/3f442d30bd845a39f5cbeb7f5360529af068bc69/src/interpreter.rs#L660-L793). 
 3. The compiled baseline keeps all state on the stack. To do the same in the staged interpreter we would have to allow each closure to take arguments instead of closing over shared mutable state. The trouble is that while we know the size of each argument in advance, we can't write code that is generic over the number of arguments. So we'd still end up having to heap-allocate a `Vec<Argument>` or similar. Unless we dispatched on the size too...
 
-1 and 2 are manageable, with some foresight and the odd macro. The cost of 3 is so far undetermined (because I didn't finish it). 
+In the end the whole thing was nixed by the fact that the staged interpreter had already become way more complex than the compiler I had written previously and that the improvements in compile time were more than lost by the slower run time.
 
-But the whole thing was nixed by the fact that the staged interpreter had already become way more complex than the compiler I had written previously and that the improvements in compile time were more than lost by the slower run time.
-
-I'm still curious how it would work out though.
+I'm still curious whether the complexity can be circumvented, but I don't have time to explore it further myself.
 
 
