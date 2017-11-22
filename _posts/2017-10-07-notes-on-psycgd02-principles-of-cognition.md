@@ -778,3 +778,72 @@ Behavior change:
 
 Default mode = social cognition applied to self?
 
+## [Lecture 7](https://moodle.ucl.ac.uk/pluginfile.php/4429745/mod_resource/content/4/Lecture%207.pdf)
+
+Examples of theories that try to unify multiple phenomena:
+
+* Scale invariance
+* Decision by sampling
+* A theory of magnitude
+
+Scale invariance:
+
+* $y \propto x^\alpha$
+* Examples in cogsci:
+  * Weber's law - smallest perceptable change : magnitude of stimulus
+  * Fechner's law - subjective intensity : physical intensity
+    * Exponent varies by sense
+  * Fitt's law - time to hit target : log (target distance / target width)
+  * Forgetting - recollection probability(?) : time
+    * Surprising - exponential decay is a much more natural model
+  * Practice - task reaction time : practice time
+  * Recall - number of items recalled : time spent recalling
+    * Seems not to depend at all on period covered by recall
+  * Luce's choice rule and Herrnstein's matching law - probability of choosing item : attractiveness/payoff
+* Most examples cover a few ranges of magnitude but fall down at extremes
+* Causes?
+  * __Need to operate at multiple different scales => use a representation that is scale invariant__
+  * __Log-scale turns constant error into proportional error - useful if operating over different scales cf floating point__
+  * __Maybe just over-fitting - [with proper testing many examples stop looking like power laws](https://arxiv.org/abs/0706.1062)__
+* Tends to be null hypothesis since it turns up so often
+* Violations, switching points are interesting
+
+Decision by sampling:
+
+* Need to be able to trade-off between utility of different outcomes, subjective probability, time
+* Well-calibrated 
+  * eg prospect theory matches up with empirical distribution of credits/debits into bank accounts, supermarket prices
+  * eg temporal discounting matches up with number of google hits / newspaper entries for different durations
+  * eg subjective risk evaluation matches up with probability judgments of probabilistic phrases + distribution of phrases in British National Corpus
+* How to explain this calibration?
+* __Could be caused in other direction - subjective curves => behavior - but hard to see why it would affect distribution in this way.__
+* Plausible algorithm - no numerical scale, just sample several similar elements and compare to get a rough ranking
+* How does sampling work? How is the reference class decided?
+  * From memory - choose a reference class - explains framing
+  * From context - explains anchoring and effect of irrelevant options
+  * From exploration
+* __How do we translate between reference scales eg trade off time vs money?__
+  * __Poorly, usually.__
+  * __CFAR's 'units of exchange' provides anchors / exchange rate?__
+* __Picoeconomics claims willpower problems caused by hyperbolic discounting. Can we change the discounting curve by changing sampling process?__
+
+A theory of magnitude:
+
+* Walsh 2003
+* Proposes that time, space and number are represented by same mechanism
+* Poorly supported, lecturer expects it to be wrong but useful as research direction
+* Time and space usually need to processed together eg for motor action, predicting movement
+* Plausible that number sense piggybacks on same system
+* Number vs space (well supported):
+  * Quicker to distinguish numbers that have larger differences (ie further apart on number line)
+  * SNARC effect - quicker response to small numbers on left side of vision, large numbers on right side of vision
+  * Attention bias effect - quicker to notice stimuli in left when fixated on small number, right when fixated on large number
+  * Line bisection effect - left/right bias when picking middle of string depending on number word in string eg "twotwotwotwo"
+  * Asymmetric deficits on number tasks in neglect patients / TMS subjects
+  * Some subjects describe weird number lines and also deviate from these patterns
+* Time vs number (poorly supported):
+  * Number tasks and time estimation impair each other
+* Time vs space (poorly supported):
+  * Subjects imaging 30m activity in scale model take longer for larger models
+  * Neglect patients show asymmetric deficits when estimating duration of stimulus in neglected side of field
+
