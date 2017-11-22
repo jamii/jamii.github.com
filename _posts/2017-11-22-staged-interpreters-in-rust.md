@@ -40,9 +40,7 @@ This is enough to write a rather pointless little program:
 //   }
 // }
 let expr = Expr::Let(
-    "i",
-    Type::Number,
-    box Expr::Constant(Value::Number(1)),
+    "i", Type::Number, box Expr::Constant(Value::Number(1)),
     box Expr::While(
         box Expr::LessThan(box Expr::Get("i"), box Expr::Constant(Value::Number(1000))),
         box Expr::Set(
@@ -127,7 +125,7 @@ let staged: Staged = stage(&HashMap::new(), &expr);
 let result = run(staged);
 ```
 
-What is `Staged`? It's just a thing that we can run and get back a `Value`. So the most general type we could use is a closure that returns `Value`:
+What is `Staged`? It's a thing that we can run and get back a `Value`. So the most general type we could use is a closure that returns `Value`:
 
 ``` rust
 type Staged = Box<Fn() -> Value>
