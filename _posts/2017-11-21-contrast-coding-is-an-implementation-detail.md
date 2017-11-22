@@ -12,7 +12,9 @@ MathJax.Hub.Config({
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
 </script> 
 
-I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) really confusing until I realized that they are just an artifact of using specific analytic solutions to compare models. Let me try to explain.
+I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) really confusing until I realized that they are just an artifact of using specific analytic solutions to compare models.
+
+(Probably. I'm not a statistician. There is a fair chance this post will have to be heavily edited.)
 
 A typical instance of the [General Linear Model](https://en.wikipedia.org/wiki/General_linear_model) looks like this:
 
