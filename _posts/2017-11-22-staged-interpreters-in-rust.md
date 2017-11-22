@@ -134,7 +134,7 @@ What is `Staged`? It's just a thing that we can run and get back a `Value`. So t
 type Staged = Box<Fn() -> Value>
 ```
 
-But we actually need a bit more information to build these efficiently. Remember we want to know the type of things ahead of time so that we don't have to check on every loop. So we need to pull the tag out of function itself:
+But we actually need a bit more information to build these efficiently. Remember we want to know the type of things ahead of time so that we don't have to check on every loop. So we need to pull the tag out of the `Value` and wrap the entire closure:
 
 ``` rust
 enum Staged {
@@ -143,7 +143,7 @@ enum Staged {
 }
 ```
 
-These closures are going to close over variables, so we also need to make the variables shareable between multiple closures by adding a reference counted pointer.
+These closures are going to close over variables, so we also need to make the variables shareable between multiple closures by adding a reference counted pointer:
 
 ``` rust
 enum StagedVariable {
@@ -152,7 +152,7 @@ enum StagedVariable {
 }
 ```
 
-Now we can just glue together bits of code to make these closures.
+Now we can just glue together bits of code to make these closures:
 
 ``` rust
 fn stage(env: &HashMap<Name, StagedVariable>, expr: &Expr) -> Staged {
@@ -247,12 +247,12 @@ Compared to before, on each iteration we now:
 3. Have already checked that the types of `i` and `1` are the same
 4. Have already checked that the types of `i` and `i + 1` are the same
 
-Calling a function pointer is cheaper than a single hashtable lookup. The actual interpreter I was working had much more overhead per bytecode and typically executed heavily nested loops, so this was clear win.
+Calling a function pointer is cheaper than a single hashtable lookup. The actual interpreter I was working had much more overhead per bytecode and typically executed heavily nested loops, so this was a clear win.
 
 It wasn't all positive though. I struggled with the increasing complexity of the code:
 
 1. I needed to read external data, so the actual type was `type Staged<'a> = Box<Fn() -> Value + 'a>`. The lifetimes infected everything else.
-2. Even though the closures themselves are typically polymorphic, we need to dispatch on type to get a specialized version of the closure for each type. In the example above we are only dispatching on a single two-way type so it isn't so bad. In the real version I had some MxN dispatches that created astonishing amounts of boilerplate. 
+2. Even though the closures themselves are typically polymorphic, we need to dispatch on type to get a specialized version of the closure for each type. In the example above we are only dispatching on a single two-way type so it isn't so bad. In the real version I had some MxN dispatches that created [astonishing amounts of boilerplate](https://github.com/jamii/imp/blob/3f442d30bd845a39f5cbeb7f5360529af068bc69/src/interpreter.rs#L660-L793). 
 3. The compiled baseline keeps all state on the stack. To do the same in the staged interpreter we would have to allow each closure to take arguments instead of closing over shared mutable state. The trouble is that while we know the size of each argument in advance, we can't write code that is generic over the number of arguments. So we'd still end up having to heap-allocate a `Vec<Argument>` or similar. Unless we dispatched on the size too...
 
 1 and 2 are manageable, with some foresight and the odd macro. The cost of 3 is so far undetermined (because I didn't finish it). 
