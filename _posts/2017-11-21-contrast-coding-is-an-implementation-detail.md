@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Contrast codes are an implementation detail
-hidden: true
 ---
 
 <script type="text/x-mathjax-config">
