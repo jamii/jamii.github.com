@@ -201,8 +201,7 @@ Missed points:
 * Binary categorization of cost sector = lost granularity
 * Didn't attempt to establish incremental validity
 
-## [The Thatcher Illusion Reveals Orientation Dependence in Brain Regions Involved in Processing Facial
-Expressions](http://journals.sagepub.com/doi/full/10.1177/0956797613501521)
+## [The Thatcher Illusion Reveals Orientation Dependence in Brain Regions Involved in Processing Facial Expressions](http://journals.sagepub.com/doi/full/10.1177/0956797613501521)
 
 Story:
 
