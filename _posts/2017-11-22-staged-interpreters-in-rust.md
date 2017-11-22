@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Staged interpreters in Rust
-hidden: true
 ---
 
 Last week I was writing an interpreter at work. For arithmetic-heavy queries the interpreter overhead was >10x compared to a compiled baseline. I tried staging the interpreter to move the overhead out of the inner loops. I didn't end up finishing it, but I think it's a neat idea anyway so I wrote a much simpler example to demonstrate. (It's essentially a [tagless staged interpreter](http://okmij.org/ftp/tagless-final/JFP.pdf) with the addition of shared mutable state).
