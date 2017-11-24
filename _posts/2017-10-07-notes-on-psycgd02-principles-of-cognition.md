@@ -847,3 +847,60 @@ A theory of magnitude:
   * Subjects imaging 30m activity in scale model take longer for larger models
   * Neglect patients show asymmetric deficits when estimating duration of stimulus in neglected side of field
 
+## [Scale-invariance as a unifying psychological principle](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.323.3478&rep=rep1&type=pdf)
+
+Scale invariance common in nature. Psych processes adapted to reflect this?
+
+Clear examples in perception:
+
+* Luminance between sunlight and shade can be 10000x but brightness and color of an object is perceived same in both - visual system processes ratios, not absolute magnitudes
+* Similarly for hearing frequency - absolute pitch is rare but relative pitch is common
+* Weber's law - difficulty of distinguishing perceptions proportional to ratio of magnitude, not absolute difference
+  * But power varies across scale, so not totally clear
+* Steven's law - in >30 perceptual/motor dimensions mapping to numerical scale is power law
+  * __When making judgments on numerical scale, does anchoring a point in the middle shift judgements in a scale-invariant fashion?__
+
+Can't be purely scale-invariant, because it is possible to judge magnitudes, but usually poorly.
+
+Not true at all for eg color perception.
+
+Perhaps reflects that the systems themselves are implemented physically.
+
+## [A theory of magnitude: common cortical metrics of time, space and quantity](http://sci-hub.bz/http://www.sciencedirect.com/science/article/pii/S1364661303002304)
+
+Argues that:
+
+* Hemispheric asymmetry is because numerical calculation tied to language
+* Number-selective neurons located in same space as space-selective neurons, and some circumstantial evidence of temporal-sensitive neurons in same area
+
+Explaining interference in terms of attention is way too unconstrained. Sounds like single theory but close reading of literature shows that wide variety of proposed effects and causal mechanisms.
+
+Predicts SNARC should work for any space/action -coded magnitude.
+
+## [Decision by sampling](https://pdfs.semanticscholar.org/1b64/bb307016aad4e39b3aeef63a399718403755.pdf)
+
+Typical theories of decision-making take utility functions as given. How do we build/calibrate a utility function given basic psychological operations?
+
+__To relate this back to previous two papers, how do we get an absolute judgment of utility out of brain systems that are only good at relative, scale-invariant judgments?__
+
+Many examples of utility functions (in aggregate) matching cumulative distribution of events in the real world.
+
+Proposes that we sample several items from memory and use these to estimate percentile on empirical distribution.
+
+Many other examples of similar processes:
+
+* Norm theory - judge normality by similarity to sampled events
+* Decision field theory - compare alternative by weighted sampling of advantages on random walk
+* Support theory - subjective probability depends on alternative hypotheses sampled
+* MINERVA-DM - subjective probability/plausibility based on similarity to sampled events
+* Stochastic difference model - ?
+
+Assumes that sampling from memory is a good approximation of sampling from reality. Some evidence for this eg [Anderson & Schooler 1991](http://act-r.psy.cmu.edu/wordpress/wp-content/uploads/2012/12/37JRA_LS_PS_1991.pdf).
+
+__Has anyone tested the predicted binomial noise?__
+
+Tweaks:
+
+* Temporal discount rate decreases with magnitude of gain. Explained by assuming that time and magnitude are sampled together, not independently. 
+* Temporal discount rate is higher for gains than losses. Explained by curvature of gain/loss utility interacting with base discount rate - discount applies to utility, not gain/loss directly.
+* Working-memory load increases discounting of delayed vs immediate gains. Explained by failing to sample enough large delays - biases score upwards.
