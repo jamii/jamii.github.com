@@ -15877,3 +15877,5 @@ Here's a plan:
 * join_c handles looping and calls closure, which just takes fingers and opaque results baton
 
 Bah, hiding things behind pointers [is totally slow](https://discourse.julialang.org/t/speed-and-type-stability-of-unsafe-pointer-to-objref/6478). Also, least helpful reply ever.
+
+Ok, I can't pass stuff around on the stack between functions efficiently. Either everything goes on the heap or I generate one huge function. The latter seems likes it's gonna be a bitch to compose different behaviors, so I guess I should just heap it all. Seems like such a waste though.
