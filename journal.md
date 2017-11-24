@@ -15843,3 +15843,37 @@ ForwardDiff.gradient((xx) -> my_dot(xx, yy), xx)
 
 Missed much of the day sleeping :(
 
+### 2017 Nov 22
+
+Wrote up the attempted staged interpreter in rust.
+
+### 2017 Nov 23
+
+Sketched out design for an extensible compiler for the FAQ problem. 
+
+### 2017 Nov 24
+
+Update julia packages, mostly for the new Juno.
+
+Work from the compiled version I was playing with last week. Similar interface.
+
+I'm not remotely happy with the interface I've come up with for finite functions, but I have a lot to do so I'll just implement it for now and go back to it later. Life was much easier with triejoin, but it's patented :(
+
+Should probably read the taco paper to see how they deal with it. 
+
+...
+
+They have layers of sparse and dense representations per column and they don't use any other representations. Pretty neat though.
+
+Did you know that [you can't use anything in a generated function that creates a closure](https://github.com/JuliaLang/julia/issues/21094#issuecomment-287649747). That's pretty annoying.
+
+I got this working, but it's awfully slow and there is still a big blob of codegen in the middle and it's disappointingly slow compared to the previous version. 162ms vs 35ms on the dumb polynomial example.
+
+Here's a plan:
+
+* Move Ptr{Column} and Ptr{Columns} into RelationFinger and stop carrying funs around
+* join_a just handles ixes and rearranging
+* join_b handles finding min
+* join_c handles looping and calls closure, which just takes fingers and opaque results baton
+
+Bah, hiding things behind pointers [is totally slow](https://discourse.julialang.org/t/speed-and-type-stability-of-unsafe-pointer-to-objref/6478). Also, least helpful reply ever.
