@@ -87,7 +87,7 @@ Additionally, since $L$ is invertible there is a 1-1 mapping between the transfo
 & \begin{pmatrix}b_1 & b_2\end{pmatrix} L^{-1} &= & \begin{pmatrix}c_1 & c_2\end{pmatrix} \cr
 \end{align}
 
-(It doesn't seem to be common to care about this though - I see lot's of examples of non-invertible contrast codes.)
+(It doesn't seem to be common to care about this though - I see many examples of non-invertible contrast codes.)
 
 Importantly, none of this changes the fact the comparison we actually care about is still:
 
