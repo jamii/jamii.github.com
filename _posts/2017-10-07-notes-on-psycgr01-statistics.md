@@ -191,19 +191,54 @@ Contrast codes:
 * Solution: change to basis - $Y = A + BLX$
 * Rows of $L$ should be orthogonal
   * Avoids introducing spurious correlations in transformed data
-  * Otherwise can't interpret as difference of means - null hypothesis is same but error is split differently across parameters
+  * Allows interpreting as difference of means 
+    * Otherwise null hypothesis is same but error is split differently across parameters - confidence region is sheared by transformation
+    * Even when cell sizes are unequal!
   * Allows partitioning out $SSR$ due to each parameter (because SSR is linear function of group means)
-    * For given row $\lambda$, comparing against model without that parameter reduces to $\mathrm{SSR} = \frac{(\sum_k \lambda_k \bar{Y}_k) ^2}{\sum_k (\lambda_k^2 / n_k)}$
+    * As long as cell sizes are equal - otherwise denominator of SSR is not same across rows
+* For given row $\lambda$, comparing against model without that parameter reduces to $\mathrm{SSR} = \frac{(\sum_k \lambda_k \bar{Y}_k) ^2}{\sum_k (\lambda_k^2 / n_k)}$
 * If a row sums to 0, parameter can be interpreted as difference of means ([source](http://journals.sagepub.com/doi/full/10.1177/0013164416668950)). 
 * Formula for confidence interval is same as simple model
 * To test for differences between means of $m$ groups, can use $m-1$ orthogonal rows
   * Gives $b = \frac{\sum_k \lambda_k \bar{Y}_k}{\sum_k \lambda_k^2}$
   * (__Means $L$ does not have rank n - can't reconstruct original parameters - is this ok?__)
   
-Ways to generate contrast codes:
+Helmert codes - $\lambda_{i,i} = m-i$ and $\forall j > i \ldot \lambda{i,j} = -1$
 
-* Helmert codes - $\lambda_{i,i} = m-i$ and $\forall j > i \ldot \lambda{i,j} = -1$
-* 
+Orthogonal polynomial codes:
+
+* $Y$ as polynomial of category
+* Each row fits $b_n X^n - \text{previous rows}$
+* Differs from simply fitting a polynomial because based on group means rather than individual points - latter weights error towards larger categories 
+
+Dummy codes - $\lambda_{i,i+1} = 1$ and $\lambda{i,j} = 0$ otherwise. Not contrast codes - interpret $\lambda_i$ as comparing case $i$ vs case $0$.
+
+Unequal cell sizes are weird, because mean of group means is not mean of individuals.
+
+Multiple comparisons abound. 
+
+* In planned comparisons use $.05/m$
+* In post-hoc comparison use Scheffe adjusted critical value
+  * Fixes type 1 rate at $.05$
+  * Any contrast exceeds critical value iff omnibus test is significant
+  
+For power analysis estimate:
+
+\begin{align}
+\hat{\eta}^2 &= 1 - \frac{(1 - \mathrm{PRE})(n - \mathrm{PC})}{n - \mathrm{PA}} \cr
+             &= \left( \frac{ m \sigma^2 (\sum \lambda^2 / n_k) }{ (\sum \lambda_k \mu_k)^2 } + 1 \right) ^{-1}
+\end{align}
+
+where $\mu_k$ is predicted group mean and $\sigma^2$ is predicted within-cell variance.
+
+* Power for omnibus test is maximized when all cell sizes are equal. 
+* Power for contrast is maximized when cell sizes proportional to weights.
+
+With multiple categorical variables a good tactic is:
+
+* Do contrast codes for decomposition
+* Map m-1 from each subspace into full space to ask basic questions
+* Take elementwise products of basic questions to ask about interactions
 
 Tukey-Kramer to test all possible pairs of groups.
 
