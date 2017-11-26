@@ -192,8 +192,8 @@ Contrast codes:
 * Rows of $L$ should be orthogonal
   * Avoids introducing spurious correlations in transformed data
   * Allows interpreting as difference of means 
-    * Otherwise null hypothesis is same but error is split differently across parameters - confidence region is sheared by transformation
     * Even when cell sizes are unequal!
+    * Otherwise null hypothesis is same but error is split differently across parameters
   * Allows partitioning out $SSR$ due to each parameter (because SSR is linear function of group means)
     * As long as cell sizes are equal - otherwise denominator of SSR is not same across rows
 * For given row $\lambda$, comparing against model without that parameter reduces to $\mathrm{SSR} = \frac{(\sum_k \lambda_k \bar{Y}_k) ^2}{\sum_k (\lambda_k^2 / n_k)}$
