@@ -88,7 +88,7 @@ The rows of $L$ are called __contrast codes__. But where do they come from? Well
 
 This method works in general as long as $L$ has full rank. Otherwise we are throwing away some dimension of the data, or, equivalently, we are imposing some restriction on $b_i$ in the full model. 
 
-(Textbooks tend to insist that the rows of $L$ be orthogonal too. I *think* the reason for this is that if you can pack all the questions you want to ask into orthogonal rows then the resulting tests will be independent of each other. Non-orthogonal matrices introduce collinearity which widens the confidence intervals of each parameter. I don't really understand why - I can see that it's true from the equations for the confidence intervals, but it doesn't make sense to me that a lossless transformation (between orthogonal rows and non-orthogonal but linearly independent rows) changes the results of the test.)
+(Textbooks tend to insist that the rows of $L$ be orthogonal too. I *think* the reason for this is that if you can pack all the questions you want to ask into orthogonal rows then the resulting tests will be independent of each other. Non-orthogonal matrices introduce collinearity which widens the confidence intervals of each parameter. I don't really understand why - I can see that it's true from the equations for the confidence intervals, but it doesn't make sense to me that a lossless transformation (between orthogonal rows and non-orthogonal but linearly independent rows) changes the results of the test. Maybe it would help to calculate the confidence region for $L$ as a whole and see how the region is transformed?)
 
 None of this changes the fact the comparison we actually care about is still:
 

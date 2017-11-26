@@ -48,6 +48,8 @@ Review:
 
 Model is model of population (__which implies that we can include sampling method in inference if we think we can accurately model the bias__).
 
+Sum of squares reduced $SSR = \operatorname{SSE}(C) - \operatorname{SSE}(A)$
+
 Proportional reduction in error $PRE = \frac{\operatorname{SSE}(C) - \operatorname{SSE}(A)}{\operatorname{SSE}(C)}$. On population is usually denoted $\eta^2$.
 
 F-score for GLM: $F = \frac{\mathrm{PRE} / (\mathrm{PA} - \mathrm{PC})}{(1-\mathrm{PRE})/(n - \mathrm{PA})} \sim F(\mathrm{PA} - \mathrm{PC}, n - \mathrm{PA})$
@@ -148,8 +150,12 @@ Partial correlation between $Y$ and $X_i$ is $\operatorname{sign}(\beta_i) \sqrt
 Moderation
 
 * Effect of $X_1$ varies depending on value of $X_2$ 
-* Fit $Y \sim \beta X_1 X_2$
-* Center predictors for moderation. (__Why?__)
+* Fit $Y \sim \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2$
+* Formula for $\beta_3$ is same as $\beta_1$ and $\beta_2$ in simple model
+* Center predictors for moderation
+  * Easier to interpret
+  * Reduces redundancy between $X_1$ and $X_1 X_2$ but does not change confidence interval of $\beta_3$, as long as we have simple parameters ($\beta_1$ and $\beta_2$)
+    * This is true of any linear change to parameters
 
 Mediation (cf [Mediation Analysis](https://sci-hub.bz/http://www.annualreviews.org/doi/abs/10.1146/annurev.psych.58.110405.085542)):
 
@@ -178,16 +184,14 @@ ANOVA - analysis of variance - modeling differences between group means.
 
 Null model = same means.
 
-Various ways to code indicator variables. Seems unnecessarily complicated vs just using vectors. Explanations:
+Contrast codes:
 
-* [It's a way to extract an effect size from a factorial anova](http://journals.sagepub.com/doi/full/10.1177/0013164416668950). 
-* Use the codes to create a weighted sum of group means, so we can reduce the significance test to comparing one or two weighted sums rather than all of the means (too many comparisons).
-* Rotates the basis, so our significance tests on each parameter test things we care about directly.
-* Allows comparing against a null-model where the parameters are restricted to some hyperplane.
+* Want to compare against a null-model where the parameters are restricted to some hyperplane, but analytic solution to GLM can only handle axis-aligned hyperplanes.
+* Solution: change to basis - $Y = A + BLX$ where L is a full-rank matrix
+* Rows of $L$ should be orthogonal to avoid introducing spurious correlations in transformed data
+* If a row sums to 0 and absolute values sum to 1, can be interpreted as difference of means ([source](http://journals.sagepub.com/doi/full/10.1177/0013164416668950)). 
 
-Eg 2x2 control/diet x male/female. 'Do males lose more weight when dieting' is equiv to 'control/male - diet/male < control/female - diet/female'.
-
-Bayesian equivalent would just be posterior prediction of difference?
+Eg 2x2 control/diet x male/female. 'Do males lose more weight when dieting' is equiv to 'control/male - diet/male < control/female - diet/female'..
 
 Tukey-Kramer to test all possible pairs of groups.
 
