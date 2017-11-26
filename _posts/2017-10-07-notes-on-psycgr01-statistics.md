@@ -190,7 +190,7 @@ Contrast codes:
   * Eg 2x2 control/diet x male/female. 'Diet effect does not vary between male/female' is equiv to 'control/male - diet/male = control/female - diet/female'
 * Solution: change to basis - $Y = A + BLX$
 * Rows of $L$ should be orthogonal
-  * Avoids introducing spurious correlations in transformed data
+  * Avoids introducing spurious correlations in transformed data, which would create correlations between confidence intervals
   * Allows interpreting as difference of means 
     * Even when cell sizes are unequal!
     * Otherwise null hypothesis is same but error is split differently across parameters
@@ -240,8 +240,16 @@ With multiple categorical variables a good tactic is:
 * Map m-1 from each subspace into full space to ask basic questions
 * Take elementwise products of basic questions to ask about interactions
 
+Including useful variables often increases power for testing original variables, because reduces error which would obscure small effects.
+
 Tukey-Kramer to test all possible pairs of groups.
 
 ## [Lecture 7](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=7)
 
 ANCOVA - analysis of covariance - same as ANOVA but with continuous as well as categorical predictors.
+
+Typical use case - control vs treatment whilst controlling for covariate. Similar to before, can increase power by reducing error that is obscuring small effects.
+
+Eg in pre/post test, typically more powerful than just modeling the difference. Latter effectively fixes the pre-test parameter to 1, so is only more powerful if ANCOVA estimate was close to 1.
+
+Homogeneity of regression assumption = no interaction between categorical variable and continuous covariate.
