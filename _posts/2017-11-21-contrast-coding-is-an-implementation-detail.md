@@ -78,7 +78,7 @@ Now we can apply the same analytic solution as before.
 
 The rows of $L$ are called __contrast codes__. But where do they come from? Well, I picked $\begin{pmatrix}1 & {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked whatever second row would make $L$ invertible.
 
-Since the rows of $L$ are orthogonal, we can interpret the confidence interval of $c_1$ as the confidence interval of the difference between the mean outcome in the control group and the mean outcome in the treatment group, which is exactly what we care about. (If the rows were not orthogonal the difference would get spread out across $c_1$ and $c_2$.)
+Since the rows of $L$ are orthogonal, we can interpret the confidence interval of $c_1$ as the confidence interval of the difference between the mean outcome in the control group and the mean outcome in the treatment group, which is exactly what we care about. (If the rows were not orthogonal the difference would get spread out across $c_1$ and $c_2$. Equivalently, the confidence intervals for $c_1$ and $c_2$ would not be independent.)
 
 Additionally, since $L$ is invertible there is a 1-1 mapping between the transformed model and the original model: 
 
