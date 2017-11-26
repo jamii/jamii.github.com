@@ -70,7 +70,7 @@ Multiple regression.
 
 Test for unique effect of $X_i$ by comparing with model where $\beta_i=0$.
 
-Omnibus test - testing multiple parameters at once.
+Omnibus test - testing multiple parameters at once. Prefer tests where $PA - PC = 1$ - easier to interpret success/failure.
 
 $R^2$ - squared multiple correlation coefficient - 'coefficient of determination' - 'proportion of variance explained' - PRE of model over $Y_i = \beta_0 + \epsilon_i$.
 
@@ -151,7 +151,7 @@ Moderation
 
 * Effect of $X_1$ varies depending on value of $X_2$ 
 * Fit $Y \sim \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2$
-* Formula for $\beta_3$ is same as $\beta_1$ and $\beta_2$ in simple model
+* Formula for confidence interval is same as simple model
 * Center predictors for moderation
   * Easier to interpret
   * Reduces redundancy between $X_1$ and $X_1 X_2$ but does not change confidence interval of $\beta_3$, as long as we have simple parameters ($\beta_1$ and $\beta_2$)
@@ -187,11 +187,23 @@ Null model = same means.
 Contrast codes:
 
 * Want to compare against a null-model where the parameters are restricted to some hyperplane, but analytic solution to GLM can only handle axis-aligned hyperplanes.
-* Solution: change to basis - $Y = A + BLX$ where L is a full-rank matrix
-* Rows of $L$ should be orthogonal to avoid introducing spurious correlations in transformed data
-* If a row sums to 0 and absolute values sum to 1, can be interpreted as difference of means ([source](http://journals.sagepub.com/doi/full/10.1177/0013164416668950)). 
+  * Eg 2x2 control/diet x male/female. 'Diet effect does not vary between male/female' is equiv to 'control/male - diet/male = control/female - diet/female'
+* Solution: change to basis - $Y = A + BLX$
+* Rows of $L$ should be orthogonal
+  * Avoids introducing spurious correlations in transformed data
+  * Otherwise can't interpret as difference of means - null hypothesis is same but error is split differently across parameters
+  * Allows partitioning out $SSR$ due to each parameter (because SSR is linear function of group means)
+    * For given row $\lambda$, comparing against model without that parameter reduces to $\mathrm{SSR} = \frac{(\sum_k \lambda_k \bar{Y}_k) ^2}{\sum_k (\lambda_k^2 / n_k)}$
+* If a row sums to 0, parameter can be interpreted as difference of means ([source](http://journals.sagepub.com/doi/full/10.1177/0013164416668950)). 
+* Formula for confidence interval is same as simple model
+* To test for differences between means of $m$ groups, can use $m-1$ orthogonal rows
+  * Gives $b = \frac{\sum_k \lambda_k \bar{Y}_k}{\sum_k \lambda_k^2}$
+  * (__Means $L$ does not have rank n - can't reconstruct original parameters - is this ok?__)
+  
+Ways to generate contrast codes:
 
-Eg 2x2 control/diet x male/female. 'Do males lose more weight when dieting' is equiv to 'control/male - diet/male < control/female - diet/female'..
+* Helmert codes - $\lambda_{i,i} = m-i$ and $\forall j > i \ldot \lambda{i,j} = -1$
+* 
 
 Tukey-Kramer to test all possible pairs of groups.
 

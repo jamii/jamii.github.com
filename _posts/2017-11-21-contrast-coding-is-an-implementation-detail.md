@@ -55,7 +55,7 @@ If we code the data as $X=\begin{pmatrix}1\\\0\end{pmatrix}$ for subjects in the
 
 \begin{align}
 \text{full model: } & y = a + \begin{pmatrix}b_1 & b_2\end{pmatrix}\begin{pmatrix}x_1\\\x_2\end{pmatrix} + e \cr
-\text{null model: } & y = a + \begin{pmatrix}b_1 & b_2\end{pmatrix}\begin{pmatrix}x_1\\\x_2\end{pmatrix} + e \text{ where } b_1 = b_2 \cr
+\text{null model: } & y = a + \begin{pmatrix}b_1 & b_2\end{pmatrix}\begin{pmatrix}x_1\\\x_2\end{pmatrix} + e & \text{ where } b_1 = b_2 \cr
 \end{align}
 
 * Q1*: Does assuming that the treatment group and the control group have the same outcome distribution ($b_1 = b_2$) lead to less prediction error on unseen data?
@@ -64,33 +64,32 @@ Again, answering this question is hard so we're going to substitute a different 
 
 * Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?
 
-Unfortunately the nice analytic answer __only works for constraints of the form $b_i = 0$__. To apply it here, we need to [transform the problem](https://en.wikipedia.org/wiki/Change_of_basis) so that it has the same form as the previous problem.
-
-If we define:
+Unfortunately the nice analytic answer __only works for constraints of the form $b_i = 0$__. To apply it here, we need to [transform the data](https://en.wikipedia.org/wiki/Change_of_basis) so that our model has the correct form:
 
 \begin{align}
 L & = \begin{pmatrix}1 & {-1}\\\1 & 1\end{pmatrix} \cr
-\begin{pmatrix}c_1 & c_2\end{pmatrix} & = \begin{pmatrix}b_1 & b_2\end{pmatrix} L^{-1} \cr
-\end{align}
-
-Then we get:
-
-\begin{align}
-\text{full model: } y & = a + \begin{pmatrix}b_1 & b_2\end{pmatrix} \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e \cr
-  & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} L \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e  \cr
+\text{full model: } y & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} L \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e  \cr
   & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\\x_1 + x_2\end{pmatrix} + e  \cr
-\text{null model: } y & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\\x_1 + x_2\end{pmatrix} + e \text{ where } c_1 = 0 \cr
+\text{null model: } y & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} L \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e & \text{ where } c_1 = 0 \cr 
+& = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\\x_1 + x_2\end{pmatrix} + e & \text{ where } c_1 = 0 \cr
 \end{align}
 
 Now we can apply the same analytic solution as before.
 
-The rows of $L$ are called __contrast codes__. But where do they come from? Well, I picked $\begin{pmatrix}1 & {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked whatever second row would make $L$ invertible. 
+The rows of $L$ are called __contrast codes__. But where do they come from? Well, I picked $\begin{pmatrix}1 & {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked whatever second row would make $L$ invertible.
 
-This method works in general as long as $L$ has full rank. Otherwise we are throwing away some dimension of the data, or, equivalently, we are imposing some restriction on $b_i$ in the full model. 
+Since the rows of $L$ are orthogonal, we can interpret the confidence interval of $c_1$ as the confidence interval of the difference between the mean outcome in the control group and the mean outcome in the treatment group, which is exactly what we care about. (If the rows were not orthogonal the difference would get spread out across $c_1$ and $c_2$.)
 
-(Textbooks tend to insist that the rows of $L$ be orthogonal too. I *think* the reason for this is that if you can pack all the questions you want to ask into orthogonal rows then the resulting tests will be independent of each other. Non-orthogonal matrices introduce collinearity which widens the confidence intervals of each parameter. I don't really understand why - I can see that it's true from the equations for the confidence intervals, but it doesn't make sense to me that a lossless transformation (between orthogonal rows and non-orthogonal but linearly independent rows) changes the results of the test. Maybe it would help to calculate the confidence region for $L$ as a whole and see how the region is transformed?)
+Additionally, since $L$ is invertible there is a 1-1 mapping between the transformed model and the original model: 
 
-None of this changes the fact the comparison we actually care about is still:
+\begin{align}
+& \begin{pmatrix}b_1 & b_2\end{pmatrix} &= & \begin{pmatrix}c_1 & c_2\end{pmatrix} L \cr
+& \begin{pmatrix}b_1 & b_2\end{pmatrix} L^{-1} &= & \begin{pmatrix}c_1 & c_2\end{pmatrix} \cr
+\end{align}
+
+(It doesn't seem to be common to care about this though - I see lot's of examples of non-invertible contrast codes.)
+
+Importantly, none of this changes the fact the comparison we actually care about is still:
 
 \begin{align}
 \text{full model: } & y = a + \begin{pmatrix}b_1 & b_2\end{pmatrix}\begin{pmatrix}x_1\\\x_2\end{pmatrix} + e \cr
