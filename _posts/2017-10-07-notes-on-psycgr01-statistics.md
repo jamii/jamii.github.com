@@ -203,7 +203,9 @@ Contrast codes:
   * Gives $b = \frac{\sum_k \lambda_k \bar{Y}_k}{\sum_k \lambda_k^2}$
   * (__Means $L$ does not have rank n - can't reconstruct original parameters - is this ok?__)
   
-Helmert codes - $\lambda_{i,i} = m-i$ and $\forall j > i \ldot \lambda{i,j} = -1$
+With unequal cell sizes, orthogonal rows can still introduce redundancy (in generate case of only one datapoint Y=0, X+Y and X-Y are orthogonal but perfectly anti-correlated).
+  
+Helmert codes - $\lambda_{i,i} = m-i$ and $\forall j > i \ldotp \lambda_{i,j} = -1$
 
 Orthogonal polynomial codes:
 
@@ -211,7 +213,7 @@ Orthogonal polynomial codes:
 * Each row fits $b_n X^n - \text{previous rows}$
 * Differs from simply fitting a polynomial because based on group means rather than individual points - latter weights error towards larger categories 
 
-Dummy codes - $\lambda_{i,i+1} = 1$ and $\lambda{i,j} = 0$ otherwise. Not contrast codes - interpret $\lambda_i$ as comparing case $i$ vs case $0$.
+Dummy codes - $\lambda_{i,i+1} = 1$ and $\lambda_{i,j} = 0$ otherwise. Not contrast codes - interpret $\lambda_i$ as comparing case $i$ vs case $0$.
 
 Unequal cell sizes are weird, because mean of group means is not mean of individuals.
 
