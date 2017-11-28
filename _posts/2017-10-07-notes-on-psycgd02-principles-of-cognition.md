@@ -904,3 +904,65 @@ Tweaks:
 * Temporal discount rate decreases with magnitude of gain. Explained by assuming that time and magnitude are sampled together, not independently. 
 * Temporal discount rate is higher for gains than losses. Explained by curvature of gain/loss utility interacting with base discount rate - discount applies to utility, not gain/loss directly.
 * Working-memory load increases discounting of delayed vs immediate gains. Explained by failing to sample enough large delays - biases score upwards.
+
+## [Lecture 8](https://moodle.ucl.ac.uk/pluginfile.php/3788017/mod_resource/content/2/Structure%20and%20Function%20of%20the%20Brain%20-%20%20Language%20and%20the%20Brain.pdf)
+
+Language is hard to define:
+
+* Clark & Clark 1977
+  * Arbitrary - mapping from words to meanings
+  * Structured - mapping from sentence to meaning
+  * Generative - not limited to fixed set of meanings
+  * Dynamic - words and structure change over time
+* Hocket 1963 - 13 features, of which 10-13 are claimed to only exist in humans
+  * Displacement - refer to things removed in time and space
+  * Productivity - create novel utterances/meanings which are nevertheless understood by others
+  * Cultural transmission
+  * Duality of patterning - generative
+  * (But many of these arguably displayed in animals eg Alex the parrot)
+  
+Levels of analysis:
+
+* Phonology - phonemes, speech perception, spectrograms
+* Semantics - words, semantic priming
+* Grammar - hierarchical structure, formal grammars
+* Orthography - writing, reading
+
+Traditional Wernicke-Geschwind model:
+
+* Broca's area = speech production
+* Wernicke's area = speech comprehension
+* Connected by arcuate fasciculus
+* Concentrated in left hemisphere:
+  * Wada test - inject sodium amital into artery to sedate one hemisphere
+  * Anatomical asymmetry in related areas
+  * Asymmetry in PET and fMRI on language tasks
+  * Differences in neuron shape between hemispheres
+  * But hugely confounded by motor control which is also asymmetric
+
+Problems with model:
+
+* No clear causal relation between lesions and defects (including patients recovering from defects over time)
+* No consistent correlation established by functional imaging
+* Activations in non-linguistic tasks
+* Voxel-based lesion-symptom mapping identifies different areas
+* Evidence for multiple networks for language comprehension
+* Right hemisphere dominant for many complex language tasks
+* Word-specific activation distributed throughout brain, seemingly paralleling organization of sensory and motor systems eg action words in the motor system
+
+Speech perception is ambiguous - requires top-down processing. Illusion of speech units.
+
+* At phonology level:
+  * Segmentation problem - cannot find word/syllable boundaries in spectrogram
+  * 'Lack of invariance' problem - phonemes do no have consistent representation in spectrogram
+  * Speaking rate eg careful pronunciation vs normal conversation produce different spectrograms
+  * Huge variation between accents
+* At word level:
+  * Homonyms
+  * Polysemy eg 'the door fell off its hinge' vs 'the child ran through the door'
+* At syntax level:
+  * Ambiguous binding
+* Combined eg 'Mary made her dress correctly'
+* Correct interpretation improved by access to mouth movements, body movements (co-speech), conversational context
+
+Really no reason to continue teaching Wernicke-Geschwind model.
