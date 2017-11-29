@@ -255,3 +255,12 @@ Typical use case - control vs treatment whilst controlling for covariate. Simila
 Eg in pre/post test, typically more powerful than just modeling the difference. Latter effectively fixes the pre-test parameter to 1, so is only more powerful if ANCOVA estimate was close to 1.
 
 Homogeneity of regression assumption = no interaction between categorical variable and continuous covariate.
+
+## [Lecture 8](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=8)
+
+What if $e_i$ are not independent? Eg grouped or sequential data.
+
+Repeated measures ANOVA - for grouped data, use weighted mean of group score.
+
+__I can't see a reason to prefer this over a hierarchical model.__
+

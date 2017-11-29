@@ -15879,3 +15879,23 @@ Here's a plan:
 Bah, hiding things behind pointers [is totally slow](https://discourse.julialang.org/t/speed-and-type-stability-of-unsafe-pointer-to-objref/6478). Also, least helpful reply ever.
 
 Ok, I can't pass stuff around on the stack between functions efficiently. Either everything goes on the heap or I generate one huge function. The latter seems likes it's gonna be a bitch to compose different behaviors, so I guess I should just heap it all. Seems like such a waste though.
+
+### 2017 Nov 27
+
+School. 
+
+### 2017 Nov 28
+
+Stats exam :(
+
+### 2017 Nov 29
+
+So we're going to store fingers on the heap. 
+
+We need some way for type inference to know that at different points in the code, the finger will be pointing at different types of values. Could pass Val{column}, or could split the finger into separate columns. Former is less restrictive on future implementations. Latter avoids looking up the column each time. Returning a different type also works, but it doesn't allow reusing heap allocations. If we explicitly reuse the allocation, it looks a lot like splitting the finger. Let's do that.
+
+It's a bit awkward, because we end up needing n+1 fingers for n columns. The last one is pointing at either an empty relation or a relation with a single zero-column row. I'll use a `Vector{nothing}` for the storage.
+
+Oops, accessing a `Vector{nothing}` produces an undefined reference. Let's use a `Vector{Tuple{}}` instead.
+
+Ok, this implementation with separate fingers works. On the polynomial, it gets 80ms vs 38ms for the monolithic triejoin. That's good enough for now.
