@@ -14,7 +14,9 @@ MathJax.Hub.Config({
 
 I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) really confusing on first contact. In hindsight, this is because they are typically presented as being part of the model, but it seems much more ergonomic to me to consider them part of the inference algorithm, as I'll explain here.
 
-If you haven't encountered contrast codes before - good. Stay there. You are not missing out. If you have and are confused, maybe this will help.
+If you haven't encountered contrast codes before - good. Stay there. You are not missing out. 
+
+If you have and are confused, maybe this will help.
 
 Let's set the scene. A typical instance of the [General Linear Model](https://en.wikipedia.org/wiki/General_linear_model) looks like this:
 
