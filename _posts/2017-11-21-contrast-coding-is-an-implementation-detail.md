@@ -16,7 +16,7 @@ I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) re
 
 If you haven't encountered contrast codes before - good. Stay there. You are not missing out. 
 
-If you have and are confused, maybe this will help.
+If you have encountered contrast codes and are confused, maybe this will help.
 
 Let's set the scene. A typical instance of the [General Linear Model](https://en.wikipedia.org/wiki/General_linear_model) looks like this:
 
