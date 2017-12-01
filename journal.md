@@ -15951,4 +15951,13 @@ I guess the former helps with repeated variables within a single relation, becau
 
 Ok, so I've rebuilt everything with all fingers in one structure per index. It's somewhat faster than the on-stack version (80ms vs 100ms), which baffles me. It's decently concise too, at just over 100 lines for the relation interface.
 
-I have a skeleton of the compiler, which seems to work for joins but can't handle anything else yet.
+I have a skeleton of the compiler, which seems to work for joins but can't handle anything else yet. 
+
+Rough todo list:
+
+* Pass/store variables
+* Functions
+* Repeated variables
+* Constants?
+* Reduce
+* Function vs materialize
