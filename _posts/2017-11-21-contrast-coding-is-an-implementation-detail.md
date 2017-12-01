@@ -98,4 +98,4 @@ Importantly, none of this changes the fact the comparison we actually care about
 \text{null model: } & y = a + \begin{pmatrix}b_1 & b_2\end{pmatrix}\begin{pmatrix}x_1\\\x_2\end{pmatrix} + e \text{ where } b_1 = b_2 \cr
 \end{align}
 
-Contrast codes are just an implementation detail by which we transform the comparison we care about into a comparison we can easily calculate the answer to. In an ideal world, we would just write the above and our stats library would take care of the transformation itself.
+Contrast codes are just an implementation detail by which we transform the comparison we care about into a comparison we can easily calculate the answer to. They don't belong in the interface. In a world where we cared about ergonomics in statistics, we would just write the model above and our stats library would take care of the transformation itself.
