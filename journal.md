@@ -15927,3 +15927,28 @@ struct Lambda
 end
 ```
 
+Basic compiler for this, emits the right code. Need to figure out how to deal with type inference now, so that I can distinguish between relations and functions.
+
+### 2017 Dec 1
+
+The compiler is becoming a monolith again. A big part of it is that it needs to generate names for all the pre-allocated heap state, rather than just relying on shadowing. 
+
+I wonder if I should push that into the indexes. Then each stage of the search could just take all of the relations and variables as arguments. But that might require allocating a closure inside join. Unless I inline that code into the stage itself.
+
+I pulled back the separate on-stack fingers, and while it works and it makes the compiler somewhat simpler, it's slower (100ms) and I'm not sure to make it work for more complex index structures like be-trees that will need to store node pointers.
+
+Let's think about this systematically. I want to break up the monolithic compiler output into multiple steps. I need to pass state between the steps. 
+
+__Index state__. It's too expensive to heap-allocate on every iteration of a loop. Structures containing heap pointers have to be heap-allocated. Closures that close over state have to be heap-allocated. 
+
+__Variable state__. Closures can't close over stack-allocated state. Inserting heap allocations into math functions prevents optimization (although I can maybe just fuse all scalar functions when intermediate values are not returned).
+
+Part of the reason this is hard is that GenericJoin branches, so I can't just inline code to avoid the overhead of function boundaries. Can I avoid that somehow?
+
+I suppose I can avoid a lot of stack motion by keeping all the fingers for each index in one structure and using the column number to give information to type inference. And then also store all indexes and vars in one heap structure for each query. Or, actually, only the latter really helps.
+
+I guess the former helps with repeated variables within a single relation, because I don't have to worry about which storage to pass to it.
+
+Ok, so I've rebuilt everything with all fingers in one structure per index. It's somewhat faster than the on-stack version (80ms vs 100ms), which baffles me. It's decently concise too, at just over 100 lines for the relation interface.
+
+I have a skeleton of the compiler, which seems to work for joins but can't handle anything else yet.
