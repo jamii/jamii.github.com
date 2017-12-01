@@ -15899,3 +15899,31 @@ It's a bit awkward, because we end up needing n+1 fingers for n columns. The las
 Oops, accessing a `Vector{nothing}` produces an undefined reference. Let's use a `Vector{Tuple{}}` instead.
 
 Ok, this implementation with separate fingers works. On the polynomial, it gets 80ms vs 38ms for the monolithic triejoin. That's good enough for now.
+
+### 2017 Nov 30
+
+Need to get a move on. 
+
+AST first. Just handle the simplest case for now:
+
+``` julia
+struct Ring{T}
+  add::Function
+  mult::Function
+  one::T
+  zero::T
+end
+
+struct Call
+  fun # function, or anything which implements finite function interface
+  args::Vector{Symbol}
+end
+
+struct Lambda
+  ring::Ring
+  vars::Vector{Symbol}
+  domain::Vector{Call}
+  value::Vector{Symbol}
+end
+```
+

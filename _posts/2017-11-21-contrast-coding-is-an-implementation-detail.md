@@ -39,7 +39,7 @@ We can answer this by comparing the prediction accuracy of this model against a 
 
 The null model is a restricted version of the full model, so it will always have at least as much error on the training data as the full model. But if that is purely due to over-fitting then the null model will probably have less error on as-yet unseen data than the full model will.
 
-Unfortunately in psychology we [typically don't have enough data](http://datacolada.org/20) to begin with, so we can't afford to leave any data unseen. Instead we ask a different question:
+Unfortunately in many fields we [typically don't have enough data](http://datacolada.org/20) to begin with, so we can't afford to leave any data unseen. Instead we ask a different question:
 
 * Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?
 
