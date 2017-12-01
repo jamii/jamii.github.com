@@ -12,11 +12,11 @@ MathJax.Hub.Config({
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
 </script> 
 
-I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) really confusing until I realized that they are just an artifact of using specific analytic solutions to compare models.
+I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) really confusing on first contact. In hindsight, this is because they are typically presented as being part of the model, but it seems much more ergonomic to me to consider them part of the inference algorithm, as I'll explain here.
 
-(Probably. I'm not a statistician. There is a fair chance this post will have to be heavily edited.)
+If you haven't encountered contrast codes before - good. Stay there. You are not missing out. If you have and are confused, maybe this will help.
 
-A typical instance of the [General Linear Model](https://en.wikipedia.org/wiki/General_linear_model) looks like this:
+Let's set the scene. A typical instance of the [General Linear Model](https://en.wikipedia.org/wiki/General_linear_model) looks like this:
 
 \begin{align}
 y = a + \begin{pmatrix}b_1 & b_2\end{pmatrix} \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e
@@ -39,7 +39,7 @@ We can answer this by comparing the prediction accuracy of this model against a 
 
 The null model is a restricted version of the full model, so it will always have at least as much error on the training data as the full model. But if that is purely due to over-fitting then the null model will probably have less error on as-yet unseen data than the full model will.
 
-Unfortunately in many fields we [typically don't have enough data](http://datacolada.org/20) to begin with, so we can't afford to leave any data unseen. Instead we ask a different question:
+Unfortunately in many fields we [usually don't have enough data](http://datacolada.org/20) to begin with, so we can't afford to leave any data unseen. Instead we ask a different question:
 
 * Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?
 
