@@ -966,3 +966,80 @@ Speech perception is ambiguous - requires top-down processing. Illusion of speec
 * Correct interpretation improved by access to mouth movements, body movements (co-speech), conversational context
 
 Really no reason to continue teaching Wernicke-Geschwind model.
+
+## [The free-energy principle: a unified brain theory?](http://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf)
+
+[Summary of Surfing Uncertainty](http://slatestarcodex.com/2017/09/05/book-review-surfing-uncertainty/)
+
+[Summary of The Predictive Mind](http://ndpr.nd.edu/news/the-predictive-mind/)
+
+[Wikipedia on free-energy principle](https://en.wikipedia.org/wiki/Free_energy_principle)
+
+Variational Bayes:
+
+* Posterior $P(Z | X)$ is hard to calculate exactly, so instead we approximate it by some family of distributions $Q_\theta(Z)$
+* Want to minimize $D_{\mathrm{KL}}(Q(Z) || P(Z|X))$, because we have to minimize something and this is both reasonable and tractable. 
+  * __Related - $P_\mathrm{new}(\theta, X) = \mathrm{argmin}_Q D_{KL}(Q(\theta, X) || P_\mathrm{old}(\theta, X)) \text{ subject to } \sum_\theta Q(\theta, X=x) = 1 \text{ and } \sum_\theta Q(\theta, X \neq x) = 0$. Is minimizing distance to posterior equivalent to minimizing distance to prior subject to constraints?__ 
+  * [Implications for forward vs reverse KL](https://wiseodd.github.io/techblog/2016/12/21/forward-reverse-kl/)
+* Can rewrite as $D_{\mathrm{KL}}(Q || P) = \mathrm{constant} -H(Q) -E_Q[\log{P(Z,X)}]$. Last term (last two terms?) is called 'variational free energy'. __Because thermodynamics?__
+* If $Q$ has some factorization over $Z$ can use [calculus of variations](https://en.wikipedia.org/wiki/Calculus_of_variations) (__somehow__) to produce a set of recursive equations that describe the minimum and which converge under iteration.
+
+Free energy principle
+
+* $P$ is joint distribution of world model ('causes') and sensory input. Bayesian update on this model predicts future sensory inputs from past sensory inputs, via inferring underlying causes.
+* $Q$ is referred to as recognition density. (__Why?__)
+* Express free energy $F$ wrt energy and entropy:
+  * $F = -E_Q[\log{P(\mathrm{sense}, \mathrm{cause})}] -H(Q(\mathrm{cause}) = \mathrm{energy} - \mathrm{entropy} = \mathrm{expected surprise} - \mathrm{complexity of model}$
+  * Shows that free energy can be evaluated using information that the agent has
+* Rewrite free energy $F$ wrt action:
+  * $F = D(\mathrm{approx posterior} || \mathrm{prior}) - E_Q[\log{P(\mathrm{sense caused by action} | \mathrm{cause}, \mathrm{model underlying p})}] = \mathrm{complexity / Bayesian surprise} - \mathrm{accuracy / expected surprise}$
+  * IE how much we had to mess with the model vs how much predictive accuracy we gained for the recent sensation
+  * The action that minimizes free energy is the one that minimizes surprise about the resulting sensations => act to confirm predictions
+  * __Hard to interpret. Eg changing point of view to disambiguate optical illusion?__
+  * Active inference 
+* Rewrite free energy $F$ wrt sensation:
+  * $F = D(\mathrm{approx posterior} || \mathrm{posterior}) - \log{P(\mathrm{sense} | \mathrm{model})} = \mathrm{accuracy of approximation} + \mathrm{surprise}$
+  * As approximation -> model, $F$ -> surprise
+  * Choosing actions and models to minimize $F$ places an upper bound on surprise
+* Perceptions feed into online update of $Q$ to more accurately model causes and hence future perceptions.
+  
+__But we like surprising things? Presumably this is to be explained. Or are actions chosen to minimize $F$ in general, rather than for this specific action?__
+
+Relation to infomax principle (maximizing mutual information between sense and model subject to constraints on complexity of model). Complexity term in 1st formulation penalizes more complex models - regularization/shrinking.
+
+> The fact that these models predict empirically observed receptive fields so well suggests that we are endowed with (or acquire) prior expectations that the causes of our sensations are largely independent and sparse.
+
+Arranged hierarchically, so each model passes prediction error up and passes predictions down. Precision parameter models noise at each level. High noise => more trust in priors / predictions from above. Low noise => more trust in sensory data from below.
+
+States 'value is inverse proportional to surprise'. (In a particular simple model) if we perform gradient ascent on value, then the long-term proportion of time spent in a state is proportional to value, so surprise is inversely proportional to value. Since we act to minimize free energy, priors can encode values. __But does acting to minimize free energy lead to gradient ascent on value? Seems like the argument is backwards.__
+
+__Starting to get flashes of picoeconomics here - recursive relation between model of the future and model of own decision making.__
+
+__Many references to more general connections between minimizing free energy and defying thermodynamics over lifetime of agent, which I don't follow at all.__
+
+## [Active Inference, Curiosity and Insight](http://www.mitpressjournals.org/doi/pdf/10.1162/neco_a_00999)
+
+Various activities can be explained as acting to reduce uncertainty:
+
+* Hidden states -> perceptual inference 
+* Future states -> information-seeking behavior, intrinsic motivation
+* Future outcomes -> goal-seeking behavior, extrinsic motivation
+* World model / parameters -> novelty-seeking behavior, curiosity
+
+To infer expected free energy, we need priors on our own behavior. 
+
+* Minimizing free energy == avoiding surprise
+* Minimizing expected free energy == acting to resolve uncertainty
+* Need prior on our own behavior to calculate expected free energy. Active inference == prior that we will minimize free energy.
+
+Using example of learning complex rules by active inference. Use prior beliefs about own behavior to encode rules of task, in a way that I don't understand.
+
+Non-REM sleep. In absence of new sensory input, minimizing free energy => minimizing model complexity vs accuracy. Pruning as regularization.
+
+REM sleep. After pruning parameters, need to reevaluate posterior. Can do this by re-simulating observed evidence.
+
+Superstition as premature pruning.
+
+__Open confusions: choice of action vs expected free energy, encoding values as priors, explore vs exploit, precision. Suspect that many of these would be resolved by implementing one of the examples__
+
+## [Active inference and epistemic value](http://sci-hub.bz/http://www.tandfonline.com/doi/full/10.1080/17588928.2015.1020053?scroll=top&needAccess=true)
