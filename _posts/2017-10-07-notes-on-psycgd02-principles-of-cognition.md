@@ -1052,3 +1052,21 @@ Superstition as premature pruning.
 __Open confusions: choice of action vs expected free energy, encoding values as priors, explore vs exploit, precision. Suspect that many of these would be resolved by implementing one of the examples__
 
 ## [Active inference and epistemic value](http://sci-hub.bz/http://www.tandfonline.com/doi/full/10.1080/17588928.2015.1020053?scroll=top&needAccess=true)
+
+## [Lecture 9](https://moodle.ucl.ac.uk/mod/resource/view.php?id=3238299)
+
+Value of actions can depend on order eg find food then eat vs eat then find food. So have to evaluate policies, not individual actions.
+
+$\sigma$ is [softmax](https://en.wikipedia.org/wiki/Softmax_function).
+
+Penalizes divergence between $Q$ and $P_\text{prior}$, can set prior on future state to encode value. __Not clear how to encode non-bounded tasks.__
+
+Bear in mind that we are summing log-probabilities == multiplying probabilities. So states that have 0 on any of the decompositions are still worthless overall.
+
+Depression, self-destructive behavior etc explained as malformed priors.
+
+From discussion afterwards:
+
+* Example models don't show precision. When used, it's often to fixed to a constant unless they are trying to model dopamine.
+* Policies are pure function of Q - __so not timeless but not directly depending on time either - allows controlling how much memory the model has by controlling what Q remembers of the past__.
+* In examples path integral is trivial, but in more complex models use [time slicing](https://en.wikipedia.org/wiki/Path_integral_formulation#Time-slicing_derivation)?
