@@ -262,5 +262,5 @@ What if $e_i$ are not independent? Eg grouped or sequential data.
 
 Repeated measures ANOVA - for grouped data, use weighted mean of group score.
 
-__I can't see a reason to prefer this over a hierarchical model.__
+__I can't find a reason to prefer this over a hierarchical model.__
 
