@@ -357,3 +357,11 @@ Beware collections of studies varying in sample size without justification - sou
 ## Seminar 6
 
 Naught.
+
+## Seminar 7
+
+Naught.
+
+## Seminar 8
+
+Naught.
