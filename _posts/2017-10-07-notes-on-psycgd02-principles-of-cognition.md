@@ -986,11 +986,11 @@ Really no reason to continue teaching Wernicke-Geschwind model.
 
 Variational Bayes:
 
-* Posterior $P(Z | X)$ is hard to calculate exactly, so instead we approximate it by some family of distributions $Q_\theta(Z)$
-* Want to minimize $D_{\mathrm{KL}}(Q(Z) || P(Z|X))$, because we have to minimize something and this is both reasonable and tractable. 
-  * __Related - $P_\mathrm{new}(\theta, X) = \mathrm{argmin}_Q D_{KL}(Q(\theta, X) || P_\mathrm{old}(\theta, X)) \text{ subject to } \sum_\theta Q(\theta, X=x) = 1 \text{ and } \sum_\theta Q(\theta, X \neq x) = 0$. Is minimizing distance to posterior equivalent to minimizing distance to prior subject to constraints?__ 
+* Posterior $$P(Z \vert X)$$ is hard to calculate exactly, so instead we approximate it by some family of distributions $$Q_\theta(Z)$$
+* Want to minimize $$D_{\mathrm{KL}}(Q(Z) \Vert P(Z \vert X))$$, because we have to minimize something and this is both reasonable and tractable. 
+  * __Related - $$P_\mathrm{new}(\theta, X) = \mathrm{argmin}_Q D_{KL}(Q(\theta, X) \Vert P_\mathrm{old}(\theta, X)) \text{ subject to } \sum_\theta Q(\theta, X=x) = 1 \text{ and } \sum_\theta Q(\theta, X \neq x) = 0$$. Is minimizing distance to posterior equivalent to minimizing distance to prior subject to constraints?__ 
   * [Implications for forward vs reverse KL](https://wiseodd.github.io/techblog/2016/12/21/forward-reverse-kl/)
-* Can rewrite as $D_{\mathrm{KL}}(Q || P) = \mathrm{constant} -H(Q) -E_Q[\log{P(Z,X)}]$. Last term (last two terms?) is called 'variational free energy'. __Because thermodynamics?__
+* Can rewrite as $$D_{\mathrm{KL}}(Q \Vert P) = \mathrm{constant} -H(Q) -E_Q[\log{P(Z,X)}]$$. Last term (last two terms?) is called 'variational free energy'. __Because thermodynamics?__
 * If $Q$ has some factorization over $Z$ can use [calculus of variations](https://en.wikipedia.org/wiki/Calculus_of_variations) (__somehow__) to produce a set of recursive equations that describe the minimum and which converge under iteration.
 
 Free energy principle
@@ -998,16 +998,16 @@ Free energy principle
 * $P$ is joint distribution of world model ('causes') and sensory input. Bayesian update on this model predicts future sensory inputs from past sensory inputs, via inferring underlying causes.
 * $Q$ is referred to as recognition density. (__Why?__)
 * Express free energy $F$ wrt energy and entropy:
-  * $F = -E_Q[\log{P(\mathrm{sense}, \mathrm{cause})}] -H(Q(\mathrm{cause}) = \mathrm{energy} - \mathrm{entropy} = \mathrm{expected surprise} - \mathrm{complexity of model}$
+  * $F = -E_Q[\log{P(\text{sense}, \text{cause})}] -H(Q(\text{cause}) = \text{energy} - \text{entropy} = \text{expected surprise} - \text{complexity of model}$
   * Shows that free energy can be evaluated using information that the agent has
 * Rewrite free energy $F$ wrt action:
-  * $F = D(\mathrm{approx posterior} || \mathrm{prior}) - E_Q[\log{P(\mathrm{sense caused by action} | \mathrm{cause}, \mathrm{model underlying p})}] = \mathrm{complexity / Bayesian surprise} - \mathrm{accuracy / expected surprise}$
+  * $$F = D(\text{approx posterior} \Vert \text{prior}) - E_Q[\log{P(\text{sense caused by action} \vert \text{cause}, \text{model underlying p})}] = \text{complexity / Bayesian surprise} - \text{accuracy / expected surprise}$$
   * IE how much we had to mess with the model vs how much predictive accuracy we gained for the recent sensation
   * The action that minimizes free energy is the one that minimizes surprise about the resulting sensations => act to confirm predictions
   * __Hard to interpret. Eg changing point of view to disambiguate optical illusion?__
   * Active inference 
 * Rewrite free energy $F$ wrt sensation:
-  * $F = D(\mathrm{approx posterior} || \mathrm{posterior}) - \log{P(\mathrm{sense} | \mathrm{model})} = \mathrm{accuracy of approximation} + \mathrm{surprise}$
+  * $$F = D(\text{approx posterior} \Vert \text{posterior}) - \log{P(\text{sense} \vert \text{model})} = \text{accuracy of approximation} + \text{surprise}$$
   * As approximation -> model, $F$ -> surprise
   * Choosing actions and models to minimize $F$ places an upper bound on surprise
 * Perceptions feed into online update of $Q$ to more accurately model causes and hence future perceptions.
