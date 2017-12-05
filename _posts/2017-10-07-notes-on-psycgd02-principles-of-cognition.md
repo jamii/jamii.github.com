@@ -4,6 +4,15 @@ title: 'Notes on ''PSYCGD02: Principles of Cognition'''
 hidden: true
 ---
 
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
+</script>
+
 <https://www.ucl.ac.uk/lifesciences-faculty-php/courses/viewcourse.php?coursecode=PSYCGD02>
 
 >  This module outlines general theoretical principles that underlie cognitive processes across many domains, ranging from perception to language, to reasoning and decision making. The focus will be on general, quantitative regularities, and the degree to which theories focusing on specific cognitive scientific topics can be constrained by such principles. There will be an introduction on general methods and approaches in cognitive science and some of the problems related to them. Later in the course, some computational approaches in cognitive science will be discussed. There will be particular emphasis on understanding cognitive principles that are relevant to theories of decision making.  
