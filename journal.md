@@ -16045,5 +16045,5 @@ Remaining todos:
 
 * Repeated variables - can I handle this a pass before the compiler?
 * Constants - how do I represent these in the ast?
-* Reduce
+* Reduce - may require nesting query to handle variable order
 * Function vs materialize
