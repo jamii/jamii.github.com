@@ -15961,3 +15961,89 @@ Rough todo list:
 * Constants?
 * Reduce
 * Function vs materialize
+
+## 2017 Dec 04
+
+School.
+
+## 2017 Dec 05
+
+Need to pick an essay topic. Choices are:
+
+1. Is navigation just relational memory? Or is memory just navigation in concept space? Are they mutually exclusive or just manifestations of the same process but studied/named differently?
+2. Critically evaluate the concept of fluency as applied to cognition and behaviour.
+3. What are the main arguments in the face-specificity debate? Why is this debate important for understanding functional specialisation in the brain?
+4. Why does social cognition rely on both cognitive and affective processes?
+5. On the one hand, the brain seems to be in the game of optimising beliefs about how its sensations are caused; while, on the other hand, our choices and decisions appear to be governed by value functions and reward. Are these formulations irreconcilable – or is there some underlying imperative that renders perceptual inference and decision-making two sides of the same coin?
+
+I can only think of interesting things to say about 2 and 5. 
+
+Fluency:
+
+* Cognitive ease is hard to define
+* No hard link between theory and effect
+* Show table of experiments and effects, where directions are inconsistent
+* Fragility of effect - does it matter in the real world if it only kicks in when there is no other signal
+* P-curve analysis
+* Discounting explains too much
+* Experiment with continually varying intervention
+
+Free-energy:
+
+* Too loose to be explanatory model in itself?
+  * Different priors produce different behavior
+  * Are there any strong predictions across priors? Is there any behavior that it doesn't explain?
+    * Variable reinforcement
+    * Willpower problems
+* What makes it different, if anything, from other Bayesian approximations?
+  * Penalization of $H(Q)$
+* Framework for comparing existing models
+  * Are those models actually subsumed eg can all utility functions be encoded as priors?
+* Plausible mechanism for implementation
+  * Which versions of theory are supported by evidence?
+
+I can reasonably expect to spend about 7 days on this. Max 3000 words, which is pretty short. Fluency seems like an easy grade and can potentially involve running an experiment. Free-energy is much more challenging, in terms of time, space and risk of not figuring out useful results. Grades aren't directly important, so actual attributes are:
+
+Fluency:
+
+* Picking apart vague theory
+* Calculating a p-curve
+* Running an experiment
+
+Free-energy
+
+* Interesting math
+* Potentially novel connections to willpower, variable reinforcement
+* Stress of not finishing
+
+### 2017 Dec 06
+
+Todo list from last time:
+
+* Pass/store variables
+* Functions
+* Repeated variables
+* Constants?
+* Reduce
+* Function vs materialize
+
+Could add an index for functions that stores the output variable, but I suspect it's better to have them on the stack anyway so that the optimizer can reason about them easily. So I'll thread them through the downwards calls.
+
+Hmmm, my hand-compiled version is fine but the version assembled by the compiler has a bajillion allocations. 
+
+Oh, because I'm not typing the output vecs yet. Easily fixed.
+
+Now I need to deal with functions. I think all I need to do is:
+
+* Don't try to permute non-finite functions
+* Filter out calls to non-finite functions where the join variable is not the last
+* Call make_seek instead of make_join when there is at least one call to a non-finite function where the join variable is the last
+
+Could do the first either in the compiler or by defining permute sensibly for functions. Latter seems like less work, but now it's fiddly to check whether a given var is the last argument. Probably safer to do former.
+
+Remaining todos:
+
+* Repeated variables - can I handle this a pass before the compiler?
+* Constants - how do I represent these in the ast?
+* Reduce
+* Function vs materialize
