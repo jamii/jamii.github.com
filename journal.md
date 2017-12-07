@@ -16123,4 +16123,10 @@ polynomial_ast3 = Lambda(
     )
 ```
 
-Now we're at reduce. Fun times.
+Now we're at reduce. Fun times. The actual reduce bit isn't too bad. The main difficulty is with the variable order. In most cases I need to factorize it into two nested reduces.
+
+Once I have the second-order language working I can do this as a rewrite, but for now it will have to be a wrapper around compile.
+
+This is getting gnarly. Maybe it would have been simpler to just add a tail aggregation in the base compiler? But then I would also have to add the early return optimization separately, whereas this way it's always on.
+
+Ah, I'm doing this slightly wrong. I don't want two separate queries because the intermediate query wouldn't return a true relation.. I want to nest two sets of joins, with a different ring in each. Like `aggregate(+, join(&, join(+, ...)))`. Maybe I want to introduce an IR that looks like that as an intermediate step? Doesn't seem necessary right away though - main thing is that to figure out the two different join behaviors, plus the aggregate step at the end. But it might help to write out how early return transforms the IR from naive aggregation to something efficient.
