@@ -16037,13 +16037,90 @@ Now I need to deal with functions. I think all I need to do is:
 
 * Don't try to permute non-finite functions
 * Filter out calls to non-finite functions where the join variable is not the last
-* Call make_seek instead of make_join when there is at least one call to a non-finite function where the join variable is the last
+* Call `make_seek` instead of `make_join` when there is at least one call to a non-finite function where the join variable is the last
 
 Could do the first either in the compiler or by defining permute sensibly for functions. Latter seems like less work, but now it's fiddly to check whether a given var is the last argument. Probably safer to do former.
 
+Working ast:
+
+``` julia
+zz(x, y) = (x * x) + (y * y) + (3 * x * y)
+
+polynomial_ast1 = Lambda(
+  Ring{Int64}(+,*,1,0),
+  [:x, :y],
+  [
+    Call(:xx, [:i, :x]),
+    Call(:yy, [:i, :y]),
+    Call(:zz, [:x, :y, :z]),
+  ],
+  [:z]
+  )
+```
+
 Remaining todos:
 
-* Repeated variables - can I handle this a pass before the compiler?
+* Repeated variables - can I handle this as a pass before the compiler?
 * Constants - how do I represent these in the ast?
 * Reduce - may require nesting query to handle variable order
 * Function vs materialize
+
+### 2017 Dec 07
+
+Quick fix for joining on partial functions. Just going to have them return `nothing` rather than a discriminated union, for the sake of easy embedded use.
+
+Repeated variables. Could handle them in the index by making every operation go multiple times, but that requires solving it in every index that I build. Or can just solve it once in the compiler, at the cost of grossing up the joins. Seems like a better tradeoff.
+
+The only tricky part is that non-repeated variables want to be initialized at the start of the loop, so that they benefit from the work done advancing them in each iteration, but repeated variables need to be initialized on every iteration so that they have the correct bounds from their parent. I added some poorly named helper functions:
+
+``` julia
+@inline function first_if(bool, index, column)
+  if bool
+    first(index, column)
+  end
+end
+
+@inline function seek_if(bool, index, column)
+  first_if(bool, index, column)
+  seek(index, column)
+end
+```
+
+Now this works:
+
+``` julia
+polynomial_ast2 = Lambda(
+  Ring{Int64}(+,*,1,0),
+  [:x, :y],
+  [
+    Call(:xx, [:x, :x]),
+    Call(:yy, [:x, :y]),
+    Call(:zz, [:x, :y, :z]),
+  ],
+  [:z]
+  )
+```
+
+Random sadness: https://github.com/JunoLab/atom-julia-client/issues/400
+
+Constants are easy to represent as zero-arg, inlineable functions. I'll add a pass that makes that transformation before the compiler. I'll also have to handle anonymous functions inside the ast to make that work. 
+
+That was a bit tricky, but it worked out ok. 
+
+``` julia
+polynomial_ast3 = Lambda(
+    Ring{Int64}(+,*,1,0),
+    [:x, :y],
+    [
+      Call(:xx, [:i, :x]),
+      Call(:yy, [:i, :y]),
+      Call(*, [:x, :x, :t1]),
+      Call(*, [:y, :y, :t2]),
+      Call(*, [3, :x, :y, :t3]),
+      Call(+, [:t1, :t2, :t3, :z])
+    ],
+    [:z]
+    )
+```
+
+Now we're at reduce. Fun times.
