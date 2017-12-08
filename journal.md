@@ -16132,3 +16132,380 @@ This is getting gnarly. Maybe it would have been simpler to just add a tail aggr
 Ah, I'm doing this slightly wrong. I don't want two separate queries because the intermediate query wouldn't return a true relation.. I want to nest two sets of joins, with a different ring in each. Like `aggregate(+, join(&, join(+, ...)))`. Maybe I want to introduce an IR that looks like that as an intermediate step? Doesn't seem necessary right away though - main thing is that to figure out the two different join behaviors, plus the aggregate step at the end. But it might help to write out how early return transforms the IR from naive aggregation to something efficient.
 
 I've got this roughly sketched out on paper. Will implement tomorrow.
+
+### 2017 Dec 08
+
+Thinking now of the compiler output as starting from the pretty factorization, but then we:
+
+* iter over some finite factor to make it tractable
+* carry state down to make lookups faster
+* carry state up to make factor unions faster
+
+Can I express those as optimizations after emitting the factorization? So the whole process might look like:
+
+* parse
+* lower nested expressions
+* lower constants
+* infer fun types
+* infer var types
+* choose variable order
+* insert indexes
+* insert prefixes
+* factorize
+* thread index state through levels and across iter
+* thread either factor state or bound variables (depending on materialize vs function)
+* emit code (identifying finite factors at each sumproduct)
+
+Can also separate each iter into separate closure and directly call sum(index, f) rather than looping. (Nope, because then don't know how many args to pass to lower layer).
+
+Need to figure out layers in here too. Not sure if it's going to come out in the classical lower/optimize dichotomy.
+
+I ran a friend through the entire process on a big A1 sheet of paper and it seems to work out. Still a little unsure about how the last two optimizations will be expressed, but it's getting there.
+
+How do I get there from here? Ignore the ring stuff for now and just get the IR working? Can coalesce some of these steps for now, just as long as the overall structure is there and the right info is available at each point.
+
+I'll just walk my way down the stack now.
+
+Parsing and lowering nested exprs doesn't exist yet.
+
+Lowering constants is already a separate pass.
+
+``` julia
+function choose_variable_order(lambda::Lambda) ::Vector{Symbol}
+  # for now just order variables by order of appearance
+  union((call.args for call in lambda.domain)...)
+end
+```
+
+Have to add the lowering step between 'choose variable order' and 'insert indexes' so that I can use `Let` to create the indexes. Or move 'insert indexes' down to the optimizations? But 'insert prefixes' kind of relies on it. 
+
+This is hard.
+
+I have two very similar IRs that I would like to reconcile, but I'm not sure if it's worth the confusion of the types.
+
+High-level:
+
+``` julia
+struct Call
+  fun::Union{Symbol, Function} # either global variable or closure
+  args::Vector{Union{Symbol, Call, Constant}} 
+end
+
+struct Lambda
+  ring::Ring
+  args::Vector{Symbol}
+  domain::Vector{Call}
+  value::Vector{Union{Symbol, Call, Constant}}
+end
+```
+
+Mid-level:
+
+``` julia
+struct Call
+  fun::Union{Symbol, Function} # either global variable or closure
+  args::Vector{Symbol} 
+end
+
+struct SumProduct # sum over var of product of values
+  ring::Ring
+  var::Symbol
+  values::Vector{Union{SumProduct, Call, Symbol}}
+end
+
+struct Lambda
+  args::Vector{Symbol}
+  value::Union{SumProduct, Call}
+end
+```
+
+Really, the main thing that changes is we stop allowing non-Symbol args and we don't distinguish as much between relations and functions. Let's say the latter is the IR and the former is the AST, and we'll just deal with the IR for now.
+
+Cute!
+
+``` julia
+const IR = Union{Lambda, SumProduct, Call}
+
+@generated function Base.foreach(f, ir::IR)
+ quote
+   $((:(f(ir.$fieldname)) for fieldname in fieldnames(ir))...)
+ end
+end
+
+function choose_variable_order(ir::IR) ::Vector{Symbol}
+  # for now just order variables by order of appearance
+  vars = Symbol[]
+  collect(ir::LocalVar) = push!(vars, ir.name)
+  collect(ir::Union{IR, Vector}) = foreach(collect, ir)
+  collect(ir) = nothing
+  collect(ir)
+  unique(vars)
+end
+```
+
+So cute.
+
+``` julia
+function gather(ir::IR, typ::Type{T}) where {T}
+  gathered = T[]
+  gather(ir::T) = push!(gathered, ir)
+  gather(ir::Union{IR, Vector}) = foreach(gather, ir)
+  gather(ir) = nothing
+  gather(ir)
+  gathered
+end
+
+ir = Call(GlobalVar(:a), [LocalVar(:b), LocalVar(:c)])
+gather(ir, LocalVar)
+gather(ir, GlobalVar)
+```
+
+Now insert indexes. For each call we want to gensym a name for the index, replace the call with that, sort the args and then splice in a `Call` at the top that creates the index.
+
+But actually, a `Call` needs to be inside some `SumReturn` which needs a variable which we don't have. So we need some other IR node to put this in. Or maybe we don't put them at the top yet, maybe we put it in the fun and we gather them up later when doing codegen.
+
+``` julia
+function insert_indexes(ir::IR, vars::Vector{LocalVar}, types::Dict{Var, Type}) ::IR
+  insert(ir) = ir
+  insert(ir::Union{IR, Vector}) = map(insert, ir)
+  insert(ir::Call) = begin
+    if ir.fun isa GlobalVar 
+      # sort args in order they occur in vars
+      sort_order = Vector(1:length(ir.args))
+      sort!(sort_order, by=(i) -> findfirst(vars, ir.args[i]))
+      Call(Index(ir.fun, sort_order), ir.args[sort_order])
+    else
+      ir
+    end
+  end
+  insert(ir)
+end
+```
+
+Next is 'insert prefixes'. Let's just do it in the same place.
+
+``` julia
+function insert_indexes(ir::IR, vars::Vector{LocalVar}, types::Dict{Var, Type}) ::IR
+  insert(ir) = [ir]
+  insert(ir::Call) = begin
+    if (ir.fun isa GlobalVar) && is_finite(types[ir.fun])
+      # sort args in order they occur in vars
+      n = length(ir.args)
+      sort_order = Vector(1:n)
+      sort!(sort_order, by=(i) -> findfirst(vars, ir.args[i]))
+      # emit call to index for each prefix of args
+      [Call(Index(ir.fun, sort_order), ir.args[sort_order][1:i]) for i in 1:n]
+    else
+      [ir]
+    end
+  end
+  insert(ir::SumProduct) = begin
+    values = vcat(map(insert, ir.values)...)
+    [SumProduct(ir.ring, ir.var, values)]
+  end
+  insert(ir)[1]
+end
+```
+
+Next is 'factorize',
+
+I just realized that choosing the variable order in this IR is silly, because it's going to be a nightmare to rearrange the SumProducts. 
+
+If the steps actually look like:
+
+* parse
+* lower nested expressions
+* lower constants
+* infer fun types
+* infer var types
+* choose variable order
+* emit factorized IR (with indexes and prefixes)
+
+* thread index state through levels and across iter
+* thread either factor state or bound variables (depending on materialize vs function)
+* emit code (identifying finite factors at each sumproduct)
+
+Then what I'm doing now is largely pointless. I should be reusing the original code and emitting this IR just before codegen. Like I said I was going to do.
+
+Got to get better at staying on track.
+
+I'll copy the existing `generate` function and modify it to emit an IR instead of code.
+
+``` julia
+function Compiled.factorize(lambda::Lambda, vars::Vector{Symbol}) ::SumProduct
+  # permute all finite funs according to variable order
+  calls = Call[]
+  for call in lambda.domain
+    if is_finite(fun_type(call.fun))
+      n = length(call.args)
+      sort_order = Vector(1:n)
+      sort!(sort_order, by=(ix) -> findfirst(vars, call.args[ix]))
+      for i in 1:n
+        # add all prefixes of call
+        push!(calls, Call(Index(call.fun, sort_order), call.args[sort_order][1:i]))
+      end
+    else
+      push!(calls, call)
+    end
+  end
+
+  # make return function
+  # TODO think about namespace for var
+  tail = SumProduct(lambda.ring, :value, lambda.value)
+
+  # make join functions
+  latest_var_nums = map(calls) do call
+    maximum(call.args) do arg 
+      findfirst(vars, arg)
+    end
+  end
+  for (var_num, var) in reverse(collect(enumerate(vars)))
+    values = Vector{Union{Call, SumProduct}}(calls[latest_var_nums .== var_num])
+    push!(values, tail)
+    tail = SumProduct(lambda.ring, var, values)
+  end
+
+  tail
+end
+```
+
+And now modify another copy to do the code generation.
+
+I got a bit stuck around what to do with the indexes. Think the best option is to make minimal changes - just spit out a list of indexes and handle them in a setup function. Can make the join functions close over the indexes later.
+
+Eugh, called functions are in there too and they depend on knowing where in the call list it was. Or... I could just assume that they are literal functions rather than symbols and just splice them in.
+
+Here is the main compiler bit.
+
+``` julia
+function compile(ir::SumProduct, vars::Vector{Symbol}, fun_type::Function, var_type::Function, setup::Vector{Expr}) ::Function
+  # compile any nested SumProducts
+  calls = Call[]
+  values = Symbol[]
+  for value in ir.values
+    @match value begin
+      SumProduct => begin
+        args = push!(copy(vars), ir.var)
+        fun = compile(value, args, fun_type, var_type, setup)
+        push!(calls, Call(fun, args))
+      end
+      Call => push!(calls, value)
+      Symbol => push!(values, value)
+    end
+  end
+  
+  # address indexes and variables by position
+  index_and_column_nums = []
+  fun_and_var_nums = []
+  for (call_num, call) in enumerate(calls)
+    if is_finite(fun_type(call.fun))
+      push!(index_and_column_nums, (call_num, length(call.args)))
+    else
+      @assert call.args[end] == ir.var # TODO handle the case where ir.var is an argument and fun can only be used for testing
+      var_nums = map((arg) -> findfirst(vars, arg), call.args[1:end-1])
+      push!(fun_and_var_nums, (call.fun, var_nums))
+    end
+  end
+  
+  # TODO use values, once we are actually doing the sum
+  
+  # emit a function
+  if isempty(fun_and_var_nums)
+    eval(make_join(index_and_column_nums, length(vars)))
+  else
+    eval(make_seek(fun_and_var_nums, index_and_column_nums, length(vars)))
+  end
+end
+```
+
+Lot's of TODOs :(
+
+Of course, this is not going to work at all with the non-reducey setup because it needs this tail to call and I've taken that away.
+
+Let's temporarily drop the ability to return relations and just focus on the reduce stuff to get back to a testable state before I lose steam.
+
+That means I can get rid of `make_return` and reduce `make_setup` to:
+
+``` julia
+function make_setup(indexes, tail)
+  index_inits = [:(index(funs[$(Expr(:quote, index.fun))], $(Val{tuple(index.sort_order...)}))) for index in indexes]
+  quote
+    (funs) -> $tail(tuple($(index_inits...)))
+  end
+end
+```
+
+Now I just need to gen code for the reduce. I have a bunch of functions and a bunch of relations. And optionally, some function which can entirely determine the current var. If I have that I use it, otherwise I look for the smallest finite relation. If I have no finite relations, I can't solve the query.
+
+Eugh, I'm petering out here. I think I've made a mistake by not separating value and domain functions in the compile step, and maybe even in the SumProduct.
+
+The first chunk of the codegen works out what the ring value will be:
+
+``` julia
+  # calculate value returned by each iteration
+  tail_vars = push!(copy(vars), ir.var)
+  tails = []
+  for value in ir.values
+    @match value begin
+      SumProduct => push!(tails, :($(compile(value, tail_vars))($(tail_vars...))))
+      Symbol => push!(tails, value)
+      Call => nothing
+    end
+  end
+  tail = :(@product($(tails...)))
+```
+
+Next I need setup code and test code for each call.
+
+Bah, I also just realized that my strategy for handling repeated vars is broken. Grrrrr. Will do it as a rewrite later.
+
+Actually, maybe it's ok. I thought it was broken when there was a separating column in between them, but permutation will always put them together. I should trust awake me more than tonight me.
+
+``` julia
+  # check for repeated repeated variables eg foo(x,x) which need to be handled specially
+  index_and_column_nums = (Int64, Int64)[]
+  for call in ir.domain
+    if call.fun isa Index
+      push!(index_and_column_nums, (call.fun.num, length(call.args))
+    end
+  end
+  is_repeat = map(ir.domain) do call
+    (call.fun isa Index) &&
+      contains(index_and_column_nums, (call.fun.num, length(call.args)-1))
+  end
+    
+  # make code for setting up and testing each call
+  setups = []
+  tests = []
+  for (call_num, call) in enumerarate(ir.domain) begin
+    if call.fun isa Index
+      if is_repeat[call_num]
+        push!(setups, nothing)
+        push!(tests, quote
+          first(indexes[$(call.fun.num)], $(Val{length(call.args)}))
+          seek(indexes[$(call.fun.num)], $(Val{length(call.args)}), $(ir.var))
+        end)
+      else
+        push!(setups, :(first(indexes[$(call.fun.num)], $(Val{length(call.args)}))))
+        push!(tests, :(seek(indexes[$(call.fun.num)], $(Val{length(call.args)}), $(ir.var))))
+      end
+    else
+      push!(setups, nothing)
+      push!(tests, :($(call.fun)($(call.args[1:end-1]...)) = $(call.args[end])))
+    end
+  end
+```
+
+Getting spaced now so I'll try to summarize where I'm at for tomorrow me:
+
+* Codegen is unfinished
+  * Check for fixing function
+  * Gen min_count loop
+  * Wrap around tests and values
+  * Implement @product or similar
+* No way to return relations yet
+
+Next time, make small incremental changes. And don't work an 11 hour day.
+
+If I keep writing down the same advice I might eventually follow it.
+
