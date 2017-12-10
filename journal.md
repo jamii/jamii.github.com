@@ -16500,7 +16500,7 @@ Getting spaced now so I'll try to summarize where I'm at for tomorrow me:
 
 * Codegen is unfinished
   * Check for fixing function
-  * Gen min_count loop
+  * Gen min_count loop / sum
   * Wrap around tests and values
   * Implement @product or similar
 * No way to return relations yet
@@ -16509,3 +16509,128 @@ Next time, make small incremental changes. And don't work an 11 hour day.
 
 If I keep writing down the same advice I might eventually follow it.
 
+### 2017 Dec 12
+
+I had an idea how to simplify the repeated variable stuff: only emit a partial index for the last repetition of each variable, and then repeat first/next based on the number of repeats. But I need to salvage the existing code first before starting on another change.
+
+I can also make the codegen nicer by creating macros for the verbose parts, so they don't obscure the overall structure. They are evaluated from inside out, so they play much nicer with Base.Cartesian than splicing in function calls.
+
+Alternatively I could make a macro that makes splicing in array comprehensions easier.
+
+``` julia
+macro quote_for(iterator, body)
+  @assert iterator.head == :call
+  @assert iterator.args[1] == :in
+  @show(iterator.args)
+  quote
+    Expr(:block, ($(esc(body)) for $(iterator.args[2]) in $(iterator.args[3]))...)
+  end
+end
+```
+
+``` julia
+  quote
+    product = $(ir.ring.one)
+    $(@quote_for value in ir.value quote
+      value = $(make_value(value))
+      product = $(ir.ring.mult)(product, value)
+    end)
+  end
+```
+
+Then I'm not forced to make a new macro every time I want logic inside a loop.
+
+I could do the same in Base.Cartesian style too:
+
+``` julia
+    product = $(ir.ring.one)
+    @map $(ir.value) (value) -> begin
+      value = @value(value)
+      product = $(ir.ring.mult)(product, value)
+    end
+  end
+```
+
+Yeah, that's pretty confusing, mixing levels like that.
+
+A lot of the complexity here comes from functions not obeying the same interface as relations. Can I fix that directly? What if I emit the naive interface and then put indexes in as a later optimization pass? Requires still knowing the type of each fun - either because I haven't mangled any symbols or because I've embedded the inferred type.
+
+All of this feels pretty complicated.
+
+Julia encourages thinking of all of this as variations on type-dispatch/specialization. But some kinds of optimizations can't be expressed that way eg using results of previous calls to optimize calls downstream. The latter also meshes poorly with the way I currently build code out of closures. If I want to express this as an optimization pass I need to return a big chunk of unevaled code at the end of this pass.
+
+I wonder if all of this would be easier if I just implemented the caching inside the indexes. Would that be so much slower? It would entail a couple of comparisons on each lookup, but I already have to do a few for the lookup anyway. And it would make the compiler drastically simpler.
+
+What's a cheap way to test this?
+
+How will the arguments be passed? Implementing variadic functions efficiently in Julia is a pain. I think `args...` allocates, and probably loses type information. Let's test that.
+
+``` julia
+function foo(args...)
+  args[1] + args[2]
+end
+
+@code_warntype foo(1,1)
+```
+
+``` julia
+Variables:
+  #self#::#foo
+  args::Tuple{Int64,Int64}
+
+Body:
+  begin 
+      return (Base.add_int)((Base.getfield)(args::Tuple{Int64,Int64}, 1)::Int64, (Base.getfield)(args::Tuple{Int64,Int64}, 2)::Int64)::Int64
+  end::Int64
+```
+
+So it creates a tuple. Can that be optimized away?
+
+``` julia
+function bar(n)
+  p = 0
+  for i in 1:n
+    p += foo(i, i+1)
+  end
+  p
+end
+
+@code_warntype bar(10000)
+```
+
+``` julia
+Variables:
+  #self#::#bar
+  n::Int64
+  i::Int64
+  #temp#::Int64
+  p::Int64
+
+Body:
+  begin 
+      p::Int64 = 0 # line 71:
+      SSAValue(3) = (Base.select_value)((Base.sle_int)(1, n::Int64)::Bool, n::Int64, (Base.sub_int)(1, 1)::Int64)::Int64
+      #temp#::Int64 = 1
+      5: 
+      unless (Base.not_int)((#temp#::Int64 === (Base.add_int)(SSAValue(3), 1)::Int64)::Bool)::Bool goto 17
+      SSAValue(4) = #temp#::Int64
+      SSAValue(5) = (Base.add_int)(#temp#::Int64, 1)::Int64
+      i::Int64 = SSAValue(4)
+      #temp#::Int64 = SSAValue(5) # line 72:
+      SSAValue(6) = i::Int64
+      SSAValue(7) = (Base.add_int)(i::Int64, 1)::Int64
+      p::Int64 = (Base.add_int)(p::Int64, (Base.add_int)(SSAValue(6), SSAValue(7))::Int64)::Int64
+      15: 
+      goto 5
+      17:  # line 74:
+      return p::Int64
+  end::Int64
+```
+
+It got inlined and optimized away. What if it's too big to inline? Or if I pass something stringy?
+
+Yeah, it allocates. No good. Would have to unroll it to something like the current interface anyway.
+
+Could I wrap functions with something that implements the current interface? Assuming I know the types of the arguments, seems plausible.
+
+Maybe I should just push the codegen all the way down to the edges. Seems like the more I codegen, the harder it is to test and the more potential for bugs, but I spend so much time working out calling conventions that don't allocate otherwise.
