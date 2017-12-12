@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 'Notes on ''PSYCGD02: Principles of Cognition'''
-hidden: true
 ---
 
 <script type="text/x-mathjax-config">

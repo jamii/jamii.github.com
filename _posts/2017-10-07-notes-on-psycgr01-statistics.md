@@ -264,3 +264,14 @@ Repeated measures ANOVA - for grouped data, use weighted mean of group score.
 
 __I can't find a reason to prefer this over a hierarchical model.__
 
+## [Lecture 9](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=9)
+
+__Losing interest in the course by this point. [Statistical Rethinking](http://scattered-thoughts.net/blog/2017/06/28/notes-on-statistical-rethinking/) is much more useful.__
+
+Multi-level models.
+
+## [Lecture 10](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=11)
+
+Bayes factors. 
+
+Logistic regression.
