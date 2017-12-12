@@ -45,7 +45,7 @@ Review:
 * What is inference?
 * Three desirable properties of estimators.
 
-[Exercises](classes/stats/Week1.ipynb)
+[Exercises](/classes/stats/Week1.ipynb)
 
 ## [Lecture 2](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=2)
 
