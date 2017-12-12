@@ -8,3 +8,5 @@ _site
 Thumbs.db
 ehthumbs.db
 classes/stats/.ipynb_checkpoints/
+
+.jekyll*
