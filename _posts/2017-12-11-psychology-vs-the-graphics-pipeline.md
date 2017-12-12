@@ -7,7 +7,7 @@ I often come across phrases in psychology papers like:
 
 > [To test this prediction we exposed participants to photographs of faces or polygons [on a computer monitor] at suboptimal durations (40 ms) and optimal durations (400 ms).](https://pdfs.semanticscholar.org/0062/86ab72a28a5411adc3078cbdd4b9897a4d90.pdf)
 
-This is interesting because most modern monitors *cannot* display an image for exactly 40ms. At the typical [refresh rate](https://en.wikipedia.org/wiki/Refresh_rate) of 60hz you can display an image for 33ms or 50ms but not 40ms.
+This is interesting because most modern monitors *cannot* display an image for exactly 40ms. At the typical [refresh rate](https://en.wikipedia.org/wiki/Refresh_rate) of 60hz you can display an image for 33ms or 50ms, but not 40ms.
 
 This is not a big deal by itself, but the fact that the researchers *think* that they displayed an image for 40ms means that they didn't measure it at all. Which means it could be anything.
 
