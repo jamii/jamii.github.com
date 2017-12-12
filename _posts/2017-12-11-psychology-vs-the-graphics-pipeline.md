@@ -46,7 +46,7 @@ The number of partially visible frames is fairly consistent at around 16 frames 
 
 A couple of images in the first trial didn't get a mask at all and were instead exposed for much longer. I don't know the cause for this.
 
-![](/img/firefox1.gif)
+![](/img/firefox2.gif)
 
 I also did the same thing in Chrome 62.
 
