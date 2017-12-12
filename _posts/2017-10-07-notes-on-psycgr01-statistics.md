@@ -1,7 +1,6 @@
 ---
 layout: post
 title: 'Notes on ''PSYCGR01: Statistics'''
-hidden: true
 ---
 
 <script type="text/x-mathjax-config">
