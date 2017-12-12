@@ -102,11 +102,6 @@ Methods:
   * Temporal resolution ~1ms
 * tDCS
 
-Review:
-
-* Recount three main periods of history.
-* Explain levels of models, with examples.
-
 ## [Automaticity of Social Behavior: Direct Effects of Trait Construct and Stereotype Activation on Action](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.333.7523&rep=rep1&type=pdf)
 
 (Paired with the more recent failed replication.)
@@ -220,10 +215,6 @@ But:
 * Most of the legwork is done by grad students anyway
 
 Try to structure experiments with multiple competing hypotheses where any given result would support some hypothesis and weaken the others.
-
-Review:
-
-* What should an ideal replication aim to do?
 
 ## [The Cognitive Neuroscience of Human Memory Since H.M.](https://pdfs.semanticscholar.org/981b/7074fcb20d0b1366c7a0d2660085ddbcf465.pdf)
 
@@ -421,7 +412,7 @@ Questions:
 * ?
 * Does awareness of recollections require only the prefontal cortex, or also interaction with the rest of the cerebral cortex.
 
-[The role of the hippocampus in navigation is memory](http://sci-hub.cc/10.1152/jn.00005.2017)
+## [The role of the hippocampus in navigation is memory](http://sci-hub.cc/10.1152/jn.00005.2017)
 
 Place cells, grid cells etc seem to imply that the hippocampus provides navigation. Paper argues that the evidence actually shows that it provides general cognitive maps and that navigation is just one usecase.
 
@@ -509,8 +500,6 @@ Use fMRI to detect 60% periodicity in humans when navigating => grid cells. Peri
 Experiment suggesting that periodicity can be observed even for abstract spaces, by pairing a coordinate system with bird pictures of varying neck and leg length.
 
 Something analogous to space cells for time observed in rats.
-
-__TODO figure out review__
 
 ## [Uniting the Tribes of Fluency to Form a Metacognitive Nation](https://web.princeton.edu/sites/opplab/papers/alteropp09.pdf)
 
