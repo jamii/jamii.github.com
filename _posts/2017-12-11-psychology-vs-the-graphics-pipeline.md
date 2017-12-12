@@ -43,7 +43,7 @@ I recorded the experiment three times in Firefox 58 and counted the number of ca
 
 The number of fully visible frames is roughly correlated with the specified time. There is some variance between trials, which presumably corresponds to how the animation frame in the browser happened to line up with the refresh rate of the monitor.
 
-The number of partially visible frames is fairly consistent at around 16 frames / 67ms. That makes sense - we're just measuring the response time of the individual pixels rather than anything that varies with the specified exposure time. 
+The number of partially visible frames is fairly consistent at around 16 frames / 67ms. That makes sense - we're just measuring the response time of the display itself rather than anything that varies with the specified exposure time. 
 
 A couple of images in the first trial didn't get a mask at all and were instead exposed for much longer. I don't know the cause for this.
 
