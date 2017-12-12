@@ -37,7 +37,9 @@ Efficient estimators:
 * Sum of absolute errors -> median
 * Sum of squared errors -> mean
 
-$MSE = \sum (Y_i - \hat{Y}_i)^2 / n - p$. TODO Why degrees of freedom?
+$MSE = \sum (Y_i - \hat{Y}_i)^2 / n - p$. 
+
+__TODO Why degrees of freedom?__
 
 Review:
 
