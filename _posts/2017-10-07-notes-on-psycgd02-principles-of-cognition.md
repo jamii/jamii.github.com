@@ -1070,3 +1070,33 @@ From discussion afterwards:
 * Example models don't show precision. When used, it's often to fixed to a constant unless they are trying to model dopamine.
 * Policies are pure function of Q - __so not timeless but not directly depending on time either - allows controlling how much memory the model has by controlling what Q remembers of the past__.
 * In examples path integral is trivial, but in more complex models use [time slicing](https://en.wikipedia.org/wiki/Path_integral_formulation#Time-slicing_derivation)?
+
+## [Lecture 10](https://moodle.ucl.ac.uk/pluginfile.php/4485121/mod_resource/content/4/MSC_CoDeS_Embodiment_YMotamedi_online_version.pdf)
+
+Embodied cognition - cognitive processes rooted in perception and action, knowledge not stored as abstract symbolic representation but derived on the fly from perception (past or present) and action. 
+
+__Doesn't seem to pin down a clear hypothesis, makes it difficult to figure out which experiments support which version of the theory.__
+
+Eg language
+
+* Some support for abstract representation 
+  * eg mix up phonemes sometimes => phonemes are a unit at some level of processing
+* But how is abstract representation connected to the world?
+* Embodied metaphors eg future is in front, past is behind.
+
+Usually attempt to demonstrate embodiment by demonstrating interaction between cognition and perception/action.
+
+Classic experiments which failed to replicate:
+
+* Hold pen in mouth to create frown or smile, affects humor rating of cartoons
+* Adverts which suggest an action matching the viewers handedness are preferred, reversed when hand is already occupied
+* Parsing action sentences as valid/invalid is quicker when the correct option is presented in a location that matches the action direction
+* Hearing words associated with body parts activates same brain region as moving those body parts
+
+Presented several other experiments which have yet to be replicated. Effect sizes are typically <1%
+
+Think of embodiment as a spectrum from purely symbolic/logical to fully embodied. Claim evidence does not strongly support either end of the spectrum.
+
+> Models of embodiment underspecified. Any effect of the body on thought taken as evidence for embodiment without understanding of how embodiment works. We should be able to explain the pattern of results, not just whether embodiment is there or not.
+
+
