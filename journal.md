@@ -16634,3 +16634,11 @@ Yeah, it allocates. No good. Would have to unroll it to something like the curre
 Could I wrap functions with something that implements the current interface? Assuming I know the types of the arguments, seems plausible.
 
 Maybe I should just push the codegen all the way down to the edges. Seems like the more I codegen, the harder it is to test and the more potential for bugs, but I spend so much time working out calling conventions that don't allocate otherwise.
+
+### 2017 Dec 12
+
+School. Last of the year.
+
+Also started working on testing display times for subliminal images used in psych experiments. So far there is huge variance and occasionally missing masks. Not sure whether anyone will care though, given the state of the field.
+
+### 2017 Dec 13
