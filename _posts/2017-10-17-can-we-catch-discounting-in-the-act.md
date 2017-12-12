@@ -4,6 +4,8 @@ title: Can we catch discounting in the act?
 hidden: true
 ---
 
+Been done - https://pdfs.semanticscholar.org/0062/86ab72a28a5411adc3078cbdd4b9897a4d90.pdf
+
 Replicated study?
 
 * Need a good q - want to get lots of data from each participant
