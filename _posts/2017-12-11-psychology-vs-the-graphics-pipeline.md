@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Psychology vs the graphics pipeline
-hidden: true
 ---
 
 Often see phrases like:
