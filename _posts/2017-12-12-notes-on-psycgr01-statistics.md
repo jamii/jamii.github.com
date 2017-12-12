@@ -67,6 +67,8 @@ Review:
 * Define f-test.
 * Define confidence interval.
 
+[Exercises](/classes/stats/Week2.ipynb)
+
 ## [Lecture 3](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=3)
 
 Multiple regression.
@@ -103,6 +105,8 @@ Model search:
 Better to rely on theory
 
 Note, for null model $Y_i = b_0 + \epsilon $ we get $SSE = (n - 1)\operatorname{Var}(Y_i)$
+
+[Exercises](/classes/stats/Week3.ipynb)
 
 ## [Lecture 4](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=4)
 
@@ -148,6 +152,8 @@ Multicollinearity - as $R^2_j \xrightarrow 1$ the confidence interval $\xrightar
 
 Partial correlation between $Y$ and $X_i$ is $\operatorname{sign}(\beta_i) \sqrt{\operatorname{PRE}(M, M-X_i)} = \frac{\operatorname{PRE}(M, NULL) - \operatorname{PRE}(M - X_i, NULL)}{1 - \operatorname{PRE}(M - X_i, NULL)}$ 
 
+[Exercises](/classes/stats/Week4.ipynb)
+
 ## [Lecture 5](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=5)
 
 Moderation
@@ -180,6 +186,8 @@ $$
 * [Structural Equation Modeling](https://en.wikipedia.org/wiki/Structural_equation_modeling)
 
 __Caution - [Don't Expect An Easy Answer](http://www2.psych.ubc.ca/~schaller/528Readings/BullockGreenHa2010.pdf)__
+
+[Exercises](/classes/stats/Week5.ipynb)
 
 ## [Lecture 6](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=6)
 
