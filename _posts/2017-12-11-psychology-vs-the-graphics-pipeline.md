@@ -64,13 +64,11 @@ I also did the same thing in Chrome 62:
 | 90                  | 21.6            | 24           | 16              | 20           | 82.9                 |
 | 100                 | 24              | 24           | 17              | 20           | 93.8                 |
 
-Similar results.
-
 The last column shows the time measured by the Chrome profiler during the second trial.
 
 ![](/img/chrome2.png)
 
-The profiler shows the same rough pattern as the recording, but it fails to capture all of the variance eg from 80ms to 90ms the recording showed the number of frames dropped from 24 to 20 but the profiler reported that the exposure time increased from 74.6ms to 82.9ms. Clearly, if you care about actual exposure time on the screen it's not enough to rely on the profiler.
+The profiler shows the same rough pattern as the recording, but it fails to capture all of the variance eg from 80ms to 90ms the recording showed the number of frames dropped from 24 to 20 but the profiler reported that the frame duration increased from 74.6ms to 82.9ms. Clearly, if you care about actual exposure time on the screen it's not enough to rely on the profiler.
 
 I also tried a slightly-older-but-still-high-end laptop with an internal IPS monitor.
 
@@ -106,8 +104,10 @@ The external monitor shows a slightly different update pattern, but otherwise th
 
 ![](/img/external.gif)
 
-Unfortunately, I don't have immediate access to any slower machines or to any other display technologies. I suspect that a cheap web-book or university-lab thin-client might be more susceptible to dropping frames. But even on the machines I've tested, I'm seeing a request for 100ms exposure produce actual exposures of 71-133ms plus additional partially-obscured exposures of 42-83ms. 
+Unfortunately, I don't have immediate access to any slower machines or to any other display technologies. I suspect that a cheap webbook or university lab thin-client might be more susceptible to dropping frames. But even on the high-end machines I've tested, I'm seeing a request for 100ms exposure produce actual exposures of 71-133ms plus additional partially-obscured exposures of 42-83ms. 
 
-I'm not sure if this is a problem for priming experiments, where the exact exposure time maybe doesn't affect the results that much. 
+I'm not sure if this is a problem for priming experiments. The exact exposure time maybe doesn't affect the results that much. 
 
-It may be a problem though for reaction time experiments, where the reaction time is measured from when the software believes the image is first displayed. On top of the variance in display time, there are similar sources of variance on the input side in keyboard polling intervals, device drivers and event queues. So the next step is to figure out how to externally measure the accuracy of a reaction time experiment.
+It may be a problem though for reaction time experiments, where the reaction time is measured from when the software believes the image is first displayed. On top of the variance in display time, there are similar sources of variance on the input side in keyboard polling intervals, device drivers and event queues. And I've seen a fair few experiments where the mean difference between conditions is <40ms, so the effects are small enough that this noise could at the very least reduce power.
+
+So the next step is to figure out how to externally measure the accuracy of a reaction time experiment.
