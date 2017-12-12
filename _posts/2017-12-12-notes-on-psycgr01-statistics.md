@@ -45,6 +45,8 @@ Review:
 * What is inference?
 * Three desirable properties of estimators.
 
+[Exercises](classes/stats/Week1.ipynb)
+
 ## [Lecture 2](https://moodle.ucl.ac.uk/course/view.php?id=11131&section=2)
 
 Model is model of population (__which implies that we can include sampling method in inference if we think we can accurately model the bias__).
