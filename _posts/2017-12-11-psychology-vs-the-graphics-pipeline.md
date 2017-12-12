@@ -11,7 +11,7 @@ This is interesting, because most modern monitors *cannot* display a photograph 
 
 This is not a big deal by itself, but the fact that the researchers *think* that they displayed an image for 40ms means that they didn't measure it at all. Which means it could be anything.
 
-Unfortunately, few researchers share their code, and fewer still their hardware specs. For now I'll settle for using <testable.org> as a proxy measure. 
+Unfortunately, few researchers share their code, and fewer still their hardware specs. For now I'll settle for using [testable.org](testable.org) as a proxy measure. 
 
 I [configured an experiment](https://gist.github.com/jamii/e3a96a0dcdb739c4c2104a1e6e216348) with image exposures ranging from 10ms to 100ms, followed by a mask until the user presses a key and then a 50ms pause between key-press and the next image. I recorded the experiment running on an [IPS](https://en.wikipedia.org/wiki/IPS_panel) monitor with a [240fps camera](https://www.slashgear.com/nexus-6p-240fps-video-camera-test-impressive-most-impressive-19410533/), because that's what I had to hand. 
 
