@@ -3,7 +3,7 @@ layout: post
 title: Psychology vs the graphics pipeline
 ---
 
-Often see phrases like:
+I often come across phrases in psychology papers like:
 
 > [To test this prediction we exposed participants to photographs of faces (Experiments 1 and 2) or polygons (Experiment 3) [on a computer monitor] at suboptimal durations (40 ms) and optimal durations (400 ms).](https://pdfs.semanticscholar.org/0062/86ab72a28a5411adc3078cbdd4b9897a4d90.pdf)
 
