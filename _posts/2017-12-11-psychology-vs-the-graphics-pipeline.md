@@ -15,7 +15,7 @@ Unfortunately, few researchers share their code, and fewer still their hardware 
 
 I [configured an experiment](https://gist.github.com/jamii/e3a96a0dcdb739c4c2104a1e6e216348) with image exposures ranging from 10ms to 100ms, followed by a mask until the user presses a key and then a 50ms pause between key-press and the next image. I recorded the experiment running on an [IPS](https://en.wikipedia.org/wiki/IPS_panel) monitor with a [240fps camera](https://www.slashgear.com/nexus-6p-240fps-video-camera-test-impressive-most-impressive-19410533/), because that's what I had to hand. 
 
-First thing to note is that the image doesn't appear and disappear sharply - instead it fades in and fades out:
+First thing to note is that the image doesn't appear and disappear sharply - instead it fades in and fades out.
 
 ![](/img/firefox1.gif)
 
@@ -48,7 +48,7 @@ A couple of images in the first trial didn't get a mask at all and were instead 
 
 ![](/img/firefox1.gif)
 
-I also did the same thing in Chrome 62:
+I also did the same thing in Chrome 62.
 
 | Specified time (ms) | Expected frames | Trial 1 full | Trial 1 partial | Trial 2 full | Trial 2 profile (ms) |
 |---------------------|-----------------|--------------|-----------------|--------------|----------------------|
