@@ -16635,10 +16635,95 @@ Could I wrap functions with something that implements the current interface? Ass
 
 Maybe I should just push the codegen all the way down to the edges. Seems like the more I codegen, the harder it is to test and the more potential for bugs, but I spend so much time working out calling conventions that don't allocate otherwise.
 
-### 2017 Dec 12
+### 2017 Dec 11
 
 School. Last of the year.
 
 Also started working on testing display times for subliminal images used in psych experiments. So far there is huge variance and occasionally missing masks. Not sure whether anyone will care though, given the state of the field.
 
+### 2017 Dec 12
+
+Finished up notes for this years classes, and wrote up the display time experiment.
+
 ### 2017 Dec 13
+
+Let's test the escape analysis in Julia 0.7 and see if it can handle tupled arguments.
+
+Ok, in both 0.6 and 0.7 it can optimize them away iff I inline.
+
+So I can move caching into the index if I inline all the calls to it, or if I replace them with macros.
+
+What do the dispatch patterns look like?
+
+Join and sum dispatch on number of calls. Product has to eval child SumProducts (which requires dispatching on value, not type). If they are evalled before-hand, we still need to pull the correct var. If the vars were in a tuple we could pass the index, but that would require allocating between steps.
+
+Ok, spending too much time on trying to find some perfect solution. Just pick the least crufty / least risky thing and move on. Use macros everywhere, figure the rest out later.
+
+Core api will just be `index` `count` `contains` `sum`. 
+
+Sketched out compiler. Remaining fixes:
+
+* Add args to join
+* Compile child sum products
+* Index num -> name
+
+Now just need to debug all of this. Not sure how return stuff should work at the moment. Just count number of results for now and figure out materialization later.
+
+My use of anonymous function exprs is broken. If I leave them in the output it breaks type inference. If I inline them with Base.Cartesian.inlinanonymous I risk making surprising changes.
+
+This works better:
+
+``` julia
+function inline(function_expr::Expr, value)
+  @match function_expr begin
+    Expr(:->, [var::Symbol, body], _)  => quote
+      let $var = $value
+        $body
+      end
+    end
+    _ => error("Can't inline $function_expr")
+  end
+end
+```
+
+Many many bugfixes later, I am getting a number. It is not the correct number, but it's a start.
+
+Todo:
+
+* Get the right answer
+* Change all closed-over state to be passed through
+* Hunt down allocations
+* Push macros all the way down into relation api
+* Push caching into relation index
+* Consider changing macros to staged exprs
+
+I got rid off the closed-over state and immediately got the right answer. Closures are hard.
+
+Changing the inner functions to closures got rid off the world warnings. I guess those were actually creating global functions?
+
+``` julia
+julia> function foo()
+       function bar(x) 
+        x+1
+       end
+       bar(1)
+       end
+foo (generic function with 1 method)
+
+julia> foo()
+2
+
+julia> bar(1)
+ERROR: UndefVarError: bar not defined
+```
+
+No? I don't get a world warning here either. Not sure what the deal is. Best just avoid it for now.
+
+Return value is Any. Willing to bet the allocations are down to type inference problems.
+
+Todo:
+
+* Hunt down allocations
+* Push macros all the way down into relation api
+* Push caching into relation index
+* Consider changing macros to staged exprs
