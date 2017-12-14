@@ -16727,3 +16727,123 @@ Todo:
 * Push macros all the way down into relation api
 * Push caching into relation index
 * Consider changing macros to staged exprs
+
+### 2017 Dec 14
+
+Probably not going to bother with the staged exprs. There is just a lot of inherent hygiene violation in the compiler, don't think that there is a technical solution.
+
+Todo:
+
+* Hunt down allocations
+* Push macros all the way down into relation api
+* Push caching into relation index
+
+So I'm going to go back to separating each join function, rather than wrapping them in a top-level function. Closing over state didn't work well anyway and I suspect inference might handle them better as top-level functions.
+
+Sweet, it worked.
+
+Fixed some bugs with constants getting ordered below other variables.
+
+'Push macros all the way down into relation api'. First step is I need to carry types down into the macros. Let's stop using Index and make a new Call-like thing that carries type, args, original args etc. Want to push it down to the relation api so that the compiler doesn't have all these 'if is_finite(...' switches. Compiler just needs to know 'can I iterate over this'. 
+
+Think this works:
+
+``` julia
+struct PartialCall{T} # type of fun, not of index
+  name::Symbol # refers to whatever @index returned
+  permutation::Vector{Int64} # passed to @index
+  args::Vector{Symbol} # in post-permutation order
+  bound::Int64 # args[1:bound] are already bound when this call is made
+end
+
+can_test(call::PartialCall{Function}) = length(call.args) == call.bound
+can_iter(call::PartialCall{Function}, var::Symbol) = (length(call.args) == call.bound) && (call.args[call.bound] == 
+
+can_test(call::PartialCall{Relation}) = true
+can_iter(call::PartialCall{Relation}, var::Symbol) = true
+```
+
+So now factorize needs to emit these and keep track of the name->fun mapping.
+
+Guess there is no need for can_test since we can just do it in @test, but we need can_iter to figure out if we fucked up the variable ordering.
+
+I guess this is combining changes again - the current code doesn't handle misordered functions so the refactoring doesn't need to handle it yet either. Which means that we can use `can_index` for creating the partial calls. It's a coarse interface, but we don't have anything yet that would make use of a finer interface so there is no point trying to design it.
+
+Let's first just put types into Call. Then one by one, make all the macros dispatch on the call type.
+
+That was easy. Keep doing things incrementally like this.
+
+Now put caching in the indexes. Basically gonna search for all the args, but start the search at the last point. Means I need to make sure that the los/his always point to a single value.
+
+``` julia
+function RelationIndex(relation::Relation{T}) ::RelationIndex{T} where {T}
+  columns = relation.columns
+  los = [1 for _ in columns]
+  his = [gallop(column, 1, length(column)+1, column[1], 1) for column in columns]
+  RelationIndex(columns, los, his)
+end
+```
+
+Then in seek, I'll just check whether I can start from after the previous result.
+
+Wait, there are two optimizations here. One where the old columns are already set at the correct value and we do nothing. One where they are set before the correct value and we start early. Got to be careful to get both.
+
+Aaargh, this is hard to get right because I can point at empty regions and I need to be able to handle that correctly. If the array is non-empty then `hi-1` is always a valid value.
+
+I think I have this right, but it's kind of ugly.
+
+``` julia
+function seek(index::RelationIndex, ::Type{Val{C}}, value) where {C}
+  column = index.columns[C]
+  outer_lo = index.los[C]
+  outer_hi = index.his[C]
+  prev_lo = index.los[C+1]
+  prev_hi = index.his[C+1]
+  # by default, start out beginning of outer region
+  lo = outer_lo
+  # check if previous search fell within this region
+  if (outer_lo < prev_hi <= outer_hi) 
+    compared = cmp(value, column[prev_hi-1]) # hi-1 is always within the column, so long as the column is not empty
+    # check if this is the same as the last seek
+    if compared == 0
+      return true
+    end
+    # check if we can start this seek from wherever the previous one left off
+    if compared == 1
+      lo = prev_hi
+    end
+  end
+  # check if there is anywhere left to seek
+  if lo < outer_hi
+    # seek
+    lo = gallop(column, lo, outer_hi, value, 0)
+    hi = gallop(column, lo+1, outer_hi, value, 1)
+    index.los[C+1] = lo
+    index.his[C+1] = hi
+    lo < hi
+  else
+    false
+  end
+end
+```
+
+And it's just a bunch of extra work for the CPU, since I'm definitely calling these things in the correct order anyway. Let's ditch it.
+
+One thing I will do is make the macros unpack their arguments, so that the interface side doesn't see any of the internal compiler structs.
+
+There is still a lot of janky stuff in here that I don't look forward to explaining to people. 
+
+* Index is gross, but permuting functions seems weird. Maybe I should only permute them in the compiler but not in the interface?
+* Gross stateful interface that only works if called in the correct order.
+* Fake first/seek in function, which only gets triggered on last call.
+
+Maybe caching would be less gross if I stored only one ix and generated the row-wise comparison? A bit scary, because I'll have no way to test the speed until I fix materialization.
+
+Todo:
+
+* Try caching with only one ix
+* Get materialization working again
+* Benchmark
+* Get non-materialization working (need a better name for that)
+* Type inference
+* Parsing
