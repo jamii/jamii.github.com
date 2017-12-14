@@ -16847,3 +16847,5 @@ Todo:
 * Get non-materialization working (need a better name for that)
 * Type inference
 * Parsing
+
+11 days / 4 weeks into this. Need to get faster.
