@@ -3,6 +3,8 @@ layout: post
 title: Psychology vs the graphics pipeline
 ---
 
+(EDIT Much more accurate measurements are available eg [for native software](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3883681/) and  [for web software](https://link.springer.com/article/10.3758%2Fs13428-014-0471-1). The former says that most native psych libraries can get to frame-level accuracy with the appropriate hardware. The latter has results for web software similar to what I found here and concludes that they don't affect power for most experiments, but that the timing issues might be problematic for priming (like the experiment below) and for correlational or longitudinal studies where differences between machines might have non-random impact.)
+
 I often come across phrases in psychology papers like:
 
 > [To test this prediction we exposed participants to photographs of faces or polygons [on a computer monitor] at suboptimal durations (40 ms) and optimal durations (400 ms).](https://pdfs.semanticscholar.org/0062/86ab72a28a5411adc3078cbdd4b9897a4d90.pdf)
