@@ -16849,3 +16849,7 @@ Todo:
 * Parsing
 
 11 days / 4 weeks into this. Need to get faster.
+
+### 2017 Dec 15
+
+Derailed today by meetings and stuff. Have deadline to aim for now though.
