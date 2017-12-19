@@ -17072,6 +17072,8 @@ Woop! Working functions!
 
 Now to materialize, we instead strip the args, add a result, add a factor. Need to have a step where we make a single lambda program, so we can do index insert and materialize there.
 
+Nap time!
+
 The immutable interface is starting to be really annoying. Will ditch it first opportunity.
 
 Similarly, escaping in macros is annoying an error-prone. Might be nicer to just splice exprs and use `let` and prefixing to handle hygiene.
