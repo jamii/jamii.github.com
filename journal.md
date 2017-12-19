@@ -17041,7 +17041,7 @@ result@_4::ANY = (*)(result@_4::Int64, ((Core.getfield)((Core.getfield)(#self#::
 
 Not sure why they are boxed, but the real problem is that they lose type info. What if I just put them in a ref?
 
-It boxed that too :|
+It boxed that too `:|`
 
 I'm unable to replicate this in simpler examples though.
 
