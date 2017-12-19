@@ -17059,3 +17059,15 @@ Oh, hang on, is it because I'm not defining them in order? The thing they are cl
 Sweet. Was worth persevering. Now just have to tidy this up.
 
 Add in type assertions for the indexes while I'm at it.
+
+Have some bug in poly2. Doesn't affect the others so probably something to do with repeated variables. Oh, I broke support for them a while back but it may have continued to work accidentally because of the specific call ordering.
+
+Oh, and this explains the weird bug way back where results were non-deterministic - if I iter over repeated variables in the wrong order, the result depends on whatever leftover values are in the index from last time.
+
+Fixed it properly this time.
+
+Currently factorize ignore lambda.args. It needs to take them into account when calculating the args for each factor. And then materialized functions should have no args and instead return the relation, kind of like currying.
+
+Woop! Working functions!
+
+Now to materialize, we instead strip the args, add a result, add a factor. Need to have a step where we make a single lambda program, so we can do index insert and materialize there.
