@@ -17048,3 +17048,14 @@ I'm unable to replicate this in simpler examples though.
 Looks like it's https://github.com/JuliaLang/julia/issues/15276 or something similar. It fails to prove that the const closure always points to the same variable and so adds a type.
 
 I clearly need to think this out properly.
+
+Oh, hang on, is it because I'm not defining them in order? The thing they are closing over doesn't exist yet, so it doesn't matter that it is const.
+
+``` julia
+0.000032 seconds (5 allocations: 176 bytes)
+@time(j()) = 1176650
+```
+
+Sweet. Was worth persevering. Now just have to tidy this up.
+
+Add in type assertions for the indexes while I'm at it.
