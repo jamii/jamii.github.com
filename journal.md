@@ -14675,6 +14675,7 @@ Spent some time investigating TiddlyWiki.
 
 Today, playing with sonic-pi. Have to build from source to get the latest version (which has mic input).
 
+```
 sudo apt-get purge libaubio4*
 sudo apt-get install libsndfile-dev
 build-ubuntu-app
@@ -14682,11 +14683,14 @@ build-ubuntu-app
 qjackctl &
 # hit run
 ./sonic-pi
+```
 
 hangs on splash screen
 
+```
 sudo pkill -9 jack
 sudo pasuspender -- jackd -R -d alsa
+```
 
 there is a `<defunct> scsynth` hanging around so maybe it's not starting correctly?
 
@@ -16853,3 +16857,194 @@ Todo:
 ### 2017 Dec 15
 
 Derailed today by meetings and stuff. Have deadline to aim for now though.
+
+### 2017 Dec 18
+
+Deadline is Thursday. Need some time to prepare examples too, so effectively Wed night. 
+
+Pushing caching into the indexes would be nice, but not essential. Leave it till last.
+
+Materialization. Wrap the query in a setup function that initializes the result data-structure. Insert a function that pushes to the results and returns a value in some null ring. Push it down until all the args are available and change all the sumproducts in between to the null ring. Sort and reduce the result at the end of setup. Only support Relations for now.
+
+Actually, not totally sure where the insert goes. Suppose args are x,y,z. Then we need x,y,z and the ring value, so it has to wrap the value of the sumproduct over z. Oh, because it changes from the original ring to the factor ring. 
+
+Does that mean I also have to push down all the variables in the product? Yeah, will have to carry them along. But also still want them to be calculated earlier so I can short-circuit on zero.
+
+What if I use some addressable structure instead? Then the last value can do += and all the prev levels can do *=. Does that make sense?
+
+Nah, let's just carry them down. It works fine for now, and I can revisit it later if I want to allow more branchy structures. In that case I would probably need to actually return some factor-like data-structure. Or maybe have one result for each leaf and then combine them afterwards. Or do it bottom-up, FAQ style.
+
+Eugh, partway through doing the rewrite but I'm realizing that it should actually occur at the lambda level, not at the ir level. We separate the lambda into two parts, one that is a fun and returns a singleton factor and one that materializes, calls the first and is over the factor ring. And maybe one more that permutes the result and reduces down again. So I should stash what I have so far and figure that out. 
+
+Raises issues over when indexes get created and how stuff gets pulled out of the env. Maybe rather than emitting a single closure, I need to emit something that has an init_from_env and a call/run. And has to recursively call init_from_env on it's children and pass their state down to them.
+
+Let's say at compile time we pass around an env that lists function definitions and state definitions, and then at runtime we bundle all the state into a heap struct and pass around a pointer to it. And then the calling convention is that any call to a lambda gets passed the state pointer. (Does that prevent creating recursive functions, or is it fine for those to share the state?)
+
+Pipeline would look like:
+
+* Lambda
+* Inner, outer, reduce
+* Sumproducts + inits
+
+``` julia
+struct Constant
+  value::Any 
+end
+
+struct FunCall
+  name::Union{Symbol, Function}
+  typ::Type
+  args::Vector{Union{Symbol, FunCall, Constant}}
+end
+
+struct Lambda
+  ring::Ring
+  args::Vector{Symbol}
+  domain::Vector{FunCall}
+  value::Vector{Expr} 
+end
+
+struct Funs
+  funs::Dict{Symbol, Union{Lambda}}
+end
+
+struct ProcCall
+  name::Symbol
+  args::Vector{Symbol} # plus state pointer
+end
+
+struct Index
+  name::Symbol
+  typ::Type
+  fun::Union{Symbol, Function} 
+  permutation::Vector{Int64}
+end
+
+struct IndexCall
+  name::Symbol
+  typ::Type
+  args::Vector{Symbol}
+end
+
+struct SumProduct
+  ring::Ring
+  var::Symbol
+  domain::Vector{Union{FunCall, IndexCall}}
+  value::Vector{Union{ProcCall, Symbol}}
+end
+
+struct Procs
+  state::Dict{Symbol, Union{Index}} # (env) -> state
+  procs::Dict{Symbol, Union{SumProduct}} # (state, args...) -> ring_type
+end
+```
+
+Mostly happy with this. Tricky part is where to do indexes. Ideally would be a pass at the end that threads state between calls. Would still need a @setup at the beginning of loops though, or give up on restarting from parent region. 
+
+Ok, how do I get there from here?
+
+* Remove the type param from Call and Index.
+* Split out the different kinds of Call.
+* Write code that compiles Procs into a function
+* Make a version of factorize that returns Procs.
+
+Some gnarly bugs along the way, but works now. Next:
+
+* Add a results state
+* Leave ring along for now
+* Break lambda into two parts at var line
+* Add insert call to upper half 
+* Functionalize lower half by adding constants
+* Then do lowering constants
+
+Is insert a funcall or a proccall? Maybe insert_indexes just creates a new fun and threads state through? Think I have too many types here. Let's simplify the types.
+
+``` julia
+struct Ring{T}
+  add::Function
+  mult::Function
+  one::T
+  zero::T
+end
+
+const count_ring = Ring(+, *, 1, 0)
+
+struct Constant
+  value::Any
+end
+
+struct FunCall
+  name::Union{Symbol, Function}
+  typ::Type
+  args::Vector{Union{Symbol, FunCall, Constant}}
+end
+
+struct IndexCall
+  name::Symbol
+  typ::Type
+  args::Vector{Symbol}
+end
+
+struct SumProduct
+  ring::Ring
+  domain::Vector{Union{FunCall, IndexCall}}
+  value::Vector{Union{FunCall, Symbol}}
+end
+
+struct Lambda
+  name::Symbol
+  args::Vector{Symbol}
+  body::SumProduct
+end
+
+struct Index
+  name::Symbol
+  typ::Type
+  fun::Union{Symbol, Function}
+  permutation::Vector{Int64}
+end
+
+struct Result
+  typs::Vector{Type}
+end
+
+const State = Union{Index, Result}
+
+struct Program
+  main::Symbol
+  states::Dict{Symbol, State} # (env) -> state
+  funs::Dict{Symbol, Union{Lambda}}
+end
+```
+
+Bah. Still didn't actually do materialization. Hopefully getting there.
+
+Todo:
+
+* Leave ring along for now
+* Break lambda into two parts at var line
+* Add insert call to upper half 
+* Functionalize lower half by adding constants
+* Then do lowering constants
+
+### 2017 Dec 19
+
+Need to be able to functionalize lower half. Causes some problems with variable naming - get a=a. So I need to rename the args.
+
+Trouble with calling conventions again. Went down this rabbit hole of trying to wrap up all the state into a single pointer, but since I don't clearly differentiate between calls to Imp functions and calls to Julia functions I can't have different calling conventions for the two. Putting index names into the args as I currently do is definitely a mess semantically. Would be nice if I could close over the indexes but that caused problems with type inference before. Try once more?
+
+The previous closures are getting boxed.
+
+``` julia
+result@_4::ANY = (*)(result@_4::Int64, ((Core.getfield)((Core.getfield)(#self#::Compiled.##35#39{Compiled.RelationIndex{Tuple{Array{Int64,1},Array{Int64,1}}}}, Symbol("##lambda#4318"))::CORE.BOX, :contents)::ANY)(i::Int64, x::Int64, value#4323::Int64)::ANY)::ANY # line 282:
+```
+
+Not sure why they are boxed, but the real problem is that they lose type info. What if I just put them in a ref?
+
+It boxed that too :|
+
+I'm unable to replicate this in simpler examples though.
+
+Looks like it's https://github.com/JuliaLang/julia/issues/15276 or something similar. It fails to prove that the const closure always points to the same variable and so adds a type.
+
+I clearly need to think this out properly.
