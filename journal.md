@@ -17071,3 +17071,66 @@ Currently factorize ignore lambda.args. It needs to take them into account when 
 Woop! Working functions!
 
 Now to materialize, we instead strip the args, add a result, add a factor. Need to have a step where we make a single lambda program, so we can do index insert and materialize there.
+
+The immutable interface is starting to be really annoying. Will ditch it first opportunity.
+
+Similarly, escaping in macros is annoying an error-prone. Might be nicer to just splice exprs and use `let` and prefixing to handle hygiene.
+
+Finally got materialization working. Ended up being really clean by adding some new IR nodes.
+
+``` julia
+struct Result
+  name::Symbol
+  typs::Vector{Type}
+end
+
+macro state(env, state::Result, fun_type::Function)
+  quote
+    const $(esc(state.name)) = Relation(($(@splice typ in state.typs quote
+      $typ[]
+    end),))
+  end
+end
+```
+
+``` julia
+struct Insert
+  result_name::Symbol
+  args::Vector{Symbol}
+  value::FunCall
+end
+
+macro body(args::Vector{Symbol}, body::Insert)
+  quote
+    value = ($(esc(body.value.name)))($(map(esc, body.value.args)...),)
+    $(@splice (arg_num,arg) in enumerate(body.args) quote
+      push!($(esc(body.result_name)).columns[$arg_num], $(esc(arg)))
+    end)
+    push!($(esc(body.result_name)).columns[end], value)
+    value
+  end
+end
+```
+
+``` julia
+struct Return
+  name::Symbol
+  result_name::Symbol
+  value::FunCall
+end
+
+macro fun(fun::Return)
+  quote
+    ($(esc(fun.value.name)))($(map(esc, fun.value.args)...),)
+    const $(esc(fun.name)) = $(esc(fun.result_name))
+    # TODO reduce result
+  end
+end
+```
+
+TODO before Thursday:
+
+* Hook this up to the existing relation data-structure
+* Reduce return results
+* Port the parser and query macro
+* Optionally - add type inference
