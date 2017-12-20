@@ -17136,3 +17136,7 @@ TODO before Thursday:
 * Reduce return results
 * Port the parser and query macro
 * Optionally - add type inference
+
+### 2017 Dec 20
+
+Today got eaten by talks and meetings. Managed some reading in between, and poked around in MemPool.jl a little.
