@@ -17140,3 +17140,21 @@ TODO before Thursday:
 ### 2017 Dec 20
 
 Today got eaten by talks and meetings. Managed some reading in between, and poked around in MemPool.jl a little.
+
+### 2017 Dec 21
+
+First thing, let's hook this up to the existing Relation code. No surprises there.
+
+Also need to reduce the relation at the end, but I don't think I have time for that today.
+
+### 2017 Dec 26
+
+Essay time.
+
+It's due Jan 30th, but I'll be plenty busy in January. I've bookmarked five full days in December, and I'll also probably have some partial days once term starts too. 
+
+1. Scan papers to find good examples
+2. Read examples and follow along on paper
+3. Work out bandit example
+4. Implement and verify
+5. Figure out relation to classic solutions, limits etc
