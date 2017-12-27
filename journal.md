@@ -17158,3 +17158,7 @@ It's due Jan 30th, but I'll be plenty busy in January. I've bookmarked five full
 3. Work out bandit example
 4. Implement and verify
 5. Figure out relation to classic solutions, limits etc
+
+### 2017 Dec 27
+
+Got through a couple of papers today but still confused about many points. Maybe tomorrow best bet is to simultaneously follow MDP paper and implement a bandit example.
