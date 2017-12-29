@@ -86,12 +86,11 @@ Cryptocurrency:
   * Maximum transaction rate is limited by available energy
   * Two Chinese mining pools control 51% of mining power between them - could co
 * Ethereum:
-  * Distributed publically-verifiable computing, paid for in cryptocurrency
+  * Distributed publicly-verifiable computing, paid for in cryptocurrency
   * Smart contracts, autonomous corporations
   * eg kickstarter is implementable as an ethereum contract
 * Ethereum problems:
-  * Relies on interface to outside world for verification and enforcement of everything except ether
-    * __Seems surmountable by appealing to various trusted 3rd parties ie doesn't remove the problem of trust, but does decompose it__
+  * Relies on interface to outside world for verification and enforcement of everything except ether. (__Seems surmountable by appealing to various trusted 3rd parties ie doesn't remove the problem of trust, but does decompose it__)
   * Hard-forked to resolve exploitation of a loophole in a contract
 * Slock.it
   * Networked locks - connecting blockchain to the physical worldllude to alter the ledger
