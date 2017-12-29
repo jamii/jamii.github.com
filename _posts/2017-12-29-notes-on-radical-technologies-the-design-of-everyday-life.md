@@ -96,7 +96,7 @@ Cryptocurrency:
   * Networked locks - connecting blockchain to the physical worldllude to alter the ledger
 * Core concept of bitcoin, a shared ledger without trust, has many uses outside of money. Coordination problems abound, and we have a new tool for attacking them with. 
 * New forms of coordination are powerful eg joint-stock companies were the building block for the corporation states like the Dutch East India Company, and structure much of the modern world.
-* Unclear how these new forms of coordination interact with the law re enforcement and liability - goal is to evade being limited by the law, but there seems to be little attention to alternate solutions to the problems that the law was created in response to.
+* Unclear how these new forms of coordination interact with the law re enforcement and liability - goal is to evade being limited by the law, but there seems to be little attention to alternate solutions to the problems that the law was created to solve..
 * __Apparently enough interest in using DAO to structure leftist groups that the author feels compelled to devoting many pages to pointing out why that's a bad idea - largely revolving around the lack of escape clauses in contracts and the lack of ambiguity in commitment / soft boundaries that are often vital in real-world commons.__
 * Interest in corporate and government applications: 
 
