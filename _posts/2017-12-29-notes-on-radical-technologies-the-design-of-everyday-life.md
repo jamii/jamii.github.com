@@ -19,7 +19,7 @@ __Ideas worth considering, but the people who would benefit from considering the
 
 __But worth reading eg best explanation I've seen yet of cryptocurrencies.__
 
-Smartphones:
+## Smartphones
 
 * Daily contents of pockets: smartphones are replacing money, access tokens (tickets, smartcards, badges etc), communication, music/radio, watches, photos of family, address books, calendars, notebooks, cameras, maps. Survivors to date are official id, business cards, lip-balm/mints/chewing gum. 
 * 'We become reliant on access to the network to accomplish ordinary goals' and 'those who enjoy access to networked services are more capable than those without'
@@ -30,7 +30,7 @@ Smartphones:
 * A 'network organ', part of our nervous system, manipulable at a distance by parties unknown and increasingly impractical to disconnect
 * __Whether you view the smartphone as net good or bad, it's important to realize the magnitude of this change. We can't afford not to carefully monitor the effects.__
 
-Internet of things:
+## Internet of things
 
 * Useful to divide by scale - quantified self, smart homes, smart cities
 * Quantified self
@@ -52,7 +52,7 @@ __[Scientism](http://scattered-thoughts.net/blog/2017/02/23/notes-on-seeing-like
 
 __Think about how well credit reports work today, and imagine that expanding to every piece of data that we give up.__
 
-Augmented reality:
+## Augmented reality
 
 * Current AR is clumsy because it takes over the phones function and because it doesn't mesh well with the form factor (tired arms). Main value of AR is immediacy - will need to be always(ish) on. 
 * Steve Mann can no longer function without his AR rig, but at least he owns it. If we are becoming cyborgs, we need to think carefully about where our consciousness resides and who owns and controls it. 
@@ -60,14 +60,14 @@ Augmented reality:
 
 > 'What happens when the information necessary to comprehend and operate an environment is not immanent to that environment, but has become decoupled from it? When signs, directions, notifications, alerts and all the other instructions necessary to the fullest use of the city appear only in an augmentive overlay— and, as will inevitably be the case, that overlay is made available to some but not others?'
 
-Digital fabrication:
+## Digital fabrication
 
 * 3D printing was originally idealistic movement - self-replicating manufacturing devices. Convenience won out. Now dominated by commercial offerings.
 * Ignores reality of material science - most useful things are made from variety of complex materials. Unlikely that single makerspace could reach more than the basics with any of the technology currently in sight.
 * __All that aside, making your own eg furniture is well within the reach of the average person and the materials/tools available at most workshops, and yet there has been no DIY furniture revolution. Don't see why newer tools should be different.__
 * Sustainability also a concern.
 
-Cryptocurrency:
+## Cryptocurrency
 
 * 'This is the first information technology I’ve encountered in my adult life that’s just fundamentally difficult for otherwise intelligent and highly capable people to comprehend.'
 * Fundamental trust problem in digital economy - who owns the ledger? Aside from political issues, ledger-keepers are a large source of overhead in all financial transactions.
@@ -102,7 +102,7 @@ Cryptocurrency:
 
 > At this moment in history ... large, complex organizations represent the state of the world via the structured collection, storage and retrieval of data. Another way to say this: that which is operationally true in our world is that set of facts whose truth value is recorded in at least one database belonging to a party with the ability to set the parameters of a situation. And most irritatingly, each one of the organizations we truck with over the course of our lives maintains its own database, and therefore, quite literally, its own version of the world.
 
-Automation:
+## Automation
 
 * Worrying concentration of power - robots don't rebel or refuse orders. __Been pointed out elsewhere that the current power-of-the-masses is a historical anomaly. Considering eg [peasant revolts vs artillery](https://en.wikipedia.org/wiki/Battle_of_Frankenhausen#The_Day_of_Battle), it's clear that technology can determine whether oppressive rule can be resisted at all.__
 * Humans 'below the api' eg earpieces in Amazon warehouses that instruct second by second movements of employees. 
@@ -112,7 +112,7 @@ Automation:
 
 > In the end, the greatest threat of overtransparency may be that it erodes the effectiveness of something that has historically furnished an effective brake on power: the permanent possibility that an enraged populace might take to the streets in pursuit of justice.
 
-Machine learning:
+## Machine learning
 
 * Math-washing, bias, over-fitting
 * Unrealistically homogeneous training data
@@ -132,7 +132,7 @@ Illustrates several concrete visions of the future, to provide points of compari
 
 > ...the power to make change: the concentrated ability to redirect flows of attention and interest, information and investment, and ultimately matter and energy. This is the fundamental aim of all technology, as it is of all politics. Everything else is a sideshow,
 
-__Themes:__
+## Themes
 
 * __Think of existing social, political, legal etc systems as incredibly complex, sophisticated technology built up via millennia of trial-and-error.__
 * __Can't route around legacy systems - have to understand them and interface with them.__
