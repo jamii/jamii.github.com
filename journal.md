@@ -17352,6 +17352,32 @@ Whatever. Focus for now on getting all the queries working. Optimize later.
 Much, much debugging later, I can at least run most of the JOB queries. Lots of tests failing though:
 
 * bound overruns in some tests
-* missing reduce at end of test
+* crashes from @when a in b
 * missing early return optimization
 * lack of query_not
+
+Bounds overruns are due to galloping on lo+1 which can be > prev_hi. Easy enough to clamp it.
+
+Problems with in are resolved by just removing the when and parsing it as a relation.
+
+19 has some mistyped gallop. 23 has a well-typed gallop that needs a coercion. 
+
+``` julia
+function gallop{T1, T2}(column::AbstractArray{T`}, lo::Int64, hi::Int64, value::T2, threshold::Int64) ::Int64
+  gallop(column, lo, hi, convert(T1, value), threshold)
+end
+```
+
+Some queries fail with out-of-memory error without it, presumably because of the lack of early return.
+
+Implemented it. Let's see if it helps.
+
+Figured out the deduping bug - need to create the relation at the end, not at the beginning.
+
+TODO:
+
+* Fix remaining broken tests
+* Make sure that early return is actually working
+* Fix query_not
+
+Number of results seems to depend on ordering of clauses, which is disturbing. Still happens if I disable early return.
