@@ -17162,3 +17162,196 @@ It's due Jan 30th, but I'll be plenty busy in January. I've bookmarked five full
 ### 2017 Dec 27
 
 Got through a couple of papers today but still confused about many points. Maybe tomorrow best bet is to simultaneously follow MDP paper and implement a bandit example.
+
+### 2017 Jan 2
+
+Did not spend any more time on that essay :S
+
+Back to work today. 
+
+Don't have a clear roadmap yet. Seems like the most useful thing I can do for now is to continue working on the compiler.
+
+Type inference should be fairly easy. Lambda body looks like eg:
+
+``` julia
+polynomial_ast4 = Lambda(
+    :poly4,
+    [:i],
+    SumProduct(
+      Ring{Int64}(+,*,1,0),
+      [
+        FunCall(:xx, Any, [:i, :x]),
+        FunCall(:yy, Any, [:i, :y]),
+        FunCall(*, Any, [:x, :x, :t1]),
+        FunCall(*, Any, [:y, :y, :t2]),
+        FunCall(*, Any, [Constant(3), :x, :y, :t3]),
+        FunCall(+, Any, [:t1, :t2, :t3, :z])
+      ],
+      [:z]
+    )
+)
+```
+
+Start out with most general types:
+
+``` julia
+var_types = Dict{Symbol, Type}((var => Any for var in vars))
+```
+
+Think should be enough just to iterate until fixpoint:
+
+``` julia
+for i in 1:inference_fixpoint_limit
+  new_var_types = copy(var_types)
+  # ... narrow types ...
+  if new_var_types == var_types
+    return var_types
+  else
+    var_types = new_var_types
+  end
+end
+return error("Type inference failed to reach fixpoint after $inference_fixpoint_limit iterations")
+```
+
+What goes in there? For each fun, we need to narrow types. So add a new function to interface.
+
+``` julia
+for call in lambda.body.domain
+  narrowed_types = narrow_types(fun_type(call.fun), [var_type[arg] for arg in call.args])
+  for (arg, typ) in zip(call.args, narrowed_types)
+    new_var_type[arg] = typeintersect(new_var_type[arg], typ)
+  end
+end
+```
+
+Need definitions for each fun type. 
+
+Functions hook into Julia's type inference.
+
+``` julia
+function narrow_types(::Type{T}, abstract_fun, arg_types::Vector{Type}) where {T <: Function}
+  @assert isa(abstract_fun, Function) "Julia functions need to be early-bound (ie not function pointers, not symbols) so we can infer types"
+  return_types = Base.return_types(abstract_fun, tuple(arg_types[1:end-1]...))
+  @assert !isempty(return_types) "This function cannot be called with these types"
+  new_arg_types = copy(arg_types)
+  new_arg_types[end] = reduce(typejoin, return_types)
+end
+```
+
+Relations just return their type and ignore the args.
+
+``` julia
+function narrow_types(::Type{Relation{T}}, abstract_fun, arg_types::Vector{Type}) where T
+  return collect(Type, T.parameters[1:length(arg_types)])
+end
+```
+
+Seems to work. Very suspicious...
+
+I guess the next step is to get the benchmarks and examples working, which requires at least a parser and probably lots of bugfixing. I still need to think a lot about how the metalanguage will work, and when compilation happens, but I can just do something simple for now to get the examples working.
+
+Oh, and I still haven't actually implemented reduce. Oops.
+
+If I just want to get the existing examples working I can hard-code a lot of stuff.
+
+* @when => make a closure, call with free vars
+* return => push into lambda args
+* otherwise, push into domain
+* use eval to get fun types
+
+Sort of maybe works? Have some bugs elsewhere, apparently.
+
+TODO:
+
+* JOB1 is trying to join @when over note for some reason
+* insert doesn't grab all values - need to do pull them down or grab early values?
+* immutable api is too error-prone, deepcopy and mutate instead
+
+### 2017 Jan 3
+
+Supposed to be a school day, but I failed again to look at this essay. Really not motivated by this make-work.
+
+Refactored the compiler a little, so other people can work on it without me breaking the compile all the time.
+
+### 2017 Jan 4
+
+Continuing to figure out the bug in JOB1. 
+
+Improved the rendering of IR a bunch to help with the debugging.
+
+It looks like I'm just missing a function, somehow.
+
+Worse, the extra function seems to be appearing between two lines of code.
+
+Oh, maybe I'm mutating the thing and it's being rendered lazily.
+
+The rendering code doesn't look like it's lazy, but removing the step that mutates the program does fix it. Sticking a deepcopy in the render code fixes it.
+
+Aha, and now the bug - I compile functions assuming that the joined var is the last, which is not true.
+
+Runs now, but doesn't terminate and is allocating like there's no tomorrow :(
+
+(Thinking about simplifying code. Can do codegen with functions so we get stacktraces, then use a single do-nothing macro to get hygiene.)
+
+I'm not sure how to debug the allocations. Can't get good type info from the nested functions in the generated code, unfortunately.
+
+Let's start by just inserting showtimes to see where the allocations happen.
+
+```
+0.000001 seconds
+^ ##lambda#1466(##constant#1442, ##constant#1443, ##constant#1444, ##constant#1445, it, mi, t, title, production_year, mc, ct)
+
+  0.000029 seconds (30 allocations: 896 bytes)
+^ ##lambda#1465(##constant#1442, ##constant#1443, ##constant#1444, ##constant#1445, it, mi, t, title, production_year, mc)
+
+  0.034649 seconds (80 allocations: 2.125 KiB)
+^ ##lambda#1464(##constant#1442, ##constant#1443, ##constant#1444, ##constant#1445, it, mi, t, title, production_year)
+
+  0.034745 seconds (126 allocations: 3.328 KiB)
+^ ##lambda#1463(##constant#1442, ##constant#1443, ##constant#1444, ##constant#1445, it, mi, t, title)
+
+  0.034788 seconds (172 allocations: 4.531 KiB)
+^ ##lambda#1462(##constant#1442, ##constant#1443, ##constant#1444, ##constant#1445, it, mi, t)
+
+  0.075567 seconds (218 allocations: 5.734 KiB)
+^ ##lambda#1461(##constant#1442, ##constant#1443, ##constant#1444, ##constant#1445, it, mi)
+```
+
+Oh yeah, printing causes allocations.
+
+Ok, we expect 142 results. Let's print on each.
+
+Nothing printed so far. So must be higher up somewhere.
+
+Ok, if I just print all all the calls I can see that it iterates over every `mi`, which doesn't sound right. Must be missing a join somewhere.
+
+There should be 250. I'm getting way more than that, and the it id is wrong too. Looks like the mi join is actually ok but the it is wrong.
+
+Let's reduce the query to just those two vars. Still get the same wrong output. With just it it works. So possibly something to do with permutation?
+
+### 2017 Jan 5
+
+Let's run the broken query under the debugger, see if it can handle generated code.
+
+Nope :(
+
+I checked that seek and next are giving the correct results.
+
+Let's print out mins. 
+
+Aha, count is always 0. Oh, because we are counting the wrong column. Bah.
+
+Q1A works! Now I can bench it.
+
+5.37ms vs 1.85ms for the rust interpreter :(
+
+Same algorithm, same representation. So either I implemented something wrong, or it's down to bad codegen. (Or not having the early-stopping optimization yet).
+
+Whatever. Focus for now on getting all the queries working. Optimize later.
+
+Much, much debugging later, I can at least run most of the JOB queries. Lots of tests failing though:
+
+* bound overruns in some tests
+* missing reduce at end of test
+* missing early return optimization
+* lack of query_not
