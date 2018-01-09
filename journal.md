@@ -17163,7 +17163,7 @@ It's due Jan 30th, but I'll be plenty busy in January. I've bookmarked five full
 
 Got through a couple of papers today but still confused about many points. Maybe tomorrow best bet is to simultaneously follow MDP paper and implement a bandit example.
 
-### 2017 Jan 2
+### 2018 Jan 2
 
 Did not spend any more time on that essay :S
 
@@ -17267,13 +17267,13 @@ TODO:
 * insert doesn't grab all values - need to do pull them down or grab early values?
 * immutable api is too error-prone, deepcopy and mutate instead
 
-### 2017 Jan 3
+### 2018 Jan 3
 
 Supposed to be a school day, but I failed again to look at this essay. Really not motivated by this make-work.
 
 Refactored the compiler a little, so other people can work on it without me breaking the compile all the time.
 
-### 2017 Jan 4
+### 2018 Jan 4
 
 Continuing to figure out the bug in JOB1. 
 
@@ -17329,7 +17329,7 @@ There should be 250. I'm getting way more than that, and the it id is wrong too.
 
 Let's reduce the query to just those two vars. Still get the same wrong output. With just it it works. So possibly something to do with permutation?
 
-### 2017 Jan 5
+### 2018 Jan 5
 
 Let's run the broken query under the debugger, see if it can handle generated code.
 
@@ -17381,3 +17381,111 @@ TODO:
 * Fix query_not
 
 Number of results seems to depend on ordering of clauses, which is disturbing. Still happens if I disable early return.
+
+### 2018 Jan 9
+
+Still kinda ill today, so lets try to keep this mechanical.
+
+Trying to find minimal test case for changing variable order changing the results.
+
+Hmmm, sometimes I'm return a row with a zero value. That's not good. But the sole call to insert is:
+
+``` julia
+    if value != $(body.ring.zero)
+      $(@splice (arg_num,arg) in enumerate(body.args) quote
+        push!($(esc(body.result_name))[$arg_num], $(esc(arg)))
+      end)
+    end
+```
+
+So how are we getting false in there?
+
+Crap, there is a push outside it. That was dumb.
+
+That fixes the smallest test case, but the next one up is still broken.
+
+``` julia
+a = @query begin 
+  info_type = "top 250 rank"
+  info_type.info(it, info_type)
+  movie_info_idx.info_type(mi, it)
+  return (mi, it, info_type)
+end
+
+b = @query begin 
+  info_type.info(it, info_type)
+  info_type = "top 250 rank"
+  movie_info_idx.info_type(mi, it)
+  return (mi, it, info_type)
+end
+
+Data.diff(a,b)
+```
+
+Disabling early return and pushing return point to end does not change anything.
+
+Simpler example with same variable order:
+
+``` julia
+a = @query begin 
+  info_type.info(it, _)
+  it = 112
+  movie_info_idx.info_type(mi, it)
+  return (mi, it)
+end
+
+b = @query begin 
+  info_type.info(it, _)
+  movie_info_idx.info_type(mi, it)
+  it = 112
+  return (mi, it)
+end
+
+Data.diff(a,b)
+```
+
+Does this come down to which order we take mins in?
+
+I notice that the way I'm parsing `=` is not very efficient - arguments are the wrong way round. Fixing that makes this example work, but the next one up is still broken...
+
+``` julia
+b = @query begin 
+  info_type.info(it, info_type)
+  info_type = "top 250 rank"
+  movie_info_idx.info_type(mi, it)
+  return (mi, it)
+end
+
+c = @query begin
+  it = Int8(112) 
+  info_type.info(it, info_type)
+  info_type = "top 250 rank"
+  movie_info_idx.info_type(mi, it)
+  return (mi, it)
+end
+
+Data.diff(b,c)
+```
+
+Ok, these two differ only in order of mins but get different results. Perhaps its because `seek` and `iter` are not identical?
+
+`b` is missing ten results at the beginning of the range.
+
+It looks like seek is returning the wrong range.
+
+Aha, it's those `lo+1`s again. I'm just going to take them out for now. Too hard to figure out when they are valid.
+
+1a passes now. Let's run the whole suite again.
+
+* q15 is missing some results.
+* q19 has some bad type inference
+* q23 is missing some results
+* everything that uses query_not is commented out
+
+95/112 queries working.
+
+q19 is broken because I'm not treating underscore correctly. I need to at least uniquify each one, and ideally avoid joining on them altogether. 
+
+Seems to fix q15 and q23 too.
+
+Took a pass at getting query_not working, but it requires some way to pass variables into a query at runtime and I can't do that with the current setup.
