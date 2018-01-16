@@ -17489,3 +17489,14 @@ q19 is broken because I'm not treating underscore correctly. I need to at least 
 Seems to fix q15 and q23 too.
 
 Took a pass at getting query_not working, but it requires some way to pass variables into a query at runtime and I can't do that with the current setup.
+
+### 2018 Jan 16
+
+Bunch of distractions last week. Quit school. More on plans later in the week.
+
+Tried to add SQL Server to the benchmarks but the linux drivers are a comedy of errors.
+
+Have a long todo list for cleaning up the compiler. Not sure where to start. Things seem tied together in many ways.
+
+Pick off easy stuff first. Removed the redundant `fun_type`. Made `var_type` a plain dict.
+
