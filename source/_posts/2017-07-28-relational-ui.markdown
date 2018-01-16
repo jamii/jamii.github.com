@@ -1006,8 +1006,8 @@ group_3(42, 2, 1, "bob", 1, "", 0) => (0x03, 0x10, Html, "td")
 group_3(42, 2, 2, "", 0, "hi", 1) => (0x03, 0x11, Html, "td")
 group_3(42, 2, 3, "", 0, "", 0) => (0x03, 0x12, Html, "td")
 group_3(42, 2, 4, "", 0, "", 0) => (0x03, 0x13, Html, "td")
-group_3(42, 3, 1, "chia", 1, "", 0) => (0x04, 0x14, Html, "td")
-group_3(42, 3, 2, "", 0, "greetings", 1) => (0x04, 0x15, Html, "td")
+group_3(42, 3 1, "chia", 1, "", 0) => (0x04, 0x14, Html, "td")
+group_3(42, 3 2, "", 0, "greetings", 1) => (0x04, 0x15, Html, "td")
 group_3(42, 3, 3, "", 0, "", 0) => (0x04, 0x16, Html, "td")
 group_3(42, 3, 4, "", 0, "", 0) => (0x04, 0x17, Html, "td")
 group_3(42, 4, 1, "chia", 1, "", 0) => (0x05, 0x18, Html, "td")
@@ -1179,7 +1179,7 @@ Currently templates are limited to a fixed depth, so they can't express eg a fil
 
 ## Performance
 
-I won't know for sure how well this will perform until I've built something more substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/master/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
+I won't know for sure how well this will perform until I've built something more substantial, but for early feedback I ran some simple timings on the [Todomvc example](https://github.com/jamii/imp/blob/old-experiments/examples/Todo.jl) and compared it the [official React implementation](http://todomvc.com/examples/react/#/) and [some old Om implementation](http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html). This is not intended to be a pissing contest - I'm just trying to get a handle on whether performance is likely to be a problem.
 
 My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile and eyeballed the time from the user event until the start of layout/rendering/painting.
 
@@ -1232,6 +1232,6 @@ Running everything on the server has obvious limitations wrt latency and maximum
 
 I haven't given much thought to security yet. A good start would be to track what events are present in the template and refuse to allow clients to submit any events that aren't on the list.
 
-The implementation strategy here produces non-recursive views which only use simple joins, string concatenation and hashing. It should be possible to target pretty much any relational system. I've [implemented the underlying layers](https://github.com/jamii/imp/tree/master/lb) in [LogicBlox](http://logicblox.com/) and I'm just waiting on some upcoming features before doing the work to compile templates automatically. It would be useful to target something like sqlite too.
+The implementation strategy here produces non-recursive views which only use simple joins, string concatenation and hashing. It should be possible to target pretty much any relational system. I've [implemented the underlying layers](https://github.com/jamii/imp/tree/eea5f31a07e8d33b01d059ca491dd6cceb74d752/lb) in [LogicBlox](http://logicblox.com/) and I'm just waiting on some upcoming features before doing the work to compile templates automatically. It would be useful to target something like sqlite too.
 
 _Thanks to rtnz for extensive feedback on the first drafts._
