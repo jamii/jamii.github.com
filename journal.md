@@ -17498,5 +17498,5 @@ Tried to add SQL Server to the benchmarks but the linux drivers are a comedy of 
 
 Have a long todo list for cleaning up the compiler. Not sure where to start. Things seem tied together in many ways.
 
-Pick off easy stuff first. Removed the redundant `fun_type`. Made `var_type` a plain dict.
+Pick off easy stuff first. Moved Parser to JobParser. Removed the redundant `fun_type`. Made `var_type` a plain dict. Took Expr out of FunCall/IndexCall and handled it directly in JobParser.
 
