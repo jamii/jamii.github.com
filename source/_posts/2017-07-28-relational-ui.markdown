@@ -1125,9 +1125,9 @@ The nodes in each group are sorted in the order they will appear in the DOM and 
 All the examples in this post only spliced data into text nodes, but the implementation allows splicing anywhere:
 
 ``` julia
-dynamic_tag(tag) do
+@query dynamic_tag(tag) begin
   ["$tag"
-    dynamic_attributes(key, val) do
+    @query dynamic_attributes(key, val) begin
       "$key"="$val"
     end
   ]
