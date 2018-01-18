@@ -17500,3 +17500,8 @@ Have a long todo list for cleaning up the compiler. Not sure where to start. Thi
 
 Pick off easy stuff first. Moved Parser to JobParser. Removed the redundant `fun_type`. Made `var_type` a plain dict. Took Expr out of FunCall/IndexCall and handled it directly in JobParser.
 
+### 2018 Jan 17
+
+Sat down and tried to write out IR problem in detail. Realized that there is a lot of confusion around zeroes and default values. Going to write a simple interpreter to pin down semantics and see if everyone agrees.
+
+Let's use integer arithmetic modulo 10 to delay dealing with infinite relations.
