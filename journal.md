@@ -17505,3 +17505,80 @@ Pick off easy stuff first. Moved Parser to JobParser. Removed the redundant `fun
 Sat down and tried to write out IR problem in detail. Realized that there is a lot of confusion around zeroes and default values. Going to write a simple interpreter to pin down semantics and see if everyone agrees.
 
 Let's use integer arithmetic modulo 10 to delay dealing with infinite relations.
+
+### 2018 Jan 18
+
+Interpreter looks ok. Let's try out the poly example.
+
+Works, but its impractically slow. Will have to be a bit smarter about joining.
+
+Faster now, but not obviously correct. Pairwise hashjoin instead?
+
+Have to be careful to handle duplicated vars correctly.
+
+Hooked up the compiler via:
+
+``` julia
+struct Compiled <: Expr
+  args::Vector{Symbol}
+  f::Function
+end
+
+function interpret(env::Dict{Symbol, Set}, expr::Compiled) ::Set
+  expr.f(Dict((arg => env[arg] for arg in expr.args)))
+end
+```
+
+Currently usage is pretty hacky. 
+
+* Can't compile in advance because we don't know the types. Can't currently hoist it into a generated function because I use eval inside the compiler (might be fixable?). 
+* Have to convert between Data.Relation and Set at the boundaries.
+
+``` julia
+
+compile(expr::Expr) = map_exprs(compile, expr)
+
+function compile(expr::Multijoin) ::Expr
+  names = [gensym("arg") for _ in expr.domain]
+  # TODO need to figure out type inference or staging to avoid compiling every time
+  function f(env) 
+    compiled_env = map_vals(set_to_relation, env)
+    lambda = Lambda(
+      gensym("lambda"),
+      expr.vars,
+      SumProduct(
+        Ring{Bool}(|, &, true, false, nothing),
+        [FunCall(name, typeof(compiled_env[name]), domain_vars) for (name, (_, domain_vars)) in zip(names, expr.domain)],
+        [Constant(true)],
+      ),
+    )
+    compiled = compile_relation(lambda)
+    result = Base.invokelatest(compiled, compiled_env)
+    relation_to_set(result)
+  end
+  Let(
+    collect(zip(names, (domain_expr for (domain_expr, _) in expr.domain))),
+    Compiled(names, f),
+  )
+end
+```
+
+Need to handle aggregation and maybe functions in the interpreter, and also pass aggregation down to the compiler.
+
+### 2018 Jan 23
+
+Mostly just watching talks today. 
+
+### 2018 Jan 24
+
+Working on a 'things about Julia that are not in the tutorials' talk.
+
+### 2018 Jan 25
+
+More talk prep.
+
+Interrupted by EOL of Ubuntu 17.04. Bah.
+
+Debugging Julia with gdb/lldb is not really feasible - too hard to recover variables.
+
+Got prep done for basics. Not sure what to put in the other session.
