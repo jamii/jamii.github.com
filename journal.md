@@ -17582,3 +17582,27 @@ Interrupted by EOL of Ubuntu 17.04. Bah.
 Debugging Julia with gdb/lldb is not really feasible - too hard to recover variables.
 
 Got prep done for basics. Not sure what to put in the other session.
+
+### 2018 Jan 26
+
+Trying to dump generated code into a dump file so the debugger handles it nicely. Problems:
+
+Gensym/macro variables use `#` which is a comment - replace it with `_`
+
+`&` with no arguments prints as `&()` which is invalid code - replace it with `(&)()`
+
+The debugger bails on `type UnionAll has no field name`. It bails on the original code too. Sad. I'll stash this and come back to it after refactoring the compiler. Maybe whatever it's getting stuck on will change.
+
+Aha, it can't handle calling parametric types as functions? https://github.com/Keno/ASTInterpreter2.jl/issues/17
+
+Hackily fixed it.
+
+Nearly works now. Just can't quite roundtrip the closures used for constants. I never really liked those anyway. Let's get rid off them.
+
+Now it's just having problems finding modules. The roundtrip through text seems to confuse it. Oh, and it's going to be similar with functions that are passed directly. Bah!
+
+Going to need to figure out where/when typing info is added to make this work. Let's ignore it for now and work on goto-ifying the compiler instead.
+
+Emitting nicer code now for min-branches.
+
+Actually not sure that goto helps, because I can't return easily to the correct loop. I could do a branchy jump, but that isn't much different from just putting the branch in the loop gears.
