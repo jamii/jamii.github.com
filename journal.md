@@ -17606,3 +17606,19 @@ Going to need to figure out where/when typing info is added to make this work. L
 Emitting nicer code now for min-branches.
 
 Actually not sure that goto helps, because I can't return easily to the correct loop. I could do a branchy jump, but that isn't much different from just putting the branch in the loop gears.
+
+### 2018 Feb 13
+
+Back into the fray.
+
+We have a mostly agreed core language, and I want to have a working interpreter for it so we can run lots of examples and make sure that they all do what we expect. 
+
+Later on, I have some ideas on how to specialize the interpreter into a compiler, but for now the priority is just to get it fast enough to run simple examples.
+
+Basic examples are working. Need to figure out some sugar to make this less painful.
+
+`Not` is tricky. For now, just going to insist that it must be on the right-hand side of `And`. I'm not sure whether that is sufficient in general. I guess in DNF?
+
+### 2018 Feb 14
+
+Working on static analysis tools. So far mostly cribbing from code_warntype, but the goal is to also traverse the static call-graph and apply the same analysis everywhere.
