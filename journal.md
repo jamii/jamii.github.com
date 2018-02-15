@@ -17622,3 +17622,68 @@ Basic examples are working. Need to figure out some sugar to make this less pain
 ### 2018 Feb 14
 
 Working on static analysis tools. So far mostly cribbing from code_warntype, but the goal is to also traverse the static call-graph and apply the same analysis everywhere.
+
+### 2018 Feb 15
+
+Call tree. Need to look in invoke somewhere. Also want to catch dynamic calls.
+
+Handling closures is going to be tricky. `code_typed` takes the actual function, but I want to look up code using the function type.
+
+Can get it directly from the method_info:
+
+``` julia
+world = ccall(:jl_get_world_counter, UInt, ())
+params = Core.Inference.InferenceParams(world)
+(_, code_info, return_typ) = Core.Inference.typeinf_code(mi, true, true, params)
+```
+
+The tricky part now is just getting the first MethodInstance. 0.7 has a util function for creating one. I have to do it by hand, I think.
+
+``` julia
+function method_instance(f, typs)
+  world = ccall(:jl_get_world_counter, UInt, ())
+  tt = Tuple{typeof(f), typs...}
+  results = Base._methods_by_ftype(tt, -1, world)
+  @assert length(results) == 1
+  (_, _, meth) = results[1]
+  # TODO not totally sure what jl_match_method is needed for - I think it's just extracting type parameters like `where {T}`
+  (ti, env) = ccall(:jl_match_method, Any, (Any, Any), tt, meth.sig)::SimpleVector
+  meth = Base.func_for_method_checked(meth, tt)
+  linfo = ccall(:jl_specializations_get_linfo, Ref{Core.MethodInstance}, (Any, Any, Any, UInt), meth, tt, env, world)
+end
+```
+
+Brutal.
+
+It all sort of works now. I do have a todo list to work through.
+
+Improved the error heuristics a bunch. 
+
+Figured out how to turn off inlining during type analysis.
+
+``` julia
+params = Core.Inference.InferenceParams(world, inlining=false)
+```
+
+Added some fancy printouts.
+
+Confused why removing inlining removed one of the errors I had detected earlier. Maybe it was in a Base function?
+
+Track call parents to make it easier to figure out where weird functions come from.
+
+Can't handle JOB queries - can't see through the initial setup:
+
+``` julia
+(::Imp.Compiler.Compiled{Imp.Compiler.##290#setup})(::Dict{Symbol,Any}, ::Vararg{Dict{Symbol,Any},N} where N) in Imp.Compiler at /home/jamie/imp/src/Compiler.jl:699
+  Called from: q1a() in Examples.Job at /home/jamie/imp/examples/Job.jl:24
+  NotConcretelyTyped: args::Tuple{Dict{Symbol,Any},Vararg{Dict{Symbol,Any},N} where N}
+```
+
+TODO 
+
+* Package code
+* Document
+* Figure out JOB
+* Warn on dynamic calls
+* Count allocations in Julia IR
+* Count allocations in LLVM IR
