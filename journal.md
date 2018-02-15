@@ -17687,3 +17687,30 @@ TODO
 * Warn on dynamic calls
 * Count allocations in Julia IR
 * Count allocations in LLVM IR
+
+Wow, analyzer already found a problem in Job. 
+
+``` julia
+julia> function foo(x)
+       x[1] != nothing
+       end
+foo (generic function with 1 method)
+
+julia> @code_warntype foo([nothing, 1])
+Variables:
+  #self# <optimized out>
+  x::Array{Any,1}
+
+Body:
+  begin
+      return ((Base.arrayref)(x::Array{Any,1}, 1)::Any != Main.nothing)::Union{Bool, Missings.Missing}
+  end::Union{Bool, Missings.Missing}
+```
+
+https://discourse.julialang.org/t/spooky-missing-action-at-a-distance/9089
+
+Booleans are not being inferred in places. Some of the closures are not being inferred right - `Imp.Compiler.##4360#4373{_,_,_,_}`
+
+Best guess so far is that it just gives up when the types get too big. The types aren't broken at the main level, but maybe their inferred types are?
+
+Doesn't happen in smaller queries either. Seems like a fundamental limitation with using closures. More reason to switch to internal branches.
