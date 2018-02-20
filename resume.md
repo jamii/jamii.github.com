@@ -41,7 +41,7 @@ footer: true
 
 Highlighted commercial projects:
 
-* Built a [LaTeX aware search engine](http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/) to power <latexsearch.com>. Covers the entire Springer library of more than 8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
+* Built a [LaTeX aware search engine](http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/) to power [latexsearch.com](http://latexsearch.com). Covers the entire Springer library of more than 8m LaTeX equations. Searches by tree-edit distance on compressed syntax trees, using suffix arrays as a first-pass filter.
 
 * Built a prototype replacement for the core trading engine at the [Smarkets](https://smarkets.com/) betting exchange: 10x less code, 40x better throughput, 10x better 99% latency.
 
