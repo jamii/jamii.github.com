@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 'Building the Intentional University: Minerva and the Future of Higher Education'
+title: Notes on 'Building the Intentional University: Minerva and the Future of Higher Education'
 hidden: true
 ---
 
