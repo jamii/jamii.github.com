@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Notes on 'The Rock Climber's Training Manual'
-hidden: true
 ---
 
 <https://www.amazon.co.uk/dp/0989515613>
@@ -219,6 +218,121 @@ Power:
     * Down-and-up
 * Power training should be explosive, max effort/focus/intensity
 * As soon as fatigued, stop training and go home
+
+Power-endurance:
+
+* Sustained power - bouts of 30-180s of near-maximal exertion
+* Gains come from improving aerobic pathways (eg more, bigger, better mitochondria)
+* Endurance training is specific:
+  * Specific to grip type
+  * Low-intensity endurance training (eg arcing) only trains slow-twitch, also need high-intensity training to train fast-switch
+  * Tradeoff between intensity and duration/repetition to match climbing goals for the season
+* Start at 2 rest : 1 work and aim for 1 rest : 1 work
+* Linked bouldering circuit
+  * 1-4 mins / ~20 hand movements
+  * Powerful, dynamic moves - training commitment under pump
+  * Aim for pump to start around 3-4 reps
+* Route intervals
+  * Include poor rests to allow fatigue past 1-4 min PE limit
+  * Ideally on lead - training clipping under pump
+  * Aim one letter grade above onsight level
+  * Practice route until it's an automatic send when fresh
+  * Typically 3-6 reps
+* Beware that indoor climbing is faster because easier to read 
+  * Aim for same pace as goal route
+  * Look for tricky feet or technical moves
+  * Put time gates at key holds
+* Traverses are easy to find at the gym, but prefer up/down climbing
+* Cooldown is important for recovery - ARC after 20 mins rest 
+* Can be partially replaced by redpoint attempts on project
+
+Rest:
+
+* Improvement is stimulated by exercise but *occurs* while resting
+* Sleep
+  * Don't incur sleep debt
+  * Sleep extra (up to 10 hours) during leadup to projects
+* Rest days
+  * Don't tax muscles used in climbing
+  * Aerobic exercise is ok - volume low enough so it doesn't require it's own rest days
+  * Skin care, stretching, massage, icing
+* Rest phase
+  * Don't extend the performance phase or skip the rest phase
+  * Reminiscence effect - regularization for the motor system?
+  * Active rest - do non-climbing things
+* End the season immediately on injury
+* Skin care 
+  * Sand calluses down and apply lotion to avoid flappers
+  * Keep skin dry in the hours before climbing
+  * Quit early rather than risk ruining the trip
+  * Use extra chalk on hotspots
+  
+Training plans:
+
+* Resting
+  * 1 climbing day => 1 rest day
+  * 2 climbing days => 2 rest days
+  * 1 high-intensity training => 2 rest days
+* Within each day, order exercises intense -> endurance
+* Within weekend trips, order projects intense -> endurance
+
+Weight management:
+
+* Periodic training => periodic dieting - only need to cut weight in performance phase
+* Aim for <10% fat generally and as low as 5% during performance phase
+* Glycemic response
+  * Low blood sugar -> lethargy + ketosis - breaking down fat for energy
+  * High blood sugar -> release insulin -> convert blood glucose into glycogen (in muscle and liver) or fat
+  * Overcompensates - blood sugar spike -> insulin response -> blood sugar crash -> craving for sugar -> ...
+  * Goal is to keep blood sugar levels relatively constant to avoid this cycle
+* Glycemic index - how quickly food breaks down into sugar
+  * Small amounts of high GI foods after training help replenish glycogen
+  * High GI foods on empty stomach are particularly bad
+  * Doesn't take portion size into account
+* Glycemic load = (GI / 100) * (carbs - dietary fiber)
+  * Still only accounts for carbs eg steak has low GI/GL
+* Eat food, mostly vegetables
+* Find replacements for the worst parts of your diet, especially comfort foods
+* Snack constantly on low-calorie foods - mostly salad
+* Don't drink calories
+* Take vitamin and omega-3 supplements
+* Hang a picture of your project on the fridge door
+
+Preparation:
+
+* Pay attention to temperature, moisture, shade etc
+* Route learning
+  * Hangdog and stick-clip to figure out the beta
+  * Practice rests too - don't rely on the rope
+  * If a clip is also the crux, consider skipping it
+* Beta
+  * Film the beta and/or draw a map on a photo
+  * Regularly review and mentally rehearse
+  * Include struggle and positive self-talk in mental rehearsals
+* Confidence is built on pyramids
+* Warmup - 30-45 mins of climbing time, on lead - followed by 30-60 mins rest
+* Pre-climb
+  * Start breathing rhythm
+  * Pick consistent order of preparation
+  * Last round of mental rehearsal
+* Post-climb
+  * Review performance, ideally with video
+  * Notice triggers for mistakes eg holding breath after a dyno
+  * Especially triggers for negative attitude or broken focus
+* Nibble throughout the day
+* Warm-down on fun, rewarding routes at the end of the day
+
+Redpoint and onsight:
+
+* Maximize quality over quantity eg climb Sat morning and Sun evening
+* Begin each burn as a redpoint attempt, only switch to learning after a fall
+* Work harder moves earlier
+* Work higher cruxes earlier - more likely to ruin a good attempt
+* Use easy sections for warmup / cooldown
+* For onsights train endurance, lock-offs, down-climbing, moving recovery
+* Onsight pyramids should be flatter and all outdoors
+
+Trad and big-wall - __skipped__
 
 Training for bouldering:
 

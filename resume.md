@@ -9,7 +9,7 @@ footer: true
 
 ## Independent Researcher
 
-#### Aug 2016 - today
+#### Aug 2016 - Apr 2017
 
 * Built a relational query compiler that compiles queries into zero-allocation, [worst-case optimal](https://arxiv.org/abs/1310.3314) native code and [outperforms Postgres](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) on the Join Order Benchmark.
 
