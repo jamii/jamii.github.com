@@ -29,6 +29,6 @@ The bulk of the book is spent arguing for 3 over 2. The core idea being:
 
 This means that if you can fake the signals to get in you can make it in the job world - you won't be detected and filtered out. 3 makes education a zero-sum competition to produce the best signal, leading to a successful arc relatively independent of actual ability.
 
-But the bulk of the argument doesn't seem that important, once we've discard 1. 1 is the sole argument for education in it's current form. If all we care about is signaling conscientiousness we can just make people copy books by hand for four years at much less expense to society.
+But the bulk of the argument doesn't seem that important once we've discard 1. 1 is the sole argument for education in it's current form. If all we care about is signaling conscientiousness we can just make people copy books by hand for four years at much less expense to society.
 
 A more interesting question is how the signaling argument relates to new schools like Minerva. Is it possible to improve education, or does signaling entrench the current players?
