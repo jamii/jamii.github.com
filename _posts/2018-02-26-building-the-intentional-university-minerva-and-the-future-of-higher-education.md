@@ -34,4 +34,4 @@ Social:
  
 __Feels like a dramatic improvement on traditional education, although the actual assessment of this is not strong.__
 
-__If I taught, the book might be very useful. As it is, it's still interesting as an example of the stark difference between actually trying to do something vs just going through the motions. Eg it's well known that retention from passive lectures is terrible, but most schools still rely almost entirely on passive lectures for teaching.__
+__If I taught, the book might be very useful. As it is, it's still interesting as an example of the stark difference between [actually trying](http://lesswrong.com/lw/uh/trying_to_try/) vs just going through the motions. Eg it's well known that retention from passive lectures is terrible, but most schools still rely almost entirely on passive lectures for teaching.__
