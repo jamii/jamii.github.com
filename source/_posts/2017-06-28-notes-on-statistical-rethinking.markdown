@@ -124,7 +124,7 @@ For prediction tasks we can just choose models based on some cost function that 
 
 $D_{KL}(p,q) - D_{KL}(p,r) = E_p[\log(r) - \log(q)]$. We know $r$ and $q$ and we can approximate $E_p[\cdot]$ by averaging over the observed data, so we can easily estimate the difference in divergence between two models.
 
-Minimizing KL-divergence is equivalent to maximizing the likelihood of the posterior over the observed data. Define deviance as $D(q) = -2 sum_i \log(q_i)$ (summing over data). __Roughly speaking, deviance : divergence as mean : expectation.__
+Minimizing KL-divergence is equivalent to maximizing the likelihood of the posterior over the observed data. Define deviance as $D(q) = -2 \sum_i \log(q_i)$ (summing over data). __Roughly speaking, deviance : divergence as mean : expectation.__
 
 Now we want to estimate out-of-sample deviance. Various different estimators making different assumptions:
 
