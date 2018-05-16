@@ -67,7 +67,12 @@ a:active {
   height: auto;
 }
 
-code,
+code {
+    padding: 0.2em 0.4em;
+    font-weight: bold;
+}
+
+pre code,
 pre,
 blockquote,
 figure,
