@@ -5,7 +5,7 @@ title: 'Notes on ''Espresso Lessons: From The Rock Warrior''s Way'''
 
 <https://smile.amazon.com/dp/B008XP61MA/>
 
-Same ideas as Rock Warrior's Way, but after 15 years of teaching it.
+Same ideas as Rock Warrior's Way, but refined after 15 years of teaching.
 
 ## Stress
 
