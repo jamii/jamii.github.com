@@ -9,6 +9,8 @@ footer: true
 
 ## Researcher at [RelationalAI](http://relational.ai/)
 
+#### May 2017 - Aug 2018
+
 * Proved Julia as a viable implementation language for the entire system, allowing only a few engineers to develop a relational database, query language and implementations of various ML algorithms in under a year.
   
 * Developed executable semantics for debugging the language design.

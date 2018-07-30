@@ -3,7 +3,9 @@ layout: post
 title: Staged interpreters in Rust
 ---
 
-Last week I was writing an interpreter for a query language. On arithmetic-heavy queries the interpreter overhead was >10x compared to a compiled baseline. I tried staging the interpreter to move the overhead out of the inner loops. In the end the results weren't worth the complexity compared to just writing a compiler so I didn't end up finishing it. But I think it's a neat idea anyway so I wrote a much simpler example to demonstrate. (It's essentially a [tagless staged interpreter](http://okmij.org/ftp/tagless-final/JFP.pdf) with the addition of shared mutable state).
+Last week I was writing an interpreter for a query language. On arithmetic-heavy queries the interpreter overhead was >10x compared to a compiled baseline. I tried staging the interpreter to move the overhead out of the inner loops. In the end the results weren't worth the complexity compared to just writing a compiler so I didn't end up finishing it. But I think it's a neat idea anyway so I wrote a much simpler example to demonstrate. 
+
+(It's essentially a [tagless staged interpreter](http://okmij.org/ftp/tagless-final/JFP.pdf) with the addition of shared mutable state).
 
 Let's look at a much simpler example that I actually finished ([source code](https://github.com/jamii/rust-tagless/blob/master/src/main.rs)). It's an interpreter for a rather pointless little language that has just enough features to illustrate the idea.
 
