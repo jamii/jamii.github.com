@@ -25,6 +25,8 @@ footer: true
 
 * Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
 
+* Helped develop [static analysis tools](https://github.com/MikeInnes/Traceur.jl) for detecting performance problems in generated Julia code
+
 ## Independent Researcher
 
 #### Aug 2016 - Apr 2017
