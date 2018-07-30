@@ -7,6 +7,24 @@ sharing: true
 footer: true
 ---
 
+## Researcher at [RelationalAI](http://relational.ai/)
+
+* Proved Julia as a viable implementation language for the entire system, allowing only a few engineers to develop a relational database, query language and implementations of various ML algorithms in under a year.
+  
+* Developed executable semantics for debugging the language design.
+
+* Wrote the current execution engine; a combination of a rewriting system and a simple interpreter.
+
+* Various prototypes for faster execution engines, notably:
+  
+  * A [staged tagless interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
+  
+  * Using specialization to turn an interpreter into a compiler (upcoming JuliaCon talk).
+
+* Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl/graphs/contributors), used for implementing database indexes.
+
+* Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
+
 ## Independent Researcher
 
 #### Aug 2016 - Apr 2017
