@@ -16,6 +16,8 @@ footer: true
 * Wrote the current execution engine; a combination of a rewriting system and a simple interpreter.
 
 * Various prototypes for faster execution engines, notably:
+
+  * A direct compiler
   
   * A [staged tagless interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
   
