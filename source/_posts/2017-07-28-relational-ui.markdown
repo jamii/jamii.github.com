@@ -261,7 +261,7 @@ where message.id = likes.message
 
 But this query does not return any results for messages which have no likes. To generate the correct UI tree we have to break this up into multiple queries, use subqueries or use [lateral joins](https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/). That leads to tangled query code that is hard to visually match up to the resulting tree.
 
-__So I created a relational analogue to the OOPy template language, that expresses these nested lateral joins in a way that visually mimics the structure of the resulting tree.__
+__So I created a relational analogue to the OOPy template language, that expresses these nested joins in a way that visually mimics the structure of the resulting HTML tree.__
 
 ## Templates
 
