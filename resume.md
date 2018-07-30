@@ -19,7 +19,7 @@ footer: true
   
   * A [staged tagless interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
   
-  * Using specialization to turn an interpreter into a compiler (upcoming JuliaCon talk).
+  * Using partial evaluation to turn an interpreter into a compiler (upcoming JuliaCon talk).
 
 * Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl/graphs/contributors), used for implementing database indexes.
 
