@@ -19,7 +19,7 @@ footer: true
 
 * Various prototypes for faster execution engines, notably:
 
-  * A direct compiler
+  * A direct compiler.
   
   * A [tagless staged interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
   
