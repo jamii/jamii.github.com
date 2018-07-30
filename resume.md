@@ -19,7 +19,7 @@ footer: true
 
   * A direct compiler
   
-  * A [staged tagless interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
+  * A [tagless staged interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
   
   * Using partial evaluation to turn an interpreter into a compiler (upcoming JuliaCon talk).
 
