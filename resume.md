@@ -11,31 +11,33 @@ footer: true
 
 #### May 2017 - Aug 2018
 
-* Proved Julia as a viable implementation language for the entire system, allowing only a few engineers to develop a relational database, query language and implementations of various ML algorithms in under a year.
-  
-* Developed executable semantics for debugging the language design.
+RelationalAI is building a relational database, a probabilistic programming language and various integrated machine learning systems. I took on the task of figuring out how to make this project feasible, given the small size of the team and the limited funding time-frame.
 
-* Wrote the current execution engine; a combination of a rewriting system and a simple interpreter.
-
-* Various prototypes for faster execution engines, notably:
-
-  * A direct compiler.
-  
-  * A [tagless staged interpreter](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/).
-  
-  * Using partial evaluation to turn an interpreter into a compiler (upcoming JuliaCon talk).
-
-* Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl/graphs/contributors), used for implementing database indexes.
+I wrote a number of prototype compilers in Julia, demonstrating better performance than existing work with much less implementation effort. To allay concerns about adopting Julia, I:
 
 * Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
 
-* Helped develop [static analysis tools](https://github.com/MikeInnes/Traceur.jl) for detecting performance problems in generated Julia code
+* Delivered a report on the Julia garbage collector and task system, to allay concerns about parallelism.
+
+* Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl/graphs/contributors), used for implementing database indexes.
+
+* Helped develop [static analysis tools](https://github.com/MikeInnes/Traceur.jl) for detecting performance problems in generated Julia code.
+
+As a result RelationalAI adopted Julia for all ongoing development, after which I:
+
+* Assisted with Julia training, on-boarding and debugging
+
+* Wrote the current execution engine; a combination of a rewriting system and a simple interpreter.
+
+* Developed executable semantics for debugging the language design.
+
+* Demonstrated the use of partial evaluation to obtain compiler-like performance from an annotated interpreter, to further reduce development effort.
 
 ## Independent Researcher
 
 #### Aug 2016 - Apr 2017
 
-* Built a relational query compiler that compiles queries into zero-allocation, [worst-case optimal](https://arxiv.org/abs/1310.3314) native code and [outperforms Postgres](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) on the Join Order Benchmark.
+* Built a relational query compiler that produces zero-allocation, [worst-case optimal](https://arxiv.org/abs/1310.3314) native code and [outperforms Postgres](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) on the Join Order Benchmark.
 
 * Built a declarative language for building GUIs directly on top of a relational database, without any application code, that [performs on par with React](http://scattered-thoughts.net/blog/2017/07/28/relational-ui/).
 
