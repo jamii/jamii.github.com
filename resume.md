@@ -13,7 +13,7 @@ footer: true
 
 RelationalAI is building a relational database, a probabilistic programming language and various integrated machine learning systems. I took on the task of figuring out how to make this project feasible, given the small size of the team and the limited funding time-frame.
 
-I wrote a number of prototype compilers in Julia, demonstrating better performance than existing work with much less implementation effort. To allay concerns about adopting Julia, I:
+I built several prototypes in Julia, demonstrating better performance than existing work with much less implementation effort. To allay concerns about adopting Julia, I:
 
 * Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
 
@@ -36,6 +36,8 @@ As a result RelationalAI adopted Julia for all ongoing development, after which 
 ## Independent Researcher
 
 #### Aug 2016 - Apr 2017
+
+Initially planned as a sabbatical, but later supported by funding from [LogicBlox](https://developer.logicblox.com/).
 
 * Built a relational query compiler that produces zero-allocation, [worst-case optimal](https://arxiv.org/abs/1310.3314) native code and [outperforms Postgres](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) on the Join Order Benchmark.
 
