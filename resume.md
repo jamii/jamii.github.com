@@ -17,7 +17,7 @@ I built several prototypes in Julia, demonstrating better performance than exist
 
 * Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
 
-* Delivered a report on the Julia garbage collector and task system, to allay concerns about parallelism.
+* Surveyed the Julia garbage collector and task system, to allay concerns about parallelism.
 
 * Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl/graphs/contributors), used for implementing database indexes.
 
@@ -25,7 +25,7 @@ I built several prototypes in Julia, demonstrating better performance than exist
 
 As a result RelationalAI adopted Julia for all ongoing development, after which I:
 
-* Assisted with Julia training, on-boarding and debugging
+* Assisted with Julia training, on-boarding and debugging.
 
 * Wrote the current execution engine; a combination of a rewriting system and a simple interpreter.
 
