@@ -19,7 +19,7 @@ I built several prototypes in Julia, demonstrating better performance than exist
 
 * Surveyed the Julia garbage collector and task system, to allay concerns about parallelism.
 
-* Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl/graphs/contributors), used for implementing database indexes.
+* Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl), used for implementing database indexes.
 
 * Helped develop [static analysis tools](https://github.com/MikeInnes/Traceur.jl) for detecting performance problems in generated Julia code.
 
