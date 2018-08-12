@@ -31,7 +31,7 @@ As a result RelationalAI adopted Julia for all ongoing development, after which 
 
 * Developed executable semantics for debugging the language design.
 
-* Demonstrated the use of partial evaluation to obtain compiler-like performance from an annotated interpreter, to further reduce development effort.
+* Demonstrated the use of partial evaluation to obtain compiler-like performance from an annotated interpreter, to further reduce development effort (https://youtu.be/BBUrQId0HhQ)
 
 ## Independent Researcher
 
