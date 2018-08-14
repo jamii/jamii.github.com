@@ -36,55 +36,14 @@ layout: compress
 </head>
 
 <body>
-  
+
   <nav>
-    <ul>
-      <li>
-        <a href="/" title="Home">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-home fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a href="mailto:{{ site.author.email }}" title="Email">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ '/feed.xml' | prepend: site.baseurl }}" title="RSS">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a href="https://github.com/{{ site.author.github }}" title="GitHub">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>		  
-    </ul>
+    <a href="/">
+      JAMIE BRANDON
+    </a>
   </nav>
   
   {{ content }}
-  
-  <script type="text/javascript">
-	(function() {
-		var css = document.createElement('link');
-		css.href = '//netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css';
-		css.rel = 'stylesheet';
-		css.type = 'text/css';
-		document.getElementsByTagName('head')[0].appendChild(css);
-	})();
-</script>
   
 </body>
 </html>
