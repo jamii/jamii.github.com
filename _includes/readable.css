@@ -178,6 +178,11 @@ header h1 {
   margin: 0;
 }
 
+footer {
+  text-align: center;
+  font-style: italic;
+}
+
 iframe {
   width: 560px;
   height: 315px;
