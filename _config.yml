@@ -27,10 +27,6 @@ exclude:
   - Vagrantfile
   - classes
   - code
-  - JuliaCon2018
-
-keep_files:
-  - JuliaCon2018
 
 sass:
   style: compressed
