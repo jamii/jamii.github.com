@@ -26,6 +26,10 @@ exclude:
   - README.md
   - CNAME
   - Vagrantfile
+  - classes
+
+keep_files:
+  - JuliaCon2018
 
 prose:
   rooturl: '_posts'
