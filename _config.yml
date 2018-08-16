@@ -27,6 +27,7 @@ exclude:
   - CNAME
   - Vagrantfile
   - classes
+  - code
 
 keep_files:
   - JuliaCon2018
