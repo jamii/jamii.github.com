@@ -179,6 +179,7 @@ header h1 {
 }
 
 footer {
+  margin-top: 4em;
   text-align: center;
   font-style: italic;
 }
