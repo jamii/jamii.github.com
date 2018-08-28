@@ -70,7 +70,7 @@ julia> unsafe_load(p)
 Foo(42, 3.14, false)
 ```
 
-In [type-stable](http://www.johnmyleswhite.com/notebook/2013/12/06/writing-type-stable-code-in-julia/) code, these operations compile down to the corresponding llvm primitives, producing the same asm you would expect from C:
+In [type-stable](https://docs.julialang.org/en/v1/manual/performance-tips/#Write-%22type-stable%22-functions-1) code, these operations compile down to the corresponding llvm primitives, producing the same asm you would expect from C:
 
 ``` julia
 julia> function f(p)
@@ -520,4 +520,4 @@ From the outside, generated functions behave just like a normal function. This a
 
 The rest of the library packs in custom memory layout by adding new methods to the layout functions (which is how nested Blobs are [converted to/from offsets on read/write](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/blob.jl#L157-L172)), implementations of [fixed size vectors](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/vector.jl) / [bitvectors](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/bit_vector.jl) / [strings](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/string.jl) and [helper functions for initialization of complex data-structures](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/layout.jl). All with similarly minimal overhead vs C.
 
-As with the examples here, most of the work is done by the combination of type inference, type specialization and generated functions, with occasional uses of forced inlining to guarantee constant propagation. Unlike, say, a tracing JIT, this is predictable and deterministic. With some experience, it's easy to write this kind of code and predict what Julia will do with it, allowing libraries like Blobs to provide abstractions without overhead.
+As with the examples here, most of the work is done by the combination of type inference, type specialization and generated functions, with occasional uses of forced inlining to guarantee constant propagation. Unlike, say, a tracing JIT, this is predictable and deterministic. With some experience, it's easy to write this kind of code and predict what Julia will do with it, allowing libraries like Blobs to provide abstractions without runtime overhead.
