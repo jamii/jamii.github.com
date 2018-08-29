@@ -105,7 +105,7 @@ signal (11): Segmentation fault
 
 And they require us to do all our offset calculation and pointer arithmetic by hand.
 
-## Magic
+## Blobs
 
 The [Blobs](https://github.com/jamii/Blobs.jl/tree/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44) library just adds some structure on top of these building blocks, while still compiling down to efficient native code. 
 
@@ -272,7 +272,7 @@ julia> @code_native g(b)
 ;}
 ```
 
-## Optimization
+## How it works
 
 Let's unpack the magic step by step.
 
@@ -457,7 +457,7 @@ top:
 }
 ```
 
-## Code generation
+## Generated functions
 
 I glossed over one important step - where did this method of `Base.getproperty` come from?
 
@@ -516,7 +516,7 @@ end
 
 From the outside, generated functions behave just like a normal function. This allows seamlessly mixing metaprogrammed code generation into normal code, without changing the outward interface or requiring consumers of the library to pre-register types. 
 
-## More
+## And the rest
 
 The rest of the library packs in custom memory layout by adding new methods to the layout functions (which is how nested Blobs are [converted to/from offsets on read/write](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/blob.jl#L157-L172)), implementations of [fixed size vectors](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/vector.jl) / [bitvectors](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/bit_vector.jl) / [strings](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/string.jl) and [helper functions for initialization of complex data-structures](https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/layout.jl). All with similarly minimal overhead vs C.
 
