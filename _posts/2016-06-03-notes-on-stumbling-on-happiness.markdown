@@ -3,7 +3,7 @@ layout: post
 title: "Notes on 'Stumbling on Happiness'"
 date: 2016-06-03 11:57
 comments: true
-categories: 
+categories:
 ---
 
 <https://smile.amazon.com/dp/B000GCFW0A>
@@ -53,13 +53,13 @@ Latter hypothesis seems more sensible when we consider changes in reaction to ev
 
 > If impoverished experiential backgrounds squish our language rather than stretch our experience, then children who say they are delighted by peanut butter and jelly sandwich are just plain wrong, and they will admit it later in life when they get their first bite of good liver, at which time they will be right, until they get older and begin to get heartburn from fatty foods, at which time they will realize that they were wrong then too.
 
-Can confuse fear with attraction, apprehension with guilt, shame with anxiety eg bridge experiment. __[Anxious reappraisal](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2674518/) seems to be the deliberate confusion of anxiety with excitement.__ Implication is that you can be *wrong* about what you are feeling and why. 
+Can confuse fear with attraction, apprehension with guilt, shame with anxiety eg bridge experiment. __[Anxious reappraisal](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2674518/) seems to be the deliberate confusion of anxiety with excitement.__ Implication is that you can be *wrong* about what you are feeling and why.
 
 Phenomenon of suddenly realizing you have not been paying attention to what you are reading. The text is familiar, your eyes have just scanned it, your brain processed the text - you experienced reading. But you weren't consciously aware of that experience. __The distinction is a little muddy. Computationally, seems like the part of your brain that decodes text was operating fine, but the part that pays attention to the result was elsewhere. Seems similar to subliminal messaging, where there is no conscious experience but the text affects behavior so must have been linguistically decoded.__
 
 Blindsight - sufferers have vision but not conscious awareness of vision - they cannot see but they can catch a ball thrown to them. __Also the inspiration for [one of my favourite sf books](http://smile.amazon.com/dp/0765319640/).__
 
-Alexithymia - inability to describe emotional state. Patients have normal physiological reactions to eg disturbing pictures, but are unable to distinguish them from normal pictures. 
+Alexithymia - inability to describe emotional state. Patients have normal physiological reactions to eg disturbing pictures, but are unable to distinguish them from normal pictures.
 
 So, how can we do science to happiness if we can't measure it?
 
@@ -75,7 +75,7 @@ Measuring happiness is important, because it's pretty much *the* terminal value.
 
 ### Realism
 
-"What would it feel like if..." is subject to systematic error. 
+"What would it feel like if..." is subject to systematic error.
 
 Memories are very lossily compressed down to key facts. When recalled, they are decompressed, filled in and *recompressed* - that is, recollection changes memories. Plenty of experiments on eg eyewitness recall that demonstrate this. The illusion is completely opaque - subjects can be given vivid memories of things that they did not in fact experience, even if they are warned beforehand about the trick, and they will vigorously defend those memories.
 
@@ -85,7 +85,7 @@ Naive realism.
 
 Children begin as realists. Confusing small objects with far away objects is confusing perception with reality. Similarly for confusing own knowledge with global knowledge (eg smarties experiment). In similar experiments for adults, eye and hand tracking reveal that subjects initially make realist mistakes but then correct/override. Implies that realism doesn't go away, we just learn to distrust it in certain situations.
 
-Imagination. Can construct complex objects without effort. Eg 'imagine a plate of spaghetti' leads to a rich mental image, but that image contains lots of detail that neither the description or your conscious mind provided eg school-cafeteria slop vs high-end restaurant. When I ask you to imagine how happy spaghetti for dinner would make you, you base your assessment off that image *without correcting for the fact that it is not a representative imagining*. All the extra detail sneaks in unasked for and unquestioned. 
+Imagination. Can construct complex objects without effort. Eg 'imagine a plate of spaghetti' leads to a rich mental image, but that image contains lots of detail that neither the description or your conscious mind provided eg school-cafeteria slop vs high-end restaurant. When I ask you to imagine how happy spaghetti for dinner would make you, you base your assessment off that image *without correcting for the fact that it is not a representative imagining*. All the extra detail sneaks in unasked for and unquestioned.
 
 To repeat, when making predictions about a family of events we simulate one member of that family, with no insight into how that member was selected, and we don't notice that we did that. __[Attribute substitution](https://en.wikipedia.org/wiki/Attribute_substitution) strikes again!__
 
@@ -93,15 +93,15 @@ Cute experiment: Ask subjects to make predictions about future events. One group
 
 __Does this imply that methods from [Superforecasting](http://smile.amazon.com/dp/1511358491) or similar might help improve personal predictions?__
 
-Test subjects are much better at discerning patterns marked by the presence of some attribute than patterns marked by the lack of some attribute. Similarly, when attempting to detect correlations people often fail to look for all combinations of X&Y, X&~Y, ~X&Y, ~X&~Y. __And similarly missing P(X|~Y) for Bayes rule.__
+Test subjects are much better at discerning patterns marked by the presence of some attribute than patterns marked by the lack of some attribute. Similarly, when attempting to detect correlations people often fail to look for all combinations of `X&Y, X&~Y, ~X&Y, ~X&~Y`. __And similarly missing `P(X|~Y)` for Bayes rule.__
 
 When asked to pick pairs of similar countries, subjects are focused on similarities. When asked to pick pairs of dissimilar countries, subjects are focused on dissimilarities. Often leads to both groups picking the same pair of countries. Similarly, people tend to focus on positives when picking options, and focus on negatives when choosing which option to give up.
 
-If asked how they would feel two years after the death of their child, most people only imagine the devastation, and not any of the other details of their lives. 
+If asked how they would feel two years after the death of their child, most people only imagine the devastation, and not any of the other details of their lives.
 
 Students who were asked to describe the details of a typical day were then better at predicting how happy they would be after their football team won/lost the match tomorrow. Forced them to focus on the entire day, not just the one moment in their imagining.
 
-Californians no happier than average, yet most Americans believe they would be happier if living in California. Tend to focus on easily-available images like sunshine and palm trees rather than traffic and house prices. 
+Californians no happier than average, yet most Americans believe they would be happier if living in California. Tend to focus on easily-available images like sunshine and palm trees rather than traffic and house prices.
 
 Similarly, tend to underestimate happiness of people with disabilities because we forget that they still have an entire life going on. "Blindness isn't a full-time job".
 
@@ -111,7 +111,7 @@ Vividness of the near future leads to weird time discounting eg subjects choose 
 
 ### Presentism
 
-Historical depictions of the future are always adorable because they predict that things will be more or less the same, just shinier and with more hovering. 
+Historical depictions of the future are always adorable because they predict that things will be more or less the same, just shinier and with more hovering.
 
 Wilbur Wright once predicted that "man will not fly for 50 years", 2 years before his first successful flight.
 
@@ -127,11 +127,11 @@ We never confuse imagined scenes with actual vision, or imagined songs with actu
 
 > ..it's a lot like trying to imagine the taste of marshmallow while chewing liver.
 
-The direction of the timeline changes across cultures, but all cultures reason and talk about time using spatial metaphors. 
+The direction of the timeline changes across cultures, but all cultures reason and talk about time using spatial metaphors.
 
 Variety (eg in meals) is preferable across short time periods because it defeats habituation. Across long time periods (eg choosing Sunday meals for several months in advance) subjects tend to also vote for variety, but in-the-moment reports show that subjects who get their favorite every time are happier on average, because there is enough time between each event to avoid habituation. __Author argues that this mistake is made because subjects render the scenario spatially as a series of meals. This seems like gross speculation.__
 
-Imagination is generally atemporal. We construct images, sounds, smells, tastes but not times. When asked to imagine an event at a specific time, eg 50 years in the future, subjects initial physiological reaction is the same as if asked to imagine it now, and only shortly afterwards do they correct the image to their 50-year-older self. 
+Imagination is generally atemporal. We construct images, sounds, smells, tastes but not times. When asked to imagine an event at a specific time, eg 50 years in the future, subjects initial physiological reaction is the same as if asked to imagine it now, and only shortly afterwards do they correct the image to their 50-year-older self.
 
 That first reaction appears to [anchor](https://en.wikipedia.org/wiki/Anchoring) their final prediction. Subjects ask to predict how much they would enjoy spaghetti in the morning vs in the afternoon made reasonable predictions. But subjects asked the same question whilst simultaneously performing another tasks answered much lower if they were full or much higher if they were hungry - anchoring predictions against their current reaction.
 
@@ -167,9 +167,9 @@ Clever Hans. Easy to fool ourselves when we want to believe.
 
 Conscious self-delusion appears to backfire, perhaps by being too obvious. Need to feel like we discovered some new perspective rather than creating it.
 
-Subjects asked to imagine pain of being rejected by judge vs unanimous jury did not correctly predict that the jury would be worse (as judged by subjects asked after the fact). They failed to predict being rejected by an individual would be easier to rationalize away. 
+Subjects asked to imagine pain of being rejected by judge vs unanimous jury did not correctly predict that the jury would be worse (as judged by subjects asked after the fact). They failed to predict being rejected by an individual would be easier to rationalize away.
 
-Replicated across a range of subjects - people expect that having someone to blame rather than dumb luck should not have any effect on the sting of the event, but in fact it gives their psychological immune system something to work with. 
+Replicated across a range of subjects - people expect that having someone to blame rather than dumb luck should not have any effect on the sting of the event, but in fact it gives their psychological immune system something to work with.
 
 Similarly, people expect to regret foolish action more than foolish inaction but the reverse is true across a wide range of studies. __!!!__ Much harder to rationalize inaction. __Why?__
 
