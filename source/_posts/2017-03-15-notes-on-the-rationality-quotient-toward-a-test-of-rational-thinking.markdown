@@ -20,7 +20,7 @@ Normative response in hostile environment requires that the correct mindware is 
 * Medium. Requires detecting non-normative response, initiating and sustaining System 2 override.
 * High. Normative response provided by System 1.
 
-In middle zone, normative response is gated on sustaining override, which we already believe to be strongly correlated with IQ. Also suspect that mindware acquisition is related to IQ. So any rationality test is going to strongly correlate with IQ. 
+In middle zone, normative response is gated on sustaining override, which we already believe to be strongly correlated with IQ. Also suspect that mindware acquisition is related to IQ. So any rationality test is going to strongly correlate with IQ.
 
 Taxonomy of thinking errors:
 
@@ -34,7 +34,7 @@ Taxonomy of thinking errors:
 
 __Should failure to correctly execute mindware come under it's own heading? Eg if I know about Bayes rule but the calculations are too complicated to carry out in my head.__
 
-Can arrange CART subtests on two axes: knowledge dependence (mindware) and processing requirements (detect + initiate + sustain). 
+Can arrange CART subtests on two axes: knowledge dependence (mindware) and processing requirements (detect + initiate + sustain).
 
 * High knowledge + high processing eg probabilistic reasoning, scientific reasoning
 * High knowledge + low processing eg financial literacy, risk knowledge
@@ -49,31 +49,31 @@ Emphasizes that all of this so far is conjecture from limited evidence. Have to 
 
 Probabilistic and statistical reasoning:
 
-* Base rate neglect. 
-* Conjunction fallacy. 
-* Gamblers fallacy. 
-* Insensitivity to sample size. 
-* Regression to the mean. 
-* Probability matching (for a biased coin p>0.5 should always bet heads, not bet heads p and tails 1-p). 
+* Base rate neglect.
+* Conjunction fallacy.
+* Gamblers fallacy.
+* Insensitivity to sample size.
+* Regression to the mean.
+* Probability matching (for a biased coin p>0.5 should always bet heads, not bet heads p and tails 1-p).
 
 (Very generous range of accepted answers - focus on getting the right magnitude or direction)
 
-Scientific reasoning: 
+Scientific reasoning:
 
-* Ignoring P(D|~H).
+* Ignoring `P(D|~H)`.
 * Hypothesis testing and falsification (4 card test).
-* Covariation detection. 
-* Controlling variables (everything except 'change all the variables' is marked correct). 
+* Covariation detection.
+* Controlling variables (everything except 'change all the variables' is marked correct).
 * Converging evidence (judging cumulative result of multiple experiments).
 
-Avoidance of miserly information procession (direct): 
+Avoidance of miserly information procession (direct):
 
 * Reflection vs intuition (bat-and-ball style questions)
 * Belief bias in syllogisms (with a tricky correction - there is also a bias to just agree)
 * Ratio bias (choose from two bowls with different distributions)
 * Disjunctive reasoning (eg is a married person looking at an unmarried person).
 
-Avoidance of miserly information procession (indirect): 
+Avoidance of miserly information procession (indirect):
 
 * Avoiding framing (consistent response to different frames at different times)
 * Avoiding anchoring (rather than consistent response, scored generously against 3rd-party calibration)
@@ -89,14 +89,14 @@ Knowledge tests:
 * Sensitivity to expected value (gambling questions with easy math and small stakes)
 * Risk knowledge (estimate rates of common risks).
 
-Contaminated mindware: 
+Contaminated mindware:
 
 * Superstitious thinking (do you believe in astrology etc)
 * Antiscience attitudes (self-reported)
 * Conspiracy beliefs (balance of popular conspiracies from left and right, doesn't correlate with political beliefs or voting history, US centric)
 * Dysfunctional personal beliefs (self-reported, eg excessive perfectionism or concern with social acceptance, no example questions shown)
 
-Dispositions and attitudes: 
+Dispositions and attitudes:
 
 * Actively open-minded thinking (willingness to consider different viewpoints and update based on evidence)
 * Deliberative thinking (?)
@@ -112,7 +112,7 @@ __Skipping much of the detail on scoring mechanisms - not very compressible and 
 
 CART takes up to 3 hours. Tested on 350 paid volunteers in lab, and 397 mechanical turkers. Includes self-reported SAT score, missing for half of the turkers. Turkers also took a short cognitive ability test, focused mostly on verbal.
 
-Short-form CART up to 2 hours. Keeps core reasoning, contaminated mindware, numeracy and AOM thinking tests. Skips knowledge-heavy, non-AOM disposition and difficult-to-score tests. Includes self-reported SAT score. Tested on 372 uni students. 
+Short-form CART up to 2 hours. Keeps core reasoning, contaminated mindware, numeracy and AOM thinking tests. Skips knowledge-heavy, non-AOM disposition and difficult-to-score tests. Includes self-reported SAT score. Tested on 372 uni students.
 
 __Skipping much of the detail on results - hard to assess without a particular question in mind.__
 
@@ -124,7 +124,7 @@ Students in later years score significantly higher. Makes sense - much of that m
 
 Gender difference in scores exist after controlling for cognitive ability and years of education. Female scores significantly higher on temporal discounting. Male scores significantly higher on prob/stat reasoning, reflection vs intuition, practical numeracy, financial literacy / economic knowledge. __Cognitive ability scores were higher in general for males, so not sure how much to trust the controlling. Sounds similar to the gender gap across different STEM subjects.__
 
-Correlation between full and short CART was 0.97. Severely shortened 38-point test made of prob/stat reasoning and scientific reasoning correlates 0.79 with remaining tests and 0.88 with full CART, and has significant betas when regressed alongside cognitive ability and AOT. 
+Correlation between full and short CART was 0.97. Severely shortened 38-point test made of prob/stat reasoning and scientific reasoning correlates 0.79 with remaining tests and 0.88 with full CART, and has significant betas when regressed alongside cognitive ability and AOT.
 
 ## Context
 
@@ -140,13 +140,13 @@ CART vs Great Rationality Debate. Argues that System 2 is more aligned to the pe
 
 Thin rationality - make choices that maximize your values/goals/desires. Broad rationality - are your values/goals/desires dumb? CART focuses on thin notion of rationality to avoid grappling with unsolved philosophical questions.
 
-Justifies relatively low (0.75 and 0.67) reliability of prob/stat and scientific reasoning tests - they are an amalgam of different skills and mindwares, rather than a single skill/mindware that is tested in multiple ways. No reason to expect something like a g factor for rationality - too many independent supporting skills and mindwares. Eg teaching someone about Bayes rule should not be expected to improve their temporal discounting score. Might still be high correlations between skills, which is useful for quickly measuring but still need to test all skills if you care about improving rationality. 
+Justifies relatively low (0.75 and 0.67) reliability of prob/stat and scientific reasoning tests - they are an amalgam of different skills and mindwares, rather than a single skill/mindware that is tested in multiple ways. No reason to expect something like a g factor for rationality - too many independent supporting skills and mindwares. Eg teaching someone about Bayes rule should not be expected to improve their temporal discounting score. Might still be high correlations between skills, which is useful for quickly measuring but still need to test all skills if you care about improving rationality.
 
 Many tests they would like to include were just too unwieldy to administer (eg requiring multiple testing sessions) or had normative responses that were still under dispute (eg unrealistic optimism).
 
-Correlation with IQ is 0.50 for short-form and 0.69 for full-form. Would be happy to find that the CART only measure intelligence, because it would mean that intelligence could be measured with a test that has more obvious real-world applicability than eg obscure vocab questions and so would be more widely accepted. Also plenty of room for dissociation in there eg reading comprehension correlates with IQ at 0.6-0.7 but we treat dyslexia (high IQ, low reading comprehension) as a useful concept. 
+Correlation with IQ is 0.50 for short-form and 0.69 for full-form. Would be happy to find that the CART only measure intelligence, because it would mean that intelligence could be measured with a test that has more obvious real-world applicability than eg obscure vocab questions and so would be more widely accepted. Also plenty of room for dissociation in there eg reading comprehension correlates with IQ at 0.6-0.7 but we treat dyslexia (high IQ, low reading comprehension) as a useful concept.
 
-Possibly susceptible to coaching effects but argues that coaching for CART (at least the non-self-reported parts) should also increase rationality. 
+Possibly susceptible to coaching effects but argues that coaching for CART (at least the non-self-reported parts) should also increase rationality.
 
 ## Thoughts
 
