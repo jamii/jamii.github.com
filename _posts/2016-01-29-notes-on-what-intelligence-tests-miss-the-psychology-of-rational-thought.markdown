@@ -182,9 +182,9 @@ Eg facilitated communication - hard to see flaws without exposure to scientific 
 
 Eg convictions over multiple cot deaths - argument was missing concept of dependence between random variables.
 
-Bayes rule. Likelihood ratio - P(data | hypothesis) / P(data | ~hypothesis). Posterior odds = prior odds * LR (where odds = P(H) / P(~H)). __I haven't seen this formulation before. Can think of LR as the shift in likelihood, independent of prior odds - easier to share / pool with others.__
+Bayes rule. Likelihood ratio - `P(data | hypothesis) / P(data | ~hypothesis)`. Posterior odds = prior odds * LR (where odds = `P(H) / P(~H)`). __I haven't seen this formulation before. Can think of LR as the shift in likelihood, independent of prior odds - easier to share / pool with others.__
 
-Common failure (eg in facilitated communication case) is failure to consider P(data | ~hypothesis). In experiment where subjects where asked to pick which cards contained data needed to make diagnostic decision ~half failed to pick P(D|~H). __Is this enough to explain confirmation bias? A belief update rule that is one-sided in this way might tend to confirm itself, because it can't see cases when data is better explained by ~H. Might be interesting to play around with.__
+Common failure (eg in facilitated communication case) is failure to consider `P(data | ~hypothesis)`. In experiment where subjects where asked to pick which cards contained data needed to make diagnostic decision ~half failed to pick `P(D|~H)`. __Is this enough to explain confirmation bias? A belief update rule that is one-sided in this way might tend to confirm itself, because it can't see cases when data is better explained by ~H. Might be interesting to play around with.__
 
 Falsification eg 2-4-6 task. Genius intervention that improves performance - make two groups eg RED vs BLUE rather than a single group with pass/fail. Confirming one falsifies the other, cueing subjects to try to put triplets in both groups.
 
