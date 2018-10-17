@@ -75,9 +75,11 @@ Highlighted commercial projects:
 
 * Built a prototype replacement for the core trading engine at the [Smarkets](https://smarkets.com/) betting exchange: 10x less code, 40x better throughput, 10x better 99% latency.
 
-* [Provided item-item article recommendations](https://github.com/jamii/springer-recommendations) for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server. 
+* [Provided item-item article recommendations](https://github.com/jamii/springer-recommendations) for Springer users based on ~600m past downloads. Uses locality-sensitive hashing and external sorting to run on a single low-powered server.
 
-Highlighted personal projects:
+## Sabbatical at the [Recurse Centre](https://www.recurse.com/)
+
+#### Sep 2012 - Dec 2012
 
 * Extended the core.logic CLP solver with [fair conjunction and a parallel solver](http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/).
 
