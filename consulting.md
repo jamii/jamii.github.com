@@ -28,4 +28,4 @@ I also have years of experience in designing and building query languages, compi
 
 I'm based in London but happy to work remotely too.
 
-Reach me at [jamie@scattered-thoughts.net](mailto:jamie@scattered-thoughts.net).
+Get in touch at [jamie@scattered-thoughts.net](mailto:jamie@scattered-thoughts.net).
