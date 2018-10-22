@@ -6,7 +6,7 @@ layout: compress
 <html lang="en">
 
 <head>
-    
+
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-18515092-1"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -15,17 +15,17 @@ layout: compress
 
     gtag('config', 'UA-18515092-1');
   </script>
-  
+
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  
+
   <title>{{ page.title }}</title>
-  
+
   <meta name="author" content="{{ site.author.name }}" />
-  
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" /> 
-  
+
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }} - {{ site.description }}" href="{{ site.baseurl }}/feed.xml" />
+
   {% capture styles %}
   {% include normalize.css %}
   {% include pygment_highlights.css %}
@@ -34,7 +34,7 @@ layout: compress
   <style>
   {{ styles | scssify }}
   </style>
-  
+
 </head>
 
 <body>
@@ -44,8 +44,8 @@ layout: compress
       JAMIE BRANDON
     </a>
   </nav>
-  
+
   {{ content }}
-  
+
 </body>
 </html>
