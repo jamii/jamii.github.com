@@ -3,6 +3,8 @@ title: Consulting
 layout: page
 ---
 
+WIP DO NOT SHARE
+
 I specialize in high-performance data processing. I can help you cut operational costs, reduce maintenance burden and build simpler, more robust systems.
 
 I'm particularly interested in leveraging Rust and Julia to outperform the competition, and I have several years of production experience in each.
