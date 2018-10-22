@@ -9,7 +9,7 @@ I specialize in high-performance data processing. I can help you cut operational
 
 I'm particularly interested in leveraging Rust and Julia to outperform the competition, and I have several years of production experience in each.
 
-I also have years of experience in designing and building query languages, compilers, databases and interfaces.
+I also have years of experience in designing and building query languages, compilers, databases and tooling.
 
 > Jamie's work on staged compilation massively increased the productivity of our research team, letting them rapidly build high-performance compilers and systems libraries with less complexity and lower maintenance costs than existing tools.
 >
