@@ -26,6 +26,6 @@ I also have years of experience in designing and building query languages, compi
 >
 > -- <cite>Brian Bishop, VP Platform Development, [Springer Verlag]()</cite>
 
-I'm based in London but often work remotely too.
+I'm based in London but happy to work remotely too.
 
 Reach me at [jamie@scattered-thoughts.net](mailto:jamie@scattered-thoughts.net).
