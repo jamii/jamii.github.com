@@ -70,10 +70,14 @@ code {
 
 pre code,
 pre,
-blockquote,
 figure,
 .wp-caption {
   margin: 0px -10px 20px -10px;
+  padding: 0px 10px 0px 10px;
+}
+
+blockquote {
+  margin: 0;
   padding: 0px 10px 0px 10px;
   border-radius: 5px;
 }
@@ -102,11 +106,6 @@ code,
 pre {
   white-space: pre;
   overflow-x:scroll
-}
-
-blockquote {
-  padding: 0;
-  padding-left: 16px;
 }
 
 ul,
@@ -193,7 +192,7 @@ iframe {
 }
 
 table {
-  margin-left:auto; 
+  margin-left:auto;
   margin-right:auto;
   border-collapse: collapse;
 }
