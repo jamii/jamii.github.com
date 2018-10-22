@@ -1,10 +1,6 @@
 ---
 title: Resume
 layout: page
-date: 2016-01-29 19:40
-comments: true
-sharing: true
-footer: true
 ---
 
 ## Researcher at [RelationalAI](http://relational.ai/)
