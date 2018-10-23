@@ -11,7 +11,7 @@ I'm particularly interested in leveraging Rust and Julia to outperform the compe
 
 I also have years of experience in designing and building query languages, compilers, databases and IDE tooling.
 
-> Jamie is a first principles thinker with a deep understanding of systems and algorithms. He is fearless in the way he approaches problems. Jamie’s research on staged compilation saved our team many person years of effort, and his training and support was crucial to our adoption of Julia. I hope to have the opportunity to work with him again soon
+> Jamie is a first principles thinker with a deep understanding of systems and algorithms. He is fearless in the way he approaches problems. Jamie’s research on staged compilation saved our team many person years of effort, and his training and support was crucial to our adoption of Julia. I hope to have the opportunity to work with him again soon.
 >
 > -- <cite>Molham Aref, CEO, RelationalAI</cite>
 
