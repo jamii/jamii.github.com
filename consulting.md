@@ -11,7 +11,7 @@ I'm particularly interested in leveraging Rust and Julia to outperform the compe
 
 I also have years of experience in designing and building query languages, compilers, databases and IDE tooling.
 
-> Jamie's work on staged compilation massively increased the productivity of our research team, letting them rapidly build high-performance compilers and systems libraries with less complexity and lower maintenance costs than existing tools.
+> Jamie is a first principles thinker with a deep understanding of systems and algorithms. He is fearless in the way he approaches problems. Jamie’s research on staged compilation saved our team many person years of effort, and his support and training was crucial to our adoption of Julia. I hope to have the opportunity to work with him again soon
 >
 > -- <cite>Molham Aref, CEO, RelationalAI</cite>
 
