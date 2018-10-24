@@ -21,6 +21,6 @@ I specialize in systems engineering and performance optimization. I can help you
 >
 > -- <cite>Brian Bishop, VP Platform Development, Springer Verlag</cite>
 
-I'm based in London and also happy to work remotely.
+I'm based in London and also happy to work remotely too.
 
 Get in touch at [jamie@scattered-thoughts.net](mailto:jamie@scattered-thoughts.net).
