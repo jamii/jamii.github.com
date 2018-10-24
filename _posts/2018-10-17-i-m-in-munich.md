@@ -1,6 +1,7 @@
 ---
 layout: update
 title: I'm in Munich
+hidden: true
 ---
 
 I'm in Munich from Oct 16th until Oct 26th.
