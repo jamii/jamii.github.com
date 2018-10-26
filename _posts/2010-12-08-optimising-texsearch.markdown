@@ -113,6 +113,8 @@ let prepare sa =
   sa.array <- array
 ```
 
+## Exact queries
+
 So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in `gather_exact`, where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then `find_exact` runs through the HashSet and looks up the matching opaques.
 
 ``` ocaml
@@ -149,9 +151,7 @@ let find_exact sa latex =
   List.map (exact_match sa) (Hashset.to_list ids)
 ```
 
-## Querying
-
-Now for the clever part - approximate search.
+## Approximate queries
 
 Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. That means that if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse `gather_exact`.
 
