@@ -7,6 +7,10 @@ layout: page
 
 #### May 2017 - Aug 2018
 
+> Jamie is a first principles thinker with a deep understanding of systems and algorithms. He is fearless in the way he approaches problems. Jamie’s research on staged compilation saved our team many person years of effort, and his training and support was crucial to our adoption of Julia. I hope to have the opportunity to work with him again soon.
+>
+> -- <cite>Molham Aref, CEO, RelationalAI</cite>
+
 RelationalAI is building a relational database, a probabilistic programming language and various integrated machine learning systems. I took on the task of figuring out how to make this project feasible, given the small size of the team and the limited funding time-frame.
 
 I built several prototypes in Julia, demonstrating better performance than existing work with much less implementation effort. To allay concerns about adopting Julia, I:
@@ -64,6 +68,10 @@ Initially planned as a sabbatical, but later supported by funding from [LogicBlo
 ## Consultant
 
 #### May 2009 – Nov 2013
+
+> Jamie took over the latexsearch engine, our most technically challenging project to date, and turned it from a foundering prototype into a successful service with over 200k users. His engine required only one small server and ran uninterrupted for over 5 years with no errors.
+>
+> -- <cite>Brian Bishop, VP Platform Development, Springer Verlag</cite>
 
 Highlighted commercial projects:
 
