@@ -7,13 +7,17 @@ categories: project
 redirect_from: one/1291/799313/731344
 ---
 
-[Texsearch](https://github.com/jamii/texsearch) is a search engine for LaTeX formulae. It forms part of the backend for [latexsearch.com](http://latexsearch.com) which indexes the entire Springer corpus. It is also crazy slow, until today.
+[Texsearch](https://github.com/jamii/texsearch) is a search engine for LaTeX formulae. It forms part of the backend for [latexsearch.com](http://latexsearch.com) which indexes the entire Springer corpus.
 
-<!--more-->
+Texsearch has only a minimal understanding of LaTeX and no understanding of the structure of the formulae it searches in, but unlike it's competitors (eg [Uniquation](http://uniquation.com/en/)) it's able to index the entire Springer corpus and answer queries quickly and cheaply. It's a brute force solution that gave us an good-enough search engine search engine with minimal research risk.
 
-Intuitively, when searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.
+## Parsing
+
+When searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.
 
 Texsearch uses [PlasTeX](http://plastex.sourceforge.net/) to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2^63 possible elements.
+
+## Indexing
 
 At the core of texsearch is a search algorithm which performs approximate searches over the search corpus. Specifically, given a search term S and a search radius R we want to return all corpus terms T such that the [Levenshtein distance](http://en.wikipedia.org/wiki/Levenshtein_distance) between S and some substring of T is less than R. This is a common problem in bioinformatics and NLP and there is a [substantial amount of research](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.7225&rep=rep1&type=pdf) on how to solve this efficiently. I have been through a range of different algorithms in previous iterations of texsearch and have only recently achieved reasonable performance (mean search time is now ~300ms for a corpus of 1.5m documents). The code is available [here](https://github.com/jamii/texsearch).
 
@@ -109,7 +113,7 @@ let prepare sa =
   sa.array <- array
 ```
 
-So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in gather_exact (better name, anyone?), where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then find_exact runs through the HashSet and looks up the matching opaques.
+So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in `gather_exact`, where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then `find_exact` runs through the HashSet and looks up the matching opaques.
 
 ``` ocaml
 (* binary search *)
@@ -145,7 +149,11 @@ let find_exact sa latex =
   List.map (exact_match sa) (Hashset.to_list ids)
 ```
 
-Now for the clever part - approximate search. First, convince yourself of the following. Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. Then if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse gather_exact.
+## Querying
+
+Now for the clever part - approximate search.
+
+Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. That means that if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse `gather_exact`.
 
 ``` ocaml
 let gather_approx sa precision latex =
@@ -192,7 +200,3 @@ let find_query sa precision query =
 ```
 
 This is a lot simpler than my previous approach, which required some uncomfortable reasoning about overlapping regions in quasi-metric spaces.
-
-It is instructive to compare texsearch with other math search engines. Texsearch is effectively a brute force solution that gave us an ok search engine search engine with minimal risk. It has minimal understanding of LaTeX and no understanding of the structure of the formulae it searches in. [Uniquation](http://uniquation.com/en/) accepts only a small (but widely used) subset of LaTeX but understands the structure of the equation itself and so can infer scope and perform variable substitution when searching. I am not sure yet how much content they are indexing or how well they handle searching within full LaTeX content but hopefully this approach can scale up to big corpuses. [Hoogle](http://haskell.org/hoogle/) is a search engine for haskell types which can handle even more sophisticated equivalences than uniquation thanks to its specialised domain. [ArXMLiv](https://trac.kwarc.info/arXMLiv/) is developing tools for inferring semantic information from LaTeX content in order to convert it to Semantic MathML, which is much easier for search engines to handle.
-
-So, in summary, LaTeX is a pain in the ass.
