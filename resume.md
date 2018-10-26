@@ -39,7 +39,7 @@ Initially planned as a sabbatical, but later supported by funding from [LogicBlo
 
 * Built a declarative language for building GUIs directly on top of a relational database, without any application code, that [performs on par with React](http://scattered-thoughts.net/blog/2017/07/28/relational-ui/).
 
-* Built a live-coding interpreter and editor plugin for a relational language, capable of executing code as it's typed whilst being resilient to bugs, typos and infinite loops.
+* Built a live-coding interpreter and editor plugin for a relational language, capable of executing code as it is typed whilst still being resilient to bugs, typos and infinite loops.
 
 ## CTO at [Eve](http://witheve.com/)
 
