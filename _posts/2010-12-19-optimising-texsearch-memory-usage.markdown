@@ -5,6 +5,7 @@ date: 2010-12-19 06:16
 comments: true
 categories: project
 redirect_from: /one/1292/752863/348678
+hidden: true
 ---
 
 In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running [latexsearch.com](http://latexsearch.com) wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.
