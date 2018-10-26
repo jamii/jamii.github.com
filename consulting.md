@@ -24,12 +24,3 @@ I specialize in systems engineering and performance optimization. I can help you
 I'm based in London and also happy to work remotely too.
 
 Get in touch at [jamie@scattered-thoughts.net](mailto:jamie@scattered-thoughts.net).
-
-* [Zero-copy deserialization in Julia](http://scattered-thoughts.net/blog/2018/08/28/zero-copy-deserialization-in-julia/)
-* [Julia as a platform for language development](http://scattered-thoughts.net/blog/2018/08/16/julia-as-a-platform-for-language-development/)
-* [Staged interpreters in Rust](http://scattered-thoughts.net/blog/2017/11/22/staged-interpreters-in-rust/)
-* [A UI library for a relational language](http://scattered-thoughts.net/blog/2017/07/28/relational-ui/)
-* [A practical relational query compiler in 500 lines of code](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/)
-* [Three months of Rust](http://scattered-thoughts.net/blog/2015/06/04/three-months-of-rust/)
-* [Search trees and core.logic](http://scattered-thoughts.net/blog/2012/12/19/search-trees-and-core-dot-logic/)
-* [Optimising texsearch](http://scattered-thoughts.net/blog/2010/12/08/optimising-texsearch/)
