@@ -5,7 +5,13 @@ title: Returning to consulting
 
 As of November, I'll be available again for consulting on systems engineering and performance optimization.
 
-I can help you:
+I've put up a dedicated page [here](/consulting), but the current contents are copied below.
+
+If anyone you know needs help with these kinds of problems, feel free to pass along my contact details.
+
+---
+
+I specialize in systems engineering and performance optimization. I can help you:
 
 * handle big data without building an expensive distributed system
 * replace complex hand-coded data pipelines with simple declarative languages
