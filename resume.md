@@ -49,6 +49,10 @@ Initially planned as a sabbatical, but later supported by funding from [LogicBlo
 
 #### Nov 2013 - Jan 2016
 
+> Jamie brought a degree of rigor and theoretical knowledge that took the company to places we never could have gone otherwise. From exploring the implications of language semantics to building high performance database engines, he didn't just help us get things done, he helped us get them done right. As a result, we were able to explore in weeks what could've easily taken years
+>
+> -- <cite>Chris Granger, CEO, Eve</cite>
+
 * Together with the CEO built a language and IDE which secured a [$2.3m seed round](https://techcrunch.com/2014/10/01/eve-raises-2-3m-to-rethink-programming/) from Andreessen Horowitz.
 
 * Created a [live relational language](http://witheve.com/philosophy/) based on temporal-logic extensions of datalog.
@@ -71,7 +75,7 @@ Initially planned as a sabbatical, but later supported by funding from [LogicBlo
 
 > Jamie took over the latexsearch engine, our most technically challenging project to date, and turned it from a foundering prototype into a successful service with over 200k users. His engine required only one small server and ran uninterrupted for over 5 years with no errors.
 >
-> -- <cite>Brian Bishop, VP Platform Development, Springer Verlag</cite>
+> -- <cite>Brian Bishop, VP Platform Development, Springer</cite>
 
 Highlighted commercial projects:
 

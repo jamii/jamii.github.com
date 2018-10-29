@@ -3,8 +3,6 @@ title: Consulting
 layout: page
 ---
 
-WIP DO NOT SHARE
-
 I specialize in systems engineering and performance optimization. I can help you:
 
 * handle big data without building an expensive distributed system
