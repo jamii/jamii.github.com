@@ -21,7 +21,7 @@ I built several prototypes in Julia, demonstrating better performance than exist
 
 * Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl), used for implementing database indexes.
 
-* Developed static analysis tools for detecting performance problems in generated Julia code.
+* Built a static analysis tool for detecting performance problems in generated Julia code.
 
 As a result RelationalAI adopted Julia for all ongoing development, after which I:
 
