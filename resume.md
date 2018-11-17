@@ -15,13 +15,13 @@ RelationalAI is building a relational database, a probabilistic programming lang
 
 I built several prototypes in Julia, demonstrating better performance than existing work with much less implementation effort. To allay concerns about adopting Julia, I:
 
-* Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
-
-* Surveyed the Julia garbage collector and task system, to allay concerns about parallelism.
-
 * Wrote a library for [zero-copy deserialization without overhead](https://github.com/RelationalAI-oss/Blobs.jl), used for implementing database indexes.
 
 * Built a static analysis tool for detecting performance problems in generated Julia code.
+
+* Implemented a [pattern matching extension to Julia](https://github.com/RelationalAI-oss/Rematch.jl), used for rewrite passes in the compiler.
+
+* Surveyed the Julia garbage collector and task system, to allay concerns about parallelism.
 
 As a result RelationalAI adopted Julia for all ongoing development, after which I:
 
