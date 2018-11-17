@@ -1,0 +1,23 @@
+image: ubuntu
+packages:
+  - nodejs
+  - npm
+  - rsync
+sources:
+  - https://git.sr.ht/~sircmpwn/receptor
+environment:
+  deploy: synapse@synapse-bt.org
+secrets:
+  - 7ebab768-e5e4-4c9d-ba57-ec41a72c5665
+tasks:
+  - setup: |
+      cd receptor
+      npm install
+  - build: |
+      cd receptor
+      npm run build:production
+  - deploy: |
+      cd receptor
+      sshopts="ssh -o StrictHostKeyChecking=no"
+      rsync --rsh="$sshopts" -rP index.html $deploy:/var/www/web.synapse-bt.org/
+      rsync --rsh="$sshopts" -rP dist $deploy:/var/www/web.synapse-bt.org/
