@@ -298,12 +298,12 @@ button.onclick = function (dom_event) { ... }
 ```
 
 ``` js
-app.render(document,
-           function create_handler(event) {
-             return function handler(dom_event) {
-               app.handle_event(event, dom_event);
-             }
-           });
+function create_handler(event) {
+  return function handler(dom_event) {
+    app.handle_event(event, dom_event);
+  }
+}
+app.render(document, create_handler);
 ```
 
 --
