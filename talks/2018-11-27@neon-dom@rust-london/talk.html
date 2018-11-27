@@ -42,7 +42,11 @@
 
       .remark-code {
           font-size: inherit;
-      }
+       }
+
+      .compact {
+          font-size: 0.3em;
+       }
 
     </style>
   </head>
@@ -178,6 +182,92 @@ app.render(document, ...)
 ``` rust
 js!(document.createElement("div"))
 ```
+
+---
+
+# DOM
+
+.compact[
+``` rust
+macro_rules! js {
+    ( @chain, $cx:expr, $value:expr , ) => {{
+        $value
+    }};
+    ( @chain, $cx:expr, $value:expr , . $key:ident = $( $rest:tt )* ) => {{
+        let value = $value;
+        let rest = js!($cx, $( $rest )*);
+        value
+            .downcast::<JsObject>()
+            .unwrap()
+            .set($cx, stringify!($key), rest)
+            .unwrap()
+    }};
+    ( @chain, $cx:expr, $value:expr , . $key:ident ( $( $args:expr ),* ) $( $rest:tt )* ) => {{
+        js!(@chain,
+             $cx,
+             {
+                 let value = $value;
+                 let function = value
+                     .downcast::<JsObject>()
+                     .unwrap()
+                     .get($cx, stringify!($key))
+                     .unwrap();
+                 let mut args: Vec<Handle<JsValue>> = vec![];
+                 {
+                     $( args.push(js!($cx, $args)); )*
+                 }
+                 function
+                     .downcast::<JsFunction>()
+                     .unwrap()
+                     .call($cx, value, args)
+                     .unwrap()
+             },
+             $( $rest )*)
+    }};
+    ( @chain, $cx:expr, $value:expr , . $key:ident $( $rest:tt )* ) => {{
+        let value = $value;
+        js!(@chain,
+             $cx,
+             value
+             .downcast::<JsObject>()
+             .unwrap()
+             .get($cx, stringify!($key))
+             .unwrap(),
+             $( $rest )*)
+    }};
+    ( @chain, $cx:expr, $value:expr , ( $( $args:expr ),* ) $( $rest:tt )* ) => {{
+        js!(@chain,
+             $cx,
+             {
+                 let value = $value;
+                 let mut args = vec![];
+                 {
+                     $( args.push(js!($cx, $args)); )*
+                 }
+                 let null = ($cx).null();
+                 value
+                     .downcast::<JsFunction>()
+                     .unwrap()
+                     .call($cx, null, args)
+                     .unwrap()
+             },
+             $( $rest )*)
+    }};
+    ( $cx:expr, $value:ident $( $rest:tt )+ ) => {{
+        js!(@chain,
+             $cx,
+             $value,
+             $( $rest )*)
+    }};
+    ( $cx:expr, null ) => {{
+        ($cx).null()
+    }};
+    ( $cx:expr, $expr:expr ) => {{
+        ($expr).to_js($cx)
+    }}
+}
+```
+]
 
 ---
 
