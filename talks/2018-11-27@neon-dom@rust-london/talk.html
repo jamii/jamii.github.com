@@ -149,12 +149,14 @@ app.render(document, ...)
 ``` rust
 // document: Handle<JsValue>
 let create_element = document
-    .get(&mut cx, "createElement")
+    .downcast::<JsObject>()
     .unwrap()
-    .downcast::<JsFunction>()
+    .get(&mut cx, "createElement")
     .unwrap();
 let div_string = cx.string("div");
 let div = create_element
+    .downcast::<JsFunction>()
+    .unwrap();
     .call(&mut cx, document, vec![div_string])
     .unwrap()
     .downcast::<JsObject>()
