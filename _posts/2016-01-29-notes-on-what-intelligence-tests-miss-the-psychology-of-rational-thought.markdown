@@ -250,8 +250,6 @@ __Don't really understand the explanation of 'self'/egocentrism given here - see
 
 __Where does the idea about belief preservation / islands of false belief fit into this taxoomy? Seems like 'failure to activate alternate hypotheses', but as a result of the cognitive miser rather than a mindware gap.__
 
-__Ok, who the fuck put this table sideways?__
-
 Many of the examples in the book fall into multiple categories.
 
 Adds a sixth category - Mr Spock Syndrome. Brain damage or mental disorders can interfere with valency judgments. Can't make decisions effectively if can't correctly attach values to them. Some weak evidence that this is present in some otherwise healthy people.
