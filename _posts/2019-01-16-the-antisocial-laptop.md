@@ -36,4 +36,4 @@ It turns out that the usb, hdmi and wifi are all sitting on top of each other an
 * plugging in the ethernet only causes screen freezes when using an external hdmi monitor
 * the ethernet, monitor and webcam play fine together if the wifi is disabled
 
-As satisfying as it is to finally be able to get through a meeting, it's also really interesting that I had all the information necessary to debug this for years but I wasn't able to see it. My mental model of causality was limited to the design of the machine and was completely missing the possibility of non-intentional interactions via the physical world. I suspect someone with an EE background would have immediately realized what was going on.
+As satisfying as it is to finally be able to get to the end of a meeting without rebooting, it's also really interesting that I had all the information necessary to debug this for years but I wasn't able to see it. My mental model of causality was limited to the design of the machine and was completely missing the possibility of non-intentional interactions via the physical world. I suspect someone with an EE background would have immediately realized what was going on.
