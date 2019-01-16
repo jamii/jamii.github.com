@@ -11,7 +11,7 @@ It got away with it for a long time because the excuses were so plausible. The l
 
 But recently I backed it into a corner and things started getting serious. I ran an ethernet cable through my house and dug up the ethernet-usb adapter that shipped with my laptop. No more excuses.
 
-It responded by not only disconnecting the call I was on, but disconnecting the ethernet. On the next reboot, my monitor stopped updating. On the next, it not only disconnected the ethernet but claimed I no longer had a wifi interface either.
+The laptop responded by not only disconnecting the call I was on, but disconnecting the ethernet. On the next reboot, the monitor stopped updating. On the next, it not only disconnected the ethernet but claimed I no longer had a wifi interface either.
 
 ```
 jamie@machine:~$ ifconfig
