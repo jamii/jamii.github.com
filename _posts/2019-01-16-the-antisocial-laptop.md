@@ -13,19 +13,6 @@ But recently I backed it into a corner and things started getting serious. I ran
 
 The laptop responded by not only disconnecting the call I was on, but disconnecting the ethernet. On the next reboot, the monitor stopped updating. On the next, it not only disconnected the ethernet but claimed I no longer had a wifi interface either.
 
-```
-jamie@machine:~$ ifconfig
-
-lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-        inet 127.0.0.1  netmask 255.0.0.0
-        inet6 ::1  prefixlen 128  scopeid 0x10<host>
-        loop  txqueuelen 1000  (Local Loopback)
-        RX packets 238  bytes 24527 (23.9 KiB)
-        RX errors 0  dropped 0  overruns 0  frame 0
-        TX packets 238  bytes 24527 (23.9 KiB)
-        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-```
-
 I found I could pretty reliably cause all three problems at any time by connecting the ethernet cable. But only during conference calls - I spent an entire day working and listening to music via the ethernet without a single laptop tantrum.
 
 I finally figured out what was going on almost by accident. I suspected that the dell ethernet-usb adapter might be the source of the recent problems, and while searching for those keywords I stumbled across a [post from the manufacturers of a usb docking station](https://plugable.com/2016/06/30/investigating-usb-c-problems-on-some-dell-xps-and-precision-laptops/) about customers with similar symptoms that only manifest on this particular laptop. Dell responded with a firmware update that reduced the wifi output power.
