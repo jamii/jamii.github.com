@@ -28,7 +28,7 @@ lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
 
 I found I could pretty reliably cause all three problems at any time by connecting the ethernet cable. But only during conference calls - I spent an entire day working and listening to music via the ethernet without a single laptop tantrum.
 
-I finally figured out what was going on almost by accident. I suspected the Dell ethernet-usb adapter might be the source of the recent problems, and while searching for those keywords I stumbled across a [post from the manufacturers of a usb docking station](https://plugable.com/2016/06/30/investigating-usb-c-problems-on-some-dell-xps-and-precision-laptops/) about customers with similar symptoms that only manifest on this particular laptop. Dell responded with a firmware update that reduced the wifi output power.
+I finally figured out what was going on almost by accident. I suspected that the dell ethernet-usb adapter might be the source of the recent problems, and while searching for those keywords I stumbled across a [post from the manufacturers of a usb docking station](https://plugable.com/2016/06/30/investigating-usb-c-problems-on-some-dell-xps-and-precision-laptops/) about customers with similar symptoms that only manifest on this particular laptop. Dell responded with a firmware update that reduced the wifi output power.
 
 It turns out that the usb, hdmi and wifi are all sitting on top of each other and are not sufficiently well shielded. Some experimenting at home confirmed that:
 
