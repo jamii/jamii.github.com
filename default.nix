@@ -10,7 +10,10 @@ let jekyll_env = bundlerEnv rec {
 in
   stdenv.mkDerivation rec {
     name = "jekyll_env";
-    buildInputs = [ jekyll_env ];
+    buildInputs = [
+      jekyll_env
+      bundix
+    ];
 
     # shellHook = ''
     #   exec ${jekyll_env}/bin/jekyll serve --watch
