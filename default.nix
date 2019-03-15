@@ -2,10 +2,9 @@ with import <nixpkgs> { };
 
 let jekyll_env = bundlerEnv rec {
     name = "jekyll_env";
-    # ruby = ruby_2_2;
     gemfile = ./Gemfile;
     lockfile = ./Gemfile.lock;
-    gemset = ./gemset.nix;
+    gemset = ./gemset.nix; # use bundix to update
   };
 in
   stdenv.mkDerivation rec {
@@ -14,8 +13,4 @@ in
       jekyll_env
       bundix
     ];
-
-    # shellHook = ''
-    #   exec ${jekyll_env}/bin/jekyll serve --watch
-    # '';
   }
