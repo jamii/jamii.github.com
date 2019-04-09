@@ -7,7 +7,7 @@ author:
   email: "jamie@scattered-thoughts.net"
   github: jamii
   twitter: jamiiecb
-  
+
 google_analytics: "UA-18515092-1"
 
 timezone: "Europe/Berlin"
@@ -26,7 +26,6 @@ exclude:
   - CNAME
   - Vagrantfile
   - classes
-  - code
 
 sass:
   style: compressed
