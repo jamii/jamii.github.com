@@ -10,3 +10,4 @@ ehthumbs.db
 classes/stats/.ipynb_checkpoints/
 
 .jekyll*
+.tern-port
