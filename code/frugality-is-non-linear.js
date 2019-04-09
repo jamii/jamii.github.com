@@ -21,8 +21,6 @@ function drawContour() {
     document.getElementById("interest").value.replace("%", "")
   );
 
-  console.log(interest);
-
   if (!isNaN(interest)) {
     var data = [
       {
