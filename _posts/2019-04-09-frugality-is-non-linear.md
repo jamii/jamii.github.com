@@ -22,7 +22,7 @@ It's wrong because your savings grow over time. If you change the interest rate 
 
 Effectively, including interest in the model moves the asymptote to the right - your runway goes up to infinity as your spending approaches some percentage of your total savings, rather than as it approaches zero.
 
-So halving your expenses can much more than double your runway. Or to put it another way, halving your expenses can much more than halve the number of years of your life you need to spend working.
+So halving your expenses can much more than double your runway. Or to put it another way - halving your expenses can much more than halve the number of years of your life you need to spend working.
 
 ---
 
