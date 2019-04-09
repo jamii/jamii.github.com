@@ -36,5 +36,5 @@ In the midst of conversations about how to keep free software alive, how to keep
 
 [^2]: The numbers work out similarly in the UK. Salaries are lower, unless you can land a remote job, but free healthcare and lower cost of living make up a lot of the difference. I wouldn't be surprised if the same holds in most tech hubs.
 
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-1.47.0.min.js"></script>
 <script src="/code/frugality-is-non-linear.js"></script>
