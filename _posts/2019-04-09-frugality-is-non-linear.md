@@ -30,7 +30,7 @@ In the midst of conversations about how to keep free software alive, how to keep
 
 [^1]: A fixed interest rate is unrealistic, but [simulations based on historical data](https://retirementplans.vanguard.com/VGApp/pe/pubeducation/calculators/RetirementNestEggCalc.jsf) produce similar results, and [retirement planning literature](https://www.kitces.com/wp-content/uploads/2014/11/Kitces-Report-March-2012-20-Years-Of-Safe-Withdrawal-Rate-Research.pdf) tends to put the asymptote at around 4-5% which is consistent with the simple model here.
 
-[^2]: The numbers work out similarly in the UK. Salaries are lower, unless you can land a remote job, but free healthcare and lower cost of living make up a lot of the difference.
+[^2]: The numbers work out similarly in the UK. Salaries are lower, unless you can land a remote job, but free healthcare and lower cost of living make up a lot of the difference. I wouldn't be surprised if the same holds in most tech hubs.
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="/code/frugality-is-non-linear.js"></script>
