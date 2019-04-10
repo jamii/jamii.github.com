@@ -28,7 +28,7 @@ So halving your expenses can much more than double your runway. Or to put it ano
 
 I picked the examples above with a particular motive in mind. According to [Dan Luu's conservative estimates](https://danluu.com/startup-tradeoffs/) a fresh grad at a big tech company can safely earn ~$500k post-tax in 5 years. And the US median income post-tax is ~$25k. So as a tech worker, if you can manage to leave as 'frugally' as the average American, you can [comfortably retire](https://networthify.com/calculator/earlyretirement?income=120000&initialBalance=0&expenses=25000&annualPct=5&withdrawalRate=4) before 30.[^2]
 
-In the midst of conversations about how to keep free software alive, how to keep the web open, how to prevent the constant erosion of privacy by adtech, how to protect our time and agency from manipulative skinner boxes - it seems useful to note that many of the people involved in the conversation are, by any normal standards, fabulously wealthy and if we all stopped buying $6 lattes we would have a great deal more leverage and autonomy.
+In the midst of conversations about how to keep free software alive, how to keep the web open, how to prevent the constant erosion of privacy by adtech, how to protect our time and agency from manipulative skinner boxes - it seems useful to note that many of the people involved in the conversation are, by any normal standards, fabulously wealthy and by making some deliberate choices about lifestyle we could have a great deal more leverage and autonomy.
 
 ---
 
