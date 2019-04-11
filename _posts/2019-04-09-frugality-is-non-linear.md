@@ -40,7 +40,7 @@ The last point is particularly compelling if you have strong ethical/political/e
 
 ### FAQ
 
-__What about inflation?__ Inflation is essentially negative interest, so you can subtract it from the interest rate and then keep the rest of the calculations in today-dollars. 5% seems to be a reasonable estimate of average inflation-adjusted interest.
+__What about inflation?__ Inflation is essentially negative interest, so you can subtract it from the interest rate and then keep the rest of the calculations in today-dollars. 5% seems to be a reasonable estimate of average inflation-adjusted interest based on recent decades, but see below for better models.
 
 __What about volatility?__ I used a fixed average interest rate above, which doesn't tell you odds of running out of money early due to a string of bad years. [But simulations based on historical data](https://retirementplans.vanguard.com/VGApp/pe/pubeducation/calculators/RetirementNestEggCalc.jsf) produce similar results to those above, and [retirement planning literature](https://www.kitces.com/wp-content/uploads/2014/11/Kitces-Report-March-2012-20-Years-Of-Safe-Withdrawal-Rate-Research.pdf) tends to put the asymptote at around 4-5% which is consistent with the numbers above. You should definitely use a more detailed model than this if you are seriously considering this path, but I think the simple model accurately conveys the underlying intuition - that the returns to reducing spending are non-linear.
 
