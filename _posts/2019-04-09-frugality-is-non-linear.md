@@ -12,21 +12,21 @@ In this model, the space of options looks like this:
 </div>
 
 <div style="width: 100%; display: flex; align-items: center; justify-content: center; padding-top: 1em;">
-  <label for="interest">Effective interest =&nbsp;</label>
-  <input id="interest" type="text" style="width: 4em" value="0%">
+  <label for="growth">Return on investment =&nbsp;</label>
+  <input id="growth" type="text" style="width: 4em" value="0%">
 </div>
 
 This model is wrong.
 
-It's wrong because your savings grow over time. If you change the interest rate above to 5%, you can see that someone who has 500k in savings and spends 75k per year has a runway of 7 years. At 50k per year that extends to 13 years. But if they can cut their spending to 25k per year they have a runway of 62 years!
+It's wrong because your savings grow over time. If you change the return rate above to 5%, you can see that someone who has 500k in savings and spends 75k per year has a runway of 7 years. At 50k per year that extends to 13 years. But if they can cut their spending to 25k per year they have a runway of 62 years!
 
-Effectively, including interest in the model moves the asymptote to the right - your runway goes up to infinity as your spending approaches some percentage of your total savings, rather than as it approaches zero.
+Effectively, including growth in the model moves the asymptote to the right - your runway goes up to infinity as your spending approaches some percentage of your total savings, rather than as it approaches zero.
 
 So halving your expenses can much more than double your runway. Or to put it another way - halving your expenses can much more than halve the number of years of your life you need to spend working.
 
 ---
 
-I picked the examples above with a particular motive in mind. According to [Dan Luu's conservative estimates](https://danluu.com/startup-tradeoffs/) a fresh grad at a big tech company can safely earn ~$500k post-tax in 5 years. And the US median income post-tax is ~$25k. So as a tech worker, if you can manage to leave as 'frugally' as the average American, you can [comfortably retire](https://networthify.com/calculator/earlyretirement?income=120000&initialBalance=0&expenses=25000&annualPct=5&withdrawalRate=4) before 30.
+I picked the examples above with a particular motive in mind. According to [Dan Luu's conservative estimates](https://danluu.com/startup-tradeoffs/) a fresh grad at a big tech company can safely earn ~$500k post-tax in 5 years. The US median income post-tax is ~$25k, and investing in an index fund has historically earned ~5% average returns in the long run. So as a tech worker, if you can manage to leave as 'frugally' as the average American, you can [comfortably retire](https://networthify.com/calculator/earlyretirement?income=120000&initialBalance=0&expenses=25000&annualPct=5&withdrawalRate=4) before 30.
 
 In the tech industry we have some very loud voices arguing that if you desire autonomy or leverage, the best path forwards is to start a VC-backed startup. But reducing spending and saving towards early retirement has some compelling advantages:
 
@@ -40,9 +40,9 @@ The last point is particularly compelling if you have strong ethical/political/e
 
 ### FAQ
 
-__What about inflation?__ Inflation is essentially negative interest, so you can subtract it from the interest rate and then keep the rest of the calculations in today-dollars. 5% seems to be a reasonable estimate of average inflation-adjusted interest based on recent decades, but see below for better models.
+__What about inflation?__ Inflation is essentially negative growth, so you can subtract it from the return rate and then keep the rest of the calculations in today-dollars. 5% seems to be a reasonable estimate of average inflation-adjusted returns on stocks based on recent decades, but see below for better models.
 
-__What about volatility?__ I used a fixed average interest rate above, which doesn't tell you odds of running out of money early due to a string of bad years. [But simulations based on historical data](https://retirementplans.vanguard.com/VGApp/pe/pubeducation/calculators/RetirementNestEggCalc.jsf) produce similar results to those above, and [retirement planning literature](https://www.kitces.com/wp-content/uploads/2014/11/Kitces-Report-March-2012-20-Years-Of-Safe-Withdrawal-Rate-Research.pdf) tends to put the asymptote at around 4-5% which is consistent with the numbers above. You should definitely use a more detailed model than this if you are seriously considering this path, but I think the simple model accurately conveys the underlying intuition - that the returns to reducing spending are non-linear.
+__What about volatility?__ I used a fixed average return rate above, which doesn't tell you odds of running out of money early due to a string of bad years. [But simulations based on historical data](https://retirementplans.vanguard.com/VGApp/pe/pubeducation/calculators/RetirementNestEggCalc.jsf) produce similar results to those above, and [retirement planning literature](https://www.kitces.com/wp-content/uploads/2014/11/Kitces-Report-March-2012-20-Years-Of-Safe-Withdrawal-Rate-Research.pdf) tends to put the asymptote at around 4-5% which is consistent with the numbers above. You should definitely use a more detailed model than this if you are seriously considering this path, but I think the simple model accurately conveys the underlying intuition - that the returns to reducing spending are non-linear.
 
 __What about crashes?__ The simulation linked above uses data that covers existing crashes, including the Great Depression. But in the event that they are overly optimistic, I think there is a strong argument that having large savings and cheap habits are useful for weathering a crash as having a filled-in employment history. Especially if you used the additional free time to build useful non-tech skills or strong communities.
 

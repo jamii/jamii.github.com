@@ -1,11 +1,11 @@
-function runway(total, spending, interest) {
+function runway(total, spending, growth) {
   if (spending == 0) {
     return Infinity;
   }
   var years = 0;
   while (total >= spending) {
     years += 1;
-    var new_total = (total - spending) * (1 + interest / 100);
+    var new_total = (total - spending) * (1 + growth / 100);
     if (new_total >= total) {
       return Infinity;
     }
@@ -17,17 +17,17 @@ function runway(total, spending, interest) {
 function drawContour() {
   var spendings = [...Array(101).keys()].map(s => s * 1000);
   var initials = [...Array(101).keys()].map(i => i * 10000);
-  var interest = Number.parseFloat(
-    document.getElementById("interest").value.replace("%", "")
+  var growth = Number.parseFloat(
+    document.getElementById("growth").value.replace("%", "")
   );
 
-  if (!isNaN(interest)) {
+  if (!isNaN(growth)) {
     var data = [
       {
         x: spendings,
         y: initials,
         z: initials.map(initial =>
-          spendings.map(spending => runway(initial, spending, interest))
+          spendings.map(spending => runway(initial, spending, growth))
         ),
         type: "contour",
         colorscale: "Viridis",
@@ -58,6 +58,6 @@ function drawContour() {
 
 window.onload = function() {
   document.getElementById("contour").innerText = "";
-  document.getElementById("interest").onkeyup = drawContour;
+  document.getElementById("growth").onkeyup = drawContour;
   drawContour();
 };
