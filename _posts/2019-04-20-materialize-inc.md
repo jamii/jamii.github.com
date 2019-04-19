@@ -5,7 +5,7 @@ title: Materialize Inc
 
 I'm happy to report that I'm maintaining my commitment to viewing every problem as an incremental view maintenance problem by joining an [incremental view maintenance startup](https://materialize.io/).
 
-Tradition dictates that I now convince the reader that You Too Can Join An Incremental View Maintenance Startup! So here are the some of the things that I found compelling:
+Tradition dictates that I now convince the reader that You Too Can Join An Incremental View Maintenance Startup. So here are the some of the things that I found compelling:
 
 * Experience. Everyone involved so far has built similar systems in the past, so we can skip past all the obvious mistakes and make fresh new exciting mistakes.
 * Sensible engineering. From the folks that brought you [Scalability! But at what COST?](https://www.usenix.org/system/files/conference/hotos15/hotos15-paper-mcsherry.pdf) and [Jepsen-approved serializability](https://www.cockroachlabs.com/blog/cockroachdb-beta-passes-jepsen-testing/).
