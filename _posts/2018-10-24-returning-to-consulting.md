@@ -1,6 +1,7 @@
 ---
 layout: update
 title: Returning to consulting
+hidden: true
 ---
 
 As of November, I'll be available again for consulting on systems engineering and performance optimization.
