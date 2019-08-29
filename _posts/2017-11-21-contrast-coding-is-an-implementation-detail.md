@@ -10,11 +10,11 @@ MathJax.Hub.Config({
 </script>
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
-</script> 
+</script>
 
 I found [contrast codes](https://en.wikipedia.org/wiki/Contrast_(statistics)) really confusing on first contact. In hindsight, this is because they are typically presented as being part of the model, but it seems much more ergonomic to me to consider them part of the inference algorithm, as I'll explain here.
 
-If you haven't encountered contrast codes before - good. Stay there. You are not missing out. 
+If you haven't encountered contrast codes before - good. Stay there. You are not missing out.
 
 If you have encountered contrast codes and are confused, maybe this will help.
 
@@ -72,7 +72,7 @@ Unfortunately the nice analytic answer __only works for constraints of the form 
 L & = \begin{pmatrix}1 & {-1}\\\1 & 1\end{pmatrix} \cr
 \text{full model: } y & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} L \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e  \cr
   & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\\x_1 + x_2\end{pmatrix} + e  \cr
-\text{null model: } y & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} L \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e & \text{ where } c_1 = 0 \cr 
+\text{null model: } y & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} L \begin{pmatrix}x_1\\\x_2\end{pmatrix} + e & \text{ where } c_1 = 0 \cr
 & = a + \begin{pmatrix}c_1 & c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\\x_1 + x_2\end{pmatrix} + e & \text{ where } c_1 = 0 \cr
 \end{align}
 
@@ -82,11 +82,11 @@ The rows of $L$ are called __contrast codes__. But where do they come from? Well
 
 Since the rows of $L$ are orthogonal, we can interpret the confidence interval of $c_1$ as the confidence interval of the difference between the mean outcome in the control group and the mean outcome in the treatment group, which is exactly what we care about. (If the rows were not orthogonal the difference would get spread out across $c_1$ and $c_2$. Equivalently, the confidence intervals for $c_1$ and $c_2$ would not be independent.)
 
-Additionally, since $L$ is invertible there is a 1-1 mapping between the transformed model and the original model: 
+Additionally, since $L$ is invertible there is a 1-1 mapping between the transformed model and the original model:
 
 \begin{align}
-& \begin{pmatrix}b_1 & b_2\end{pmatrix} &= & \begin{pmatrix}c_1 & c_2\end{pmatrix} L \cr
-& \begin{pmatrix}b_1 & b_2\end{pmatrix} L^{-1} &= & \begin{pmatrix}c_1 & c_2\end{pmatrix} \cr
+& \begin{pmatrix}b_1 & b_2\end{pmatrix} = \begin{pmatrix}c_1 & c_2\end{pmatrix} L \cr
+& \begin{pmatrix}b_1 & b_2\end{pmatrix} L^{-1} = \begin{pmatrix}c_1 & c_2\end{pmatrix} \cr
 \end{align}
 
 (It doesn't seem to be common to care about this though - I see many examples of non-invertible contrast codes.)
