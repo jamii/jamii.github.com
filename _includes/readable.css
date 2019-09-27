@@ -64,11 +64,9 @@ a:active {
 }
 
 code {
-    padding: 0.2em 0em;
     font-weight: bold;
 }
 
-pre code,
 pre,
 figure,
 .wp-caption {
@@ -102,6 +100,7 @@ figcaption {
   font-style: italic;
 }
 
+code,
 pre {
   white-space: pre;
   overflow: visible;
