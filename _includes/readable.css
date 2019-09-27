@@ -102,10 +102,9 @@ figcaption {
   font-style: italic;
 }
 
-code,
 pre {
   white-space: pre;
-  overflow-x:scroll
+  overflow: visible;
 }
 
 ul,
