@@ -59,7 +59,7 @@ const Message = Int64
 @relation text(Message) => String
 @relation sent_by(Message) => String
 @relation sent_at(Message) => DateTime
-@relation likes(username::String, Message) 
+@relation likes(username::String, Message)
 ```
 
 And a direct translation into sql:
@@ -81,10 +81,10 @@ Here is a query that records data for each new message:
 @query begin
   new_message(session, text)
   username(session) => username
-  @query begin 
+  @query begin
     message(id) => (_, _)
   end
-  new_message = 1 + length(id) 
+  new_message = 1 + length(id)
   return message(new_message)
   return text(new_message) => text
   return sent_by(new_message) => username
@@ -95,7 +95,7 @@ end
 And again, a direct translation into sql:
 
 ``` sql
-begin; 
+begin;
 create temporary table results as (
   select new_message.text as text, username.username as username, ((select count(*) from message) + 1) as next_message
   from new_message, username
@@ -108,14 +108,14 @@ insert into sent_at select next_message, now() from results;
 commit;
 ```
 
-Imp is built on top of [Julia](https://julialang.org/). The queries are [compiled to Julia code](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) and can use any Julia types and functions. The `DateTime` type and the `now()` function used above are part of the Julia standard library. 
+Imp is built on top of [Julia](https://julialang.org/). The queries are [compiled to Julia code](http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/) and can use any Julia types and functions. The `DateTime` type and the `now()` function used above are part of the Julia standard library.
 
 ## Previous approaches
 
 In a typical OOPy language we would probably build these trees using a template language like this one:
 
 {% raw %}
-``` html
+```
 <table>
   {% for message in messages %}
     <tr>
@@ -175,7 +175,7 @@ end
 The second was to represent the tree as a set of relations, using hashes to create unique node ids:
 
 ``` julia
-struct Node 
+struct Node
   id::UInt64
 end
 
@@ -240,7 +240,7 @@ The extreme verbosity of the second approach can be tamed with [a little syntax 
 The core problem is these nested `for` loops in the OOPy template:
 
 {% raw %}
-``` julia
+```
 {% for message in messages %}
   ...
       {% for like in message.likes %}
@@ -253,7 +253,7 @@ The core problem is these nested `for` loops in the OOPy template:
 
 We can try to emulate this structure with a relational query:
 
-``` sql 
+``` sql
 select message.id, likes.liker
 from message, likes
 where message.id = likes.message
@@ -277,12 +277,12 @@ Imp templates look like this:
       @query text(message) => text begin
         [td "$text"]
       end
-      [td 
+      [td
         @query likes(liker, message) begin
           [div "$liker likes this!"]
         end
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like($session, $message)"]
       ]
     ]
@@ -297,7 +297,7 @@ Templates are made up of four kinds of elements:
 * Text nodes like `"$liker likes this!"`
 * Query fragments like `@query likes(liker, message) begin ... end`
 
-Query fragments like `@query likes(liker, message) begin ... end` acts much like a `for` loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in an enclosing query fragment are already bound to some value, so we keep only the rows that have matching values. In this case, `message` already appeared the in the enclosing query fragment `message(message) begin ... end`. The equivalent code in the OOPy template would be {% raw %}`{% for like in likes if like.message == message.id %}`{% endraw %}. 
+Query fragments like `@query likes(liker, message) begin ... end` acts much like a `for` loop. For each row in the `likes` relation, we create a copy of everything between `begin` and `end`. But any variables that have already appeared in an enclosing query fragment are already bound to some value, so we keep only the rows that have matching values. In this case, `message` already appeared the in the enclosing query fragment `message(message) begin ... end`. The equivalent code in the OOPy template would be {% raw %}`{% for like in likes if like.message == message.id %}`{% endraw %}.
 
 The order the rows appear in is determined by sorting them by their variables in lexicographic order. So rows from `likes(liker, message)` are sorted first by `liker` and then by `message`.
 
@@ -335,9 +335,9 @@ When we run the query fragments in our templates on this data, we get:
       @query text(message=1) => text="hello" begin
         [td "$text"]
       end
-      [td 
+      [td
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like($session, $message)"]
       ]
     ]
@@ -350,9 +350,9 @@ When we run the query fragments in our templates on this data, we get:
       @query text(message=2) => text="hi" begin
         [td "$text"]
       end
-      [td 
+      [td
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like($session, $message)"]
       ]
     ]
@@ -365,9 +365,9 @@ When we run the query fragments in our templates on this data, we get:
       @query text(message=3) => text="greetings" begin
         [td "$text"]
       end
-      [td 
+      [td
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like($session, $message)"]
       ]
     ]
@@ -380,7 +380,7 @@ When we run the query fragments in our templates on this data, we get:
       @query text(message=4) => text="free tacos all round!" begin
         [td "$text"]
       end
-      [td 
+      [td
         @query likes(liker="alice", message=4) begin
           [div "$liker likes this!"]
         end
@@ -388,7 +388,7 @@ When we run the query fragments in our templates on this data, we get:
           [div "$liker likes this!"]
         end
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like($session, $message)"]
       ]
     ]
@@ -396,7 +396,7 @@ When we run the query fragments in our templates on this data, we get:
 ]
 ```
 
-Next we take all the text nodes, such as `"$liker likes this!"`, and replace the `$`-interpolated variables with their values. 
+Next we take all the text nodes, such as `"$liker likes this!"`, and replace the `$`-interpolated variables with their values.
 
 ``` julia
 [table
@@ -408,9 +408,9 @@ Next we take all the text nodes, such as `"$liker likes this!"`, and replace the
       @query text(message=1) => text="hello" begin
         [td "hello"]
       end
-      [td 
+      [td
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like(42, 1)"]
       ]
     ]
@@ -423,9 +423,9 @@ Next we take all the text nodes, such as `"$liker likes this!"`, and replace the
       @query text(message=2) => text="hi" begin
         [td "hi"]
       end
-      [td 
+      [td
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like(42, 2)"]
       ]
     ]
@@ -438,9 +438,9 @@ Next we take all the text nodes, such as `"$liker likes this!"`, and replace the
       @query text(message=3) => text="greetings" begin
         [td "greetings"]
       end
-      [td 
+      [td
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like(42, 3)"]
       ]
     ]
@@ -453,7 +453,7 @@ Next we take all the text nodes, such as `"$liker likes this!"`, and replace the
       @query text(message=4) => text="free tacos all round!" begin
         [td "free tacos all round!"]
       end
-      [td 
+      [td
         @query likes(liker="alice", message=4) begin
           [div "alice likes this!"]
         end
@@ -461,7 +461,7 @@ Next we take all the text nodes, such as `"$liker likes this!"`, and replace the
           [div "bob likes this!"]
         end
       ]
-      [td 
+      [td
         [button "like!" onclick="new_like(42, 4)"]
       ]
     ]
@@ -476,38 +476,38 @@ Now that the interpolated variables have been filled in we don't need the query 
   [tr
     [td "alice:"]
     [td "hello"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 1)"]
     ]
   ]
   [tr
     [td "bob:"]
     [td "hi"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 2)"]
     ]
   ]
   [tr
     [td "chia:"]
     [td "greetings"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 3)"]
     ]
   ]
   [tr
     [td "chia:"]
     [td "free tacos all round!"]
-    [td 
+    [td
       [div "alice likes this!"]
       [div "bob likes this!"]
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 4)"]
     ]
   ]
@@ -548,44 +548,44 @@ With the new data, the template now specifies this DOM tree:
   [tr
     [td "alice:"]
     [td "hello"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 1)"]
     ]
   ]
   [tr
     [td "chia:"]
     [td "greetings"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 3)"]
     ]
   ]
   [tr
     [td "chia:"]
     [td "free tacos all round!"]
-    [td 
+    [td
       [div "bob likes this!"]
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 4)"]
     ]
   ]
   [tr
     [td "chia:"]
     [td "who doesn't like free tacos?"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 5)"]
     ]
   ]
 ]
 ```
 
-Obviously, we want to guarantee that changes are made to the DOM in the browser so that the end result matches the new results from the template. 
+Obviously, we want to guarantee that changes are made to the DOM in the browser so that the end result matches the new results from the template.
 
 But it's not enough to specify only the end result. Some DOM nodes have their own state that is not reflected in the template, such as scroll position or text entered by the user. It's not practical to manage this state from the server, both because of the latency involved and the inability to block the client or save up keystrokes. But deleting and recreating a node will erase its state. So as part of the semantics of the template library we have to specify exactly what changes it makes to the DOM on the way to the correct end result.
 
@@ -636,47 +636,47 @@ Then the change to the DOM will be:
   [tr
     [td "alice:"]
     [td "hello"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 1)"]
     ]
   ]
 -  [tr
 -    [td "bob:"]
 -    [td "hi"]
--    [td 
+-    [td
 -    ]
--    [td 
+-    [td
 -      [button "like!" onclick="new_like(42, 2)"]
 -    ]
 -  ]
   [tr
     [td "chia:"]
     [td "greetings"]
-    [td 
+    [td
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 3)"]
     ]
   ]
   [tr
     [td "chia:"]
     [td "free tacos all round!"]
-    [td 
+    [td
 -      [div "alice likes this!"]
       [div "bob likes this!"]
     ]
-    [td 
+    [td
       [button "like!" onclick="new_like(42, 4)"]
     ]
   ]
 +  [tr
 +    [td "chia:"]
 +    [td "who doesn't like free tacos?"]
-+    [td 
++    [td
 +    ]
-+    [td 
++    [td
 +      [button "like!" onclick="new_like(42, 5)"]
 +    ]
 +  ]
@@ -685,17 +685,17 @@ Then the change to the DOM will be:
 
 That is, we delete the `[tr ...]` subtree containing Bobs message, we delete the `[div ...]` containing Alices like and we create a new subtree for Chias new message.
 
-That may seem obvious, but we could just as correctly have decided to leave the four message subtrees intact but change the text of each. Without unique keys to help match up the old and new subtrees, React might decide to do exactly that. 
+That may seem obvious, but we could just as correctly have decided to leave the four message subtrees intact but change the text of each. Without unique keys to help match up the old and new subtrees, React might decide to do exactly that.
 
-Tying the identity of each subtree to the rows that feed them data provides a simple mental model that is easy to map to the visual appearance of the template. 
+Tying the identity of each subtree to the rows that feed them data provides a simple mental model that is easy to map to the visual appearance of the template.
 
 ## Events
 
-We also need to be able to react to user input. 
+We also need to be able to react to user input.
 
 In Imp, we can tag relations as event relations:
 
-``` julia    
+``` julia
 @event new_like(Session, Message)
 ```
 
@@ -722,16 +722,16 @@ We also still allow arbitrary javascript in event handlers, which is useful for 
   style="width: 100%; height: 2em"
   placeholder="What do you want to say?"
   onkeydown="if (event.which == 13) {new_message($session, this.value); this.value=''}"
-] 
+]
 ```
 
 Again, if this was running in the browser itself or we were using a native UI toolkit it might be useful to manage such state directly. But in the current server/client implementation it's more practical to leave low-latency interactions such as typing and scrolling to the browser.
 
-## Sessions 
+## Sessions
 
-We give each browser tab a unique session key. The template is implicitly wrapped in `@query session(session) begin ... end` so that it can behave differently for each session. 
+We give each browser tab a unique session key. The template is implicitly wrapped in `@query session(session) begin ... end` so that it can behave differently for each session.
 
-For example, when someone clicks `like!` we record their session id so we can later display their username in the likes list. 
+For example, when someone clicks `like!` we record their session id so we can later display their username in the likes list.
 
 ``` julia
 [button "like!" onclick="new_like($session, $message)"]
@@ -777,30 +777,30 @@ Next, for each query fragment we create a corresponding query that performs a jo
 end
 
 @query begin
-  query_0(session) => query_parent_hash 
-  message(message) 
-  my_hash = hash(message, hash(2, query_parent_hash)) 
+  query_0(session) => query_parent_hash
+  message(message)
+  my_hash = hash(message, hash(2, query_parent_hash))
   return query_2(session, message) => my_hash
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  sent_by(message, sent_by) 
-  my_hash = hash(sent_by, hash(message, hash(4, query_parent_hash))) 
+  query_2(session, message) => query_parent_hash
+  sent_by(message, sent_by)
+  my_hash = hash(sent_by, hash(message, hash(4, query_parent_hash)))
   return query_4(session, message, sent_by) => my_hash
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  text(message, text) 
-  my_hash = hash(text, hash(message, hash(5, query_parent_hash))) 
+  query_2(session, message) => query_parent_hash
+  text(message, text)
+  my_hash = hash(text, hash(message, hash(5, query_parent_hash)))
   return query_5(session, message, text) => my_hash
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  likes(liker, message) 
-  my_hash = hash(message, hash(liker, hash(10, query_parent_hash))) 
+  query_2(session, message) => query_parent_hash
+  likes(liker, message)
+  my_hash = hash(message, hash(liker, hash(10, query_parent_hash)))
   return query_10(session, message, liker) => my_hash
 end
 ```
@@ -829,7 +829,7 @@ query_10(42, 4, "alice") => 0x13
 query_10(42, 4, "bob") => 0x14
 ```
 
-Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky eg if we just calculate positions of each child within its parent, inserting one child would mean updating the positions of all the children that came after it. 
+Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky eg if we just calculate positions of each child within its parent, inserting one child would mean updating the positions of all the children that came after it.
 
 But I eventually hit upon an elegant solution. The position of each node can be described by the positions and variable values of all the query nodes between it and its eventual parent:
 
@@ -860,7 +860,7 @@ But I eventually hit upon an elegant solution. The position of each node can be 
 # --- filled out template ---
 
 [table # node 1
-  @query message(message=1) begin 
+  @query message(message=1) begin
     [tr # 1st child of node 1 -> 1st child of node 2 -> message=1
       @query sent_by(message=1) => sent_by="alice" begin
         [td "alice:"] # 1st child of node 1 -> 1st child of node 2 -> message=1 -> 1st child of node 3 -> sent_by="alice" -> 1st child of node 4
@@ -905,85 +905,85 @@ Now for each DOM node in the template we create a query that calculates the corr
 
 ``` julia
 @query begin
-  query_0(session) => query_hash 
-  my_hash = hash(0, query_hash) 
+  query_0(session) => query_hash
+  my_hash = hash(0, query_hash)
   return group_0(session, 1) => (UInt64(0), my_hash, Html, "table")
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  group_0(session, 1) => (_, fixed_parent_hash, _, _) 
-  my_hash = hash(3, query_parent_hash) 
+  query_2(session, message) => query_parent_hash
+  group_0(session, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(3, query_parent_hash)
   return group_1(session, 1, message, 1) => (fixed_parent_hash, my_hash, Html, "tr")
 end
 
 @query begin
-  query_4(session, message, sent_by) => query_parent_hash 
-  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
-  my_hash = hash(8, query_parent_hash) 
+  query_4(session, message, sent_by) => query_parent_hash
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(8, query_parent_hash)
   return group_3(session, message, 1, sent_by, 1, "", 0) => (fixed_parent_hash, my_hash, Html, "td")
 end
 
 @query begin
-  query_5(session, message, text) => query_parent_hash 
-  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
-  my_hash = hash(9, query_parent_hash) 
+  query_5(session, message, text) => query_parent_hash
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(9, query_parent_hash)
   return group_3(session, message, 2, "", 0, text, 1) => (fixed_parent_hash, my_hash, Html, "td")
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
-  my_hash = hash(6, query_parent_hash) 
+  query_2(session, message) => query_parent_hash
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(6, query_parent_hash)
   return group_3(session, message, 3, "", 0, "", 0) => (fixed_parent_hash, my_hash, Html, "td")
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _) 
-  my_hash = hash(7, query_parent_hash) 
+  query_2(session, message) => query_parent_hash
+  group_1(session, 1, message, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(7, query_parent_hash)
   return group_3(session, message, 4, "", 0, "", 0) => (fixed_parent_hash, my_hash, Html, "td")
 end
 
 @query begin
-  query_4(session, message, sent_by) => query_parent_hash 
+  query_4(session, message, sent_by) => query_parent_hash
   group_3(session, message, 1, sent_by, 1, _, 0) => (_, fixed_parent_hash, _, _)
-  my_hash = hash(11, query_parent_hash) 
+  my_hash = hash(11, query_parent_hash)
   return group_8(session, message, sent_by, 1) => (fixed_parent_hash, my_hash, Text, string(sent_by, ":"))
 end
 
 @query begin
-  query_5(session, message, text) => query_parent_hash 
+  query_5(session, message, text) => query_parent_hash
   group_3(session, message, 2, _, 0, text, 1) => (_, fixed_parent_hash, _, _)
-  my_hash = hash(12, query_parent_hash) 
+  my_hash = hash(12, query_parent_hash)
   return group_9(session, message, text, 1) => (fixed_parent_hash, my_hash, Text, string(text))
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
+  query_2(session, message) => query_parent_hash
   group_3(session, message, 4, _, 0, _, 0) => (_, fixed_parent_hash, _, _)
-  my_hash = hash(13, query_parent_hash) 
+  my_hash = hash(13, query_parent_hash)
   return group_7(session, message, 1) => (fixed_parent_hash, my_hash, Html, "button")
 end
 
 @query begin
-  query_10(session, message, liker) => query_parent_hash 
+  query_10(session, message, liker) => query_parent_hash
   group_3(session, message, 3, _, 0, _, 0) => (_, fixed_parent_hash, _, _)
-  my_hash = hash(14, query_parent_hash) 
+  my_hash = hash(14, query_parent_hash)
   return group_6(session, message, 1, liker, 1) => (fixed_parent_hash, my_hash, Html, "div")
 end
 
 @query begin
-  query_2(session, message) => query_parent_hash 
-  group_7(session, message, 1) => (_, fixed_parent_hash, _, _) 
-  my_hash = hash(15, query_parent_hash) 
+  query_2(session, message) => query_parent_hash
+  group_7(session, message, 1) => (_, fixed_parent_hash, _, _)
+  my_hash = hash(15, query_parent_hash)
   return group_13(session, message, 1) => (fixed_parent_hash, my_hash, Text, "like!")
 end
 
 @query begin
-  query_10(session, message, liker) => query_parent_hash 
+  query_10(session, message, liker) => query_parent_hash
   group_6(session, message, 1, liker, 1) => (_, fixed_parent_hash, _, _)
-  my_hash = hash(17, query_parent_hash) 
+  my_hash = hash(17, query_parent_hash)
   return group_14(session, message, liker, 1) => (fixed_parent_hash, my_hash, Text, string(liker, " likes this!"))
   end
 ```
@@ -1024,8 +1024,8 @@ DOM attributes like `onclick="new_like($session, $message)"` are handled similar
 
 ``` julia
 @query begin
-  query_2(session, message) => _ 
-  group_7(session, message, 1) => (_, fixed_parent_hash, _, _) 
+  query_2(session, message) => _
+  group_7(session, message, 1) => (_, fixed_parent_hash, _, _)
   return attribute_16(session, fixed_parent_hash, "onclick") => string("new_like(", session, ", ", message, ")")
 end
 ```
@@ -1143,7 +1143,7 @@ template = quote
       [tr
         $(message_template(:message)...)
         $(likes_template(:message))
-        [td 
+        [td
           [button "like!" onclick="new_like($session, $message)"]
         ]
       ]
@@ -1164,7 +1164,7 @@ end
 
 function likes_template(message)
   quote
-    [td 
+    [td
       @query likes(liker, $message) begin
         [div "$liker likes this!"]
       end
@@ -1183,7 +1183,7 @@ I won't know for sure how well this will perform until I've built something more
 
 My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile and eyeballed the time from the user event until the start of layout/rendering/painting.
 
-Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces. 
+Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces.
 
 Times in ms:
 
@@ -1224,11 +1224,11 @@ Overall, I'm pleasantly surprised that it's already this fast.
 
 ## Status
 
-The current implementation is not pretty, but it works well enough to demonstrate that this is feasible for simple examples. 
+The current implementation is not pretty, but it works well enough to demonstrate that this is feasible for simple examples.
 
 I targeted the browser purely for familiarity. The same approach should work with native UI toolkits too, and I may well switch in the future.
 
-Running everything on the server has obvious limitations wrt latency and maximum load. I *think* this approach could be scaled to handle public webapps with many users, but it would require a much more sophisticated implementation, with some way to run parts of the logic on the client. 
+Running everything on the server has obvious limitations wrt latency and maximum load. I *think* this approach could be scaled to handle public webapps with many users, but it would require a much more sophisticated implementation, with some way to run parts of the logic on the client.
 
 I haven't given much thought to security yet. A good start would be to track what events are present in the template and refuse to allow clients to submit any events that aren't on the list.
 
