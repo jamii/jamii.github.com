@@ -4,7 +4,7 @@ body {
   padding: 32px;
   color: #333333;
   background-color: #ffffff;
-  font-family: Fira Sans, Georgia, "Times New Roman", serif;
+  font-family: Fira Sans, serif;
 }
 
 .container {
@@ -25,7 +25,7 @@ h1,
 h2,
 h3 {
   font-weight: 800;
-  font-family: Fira Sans, Helvetica, sans-serif;
+  font-family: Fira Sans, sans-serif;
 }
 
 h1 {
