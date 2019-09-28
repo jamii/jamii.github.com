@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Staged interpreters in Rust
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Staged interpreters in Rust</h1>
+
+<article>
+  <p>Last week I was writing an interpreter for a query language. On arithmetic-heavy queries the interpreter overhead was &gt;10x compared to a compiled baseline. I tried staging the interpreter to move the overhead out of the inner loops. In the end the results weren't worth the complexity compared to just writing a compiler so I didn't end up finishing it. But I think it's a neat idea anyway so I wrote a much simpler example to demonstrate.</p>
+<p>(It's essentially a <a href="http://okmij.org/ftp/tagless-final/JFP.pdf">tagless staged interpreter</a> with the addition of shared mutable state).</p>
+<p>Let's look at a much simpler example that I actually finished (<a href="https://github.com/jamii/rust-tagless/blob/master/src/main.rs">source code</a>). It's an interpreter for a rather pointless little language that has just enough features to illustrate the idea.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">enum </span><span style="color:#399ee6;">Type </span><span style="color:#61676c;">{
+    Number</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;">
+    Bool</span><span style="color:#61676ccc;">,
+</span><span style="color:#61676c;">}
+
+</span><span style="color:#fa6e32;">enum </span><span style="color:#399ee6;">Value </span><span style="color:#61676c;">{
+    Number(</span><span style="color:#fa6e32;">i64</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;">
+    Bool(</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+</span><span style="color:#61676c;">}
+
+</span><span style="color:#fa6e32;">type </span><span style="color:#399ee6;">Name </span><span style="color:#ed9366;">= &amp;</span><span style="color:#fa6e32;">&#39;static str</span><span style="color:#61676ccc;">;
+
+</span><span style="color:#fa6e32;">enum </span><span style="color:#399ee6;">Expr </span><span style="color:#61676c;">{
+    Constant(Value)</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;">
+    Add(Box&lt;Expr&gt;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Box&lt;Expr&gt;)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#abb0b6;">// e1 + e2
+</span><span style="color:#61676c;">    LessThan(Box&lt;Expr&gt;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Box&lt;Expr&gt;)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#abb0b6;">// e1 &lt; e2
+</span><span style="color:#61676c;">    Let(Name</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> Type</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Box&lt;Expr&gt;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Box&lt;Expr&gt;)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#abb0b6;">// let v::t = e1 in e2
+</span><span style="color:#61676c;">    Get(Name)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#abb0b6;">// v
+</span><span style="color:#61676c;">    Set(Name</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Box&lt;Expr&gt;)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#abb0b6;">// v = e
+</span><span style="color:#61676c;">    While(Box&lt;Expr&gt;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Box&lt;Expr&gt;)</span><span style="color:#61676ccc;">, </span><span style="font-style:italic;color:#abb0b6;">// while e1 { e2 }
+</span><span style="color:#61676c;">}
+</span></pre>
+<p>This is enough to write a rather pointless little program:</p>
+<pre style="background-color:#fafafa;">
+<span style="font-style:italic;color:#abb0b6;">// let i = 1 {
+//   while i &lt; 1000 {
+//     i = i + 1
+//   }
+// }
+</span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> expr </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Let(
+    </span><span style="color:#86b300;">&quot;i&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Type</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Constant(Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">))</span><span style="color:#61676ccc;">,
+    </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">While(
+        </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">LessThan(</span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Get(</span><span style="color:#86b300;">&quot;i&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Constant(Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#ff8f40;">1000</span><span style="color:#61676c;">)))</span><span style="color:#61676ccc;">,
+        </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Set(
+            </span><span style="color:#86b300;">&quot;i&quot;</span><span style="color:#61676ccc;">,
+            </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Add(</span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Get(</span><span style="color:#86b300;">&quot;i&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">box </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Constant(Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">)))</span><span style="color:#61676ccc;">,
+        </span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+    </span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+</span><span style="color:#f07171;">println!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;</span><span style="color:#ff8f40;">{:?}</span><span style="color:#86b300;">&quot;</span><span style="color:#61676ccc;">, </span><span style="color:#f07171;">interpret</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">HashMap</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">new()</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">expr))</span><span style="color:#61676ccc;">;
+</span></pre>
+<p>Let's look at what happens in the interpreter when we run this program.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">enum </span><span style="color:#399ee6;">Variable </span><span style="color:#61676c;">{
+    Number(Cell&lt;</span><span style="color:#fa6e32;">i64</span><span style="color:#61676c;">&gt;)</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;">
+    Bool(Cell&lt;</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">&gt;)</span><span style="color:#61676ccc;">,
+</span><span style="color:#61676c;">}
+
+</span><span style="color:#fa6e32;">fn </span><span style="color:#f29718;">interpret</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">env</span><span style="color:#61676ccc;">: </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">HashMap&lt;Name, Variable&gt;, </span><span style="color:#ff8f40;">expr</span><span style="color:#61676ccc;">: </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Expr) </span><span style="color:#61676ccc;">-&gt;</span><span style="color:#61676c;"> Value {
+    </span><span style="color:#fa6e32;">match </span><span style="color:#ed9366;">*</span><span style="color:#61676c;">expr {
+        </span><span style="color:#ed9366;">...
+        </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Add(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr1</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr2) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> value1 </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">interpret</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr1)</span><span style="color:#61676ccc;">;
+            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> value2 </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">interpret</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr2)</span><span style="color:#61676ccc;">;
+            </span><span style="color:#fa6e32;">match </span><span style="color:#61676c;">(value1</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> value2) {
+                (Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number1)</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number2)) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(
+                    number1 </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> number2</span><span style="color:#61676ccc;">,
+                </span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+                </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error!&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+            </span><span style="color:#61676c;">}
+        }
+        Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Get(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> name) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">match</span><span style="color:#61676c;"> env</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">(name)</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">unwrap</span><span style="color:#61676c;">() {
+                </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Variable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> number_cell) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">())</span><span style="color:#61676ccc;">,
+                </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Variable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> bool_cell) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(bool_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">())</span><span style="color:#61676ccc;">,
+            </span><span style="color:#61676c;">}
+        }
+        Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Set(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> name</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> value </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">interpret</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr)</span><span style="color:#61676ccc;">;
+            </span><span style="color:#fa6e32;">match </span><span style="color:#61676c;">(env</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">(name)</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">unwrap</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">value) {
+                (</span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Variable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> number_cell)</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number)) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    number_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">set</span><span style="color:#61676c;">(number)</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+                    value
+                }
+                (</span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Variable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> bool_cell)</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">)) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    bool_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">set</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+                    value
+                }
+                </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error!&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+            </span><span style="color:#61676c;">}
+        }
+        Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">While(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr1</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr2) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">while </span><span style="color:#ff8f40;">true </span><span style="color:#61676c;">{
+                </span><span style="color:#fa6e32;">match </span><span style="color:#f07171;">interpret</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr1) {
+                    Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#ff8f40;">true</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                        </span><span style="color:#f07171;">interpret</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr2)</span><span style="color:#61676ccc;">;
+                    </span><span style="color:#61676c;">}
+                    Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#fa6e32;">break</span><span style="color:#61676ccc;">,
+                    </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error!&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+                </span><span style="color:#61676c;">}
+            }
+            Value</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+        }
+    }
+}
+</span></pre>
+<p>The loop in our program executes <code>i = i + 1</code> on each iteration, and on each iteration we:</p>
+<ol>
+<li>Check what to do with each expression: <code>match *expr { ... }</code></li>
+<li>Get the variable <code>i</code> from the environment hashtable twice: <code>env.get(name)</code></li>
+<li>Check that the types of <code>i</code> and <code>1</code> are the same: <code>match (value1, value2) { ... }</code></li>
+<li>Check that the types of <code>i</code> and <code>i + 1</code> are the same: <code>match (env.get(name).unwrap(), &amp;value) { ... }</code></li>
+</ol>
+<p>This is all wasted work. We know at the start of the loop that each of these decisions is going to come out the same way on every iteration. How can we avoid doing them on every iteration?</p>
+<p>Suppose we have one pass that makes the decisions and another pass that actually runs the program. Something like:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let</span><span style="color:#61676c;"> staged</span><span style="color:#61676ccc;">:</span><span style="color:#61676c;"> Staged </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">stage</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">HashMap</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">new()</span><span style="color:#61676ccc;">, </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">expr)</span><span style="color:#61676ccc;">;
+</span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> result </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">run</span><span style="color:#61676c;">(staged)</span><span style="color:#61676ccc;">;
+</span></pre>
+<p>What is <code>Staged</code>? It's a thing that we can run and get back a <code>Value</code>. So the most general type we could use is a closure that returns <code>Value</code>:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type </span><span style="color:#399ee6;">Staged </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Box&lt;Fn() </span><span style="color:#61676ccc;">-&gt;</span><span style="color:#61676c;"> Value&gt;
+</span></pre>
+<p>But we actually need a bit more information to build these efficiently. Remember we want to know the type of things ahead of time so that we don't have to check on every loop. So we need to pull the tag out of the <code>Value</code> and wrap the entire closure:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">enum </span><span style="color:#399ee6;">Staged </span><span style="color:#61676c;">{
+    Number(Box&lt;Fn() </span><span style="color:#61676ccc;">-&gt; </span><span style="color:#fa6e32;">i64</span><span style="color:#61676c;">&gt;)</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;">
+    Bool(Box&lt;Fn() </span><span style="color:#61676ccc;">-&gt; </span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">&gt;)</span><span style="color:#61676ccc;">,
+</span><span style="color:#61676c;">}
+</span></pre>
+<p>These closures are going to close over variables, so we also need to make the variables shareable between multiple closures by adding a reference counted pointer:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">enum </span><span style="color:#399ee6;">StagedVariable </span><span style="color:#61676c;">{
+    Number(Rc&lt;Cell&lt;</span><span style="color:#fa6e32;">i64</span><span style="color:#61676c;">&gt;&gt;)</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;">
+    Bool(Rc&lt;Cell&lt;</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">&gt;&gt;)</span><span style="color:#61676ccc;">,
+</span><span style="color:#61676c;">}
+</span></pre>
+<p>Now we can just glue together bits of code to make these closures:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">fn </span><span style="color:#f29718;">stage</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">env</span><span style="color:#61676ccc;">: </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">HashMap&lt;Name, StagedVariable&gt;, </span><span style="color:#ff8f40;">expr</span><span style="color:#61676ccc;">: </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">Expr) </span><span style="color:#61676ccc;">-&gt;</span><span style="color:#61676c;"> Staged {
+    </span><span style="color:#fa6e32;">match </span><span style="color:#ed9366;">*</span><span style="color:#61676c;">expr {
+        </span><span style="color:#ed9366;">...
+        </span><span style="color:#61676c;">Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Add(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr1</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr2) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> staged1 </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">stage</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr1)</span><span style="color:#61676ccc;">;
+            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> staged2 </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">stage</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr2)</span><span style="color:#61676ccc;">;
+            </span><span style="color:#fa6e32;">match </span><span style="color:#61676c;">(staged1</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> staged2) {
+                (Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number1)</span><span style="color:#61676ccc;">, </span><span style="color:#61676c;">Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number2)) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">{
+                    </span><span style="color:#f07171;">number1</span><span style="color:#61676c;">() </span><span style="color:#ed9366;">+ </span><span style="color:#f07171;">number2</span><span style="color:#61676c;">()
+                })</span><span style="color:#61676ccc;">,
+                </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error!&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+            </span><span style="color:#61676c;">}
+        }
+        Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Get(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> name) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">match</span><span style="color:#61676c;"> env</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">(name)</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">unwrap</span><span style="color:#61676c;">() {
+                </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">StagedVariable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> number_cell) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> number_cell </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> number_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">clone</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+                    </span><span style="color:#61676c;">Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">||</span><span style="color:#61676c;"> number_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">())
+                }
+                </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">StagedVariable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> bool_cell) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> bool_cell </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> bool_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">clone</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+                    </span><span style="color:#61676c;">Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">||</span><span style="color:#61676c;"> bool_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">())
+                }
+            }
+        }
+        Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Set(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> name</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> staged </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">stage</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr)</span><span style="color:#61676ccc;">;
+            </span><span style="color:#fa6e32;">match</span><span style="color:#61676c;"> env</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">get</span><span style="color:#61676c;">(name)</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">unwrap</span><span style="color:#61676c;">() {
+                </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">StagedVariable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> number_cell) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    </span><span style="color:#fa6e32;">match</span><span style="color:#61676c;"> staged {
+                        Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> number_cell </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> number_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">clone</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+                            </span><span style="color:#61676c;">Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(</span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">{
+                                </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> number </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">number</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+                                number_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">set</span><span style="color:#61676c;">(number)</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+                                number
+                            })
+                        }
+                        </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error!&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+                    </span><span style="color:#61676c;">}
+                }
+                </span><span style="color:#ed9366;">&amp;</span><span style="color:#61676c;">StagedVariable</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> bool_cell) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    </span><span style="color:#fa6e32;">match</span><span style="color:#61676c;"> staged {
+                        Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                            </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> bool_cell </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> bool_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">clone</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+                            </span><span style="color:#61676c;">Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">{
+                                </span><span style="color:#fa6e32;">let bool </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+                                bool_cell</span><span style="color:#ed9366;">.</span><span style="color:#f07171;">set</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">bool</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+                                </span><span style="color:#fa6e32;">bool
+                            </span><span style="color:#61676c;">})
+                        }
+                        </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error!&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+                    </span><span style="color:#61676c;">}
+                }
+            }
+        }
+        Expr</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">While(</span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr1</span><span style="color:#61676ccc;">, </span><span style="color:#fa6e32;">ref</span><span style="color:#61676c;"> expr2) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+            </span><span style="color:#fa6e32;">match </span><span style="color:#f07171;">stage</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr1) {
+                Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(bool1) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                    Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(</span><span style="color:#fa6e32;">match </span><span style="color:#f07171;">stage</span><span style="color:#61676c;">(env</span><span style="color:#61676ccc;">,</span><span style="color:#61676c;"> expr2) {
+                        Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Bool(bool2) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                            </span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">{
+                                </span><span style="color:#fa6e32;">while </span><span style="color:#f07171;">bool1</span><span style="color:#61676c;">() {
+                                    </span><span style="color:#f07171;">bool2</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+                                </span><span style="color:#61676c;">}
+                                </span><span style="color:#ff8f40;">false
+                            </span><span style="color:#61676c;">}
+                        }
+                        Staged</span><span style="color:#ed9366;">::</span><span style="color:#61676c;">Number(number2) </span><span style="color:#ed9366;">=&gt; </span><span style="color:#61676c;">{
+                            </span><span style="color:#ed9366;">box </span><span style="color:#fa6e32;">move </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">{
+                                </span><span style="color:#fa6e32;">while </span><span style="color:#f07171;">bool1</span><span style="color:#61676c;">() {
+                                    </span><span style="color:#f07171;">number2</span><span style="color:#61676c;">()</span><span style="color:#61676ccc;">;
+                                </span><span style="color:#61676c;">}
+                                </span><span style="color:#ff8f40;">false
+                            </span><span style="color:#61676c;">}
+                        }
+                    })
+                }
+                </span><span style="color:#ed9366;">_ =&gt; </span><span style="color:#f07171;">panic!</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;Type error&quot;</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">,
+            </span><span style="color:#61676c;">}
+        }
+    }
+}
+</span></pre>
+<p>Compared to before, on each iteration we now:</p>
+<ol>
+<li>Call a function pointer to find out what to do with each expr</li>
+<li>Close over the variable <code>i</code> and just need to dereference a pointer</li>
+<li>Have already checked that the types of <code>i</code> and <code>1</code> are the same</li>
+<li>Have already checked that the types of <code>i</code> and <code>i + 1</code> are the same</li>
+</ol>
+<p>Calling a function pointer is cheaper than a single hashtable lookup. The actual interpreter I was working had much more overhead per bytecode and typically executed heavily nested loops, so this was a clear win.</p>
+<p>It wasn't all positive though. I struggled with the increasing complexity of the code:</p>
+<ol>
+<li>I needed to read external data, so the actual type was <code>type Staged&lt;'a&gt; = Box&lt;Fn() -&gt; Value + 'a&gt;</code>. The lifetimes infected everything else.</li>
+<li>Even though the closures themselves are typically polymorphic, we need to dispatch on type to get a specialized version of the closure for each type. In the example above we are only dispatching on a single two-way type so it isn't so bad. In the real version I had some MxN dispatches that created <a href="https://github.com/jamii/imp/blob/3f442d30bd845a39f5cbeb7f5360529af068bc69/src/interpreter.rs#L660-L793">astonishing amounts of boilerplate</a>.</li>
+<li>The compiled baseline keeps all state on the stack. To do the same in the staged interpreter we would have to allow each closure to take arguments instead of closing over shared mutable state. The trouble is that while we know the size of each argument in advance, we can't write code that is generic over the number of arguments. So we'd still end up having to heap-allocate a <code>Vec&lt;Argument&gt;</code> or similar. Unless we dispatched on the size too...</li>
+</ol>
+<p>In the end the whole thing was nixed by the fact that the staged interpreter had already become way more complex than the compiler I had written previously and that the improvements in compile time were more than lost by the slower run time.</p>
+<p>I'm still curious whether the complexity can be circumvented, but I don't have time to explore it further myself.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

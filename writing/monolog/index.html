@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Monolog
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Monolog</h1>
+
+<article>
+  <p>Suppose I want to track how I spend my day. There are plenty of existing time-tracking apps, but none of them were invented here.</p>
+<p>I could build an app from scratch. I would just need to write code for displaying entries, adding new entries, editing old entries, summarizing data, storing data, tracking changes...</p>
+<p>Or I could just dump it in a spreadsheet, add a few formulas and call it a day.</p>
+<p>This is the real magic of spreadsheets - there is a large class of problems where just pasting the data into an editable grid provides 90% of the necessary interactions, and adding a few formulae and charts handles the remaining 10%.</p>
+<p>And having noticed that, you have to also wonder if there are other classes of problems where a similar 90%-done UI paradigm might exist.</p>
+<p>As it turns out, putting my time-tracker in a spreadsheet doesn't quite solve the problem, because the biggest problem I have with time-trackers is that I forget to use them. I want a time-tracker that can pop up a notification to ask me if I've really been writing a blog post for 27 hours or if I just forgot to check out.</p>
+<p>The same goes for todo lists, <a href="https://en.wikipedia.org/wiki/Experience_sampling_method">experience samplers</a>, lab journals, quantified-self shenanigans etc. They all need to record when things happen and prompt actions from the user at specific times.</p>
+<p>So I made <a href="https://github.com/jamii/monolog">monolog</a>: a semi-successful experiment in making a 90%-done UI for journal-like problems.</p>
+<p>The core data model is a log of timestamped plain-text entries.</p>
+<p><img src="/img/monolog1.png" alt="" /></p>
+<p>The entries and the timestamp are both editable.</p>
+<p><img src="/img/monolog2.png" alt="" /></p>
+<p>Snippets of code can annotate entries with arbitrary html.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(when (= :todo (@todos (:ix message)))
+  [:button {:style {:margin &quot;0px 5px 0px 5px&quot;
+                    :padding &quot;0px 10px 0px 10px&quot;}
+            :on-click #(log! {:contents (.replace (:contents message) &quot;#todo&quot; &quot;#task&quot;)})}
+   &quot;↻&quot;])
+(when (= :todo (@todos (:ix message)))
+  [:button {:style {:margin &quot;0px 5px 0px 5px&quot;
+                    :padding &quot;0px 10px 0px 10px&quot;}
+          :on-click #(log! {:contents (str &quot;#done #&quot; (:ix message))})}
+   &quot;✓&quot;])
+</span></pre>
+<p><img src="/img/monolog3.png" alt="" /></p>
+<p>Clicking on the tick button marks the todo as done.</p>
+<p><img src="/img/monolog4.png" alt="" /></p>
+<p>Clicking on the refresh button turns the todo into a current task.</p>
+<p><img src="/img/monolog5.png" alt="" /></p>
+<p>Other code snippets can annotate the entries with interpretations of their contents, such as parsing durations and times.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(doseq [message messages
+        :when (nil? (@natty message))]
+  (xhrio/send &quot;/natty&quot;
+              #(swap! natty assoc message (read-string (-&gt; % .-target .getResponseText)))
+              &quot;POST&quot;
+              (pr-str {:message message})
+              (structs/Map. #js {:Content-Type &quot;application/edn&quot;})))
+</span></pre>
+<p><img src="/img/monolog6.png" alt="" /></p>
+<p>And another snippet uses the estimated durations of tasks to decide when to nudge the user about overrunning.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(when-let [last-task (first (for [task (reverse @tasks)
+                                  :when task]
+                              task))]
+  (when (&gt; (:duration last-task) (:estimate last-task))
+    [nudge-ui (str &quot;Your last &quot; (-&gt; last-task :kind name) &quot; is at &quot; (:duration last-task) &quot; / &quot; (:estimate last-task) &quot; mins! What are you up to?&quot;) &quot;#task &quot;]))
+</span></pre>
+<p><img src="/img/monolog7.png" alt="" /></p>
+<p>The nudge can be cleared by adding a new task or break.</p>
+<p><img src="/img/monolog8.png" alt="" /></p>
+<p>Nudges also work for experience sampling. Clicking on this experience sampling nudge partially fills out a new log entry.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(let [last-sample (first (for [sample (reverse @samples)
+                               :when sample]
+                           sample))]
+  (when (or (nil? last-sample) (&gt; @now (:next-sample last-sample)))
+    [nudge-ui (str &quot;It&#39;s sampling time!&quot;) (str &quot;#sample  (next sample &quot; (time-&gt;string (js/Date. (+ (.getTime @now) (* (js/Math.random) 1000 60 60 8)))) &quot;)&quot;)
+</span></pre>
+<p><img src="/img/monolog9.png" alt="" /></p>
+<p>Finally, filters can produce task-specific views of the log, like uncompleted todos or chargeable hours.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(def filters
+  {:all #(do true)
+   :todo #(= :todo (@todos (:ix %)))
+   :projectx #(contains (:contents %) &quot;#projectx&quot;)})
+</span></pre><pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(when (= :projectx @current-filter)
+  [:div {:style {:font-weight &quot;bold&quot;
+                  :text-align &quot;center&quot;
+                  :flex 1}}
+   (format &quot;%.0f hours - £%.2f&quot; (/ @projectx-minutes 60) (* (/ @projectx-minutes 60 6) 400))])
+</span></pre>
+<p><img src="/img/monolog10.png" alt="" /></p>
+<p><img src="/img/monolog12.png" alt="" /></p>
+<p>That's ~200 loc for the base functionality plus ~200 loc for a time tracker, todo list, experience sampler and even a little repl. Since the only mutable state is the log and it's only mutated by direct user actions, I can safely use <a href="https://github.com/bhauman/lein-figwheel">figwheel</a> to live-update the app whenever I hit save in the code. Adding new apps usually only takes a couple of minutes from idea to live implementation.</p>
+<p>To be really useful though it needs to be a mobile app, and I never got around to figuring out to get the same live-coding experience that I get as a locally-served figwheel app. If I have to plug my phone in and run some build and deploy step it defeats a lot of the quick-and-hacky magic that I was aiming for. I'm sure it's doable though - maybe someone can suggest a nice approach?</p>
+<p>Anyway, I posted this mainly to illustrate this idea of a 90%-done UI and hopefully to prompt people to look at other classes of problems that might have good solutions. <a href="http://people.csail.mit.edu/ebakke/sieuferd/index.html">SIEUFERD</a> is trying to do this for CRUD apps. <a href="https://camlistore.org/">Camlistore</a> and co seem to want to do the same for unstructured data, but they don't provide much in the way of interaction. What else is out there?</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

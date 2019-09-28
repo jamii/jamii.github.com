@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Strucjure: motivation
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Strucjure: motivation</h1>
+
+<article>
+  <p>I feel that the readme for <a href="https://github.com/jamii/strucjure">strucjure</a> does a reasonable job of explaining how to use the library but not of explaining why you would want to. I want to do that here. I'm going to focus on the motivation behind strucjure and the use cases for it rather than the internals, so try not to worry too much about how this all works and just focus on the ideas (the implementation itself is <a href="http://en.wikipedia.org/wiki/Parsing_expression_grammar">very simple</a> but liable to keep changing).</p>
+<p>The core idea is that strucjure (and the <a href="http://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;cad=rja&amp;ved=0CFIQFjAD&amp;url=http%3A%2F%2Flambda-the-ultimate.org%2Fnode%2F2477&amp;ei=lQ69UJqrLK-WyAHC1IGIBg&amp;usg=AFQjCNEJAMQULpZ62ASYefNHadlUWTlgKA&amp;sig2=E1ePKzLJJNaFw5BfEG9rrA">OMeta</a> library on which it is based) is not just yet-another-parser, but is instead a concise language for describing, manipulating and transforming data structures. The <a href="http://www.vpri.org/">VPRI</a> folks have done some amazing things with OMeta. My goal with strucjure is to see how much further this idea can be taken.</p>
+<p>(Note: For the purposes of this post I'll use the terms pattern and view interchangeably. There <em>is</em> a difference, but the line between the two is not yet clear to me and will probably change in future implementations)</p>
+<h2 id="pattern-matching">Pattern matching</h2>
+<p>Pattern matching is a concept found in many functional languages. The basic idea is something like a switch statement, combined with a mini-language for describing patterns which the input should be tested against. The first pattern which matches has its corresponding branch executed.</p>
+<p>As a very simple example, we can use strucjure to write fizzbuzz like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">doseq </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">i </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">range </span><span style="color:#ff8f40;">100</span><span style="color:#61676c;">)]
+  (</span><span style="color:#fa6e32;">prn
+   </span><span style="color:#61676c;">(match [(mod i </span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">) (mod i </span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">)]
+          [</span><span style="color:#ff8f40;">0 0</span><span style="color:#61676c;">] </span><span style="color:#86b300;">&quot;fizzbuzz&quot;
+          </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">_] </span><span style="color:#86b300;">&quot;fizz&quot;
+          </span><span style="color:#61676c;">[_ </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">] </span><span style="color:#86b300;">&quot;buzz&quot;
+          </span><span style="color:#61676c;">_      i)))
+</span></pre>
+<p>This is a concise, readable description of the various cases and replaces a chain of if-statements.</p>
+<p>If we stopped there, you could be forgiven for not caring. Simple examples don't really demonstrate the power of pattern matching. Let's instead look at a more complicated example - <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree">red-black trees</a>. An important operation on red-black trees is re-establishing the balance invariants after inserting a new node. Here is a java implementation of the balance operation (from <a href="http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html">this implementation</a>):</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">    </span><span style="font-style:italic;color:#abb0b6;">// make a left-leaning link lean to the right
+    </span><span style="color:#fa6e32;">private </span><span style="font-style:italic;color:#55b4d4;">Node </span><span style="color:#f29718;">rotateRight</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Node</span><span style="color:#61676c;"> h) {
+        </span><span style="color:#f29718;">assert </span><span style="color:#61676c;">(h </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">null</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left)</span><span style="color:#61676ccc;">;
+        </span><span style="font-style:italic;color:#55b4d4;">Node</span><span style="color:#61676c;"> x </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> h</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">RED</span><span style="color:#61676ccc;">;
+        </span><span style="font-style:italic;color:#55b4d4;">x</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">h</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N</span><span style="color:#61676ccc;">;
+        </span><span style="font-style:italic;color:#55b4d4;">h</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">size</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">size</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right) </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> x</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="font-style:italic;color:#abb0b6;">// make a right-leaning link lean to the left
+    </span><span style="color:#fa6e32;">private </span><span style="font-style:italic;color:#55b4d4;">Node </span><span style="color:#f29718;">rotateLeft</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Node</span><span style="color:#61676c;"> h) {
+        </span><span style="color:#f29718;">assert </span><span style="color:#61676c;">(h </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">null</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right)</span><span style="color:#61676ccc;">;
+        </span><span style="font-style:italic;color:#55b4d4;">Node</span><span style="color:#61676c;"> x </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> h</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        x</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">RED</span><span style="color:#61676ccc;">;
+        </span><span style="font-style:italic;color:#55b4d4;">x</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N </span><span style="color:#ed9366;">= </span><span style="font-style:italic;color:#55b4d4;">h</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N</span><span style="color:#61676ccc;">;
+        </span><span style="font-style:italic;color:#55b4d4;">h</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">size</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">size</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right) </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> x</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="font-style:italic;color:#abb0b6;">// flip the colors of a node and its two children
+    </span><span style="color:#fa6e32;">private</span><span style="color:#61676c;"> void </span><span style="color:#f29718;">flipColors</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Node</span><span style="color:#61676c;"> h) {
+        </span><span style="font-style:italic;color:#abb0b6;">// h must have opposite color of its two children
+        </span><span style="color:#f29718;">assert </span><span style="color:#61676c;">(h </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">null</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">null</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">null</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+        </span><span style="color:#f29718;">assert </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">!</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h) </span><span style="color:#ed9366;">&amp;&amp;  </span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">&amp;&amp;  </span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right))
+            </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h)  </span><span style="color:#ed9366;">&amp;&amp; !</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">&amp;&amp; !</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right))</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">= !</span><span style="color:#61676c;">h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">= !</span><span style="color:#61676c;">h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+        h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color </span><span style="color:#ed9366;">= !</span><span style="color:#61676c;">h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">color</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+
+    </span><span style="font-style:italic;color:#abb0b6;">// restore red-black tree invariant
+    </span><span style="color:#fa6e32;">private </span><span style="font-style:italic;color:#55b4d4;">Node </span><span style="color:#f29718;">balance</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Node</span><span style="color:#61676c;"> h) {
+        </span><span style="color:#f29718;">assert </span><span style="color:#61676c;">(h </span><span style="color:#ed9366;">!= </span><span style="color:#ff8f40;">null</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right))                      h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">rotateLeft</span><span style="color:#61676c;">(h)</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left)) h </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">rotateRight</span><span style="color:#61676c;">(h)</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">&amp;&amp; </span><span style="color:#f29718;">isRed</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right))     </span><span style="color:#f29718;">flipColors</span><span style="color:#61676c;">(h)</span><span style="color:#61676ccc;">;
+
+        </span><span style="font-style:italic;color:#55b4d4;">h</span><span style="color:#ed9366;">.</span><span style="font-style:italic;color:#55b4d4;">N </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">size</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">left) </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">size</span><span style="color:#61676c;">(h</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">right) </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676ccc;">;
+        </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> h</span><span style="color:#61676ccc;">;
+    </span><span style="color:#61676c;">}
+</span></pre>
+<p>This pile of if-statements obscures the intent of the code, which is to re-arrange the tree so that no red node has a red child. What we really want to see is 'if the tree looks like foo, replace it with bar'. Using pattern matching we can express this directly (code based on <a href="http://www.cs.cornell.edu/courses/cs3110/2009sp/lectures/lec11.html">this implementation</a>):</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">Leaf </span><span style="color:#ff8f40;">[]</span><span style="color:#61676c;">)
+(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">Red [</span><span style="color:#f07171;">left </span><span style="color:#61676c;">value </span><span style="color:#f07171;">right</span><span style="color:#61676c;">])
+(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">Black [</span><span style="color:#f07171;">left </span><span style="color:#61676c;">value </span><span style="color:#f07171;">right</span><span style="color:#61676c;">])
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">balance
+  </span><span style="font-style:italic;color:#abb0b6;">;; if it looks like one of these...
+  </span><span style="color:#61676c;">(</span><span style="color:#f07171;">or
+   </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">?a ?x ?b) ?y ?c) ?z ?d)
+   (</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">?a ?x (</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">?b ?y ?c)) ?z ?d)
+   (</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">?a ?x (</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">?b ?y ?c) ?z ?d))
+   (</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">?a ?x (</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">?b ?y (</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">?c ?z ?d))))
+  </span><span style="font-style:italic;color:#abb0b6;">;; replace it with this...
+  </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">a x b) y (</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">c z d))
+
+  </span><span style="font-style:italic;color:#abb0b6;">;; otherwise, leave it alone
+  </span><span style="color:#61676c;">?other
+  other)
+</span></pre>
+<p>(Note that this isn't exactly the same operation as the code above, because the corresponding implementation has a slightly different insert algorithm too. Nevertheless, converting this operation to java would result in the same grotesque expansion of if-statements).</p>
+<p>Strucjure is not very optimized yet, but if you use a more mature pattern-matching library then this code would be as fast as what you would write by hand. For complex patterns <a href="https://github.com/clojure/core.match">core.match</a> often does a better job of optimizing the decision tree than I can manage by hand, in much the same way that GCC does a better job of writing assembly code than I ever could.</p>
+<p>Strucjure patterns are first-class values and can call other patterns or recursively call themselves, so they can express much more complex patterns than other pattern matchers. For example:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">balanced-height
+  Leaf
+  </span><span style="color:#ff8f40;">0
+
+  </span><span style="color:#61676c;">(</span><span style="color:#f07171;">and </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Black. </span><span style="color:#61676c;">_
+         (balanced-height ?l)
+         (balanced-height ?r))
+       </span><span style="color:#fa6e32;">#</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">= </span><span style="color:#61676c;">l r))
+  (</span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1 </span><span style="color:#61676c;">l)
+
+  (</span><span style="color:#f07171;">and </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">Red. </span><span style="color:#61676c;">_
+         (</span><span style="color:#f07171;">and </span><span style="color:#61676c;">(</span><span style="color:#f07171;">not </span><span style="color:#61676c;">Red) (balanced-height ?l))
+         (</span><span style="color:#f07171;">and </span><span style="color:#61676c;">(</span><span style="color:#f07171;">not </span><span style="color:#61676c;">Red) (balanced-height ?r)))
+       </span><span style="color:#fa6e32;">#</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">= </span><span style="color:#61676c;">l r))
+  l)
+</span></pre>
+<p>This is a pattern which only matches balanced red-black trees, by recursively matching against each branch and returning the number of black nodes per path (see property 5 <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Properties">here</a>).</p>
+<h2 id="parsing">Parsing</h2>
+<p>Strucjure supports patterns which only consume part of the input and can chain these patterns together. Combine that with pattern matching and you can very easily write back-tracking recursive-descent parsers.</p>
+<p>We can use this for traditional text parsing (you have to be feeling a little masochistic at the moment because strucjure can't directly handle strings yet, only sequences of \c \h \a \r \s). For example, strucjure <a href="http://scattered-thoughts.net/writing/strucjure-reading-the-readme/">parses its own readme</a> to ensure all the examples are correct.</p>
+<p>Parsing doesn't have to be limited to text. We can apply the same techniques to any sequential data structure.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">user&gt; (</span><span style="color:#f07171;">defnview </span><span style="color:#61676c;">zero-or-more-prefix [elem]
+        (prefix &amp; (elem ?x) &amp; ((zero-or-more-prefix elem) ?xs)) (</span><span style="color:#fa6e32;">cons </span><span style="color:#61676c;">x xs)
+        (prefix ) </span><span style="color:#ff8f40;">nil</span><span style="color:#61676c;">)
+#&#39;user/zero-or-more-prefix
+user&gt; (</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">self-counting
+        (prefix </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">one
+        (prefix </span><span style="color:#ff8f40;">2 2</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">two
+        (prefix </span><span style="color:#ff8f40;">3 3 3</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">three)
+#&#39;user/self-counting
+user&gt; (run (zero-or-more-prefix self-counting) [</span><span style="color:#ff8f40;">1 3 3 3 2 2 1 2 2</span><span style="color:#61676c;">])
+(one three two one two)
+</span></pre>
+<p>Since we live in lisp land, code is data too. We can use strucjure to easily and <em>readably</em> (hopefully) operate over sexps.</p>
+<pre style="background-color:#fafafa;">
+<span style="font-style:italic;color:#abb0b6;">;; generic parser for (right-binding) infix operators with precedence
+
+</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">value</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">all form</span><span style="color:#61676c;">]
+  (</span><span style="color:#f07171;">not-any</span><span style="color:#fa6e32;">? #</span><span style="color:#61676c;">(</span><span style="color:#f07171;">contains</span><span style="color:#fa6e32;">? </span><span style="color:#ff8f40;">% </span><span style="color:#61676c;">form) all))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">bind</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">all current</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[[</span><span style="color:#ff8f40;">ops </span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">tighter</span><span style="color:#61676c;">] current]
+    (view
+     (prefix &amp; ((bind</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">all tighter) ?x) (</span><span style="color:#f07171;">and </span><span style="color:#fa6e32;">#</span><span style="color:#61676c;">(</span><span style="color:#f07171;">contains</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">ops </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">) ?op) &amp; ((bind</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">all current) ?y)) </span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">~</span><span style="color:#61676c;">op </span><span style="color:#fa6e32;">~</span><span style="color:#61676c;">x </span><span style="color:#fa6e32;">~</span><span style="color:#61676c;">y)
+     (prefix &amp; ((bind</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">all tighter) ?x)) x)
+    (view
+     (prefix [((bind</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">all all) ?x)]) x
+     (prefix (</span><span style="color:#f07171;">and </span><span style="color:#fa6e32;">#</span><span style="color:#61676c;">(value</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">all </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">) ?x)) x)))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">bind </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">binding-levels</span><span style="color:#61676c;">]
+  (bind</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">binding-levels binding-levels))
+
+</span><span style="font-style:italic;color:#abb0b6;">;; run &#39;bind with basic arithmetic precedences
+</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">defmacro </span><span style="color:#f29718;">math </span><span style="color:#61676c;">[</span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">args</span><span style="color:#61676c;">]
+  (run (bind [#{</span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">} #{</span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">* </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">}]) args))
+
+(</span><span style="color:#fa6e32;">macroexpand </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">(math </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">3 </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">4</span><span style="color:#61676c;">))
+</span><span style="font-style:italic;color:#abb0b6;">;; (- 1 (+ 2 (- 3 4)))
+</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">macroexpand </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">(math </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">* </span><span style="color:#ff8f40;">7 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">/ </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">))
+</span><span style="font-style:italic;color:#abb0b6;">;; (+ 1 (+ (* 2 7) (/ 1 2)))
+</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">macroexpand </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">(math </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">* </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">7 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">/ </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">))
+</span><span style="font-style:italic;color:#abb0b6;">;; (+ 1 (* 2 (/ (7 + 1) 2)))
+</span></pre>
+<p>No more death-by-polish-notation!</p>
+<p>(The operators above really ought to bind to the left but, unlike ometa, strucjure doesn't yet support <a href="http://en.wikipedia.org/wiki/Left_recursion">left-recursion</a> and I'm too lazy to manually transform the grammar. It's a temporary limitation.)</p>
+<p>Taking this to its logical conclusion, the syntax for patterns and views in strucjure is itself defined <a href="https://github.com/jamii/strucjure/blob/master/src/strucjure/parser.clj#L178">using views</a>. This is a fairly complex DSL but with strucjure it's was very easy to write, read and modify the parser.</p>
+<h2 id="generic-programming">Generic programming</h2>
+<p>Clojure has some great facilities for generic traversals in the form of clojure.walk:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">walk
+  </span><span style="color:#86b300;">&quot;Traverses form, an arbitrary data structure.  inner and outer are
+  functions.  Applies inner to each element of form, building up a
+  data structure of the same type, then applies outer to the result.
+  Recognizes all Clojure data structures. Consumes seqs as with doall.&quot;
+
+  </span><span style="font-style:italic;color:#abb0b6;">{</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">added </span><span style="color:#86b300;">&quot;1.1&quot;</span><span style="font-style:italic;color:#abb0b6;">}
+  </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">inner outer form</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">cond
+   </span><span style="color:#61676c;">(</span><span style="color:#f07171;">list</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">form) (outer (</span><span style="color:#f07171;">apply </span><span style="color:#fa6e32;">list </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">map </span><span style="color:#61676c;">inner form)))
+   (</span><span style="color:#f07171;">instance</span><span style="color:#fa6e32;">? </span><span style="text-decoration:underline;color:#399ee6;">clojure</span><span style="text-decoration:underline;color:#ed9366;">.</span><span style="text-decoration:underline;color:#399ee6;">lang</span><span style="text-decoration:underline;color:#ed9366;">.</span><span style="text-decoration:underline;color:#399ee6;">IMapEntry </span><span style="color:#61676c;">form) (outer (</span><span style="color:#f07171;">vec </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">map </span><span style="color:#61676c;">inner form)))
+   (</span><span style="color:#f07171;">seq</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">form) (outer (</span><span style="color:#f07171;">doall </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">map </span><span style="color:#61676c;">inner form)))
+   (</span><span style="color:#f07171;">coll</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">form) (outer (</span><span style="color:#fa6e32;">into </span><span style="color:#61676c;">(</span><span style="color:#f07171;">empty </span><span style="color:#61676c;">form) (</span><span style="color:#fa6e32;">map </span><span style="color:#61676c;">inner form)))
+   </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">else (outer form)))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">postwalk
+  </span><span style="color:#86b300;">&quot;Performs a depth-first, post-order traversal of form. Calls f on
+each sub-form, uses f&#39;s return value in place of the original.
+Recognizes all Clojure data structures except sorted-map-by.
+Consumes seqs as with doall.&quot;
+  </span><span style="font-style:italic;color:#abb0b6;">{</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">added </span><span style="color:#86b300;">&quot;1.1&quot;</span><span style="font-style:italic;color:#abb0b6;">}
+  </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">f form</span><span style="color:#61676c;">]
+  (walk (</span><span style="color:#f07171;">partial </span><span style="color:#61676c;">postwalk f) f form))
+</span></pre>
+<p>Essentially, all this is doing is specifying how to take apart clojure data structures and how to put them back together again. Strucjure supports passing optional :pre-view and :post-view functions to modify the input to or output from any named view encountered during parsing, so we can do something very similar:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">clojure
+  (</span><span style="color:#f07171;">and list</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">((zero-or-more clojure) ?xs)) xs
+  (</span><span style="color:#f07171;">and </span><span style="color:#61676c;">clojure</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">lang</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">IMapEntry [?x ?y]) [x y]
+  (</span><span style="color:#f07171;">and seq</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">((zero-or-more clojure) ?xs)) xs
+  (</span><span style="color:#f07171;">and coll</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">?coll ((zero-or-more clojure) ?xs)) (</span><span style="color:#fa6e32;">into </span><span style="color:#61676c;">(</span><span style="color:#f07171;">empty </span><span style="color:#61676c;">coll) xs)
+  ?other other)
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">postwalk </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">form f</span><span style="color:#61676c;">]
+  (run clojure form {</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">post-view (</span><span style="color:#fa6e32;">fn </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">_ sub-form</span><span style="color:#61676c;">] (f sub-form)}))
+</span></pre>
+<p>The problem with using this (or clojure.walk) for generic traversals is that it loses context. When a given sub-form is encountered, the function f is given no indication of where in the data structure that sub-form is or how it is being used. If we apply the above idea to domain-specific views we can do generic traversals <em>with context</em>. The motivating example for this was a simple game I was porting called <a href="https://github.com/jamii/l-seed">l-seed</a> (I haven't yet updated l-seed to use strucjure, but you can see a precursor to it in <a href="https://github.com/jamii/l-seed/blob/master/src/l_seed/syntax.clj">l-seed.syntax</a>). In l-seed, players submit programs defining the growth of their plant species and compete with other player's plants for sunlight and nutrients. The plant language can be defined like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+name+
+  </span><span style="color:#f07171;">string</span><span style="color:#fa6e32;">? </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+tag+
+  </span><span style="color:#f07171;">string</span><span style="color:#fa6e32;">? </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+length+
+  (</span><span style="color:#f07171;">and number</span><span style="color:#fa6e32;">? #</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&lt;= </span><span style="color:#ff8f40;">0 %</span><span style="color:#61676c;">)) </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+direction+
+  (</span><span style="color:#f07171;">and number</span><span style="color:#fa6e32;">? #</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&lt;= </span><span style="color:#ff8f40;">-360 % 360</span><span style="color:#61676c;">)) </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+relation+
+  (</span><span style="color:#f07171;">or </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">&gt; </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">&gt;= </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">&#39;</span><span style="color:#ed9366;">&lt;=</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+property+
+  (</span><span style="color:#f07171;">or </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">tag </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">length </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">direction) </span><span style="color:#ff8f40;">%</span><span style="color:#61676c;">)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+condition+
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">and</span><span style="color:#61676c;"> &amp; ((zero-or-more +condition+) ?conditions)] (</span><span style="color:#fa6e32;">cons </span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">and </span><span style="color:#61676c;">conditions)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">or</span><span style="color:#61676c;"> &amp; ((zero-or-more +condition+) ?conditions)] (</span><span style="color:#fa6e32;">cons </span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">or </span><span style="color:#61676c;">conditions)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">not </span><span style="color:#61676c;">(+condition+ ?condition)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">not </span><span style="color:#61676c;">condition)
+  [(+relation+ ?relation) (+property+ ?property) ?value] (</span><span style="color:#fa6e32;">list </span><span style="color:#61676c;">relation property value))
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+condition-head+
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(+condition+ ?condition)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">when </span><span style="color:#61676c;">condition)
+  </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">whenever </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">whenever)
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+action+
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">grow-by (+length+ ?length)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">grow-by length)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">turn-by (+direction+ ?direction)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">turn-by direction)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">turn-to (+direction+ ?direction)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">turn-to direction)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">tag (+tag+ ?tag)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">tag tag)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">blossom (+tag+ ?tag)] (</span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">blossom tag)
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">branch &amp; ((zero-or-more (zero-or-more +action+)) ?action-lists)] (</span><span style="color:#fa6e32;">cons </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">branch action-lists))
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+rule+
+  [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">rule (+name+ ?name) (+condition-head+ ?condition-head) &amp; ((zero-or-more +action+) ?actions)] (</span><span style="color:#f07171;">apply </span><span style="color:#fa6e32;">list </span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">rule </span><span style="color:#f07171;">name </span><span style="color:#61676c;">condition-head actions))
+
+(</span><span style="color:#f07171;">defview </span><span style="color:#61676c;">+rules+
+  [&amp; ((zero-or-more +rule+) ?rules)] rules)
+</span></pre>
+<p>(Note that we specify both how to take apart a data structure and how to put it together. Really, the latter should be derived from the former. I think strucjure will eventually feature reversible patterns for this purpose.)</p>
+<p>We can then operate on these programs in a generic way. For example, deciding which rule to execute next:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">select</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">properties</span><span style="color:#61676c;">]
+  (</span><span style="color:#f07171;">defview
+    </span><span style="color:#61676c;">[</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+relation+ ?relation] (</span><span style="color:#f07171;">resolve </span><span style="color:#61676c;">relation)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+property+ ?property] (</span><span style="color:#f07171;">get </span><span style="color:#61676c;">properties property)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+condition+ [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">and</span><span style="color:#61676c;"> &amp; ?conds]] (</span><span style="color:#f07171;">every</span><span style="color:#fa6e32;">? </span><span style="color:#f07171;">true</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">conds)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+condition+ [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">or</span><span style="color:#61676c;"> &amp; ?conds]] (</span><span style="color:#f07171;">some true</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">conds)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+condition+ [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">not </span><span style="color:#61676c;">?cond]] (</span><span style="color:#f07171;">not </span><span style="color:#fa6e32;">cond</span><span style="color:#61676c;">)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+condition+ [?relation ?property ?value]] (relation property value)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+condition-head+ [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#f07171;">when </span><span style="color:#61676c;">?condition]] condition
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+condition-head+ [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">whenever]] </span><span style="color:#ff8f40;">true
+    </span><span style="color:#61676c;">[</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+rule+ [</span><span style="color:#ff8f40;">&#39;</span><span style="color:#61676c;">rule _ ?condition &amp; ?actions]] (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">condition actions)
+    [</span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">+rules+ [&amp; ?rules]] (choose (</span><span style="color:#f07171;">filter seq </span><span style="color:#61676c;">rules))
+    [_ ?other] other))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f07171;">select </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">rules properties</span><span style="color:#61676c;">]
+  </span><span style="color:#86b300;">&quot;Pick a valid rule and return its list of actions (or nil if no rules are valid)&quot;
+  </span><span style="color:#61676c;">(utilpostwalk +rules+ rules (select</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">properties)))
+</span></pre>
+<p>Writing code like this allows us to separate the shape of the data from the computation we perform over it.</p>
+<p>We're also not limited to just walking over data structures. We can perform more complex operations in the same generic fashion.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">map-reduce </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">strucjure form map-op reduce-op</span><span style="color:#61676c;">]
+  </span><span style="color:#86b300;">&quot;Call map-op on every sub-form and reduce results with reduce-op&quot;
+  </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">acc </span><span style="color:#61676c;">(</span><span style="color:#f07171;">atom </span><span style="color:#61676c;">(reduce-op))]
+    (run strucjure form
+           {</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">post-view (</span><span style="color:#fa6e32;">fn </span><span style="color:#61676c;">[</span><span style="color:#f07171;">name </span><span style="color:#ff8f40;">form</span><span style="color:#61676c;">]
+                         (</span><span style="color:#fa6e32;">swap! </span><span style="color:#ff8f40;">acc </span><span style="color:#61676c;">reduce-op (map-op </span><span style="color:#f07171;">name </span><span style="color:#61676c;">form))
+                         form)})
+    </span><span style="color:#fa6e32;">@</span><span style="color:#61676c;">acc))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">collect </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">strucjure form filter-op</span><span style="color:#61676c;">]
+  </span><span style="color:#86b300;">&quot;Return all sub-forms satisfying filter-op&quot;
+  </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">acc </span><span style="color:#61676c;">(</span><span style="color:#f07171;">atom </span><span style="color:#ff8f40;">nil</span><span style="color:#61676c;">)]
+    (run strucjure form
+           {</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">post-view (</span><span style="color:#fa6e32;">fn </span><span style="color:#61676c;">[</span><span style="color:#f07171;">name </span><span style="color:#ff8f40;">form</span><span style="color:#61676c;">]
+                         (</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(filter-op </span><span style="color:#f07171;">name </span><span style="color:#61676c;">form)
+                           (</span><span style="color:#fa6e32;">swap! </span><span style="color:#ff8f40;">acc </span><span style="color:#fa6e32;">conj </span><span style="color:#61676c;">result)))})
+    </span><span style="color:#fa6e32;">@</span><span style="color:#61676c;">acc))
+</span></pre><h2 id="types">Types</h2>
+<p>I originally learned to code in haskell. One of the things I miss about strong static typing is it that it automatically provides documentation about the data structures used in your program. Strucjure patterns can fulfill the same role. In l-seed, if you are confused about what a rule should look like you can just go look at the +rule+ pattern.</p>
+<p>We can't quite get static typing out of this, but we do get runtime checking for complex typedata-structures:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defmacro </span><span style="color:#f07171;">defgenotype </span><span style="color:#61676c;">[</span><span style="color:#f07171;">name </span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">rules</span><span style="color:#61676c;">]
+  </span><span style="font-style:italic;color:#abb0b6;">;; compile-time syntax check for the genotype language
+  </span><span style="color:#61676c;">(run +rules+ rules)
+  </span><span style="color:#fa6e32;">`</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">def ~</span><span style="color:#f07171;">name </span><span style="color:#ff8f40;">&#39;</span><span style="color:#fa6e32;">~</span><span style="color:#61676c;">(</span><span style="color:#f07171;">vec </span><span style="color:#61676c;">rules)))
+</span></pre>
+<p>In theory, it should also be possible to generate random data structures satisfying a given pattern. This would be useful for providing examples and for <a href="https://github.com/clojure/test.generative">generative testing</a>. In erlang, <a href="https://github.com/manopapad/proper">proper</a> allows using type-specs directly alongside hand-written generators. I haven't yet implemented this in strucjure but I think it should be reasonably easy once reversible patterns are implemented.</p>
+<h2 id="state-machines">State machines</h2>
+<p>One can think of parsers in general as state machines with look-ahead and backtracking. OMeta takes this idea and runs with it:</p>
+<blockquote>
+<p>Most  interesting  ideas  have  more  than  one  fruitful  way  to  view  them,  and  it  occurred  to  us  that,
+abstractly,  one  could  think  of  TCP/IP  as  a  kind  of  “non‐deterministic  parser  with  balancing
+heuristics”,  in  that  it  takes  in  a  stream  of  things,  does  various  kinds  of  pattern‐matching  on  them,
+deals with errors by backing up and taking other paths, and produces a transformation of the input in
+a specified form as a result.</p>
+<p>Since the language transformation techniques we use operate on arbitrary objects, not just strings (see
+above), and include some abilities of both standard and logic programming, it seemed that this could
+be used to make a very compact TCP/IP. Our first attempt was about 160 lines of code that was robust
+enough to run a website. We think this can be done even more compactly and clearly, and we plan to
+take another pass at this next year.</p>
+</blockquote>
+<p>I haven't yet tried doing anything like this in strucjure, but all the machinery is there. It would make an interesting complement to <a href="https://github.com/jamii/droplet">droplet</a>.</p>
+<h2 id="moving-forward">Moving forward</h2>
+<p>There are of lot of different directions for improvement and experimentation.</p>
+<p>One of my top priorities is better error reporting. This sucks:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">clojure.lang.ExceptionInfo: throw+: #strucjure.view.PartialMatch{:view #strucjure.view.Or{:views [#strucjure.view.Match{:pattern #strucjure.pattern.Seq{:pattern #strucjure.pattern.Chain{:patterns [#strucjure.view.Import{:view-fun #&lt;test$bind_STAR_$fn__2339 test$bind_STAR_$fn__2339@60a896b8&gt;, :pattern #strucjure.pattern.Bind{:symbol x}} #strucjure.pattern.Head{:pattern #strucjure.pattern.And{:patterns [#strucjure.pattern.Guard{:fun #&lt; clojure.lang.AFunction$1@5c3f3b9b&gt;} #strucjure.pattern.Bind{:symbol op}]}} #strucjure.view.Import{:view-fun #&lt;test$bind_STAR_$fn__2343 test$bind_STAR_$fn__2343@3b626c6d&gt;, :pattern #strucjure.pattern.Bind{:symbol y}}]}}, :result-fun #&lt; clojure.lang.AFunction$1@3abc8690&gt;} #strucjure.view.Match{:pattern #strucjure.pattern.Seq{:pattern #strucjure.pattern.Chain{:patterns [#strucjure.view.Import{:view-fun #&lt;test$bind_STAR_$fn__2347 test$bind_STAR_$fn__2347@2f267610&gt;, :pattern #strucjure.pattern.Bind{:symbol x}}]}}, :result-fun #&lt; clojure.lang.AFunction$1@6112c9f&gt;}]}, :input (</span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">3 </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">4</span><span style="color:#61676c;">), :remaining (</span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">3 </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">4</span><span style="color:#61676c;">), :output 1}
+</span></pre>
+<p>I have some ideas about how to improve this but nothing totally concrete. I could, at the very least, return the bindings that existed at the point of failure along with some kind of failure stack. If I can figure out a reasonable way to implement <a href="http://en.wikipedia.org/wiki/Cut_%28logic_programming%29">cut</a> that will also help.</p>
+<p>Another short-term priority is some form of <a href="http://en.wikipedia.org/wiki/Tail_call#Tail_recursion_modulo_cons">tail call elemination</a>. Many patterns and views are naturally implemented in a recursive fashion:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defnview </span><span style="color:#61676c;">zero-or-more [elem]
+  (prefix (elem ?x) &amp; ((zero-or-more elem) ?xs)) (</span><span style="color:#fa6e32;">cons </span><span style="color:#61676c;">x xs)
+  (prefix ) </span><span style="color:#ff8f40;">nil</span><span style="color:#61676c;">)
+</span></pre>
+<p>But in the current implementation of strucjure this will quickly overflow the stack. The current workaround is to define such views by hand:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">ZeroOrMore [view]
+  View
+  (run</span><span style="color:#fa6e32;">* </span><span style="color:#61676c;">[this input opts]
+    (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(</span><span style="color:#f07171;">or
+           </span><span style="color:#61676c;">(</span><span style="color:#f07171;">nil</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">input)
+           (</span><span style="color:#f07171;">instance</span><span style="color:#fa6e32;">? </span><span style="text-decoration:underline;color:#399ee6;">clojure</span><span style="text-decoration:underline;color:#ed9366;">.</span><span style="text-decoration:underline;color:#399ee6;">lang</span><span style="text-decoration:underline;color:#ed9366;">.</span><span style="text-decoration:underline;color:#399ee6;">Seqable </span><span style="color:#61676c;">input))
+      (</span><span style="color:#fa6e32;">loop </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">elems </span><span style="color:#61676c;">(</span><span style="color:#f07171;">seq </span><span style="color:#61676c;">input)
+             </span><span style="color:#ff8f40;">outputs nil</span><span style="color:#61676c;">]
+        (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[[</span><span style="color:#ff8f40;">elem </span><span style="color:#ed9366;">&amp; </span><span style="color:#ff8f40;">elems</span><span style="color:#61676c;">] elems]
+          (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[[</span><span style="color:#ff8f40;">remaining output</span><span style="color:#61676c;">] (run view elem opts)]
+            (</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f07171;">nil</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">remaining)
+              (</span><span style="color:#fa6e32;">recur </span><span style="color:#61676c;">elems (</span><span style="color:#fa6e32;">cons </span><span style="color:#61676c;">output outputs))
+              [(</span><span style="color:#fa6e32;">cons </span><span style="color:#61676c;">elem elems) (</span><span style="color:#f07171;">reverse </span><span style="color:#61676c;">outputs)])
+            [(</span><span style="color:#fa6e32;">cons </span><span style="color:#61676c;">elem elems) (</span><span style="color:#f07171;">reverse </span><span style="color:#61676c;">outputs)])
+          [</span><span style="color:#ff8f40;">nil </span><span style="color:#61676c;">(</span><span style="color:#f07171;">reverse </span><span style="color:#61676c;">outputs)])))))
+
+(</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">zero-or-more </span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;ZeroOrMore)
+</span></pre>
+<p>This is gross. I don't have any ideas on how to overcome this.</p>
+<p>I've already briefly mentioned reversible patterns. At the beginning of this post I warned that I would use the terms view and pattern interchangeably. The line between them in strucjure is currently blurry but I think that the distinction should be that patterns must be reversible while views are allowed to destroy information.</p>
+<p>Lastly, there will eventually be a need for some level of optimization. Given the extra flexibility in strucjure I don't expect to ever be as fast as core.match but there is certainly lots of room for improvement on the current code. Originally, strucjure patterns were compiled into efficient clojure code but the implementation was complicated and it was difficult to rapidly iterate around it. I will probably return to compilation once the semantics and interface settle down.</p>
+<p>For now, I'm going to dogfood strucjure in various projects while ruminating on improvements. I'm already very happy with how much leverage can be had from such a simple idea, especially if I can fix the problems above. Hopefully the examples here might get other people thinking along the same lines.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

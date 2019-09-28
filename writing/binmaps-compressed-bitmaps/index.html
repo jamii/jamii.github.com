@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Binmaps: compressed bitmaps
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Binmaps: compressed bitmaps</h1>
+
+<article>
+  <p>Lately I've been porting some code from c++. The code in question is a compressed bitmap used in <a href="http://libswift.org">swift</a> to track which parts of a download have already been retrieved. To reduce the memory usage the original uses lots of pointer tricks. Replicating these in ocaml is interesting.</p>
+<p>Here is the basic idea. Conceptually a binmap is a tree of bitmaps. In a leaf at the bottom of the tree each bit in the bitmap represents one bit. In a leaf one layer above the bottom each bit in the bitmap represents two bits. In a leaf two layers above the bottom each bit in the bitmap represents four bits etc.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type t </span><span style="color:#61676ccc;">=
+  </span><span style="color:#61676c;">{ layers : </span><span style="color:#fa6e32;">int
+  </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">tree : </span><span style="color:#fa6e32;">tree </span><span style="color:#61676c;">}
+
+</span><span style="color:#fa6e32;">type tree </span><span style="color:#61676ccc;">=
+  | </span><span style="color:#399ee6;">Bitmap </span><span style="color:#fa6e32;">of int
+  </span><span style="color:#61676ccc;">| </span><span style="color:#399ee6;">Branch </span><span style="color:#fa6e32;">of tree </span><span style="color:#ed9366;">* </span><span style="color:#fa6e32;">tree
+</span></pre>
+<p>Let's pretend for simplicity our bitmaps are only 1 bit wide. Then the string 00000000 would be represented as:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">{ layers </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">3
+</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> tree </span><span style="color:#ed9366;">= </span><span style="color:#399ee6;">Bitmap </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">}
+</span></pre>
+<p>And the string 00001100 would be:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">{ layers </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">3
+</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> tree </span><span style="color:#ed9366;">=
+    </span><span style="color:#399ee6;">Branch
+      </span><span style="color:#61676c;">(</span><span style="color:#399ee6;">Bitmap </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+      (</span><span style="color:#399ee6;">Branch
+        </span><span style="color:#61676c;">(</span><span style="color:#399ee6;">Bitmap </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">)
+        (</span><span style="color:#399ee6;">Bitmap </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)) }
+</span></pre>
+<p>The worst case for this data structure is the string 0101010101... In this case we use about 6.5x as much memory as needed by a plain bitmap (3 words for a Branch with two pointers, 4 words for a Bitmap with a pointer to a boxed Int32). The c++ version uses some simple tricks to reduce this overhead to just over 2x that of a plain bitmap. We can replicate these in ocaml by using a bigarray to simulate raw memory access.</p>
+<p>Our data structure looks like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">module </span><span style="color:#399ee6;">Array </span><span style="color:#ed9366;">=
+</span><span style="color:#fa6e32;">struct
+  include </span><span style="color:#61676c;">Bigarray.</span><span style="color:#399ee6;">Array1
+  </span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">geti </span><span style="color:#fa6e32;">array </span><span style="color:#ff8f40;">i </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Bitmap.to_int (Bigarray.Array1.get </span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> i)
+  </span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">seti </span><span style="color:#fa6e32;">array </span><span style="color:#ff8f40;">i v </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Bigarray.Array1.set </span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> i (Bitmap.of_int v)
+</span><span style="color:#fa6e32;">end
+
+type t </span><span style="color:#61676ccc;">=
+    </span><span style="color:#61676c;">{ length : </span><span style="color:#fa6e32;">int
+    </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">layers : </span><span style="color:#fa6e32;">int
+    </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">array : (Bitmap</span><span style="color:#fa6e32;">.t</span><span style="color:#61676c;">, Bitmap</span><span style="color:#fa6e32;">.bigarray_elt</span><span style="color:#61676c;">, Bigarray</span><span style="color:#fa6e32;">.c_layout</span><span style="color:#61676c;">) Array</span><span style="color:#fa6e32;">.t
+    </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">pointers : Widemap</span><span style="color:#fa6e32;">.t
+    </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">free : </span><span style="color:#fa6e32;">int </span><span style="color:#61676c;">}
+
+</span><span style="color:#fa6e32;">type node </span><span style="color:#61676ccc;">=
+  | </span><span style="color:#399ee6;">Bitmap </span><span style="color:#fa6e32;">of </span><span style="color:#61676c;">Bitmap</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#61676ccc;">| </span><span style="color:#399ee6;">Pointer </span><span style="color:#fa6e32;">of int
+
+let </span><span style="color:#f29718;">get_node </span><span style="color:#ff8f40;">binmap node_addr is_left </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">index </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> node_addr </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">if</span><span style="color:#61676c;"> is_left </span><span style="color:#fa6e32;">then </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">else </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in
+  match </span><span style="color:#61676c;">Widemap.get binmap.pointers index </span><span style="color:#fa6e32;">with
+  | </span><span style="color:#ff8f40;">false </span><span style="color:#61676ccc;">-&gt; </span><span style="color:#399ee6;">Bitmap </span><span style="color:#61676c;">(Array.get binmap.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> index)
+  </span><span style="color:#fa6e32;">| </span><span style="color:#ff8f40;">true </span><span style="color:#61676ccc;">-&gt; </span><span style="color:#399ee6;">Pointer </span><span style="color:#61676c;">(Array.geti binmap.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> index)
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">set_node </span><span style="color:#ff8f40;">binmap node_addr is_left node </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">index </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> node_addr </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">if</span><span style="color:#61676c;"> is_left </span><span style="color:#fa6e32;">then </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">else </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in
+  match</span><span style="color:#61676c;"> node </span><span style="color:#fa6e32;">with
+  | </span><span style="color:#399ee6;">Bitmap </span><span style="color:#ff8f40;">bitmap </span><span style="color:#61676ccc;">-&gt;
+      </span><span style="color:#61676c;">Widemap.set binmap.pointers index </span><span style="color:#ff8f40;">false</span><span style="color:#61676ccc;">;
+      </span><span style="color:#61676c;">Array.set binmap.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> index bitmap
+  </span><span style="color:#fa6e32;">| </span><span style="color:#399ee6;">Pointer </span><span style="color:#fa6e32;">int </span><span style="color:#61676ccc;">-&gt;
+      </span><span style="color:#61676c;">Widemap.set binmap.pointers index </span><span style="color:#ff8f40;">true</span><span style="color:#61676ccc;">;
+      </span><span style="color:#61676c;">Array.seti binmap.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> index </span><span style="color:#fa6e32;">int
+</span></pre>
+<p>Each pair of cells in the array represents a branch. Leaves are hoisted into their parent branch, replacing the pointer. Widemap.t is an extensible bitmap which we use here to track whether a given cell in the array is a pointer or a bitmap. The length field is the number of bits represented by bitmap. The free field will be explained later.</p>
+<p>Our previous example string 00001100 would now be represented like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="font-style:italic;color:#abb0b6;">(*
+  0 -&gt; Bitmap 0
+  1 -&gt; Pointer 2
+  2 -&gt; Bitmap 1
+  3 -&gt; Bitmap 0
+*)
+
+</span><span style="color:#61676c;">{ length </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">8</span><span style="color:#61676ccc;">;
+;</span><span style="color:#61676c;"> layers </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">3</span><span style="color:#61676ccc;">;
+; </span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">[| </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">|]
+</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> pointers </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Widemap.of_string </span><span style="color:#86b300;">&quot;0100&quot;
+</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> free </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">}
+</span></pre>
+<p>When the bitmap is changed we may have to add or delete pairs eg if the above example changed to 00001111 it would be represented as:</p>
+<pre style="background-color:#fafafa;">
+<span style="font-style:italic;color:#abb0b6;">(*
+  0 -&gt; Bitmap 0
+  1 -&gt; Bitmap 1
+  2 -&gt; ?
+  3 -&gt; ?
+*)
+</span></pre>
+<p>We can grow and shrink the array as necessary, but since deleted pairs won't necessarily be at the end of the used space the bigarray will become fragmented. To avoid wasting space we can write a linked list into the empty pairs to keep track of free space. 0 is always the root of the tree so we can use it as a list terminator. The free field marks the start of the list.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let </span><span style="color:#f29718;">del_pair </span><span style="color:#ff8f40;">binmap node_addr </span><span style="color:#ed9366;">=
+  </span><span style="color:#61676c;">Array.seti binmap.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> node_addr binmap.free</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  binmap.free </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;"> node_addr
+
+</span><span style="font-style:italic;color:#abb0b6;">(* double the size of a full array and then initialise the freelist *)
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">grow_array </span><span style="color:#ff8f40;">binmap </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">assert </span><span style="color:#61676c;">(binmap.free </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">old_len </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.dim binmap.</span><span style="color:#fa6e32;">array in
+  assert </span><span style="color:#61676c;">(old_len </span><span style="color:#ed9366;">mod </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">assert </span><span style="color:#61676c;">(old_len </span><span style="color:#ed9366;">&lt;=</span><span style="color:#61676c;"> max_int)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">new_len </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> min max_int (</span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">*</span><span style="color:#61676c;"> old_len) </span><span style="color:#fa6e32;">in
+  assert </span><span style="color:#61676c;">(new_len </span><span style="color:#ed9366;">mod </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">array </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> create_array new_len </span><span style="color:#fa6e32;">in
+  </span><span style="color:#61676c;">Array.blit binmap.</span><span style="color:#fa6e32;">array </span><span style="color:#61676c;">(Array.sub </span><span style="color:#fa6e32;">array </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;"> old_len)</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  binmap.</span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">&lt;- </span><span style="color:#fa6e32;">array</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  binmap.free </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;"> old_len</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">for</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> old_len </span><span style="color:#fa6e32;">to</span><span style="color:#61676c;"> new_len</span><span style="color:#ff8f40;">-4 </span><span style="color:#fa6e32;">do
+    if</span><span style="color:#61676c;"> i </span><span style="color:#ed9366;">mod </span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0  </span><span style="color:#fa6e32;">then </span><span style="color:#61676c;">Array.seti </span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> i (i</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">)
+  </span><span style="color:#fa6e32;">done</span><span style="color:#61676ccc;">;
+  </span><span style="color:#61676c;">Array.seti </span><span style="color:#fa6e32;">array </span><span style="color:#61676c;">(new_len</span><span style="color:#ff8f40;">-2</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">0
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">add_pair </span><span style="color:#ff8f40;">binmap node_left node_right </span><span style="color:#ed9366;">=
+  </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">if</span><span style="color:#61676c;"> binmap.free </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">then</span><span style="color:#61676c;"> grow_array binmap)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">node_addr </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> binmap.free </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">free_next </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.geti binmap.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;"> binmap.free </span><span style="color:#fa6e32;">in</span><span style="color:#61676c;">
+  binmap.free </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;"> free_next</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  set_node binmap node_addr </span><span style="color:#ff8f40;">true</span><span style="color:#61676c;"> node_left</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  set_node binmap node_addr </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;"> node_right</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  node_addr
+</span></pre>
+<p>I haven't yet written any code to shrink the array but it should be fairly straightforward to recursively copy the tree into a new array and rewrite the pointers.</p>
+<p>With the freelist our modified example now looks like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">{ length </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">8</span><span style="color:#61676ccc;">;
+;</span><span style="color:#61676c;"> layers </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">3</span><span style="color:#61676ccc;">;
+; </span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">[| </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">|]
+</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> pointers </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Widemap.of_string </span><span style="color:#86b300;">&quot;0100&quot;
+</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> free </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">2 </span><span style="color:#61676c;">}
+</span></pre>
+<p>With the representation sorted the rest of the code more or less writes itself.</p>
+<p>The only difficulty lies in choosing the width of the bitmaps used. Using smaller bitmaps increases the granularity of the binmap allowing better compression by compacting more nodes. Using larger bitmaps increases the size of the pointers allowing larger bitmaps to be represented. I've written the binmap code to be width-agnostic; it can easily be made into a functor of the bitmap module.</p>
+<p>The paper linked below suggests using a layered address scheme to expand the effective pointer size, where the first bit of the pointer is a flag indicating which layer the address is in. I would suggest rather than putting the flag in the pointer it would be simper to use information implicit in the structure of the tree eg is the current layer mod 8 = 0. Either way, this hugely increases the size of the address space at a the cost of a little extra complexity.</p>
+<p>The original version is <a href="https://github.com/gritzko/swift/blob/master/doc/binmaps-alenex.pdf">here</a> and my version is <a href="https://github.com/jamii/binmap">here</a>. This is just an experiment so far, I certainly wouldn't suggest using it without some serious testing.</p>
+<p>Overall I'm not sure how useful this particular data structure is but this method of compacting tree-like types in ocaml is certainly interesting. I suspect it could be at least partially automated.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

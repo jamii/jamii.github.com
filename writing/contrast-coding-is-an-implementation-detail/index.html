@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Contrast codes are an implementation detail
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Contrast codes are an implementation detail</h1>
+
+<article>
+  <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$']]}
+});
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_SVG">
+</script>
+<p>I found <a href="https://en.wikipedia.org/wiki/Contrast_(statistics)">contrast codes</a> really confusing on first contact. In hindsight, this is because they are typically presented as being part of the model, but it seems much more ergonomic to me to consider them part of the inference algorithm, as I'll explain here.</p>
+<p>If you haven't encountered contrast codes before - good. Stay there. You are not missing out.</p>
+<p>If you have encountered contrast codes and are confused, maybe this will help.</p>
+<p>Let's set the scene. A typical instance of the <a href="https://en.wikipedia.org/wiki/General_linear_model">General Linear Model</a> looks like this:</p>
+<p>\begin{align}
+y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix} \begin{pmatrix}x_1\\x_2\end{pmatrix} + e
+\end{align}</p>
+<p>Where $\begin{pmatrix}b_1 &amp; b_2\end{pmatrix}$ is chosen to minimize error on the training data.</p>
+<p>We want to ask questions like:</p>
+<ul>
+<li>Q1: Is knowing $x_1$ useful if we already know $x_2$?</li>
+</ul>
+<p>We can answer this by comparing the prediction accuracy of this model against a simpler model:</p>
+<p>\begin{align}
+\text{full model: } &amp; y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} + e \cr
+\text{null model: } &amp; y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} + e \text{ where } b_1 = 0 \cr
+\end{align}</p>
+<ul>
+<li>Q1*: Does assuming that $x_1$ has no effect ($b_1 = 0$) lead to less prediction error on unseen data?</li>
+</ul>
+<p>The null model is a restricted version of the full model, so it will always have at least as much error on the training data as the full model. But if that is purely due to over-fitting then the null model will probably have less error on as-yet unseen data than the full model will.</p>
+<p>Unfortunately in many fields we <a href="http://datacolada.org/20">usually don't have enough data</a> to begin with, so we can't afford to leave any data unseen. Instead we ask a different question:</p>
+<ul>
+<li>Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?</li>
+</ul>
+<p>In this case we can give an exact analytic answer to Q2. (Whether that answer has any bearing on the answer to Q1 is another, much more complicated matter).</p>
+<p>So where do contrast codes come in?</p>
+<p>Suppose we are testing a drug and measuring some patient outcome $y$. We want to know the answer to:</p>
+<ul>
+<li>Q1: Do patients in the treatment group have better outcomes than patients in the control group?</li>
+</ul>
+<p>If we code the data as $X=\begin{pmatrix}1\\0\end{pmatrix}$ for subjects in the treatment group and $X=\begin{pmatrix}0\\1\end{pmatrix}$ for subjects in the control group, we can rephrase this question as:</p>
+<p>\begin{align}
+\text{full model: } &amp; y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} + e \cr
+\text{null model: } &amp; y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} + e &amp; \text{ where } b_1 = b_2 \cr
+\end{align}</p>
+<ul>
+<li>Q1*: Does assuming that the treatment group and the control group have the same outcome distribution ($b_1 = b_2$) lead to less prediction error on unseen data?</li>
+</ul>
+<p>Again, answering this question is hard so we're going to substitute a different question:</p>
+<ul>
+<li>Q2: If reality behaved exactly according to the fitted null model, what is the probability that the full model would have this much less error on the training data?</li>
+</ul>
+<p>Unfortunately the nice analytic answer <strong>only works for constraints of the form $b_i = 0$</strong>. To apply it here, we need to <a href="https://en.wikipedia.org/wiki/Change_of_basis">transform the data</a> so that our model has the correct form:</p>
+<p>\begin{align}
+L &amp; = \begin{pmatrix}1 &amp; {-1}\\1 &amp; 1\end{pmatrix} \cr
+\text{full model: } y &amp; = a + \begin{pmatrix}c_1 &amp; c_2\end{pmatrix} L \begin{pmatrix}x_1\\x_2\end{pmatrix} + e  \cr
+&amp; = a + \begin{pmatrix}c_1 &amp; c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\x_1 + x_2\end{pmatrix} + e  \cr
+\text{null model: } y &amp; = a + \begin{pmatrix}c_1 &amp; c_2\end{pmatrix} L \begin{pmatrix}x_1\\x_2\end{pmatrix} + e &amp; \text{ where } c_1 = 0 \cr
+&amp; = a + \begin{pmatrix}c_1 &amp; c_2\end{pmatrix} \begin{pmatrix}x_1 - x_2\\x_1 + x_2\end{pmatrix} + e &amp; \text{ where } c_1 = 0 \cr
+\end{align}</p>
+<p>Now we can apply the same analytic solution as before.</p>
+<p>The rows of $L$ are called <strong>contrast codes</strong>. But where do they come from? Well, I picked $\begin{pmatrix}1 &amp; {-1}\end{pmatrix}$ for the first row because I wanted to restrict the null model to $(1)b_1 + (-1)b_2 = 0$, and I picked whatever second row would make $L$ invertible.</p>
+<p>Since the rows of $L$ are orthogonal, we can interpret the confidence interval of $c_1$ as the confidence interval of the difference between the mean outcome in the control group and the mean outcome in the treatment group, which is exactly what we care about. (If the rows were not orthogonal the difference would get spread out across $c_1$ and $c_2$. Equivalently, the confidence intervals for $c_1$ and $c_2$ would not be independent.)</p>
+<p>Additionally, since $L$ is invertible there is a 1-1 mapping between the transformed model and the original model:</p>
+<p>\begin{align}
+&amp; \begin{pmatrix}b_1 &amp; b_2\end{pmatrix} = \begin{pmatrix}c_1 &amp; c_2\end{pmatrix} L \cr
+&amp; \begin{pmatrix}b_1 &amp; b_2\end{pmatrix} L^{-1} = \begin{pmatrix}c_1 &amp; c_2\end{pmatrix} \cr
+\end{align}</p>
+<p>(It doesn't seem to be common to care about this though - I see many examples of non-invertible contrast codes.)</p>
+<p>Importantly, none of this changes the fact the comparison we actually care about is still:</p>
+<p>\begin{align}
+\text{full model: } &amp; y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} + e \cr
+\text{null model: } &amp; y = a + \begin{pmatrix}b_1 &amp; b_2\end{pmatrix}\begin{pmatrix}x_1\\x_2\end{pmatrix} + e \text{ where } b_1 = b_2 \cr
+\end{align}</p>
+<p>Contrast codes are just an implementation detail by which we transform the comparison we care about into a comparison we can easily calculate the answer to. They don't belong in the interface. In a world where we cared about ergonomics in statistics, we would just write the model above and our stats library would take care of the transformation itself.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

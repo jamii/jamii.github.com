@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: http://scattered-thoughts.net/sitemap.xml

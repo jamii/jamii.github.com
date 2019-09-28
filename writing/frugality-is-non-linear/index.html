@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Frugality is non-linear
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Frugality is non-linear</h1>
+
+<article>
+  <p>Most people have a mental model of budgeting which is roughly linear. If you spend half as much money, your money will last twice as long. As you approach zero spending, your runway goes up to infinity.</p>
+<p>In this model, the space of options looks like this:</p>
+<div style="width: 100%; display: flex; align-items: center; justify-content: center; padding-top: 1em;">
+<div id="contour" style="width: 600px; height: 600px;">[I am an interactive graph made of javascript!]</div>
+</div>
+<div style="width: 100%; display: flex; align-items: center; justify-content: center; padding-top: 1em;">
+  <label for="growth">Return on investment =&nbsp;</label>
+  <input id="growth" type="text" style="width: 4em" value="0%">
+</div>
+<p>This model is wrong.</p>
+<p>It's wrong because your savings grow over time. If you change the return rate above to 5%, you can see that someone who has 500k in savings and spends 75k per year has a runway of 7 years. At 50k per year that extends to 13 years. But if they can cut their spending to 25k per year they have a runway of 62 years!</p>
+<p>Effectively, including growth in the model moves the asymptote to the right - your runway goes up to infinity as your spending approaches some percentage of your total savings, rather than as it approaches zero.</p>
+<p>So halving your expenses can much more than double your runway. Or to put it another way - halving your expenses can much more than halve the number of years of your life you need to spend working.</p>
+<hr />
+<p>I picked the examples above with a particular motive in mind. According to <a href="https://danluu.com/startup-tradeoffs/">Dan Luu's conservative estimates</a> a fresh grad at a big tech company can safely earn ~$500k post-tax in 5 years. The US median income post-tax is ~$25k, and investing in an index fund has historically earned ~5% average returns in the long run. So as a tech worker, if you can manage to leave as 'frugally' as the average American, you can <a href="https://networthify.com/calculator/earlyretirement?income=120000&amp;initialBalance=0&amp;expenses=25000&amp;annualPct=5&amp;withdrawalRate=4">comfortably retire</a> before 30.</p>
+<p>In the tech industry we have some very loud voices arguing that if you desire autonomy or leverage, the best path forwards is to start a VC-backed startup. But reducing spending and saving towards early retirement has some compelling advantages:</p>
+<ul>
+<li>It's much more reliable - most startups fail, but most people who work at a large tech company make sufficient money to be able to retire early.</li>
+<li>Financial independence is a huge safety net - reducing stress and lowering the risk of later projects. If you still want to run a startup, doing it from a position of infinite personal runway will be a lot less stressful.</li>
+<li>By separating the means of earning money from the freedom you are pursuing, it enables pursuing goals in that under-served intersection of valuable but not profitable. Whether that's supporting free software, producing art or home-schooling your children, trying to fit such activities into a profitable enterprise inevitably produces uncomfortable compromises which can be avoided by removing the need to earn money.</li>
+</ul>
+<p>The last point is particularly compelling if you have strong ethical/political/economic beliefs that would benefit from the leverage of financial independence. I'd like to see more independent people in general though, regardless of their personal beliefs, so I'll save the more contentious topics for a separate post.</p>
+<hr />
+<h3 id="faq">FAQ</h3>
+<p><strong>What about inflation?</strong> Inflation is essentially negative growth, so you can subtract it from the return rate and then keep the rest of the calculations in today-dollars. 5% seems to be a reasonable estimate of average inflation-adjusted returns on stocks based on recent decades, but see below for better models.</p>
+<p><strong>What about volatility?</strong> I used a fixed average return rate above, which doesn't tell you odds of running out of money early due to a string of bad years. <a href="https://retirementplans.vanguard.com/VGApp/pe/pubeducation/calculators/RetirementNestEggCalc.jsf">But simulations based on historical data</a> produce similar results to those above, and <a href="https://www.kitces.com/wp-content/uploads/2014/11/Kitces-Report-March-2012-20-Years-Of-Safe-Withdrawal-Rate-Research.pdf">retirement planning literature</a> tends to put the asymptote at around 4-5% which is consistent with the numbers above. You should definitely use a more detailed model than this if you are seriously considering this path, but I think the simple model accurately conveys the underlying intuition - that the returns to reducing spending are non-linear.</p>
+<p><strong>What about crashes?</strong> The simulation linked above uses data that covers existing crashes, including the Great Depression. But in the event that they are overly optimistic, I think there is a strong argument that having large savings and cheap habits are useful for weathering a crash as having a filled-in employment history. Especially if you used the additional free time to build useful non-tech skills or strong communities.</p>
+<p><strong>What about other countries?</strong> Dan Luu's article suggests that similar salaries are available in many major hubs. I've built a reasonably detailed model for my own situation in the UK and arrived at similar numbers. (Salaries are lower, unless you can land a remote job, but free healthcare and lower cost of living make up a lot of the difference.) It's worth at least running the numbers for your own country, just so you know what your options are.</p>
+<p><strong>Hasn't the <a href="https://en.wikipedia.org/wiki/FIRE_movement">FIRE community</a> already said all of this?</strong> Yes, but I very rarely see it discussed in tech circles, so it seems worth repeating. Also I haven't seen the calculation in terms of runway before, and the graph above improved my intuition on the subject.</p>
+<script src="https://cdn.plot.ly/plotly-1.47.0.min.js"></script>
+<script src="./frugality-is-non-linear.js"></script>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

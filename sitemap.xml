@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/a-practical-relational-query-compiler-in-500-lines/</loc>
+            
+                <lastmod>2016-10-11</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/after-eve/</loc>
+            
+                <lastmod>2016-01-17</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/binmaps-compressed-bitmaps/</loc>
+            
+                <lastmod>2012-01-03</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/causal-ordering/</loc>
+            
+                <lastmod>2012-08-16</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/complexity-budgets/</loc>
+            
+                <lastmod>2015-10-25</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/contrast-coding-is-an-implementation-detail/</loc>
+            
+                <lastmod>2017-11-21</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/decision-points-and-utility/</loc>
+            
+                <lastmod>2017-07-08</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/design-and-analysis-of-a-gossip-algorithm/</loc>
+            
+                <lastmod>2010-09-04</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/examining-scampy/</loc>
+            
+                <lastmod>2010-05-19</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/flowing-faster-external-memory/</loc>
+            
+                <lastmod>2013-05-21</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/frugality-is-non-linear/</loc>
+            
+                <lastmod>2019-04-09</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/hacker-school/</loc>
+            
+                <lastmod>2012-12-02</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/hugo-a-go-go-optimisation/</loc>
+            
+                <lastmod>2013-11-24</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/hugo-a-go-go/</loc>
+            
+                <lastmod>2013-10-06</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/humans-should-learn-maths/</loc>
+            
+                <lastmod>2014-11-15</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/imp-intro/</loc>
+            
+                <lastmod>2019-09-27</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/imperative-thinking-and-the-making-of-sandwiches/</loc>
+            
+                <lastmod>2014-07-21</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/julia-as-a-platform-for-language-development/</loc>
+            
+                <lastmod>2018-08-16</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/local-state-is-harmful/</loc>
+            
+                <lastmod>2014-02-17</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/materialize-inc/</loc>
+            
+                <lastmod>2019-04-20</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/monolog/</loc>
+            
+                <lastmod>2017-03-16</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/motivating-the-monkey/</loc>
+            
+                <lastmod>2015-09-22</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/no-more-bullshit/</loc>
+            
+                <lastmod>2013-12-12</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/optimising-texsearch-memory-usage/</loc>
+            
+                <lastmod>2010-12-19</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/optimising-texsearch/</loc>
+            
+                <lastmod>2010-12-08</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/pain-we-forgot/</loc>
+            
+                <lastmod>2014-05-17</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/psychology-vs-the-graphics-pipeline/</loc>
+            
+                <lastmod>2017-12-11</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/qnd-review-of-ppig-1989-2015/</loc>
+            
+                <lastmod>2016-11-17</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/rationally-choosing-a-life-part-ii/</loc>
+            
+                <lastmod>2016-05-20</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/rationally-choosing-a-life/</loc>
+            
+                <lastmod>2016-01-26</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/relational-ui/</loc>
+            
+                <lastmod>2017-07-28</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/reltron/</loc>
+            
+                <lastmod>2019-02-05</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/scaling-down/</loc>
+            
+                <lastmod>2015-02-09</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/search-trees-and-core-dot-logic/</loc>
+            
+                <lastmod>2012-12-19</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/should-not/</loc>
+            
+                <lastmod>2015-11-11</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/smarkets-api-documentation/</loc>
+            
+                <lastmod>2010-07-30</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/staged-interpreters-in-rust/</loc>
+            
+                <lastmod>2017-11-22</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/strucjure-motivation/</loc>
+            
+                <lastmod>2012-12-04</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/strucjure-reading-the-readme/</loc>
+            
+                <lastmod>2012-10-25</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/the-antisocial-laptop/</loc>
+            
+                <lastmod>2019-01-16</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/three-months-of-rust/</loc>
+            
+                <lastmod>2015-06-04</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/vive-experiments/</loc>
+            
+                <lastmod>2016-10-28</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/were-not-even-trying/</loc>
+            
+                <lastmod>2014-01-27</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>http%3A//scattered-thoughts.net/writing/zero-copy-deserialization-in-julia/</loc>
+            
+                <lastmod>2018-08-28</lastmod>
+            
+        </url>
+    
+</urlset>

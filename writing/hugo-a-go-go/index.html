@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Hugo-a-go-go
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Hugo-a-go-go</h1>
+
+<article>
+  <p>For the <a href="http://clojurecup.com/">2013 Clojure Cup</a> myself and <a href="http://www.thattommyhall.com/">Tom Hall</a> wrote a <a href="http://en.wikipedia.org/wiki/Go_%28game%29">go</a> AI in clojurescript, inspired by <a href="https://github.com/ztellman/pushkin">pushkin</a>. The source is <a href="https://github.com/jamii/hugo-a-go-go/">here</a> and it can currently be played on the <a href="http://hugoagogo.clojurecup.com/">clojure cup site</a> (only tested in chrome).</p>
+<p>Before reading this post it would help to understand the rules of go. Hugo-a-go-go follows (an approximation of) the <a href="http://en.wikipedia.org/wiki/Rules_of_Go#Chinese_rules">chinese rules</a>. Due to the limited time we don't yet check for <a href="http://en.wikipedia.org/wiki/Rules_of_Go#Ko">ko</a> and don't even attempt to detect the end of the game. The code at the moment is incredibly messy and probably very buggy (the version we submitted seems to actually <em>try</em> to lose) so treat it with suspicion.</p>
+<h2 id="board">Board</h2>
+<p>The best place to start is with the board representation. The most expensive operation for the AI is detecting suicide and death. To make this fast we track connected strings of pieces.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">String [colour liberties])
+</span></pre>
+<p><code>colour</code> is one of <code>:black</code>, <code>:white</code>, <code>:grey</code> (for the border) or <code>:empty</code>. <code>liberties</code> tracks the number of <a href="https://groups.google.com/forum/#!msg/computer-go-archive/hs259RQQ5hI/TOLFX2d5Y6UJ">pseudo-liberties</a> the string has (for black or white strings; for empty or grey strings the <code>liberties</code> value is never read and exists just to avoid having to branch on the colour).</p>
+<p>The board is represented by a 1d array of pointers to strings (this representation is inspired by <a href="http://www.gnu.org/software/gnugo/">gnugo</a> rather than pushkin) and a pointer to the empty string (which we use for fast <code>empty?</code> checks).</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">Board [strings empty-string])
+
+(</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">size </span><span style="color:#f51818;">9</span><span style="color:#61676c;">)
+(</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">array-size </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">2 </span><span style="color:#61676c;">size))
+(</span><span style="color:#fa6e32;">def </span><span style="color:#f29718;">max-pos </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">* </span><span style="color:#61676c;">array-size array-size))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;</span><span style="color:#f29718;">pos </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">x y</span><span style="color:#61676c;">]
+  (</span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1 </span><span style="color:#61676c;">x (</span><span style="color:#ed9366;">* </span><span style="color:#61676c;">array-size (</span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1 </span><span style="color:#61676c;">y))))
+</span></pre>
+<p>To create a board we just have to setup the empty-string and border-string.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn new </span><span style="color:#61676c;">[]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">empty-string </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;String </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">empty </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+        </span><span style="color:#ff8f40;">border-string </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;String </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">grey </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+        </span><span style="color:#ff8f40;">strings </span><span style="color:#61676c;">(object-array max-pos)]
+    (</span><span style="color:#fa6e32;">dotimes </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">i </span><span style="color:#61676c;">max-pos]
+      (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">strings i empty-string))
+    (</span><span style="color:#fa6e32;">dotimes </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">i </span><span style="color:#61676c;">array-size]
+      (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">strings (</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;pos (</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">i) </span><span style="color:#ff8f40;">-1</span><span style="color:#61676c;">) border-string)
+      (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">strings (</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;pos (</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">i) size) border-string)
+      (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">strings (</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;pos </span><span style="color:#ff8f40;">-1 </span><span style="color:#61676c;">(</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">i)) border-string)
+      (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">strings (</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;pos size (</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">i)) border-string))
+    (</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;Board strings empty-string)))
+</span></pre>
+<p>A given move is <em>not</em> suicide if, after the move is made, there is at least one neighbour which is either:</p>
+<ul>
+<li>
+<p>the same colour and has more than zero liberties</p>
+</li>
+<li>
+<p>the opposite colour and has zero liberties (ie would die if the move was carried through)</p>
+</li>
+<li>
+<p>empty</p>
+</li>
+</ul>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">suicide</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">[</span><span style="font-style:italic;color:#abb0b6;">^</span><span style="color:#fa6e32;">Board </span><span style="color:#ff8f40;">board colour pos</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">suicide </span><span style="color:#61676c;">(</span><span style="color:#f07171;">atom </span><span style="color:#ff8f40;">true</span><span style="color:#61676c;">)
+        </span><span style="color:#ff8f40;">opposite-colour </span><span style="color:#61676c;">(condp keyword-identical</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">colour </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">black </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">white </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">white </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">black)]
+    </span><span style="font-style:italic;color:#abb0b6;">;; decrement all the neighbours liberties
+    </span><span style="color:#61676c;">(foreach-neighbour neighbour-pos pos
+      (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">string </span><span style="color:#61676c;">(</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) neighbour-pos)]
+        (</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-liberties string) (</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">(.-liberties string)))))
+    </span><span style="font-style:italic;color:#abb0b6;">;; check for suicide
+    </span><span style="color:#61676c;">(foreach-neighbour neighbour-pos pos
+      (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">string </span><span style="color:#61676c;">(</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) neighbour-pos)]
+        (condp keyword-identical</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">(.-colour string)
+          colour (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">(.-liberties string) </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+                   (reset</span><span style="color:#fa6e32;">! </span><span style="color:#61676c;">suicide </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">))
+          opposite-colour (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">= </span><span style="color:#61676c;">(.-liberties string) </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+                            (reset</span><span style="color:#fa6e32;">! </span><span style="color:#61676c;">suicide </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">))
+          </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">empty (reset</span><span style="color:#fa6e32;">! </span><span style="color:#61676c;">suicide </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+          </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">grey </span><span style="color:#ff8f40;">nil</span><span style="color:#61676c;">)))
+    </span><span style="font-style:italic;color:#abb0b6;">;; undo the decrement
+    </span><span style="color:#61676c;">(foreach-neighbour neighbour-pos pos
+      (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">string </span><span style="color:#61676c;">(</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) neighbour-pos)]
+        (</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-liberties string) (</span><span style="color:#f07171;">inc </span><span style="color:#61676c;">(.-liberties string)))))
+    </span><span style="color:#fa6e32;">@</span><span style="color:#61676c;">suicide))
+</span></pre>
+<p>Actually making a move is similar but we have to clear out dead strings and join adjacent strings together. Proving that it's safe to do all this in a single pass is straightforward, if tedious.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">defn set-colour [^Board board pos colour]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">string </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;String colour </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)]
+    (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">(.-strings board) pos string)
+    (foreach-neighbour neighbour-pos pos
+                       (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">neighbour-string </span><span style="color:#61676c;">(</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) neighbour-pos)
+                             </span><span style="color:#ff8f40;">neighbour-colour </span><span style="color:#61676c;">(.-colour neighbour-string)]
+                         (condp keyword-identical</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">neighbour-colour
+                           </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">empty
+                           (</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-liberties (</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) pos)) (</span><span style="color:#f07171;">inc </span><span style="color:#61676c;">(.-liberties (</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) pos))))
+
+                           </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">grey
+                           </span><span style="color:#ff8f40;">nil
+
+                           </span><span style="color:#61676c;">colour
+                           (</span><span style="color:#fa6e32;">do
+                             </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-liberties neighbour-string) (</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">(.-liberties neighbour-string)))
+                             (join-strings board (</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">(.-strings board) pos) neighbour-string pos neighbour-pos))
+
+                           </span><span style="font-style:italic;color:#abb0b6;">;; opposite colour
+                           </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">do
+                             </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-liberties neighbour-string) (</span><span style="color:#f07171;">dec </span><span style="color:#61676c;">(.-liberties neighbour-string)))
+                             (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">(.-liberties neighbour-string))
+                               (clear-string board neighbour-string neighbour-pos))))))))
+</span></pre><h2 id="monte-carlo">Monte Carlo</h2>
+<p>Go branches far too much to exhaustively check all possible futures. Instead we use a heuristic measure of the value of a move - the Monte Carlo estimate of the expected score when both players choose from the set of valid moves uniformly at random. To put it simply, we run large numbers of random games from this board position and take the mean score as our measure of how strong this board position is. Since we don't have a test for the end of the game we just run until either 100 moves have been made or until both sides have no valid moves remaining.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">flood-fill </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board colour</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">filled </span><span style="color:#61676c;">(object-array max-pos)]
+    (letfn [(flood-fill-around [pos]
+              (foreach-neighbour pos pos
+                  (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(</span><span style="color:#f07171;">and </span><span style="color:#61676c;">(</span><span style="color:#f07171;">not </span><span style="color:#61676c;">(</span><span style="color:#f07171;">aget </span><span style="color:#61676c;">filled pos))
+                             (keyword-identical</span><span style="color:#fa6e32;">? </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">empty (get-colour board pos)))
+                    (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">filled pos </span><span style="color:#ff8f40;">true</span><span style="color:#61676c;">)
+                    (flood-fill-around pos))))]
+      (</span><span style="color:#fa6e32;">dotimes </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">x </span><span style="color:#61676c;">size]
+        (</span><span style="color:#fa6e32;">dotimes </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">y </span><span style="color:#61676c;">size]
+          (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">pos </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;pos x y)]
+            (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(keyword-identical</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">colour (get-colour board pos))
+              (</span><span style="color:#f07171;">aset </span><span style="color:#61676c;">filled pos </span><span style="color:#ff8f40;">true</span><span style="color:#61676c;">)
+              (flood-fill-around pos))))))
+    (</span><span style="color:#f07171;">count </span><span style="color:#61676c;">(</span><span style="color:#f07171;">filter identity </span><span style="color:#61676c;">filled))))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">score </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">white-flood </span><span style="color:#61676c;">(flood-fill board </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">white)
+        </span><span style="color:#ff8f40;">black-flood </span><span style="color:#61676c;">(flood-fill board </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">black)
+        </span><span style="color:#ff8f40;">total </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">* </span><span style="color:#61676c;">size size)
+        </span><span style="color:#ff8f40;">overlap </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">- </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">white-flood black-flood) total)
+        </span><span style="color:#ff8f40;">white-score </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">- </span><span style="color:#61676c;">white-flood overlap)
+        </span><span style="color:#ff8f40;">black-score </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">- </span><span style="color:#61676c;">black-flood overlap)]
+    {</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">white white-score </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">black black-score}))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">random-move </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board colour</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">starting-pos </span><span style="color:#61676c;">(random-int board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">max-pos)]
+    (</span><span style="color:#fa6e32;">loop </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">pos </span><span style="color:#61676c;">starting-pos]
+      (</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f07171;">and </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">valid</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">board colour pos)
+               (</span><span style="color:#f07171;">not </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">eyelike</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">board colour pos)))
+        pos
+        (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">new-pos </span><span style="color:#61676c;">(mod (</span><span style="color:#f07171;">inc </span><span style="color:#61676c;">pos) board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">max-pos)]
+          (</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">= </span><span style="color:#61676c;">starting-pos new-pos)
+            </span><span style="color:#ff8f40;">nil
+            </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">recur </span><span style="color:#61676c;">new-pos)))))))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">with-random-moves </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board n starting-colour</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">doseq </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">colour </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">take </span><span style="color:#61676c;">n (</span><span style="color:#f07171;">interleave </span><span style="color:#61676c;">(</span><span style="color:#f07171;">repeat </span><span style="color:#61676c;">starting-colour) (</span><span style="color:#f07171;">repeat </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">opposite-colour starting-colour))))]
+      (</span><span style="color:#fa6e32;">when-let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">move </span><span style="color:#61676c;">(random-move board colour)]
+        (board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">set-colour board move colour)))
+  board)
+</span></pre>
+<p>You may notice that the above code actually only runs until one side has no moves - this is the first of many bugs.</p>
+<p>The scoring and random-move code was a huge bottleneck so at the last minute I 'optimised' it by changing it to:</p>
+<pre style="background-color:#fafafa;">
+<span style="font-style:italic;color:#abb0b6;">;; rough approximation of the final score if the board is tightly packed
+</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">score </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board colour</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">score </span><span style="color:#61676c;">(</span><span style="color:#f07171;">atom </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)]
+    (</span><span style="color:#fa6e32;">dotimes </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">pos </span><span style="color:#61676c;">board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">max-pos]
+      (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(keyword-identical</span><span style="color:#fa6e32;">? </span><span style="color:#61676c;">colour (board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">get-colour board pos))
+        (</span><span style="color:#fa6e32;">swap! </span><span style="color:#ff8f40;">score </span><span style="color:#f07171;">inc</span><span style="color:#61676c;">)))
+    </span><span style="color:#fa6e32;">@</span><span style="color:#61676c;">score))
+
+</span><span style="font-style:italic;color:#abb0b6;">;; massive speedup at the expense of never playing in killed spaces
+</span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">with-random-moves-from </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board n starting-colour moves</span><span style="color:#61676c;">]
+  (js</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">goog</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">array</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">shuffle moves)
+  (</span><span style="color:#fa6e32;">loop </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">colour </span><span style="color:#61676c;">starting-colour]
+    (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">move </span><span style="color:#61676c;">(.</span><span style="color:#f07171;">pop </span><span style="color:#61676c;">moves)]
+      (board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">set-colour board move colour)
+      (</span><span style="color:#fa6e32;">recur </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">opposite-colour colour))))
+  board)
+</span></pre>
+<p>I think it is these two changes that are largely responsible for the submitted version playing so poorly - it doesn't check for eyes in the random playouts, doesn't allow the other player to keep killing strings when the ai player has no moves and doesn't count eyes in the final score. This explains why it likes to tightly pack pieces against the edge of the board.</p>
+<h2 id="uct">UCT</h2>
+<p>While the monte-carlo estimate gives us a reasonable heuristic for move strength it doesn't re-use any information between passes. With such a large move space we need to explore more intelligently. The <a href="http://teytaud.over-blog.com/article-35709049.html">UCT</a> algorithm treats move-selection like a <a href="http://en.wikipedia.org/wiki/Multi-armed_bandit">multi-armed bandit problem</a>.</p>
+<iframe width="640" height="360" src="//www.youtube.com/embed/dbvoPg51CqQ?feature=player_embedded" frameborder="0" allowfullscreen="allowfullscreen">video</iframe>
+<p>We build a tree of moves where each node in the tree tracks not just the estimated score for all its child nodes but also the upper bound of a confidence interval on that estimate.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#f07171;">defrecord </span><span style="color:#61676c;">Node [parent colour pos </span><span style="color:#f07171;">count </span><span style="color:#61676c;">sum nodes valids])
+</span></pre>
+<p><code>colour</code> is the colour making the move at this node. <code>pos</code> is the position at which it is moving. <code>nodes</code> is a list of child nodes for which we have estimates. <code>valids</code> is a list of valid moves which have not yet been converted into nodes. <code>count</code> and <code>sum</code> track the mean score for all the children in <code>nodes</code>.</p>
+<p>On each iteration we pick a path through the tree, choosing some explore/exploit tradeoff using the upper confidence bounds. Given the limited time we had, I decided to just copy a scoring function from a paper without stopping to understand it, so I don't actually know what explore/exploit tradeoff we are making :S</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">best-child </span><span style="color:#61676c;">[</span><span style="color:#f07171;">node</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">best-score </span><span style="color:#61676c;">(</span><span style="color:#f07171;">atom </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">- </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">/ </span><span style="color:#ff8f40;">1 0</span><span style="color:#61676c;">)))
+        </span><span style="color:#ff8f40;">best-child </span><span style="color:#61676c;">(</span><span style="color:#f07171;">atom </span><span style="color:#ff8f40;">nil</span><span style="color:#61676c;">)]
+    (</span><span style="color:#fa6e32;">doseq </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">child </span><span style="color:#61676c;">(.-nodes </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)]
+      (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">score </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">/ </span><span style="color:#61676c;">(.-sum child) (.-count child))
+                     (js</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Math</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">sqrt
+                      (</span><span style="color:#ed9366;">/ </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">* </span><span style="color:#ff8f40;">2 </span><span style="color:#61676c;">(js</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Math</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">log (.-count </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)))
+                         (</span><span style="color:#ed9366;">* </span><span style="color:#ff8f40;">5 </span><span style="color:#61676c;">(.-count child)))))]
+        (</span><span style="color:#f07171;">when </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">score </span><span style="color:#fa6e32;">@</span><span style="color:#61676c;">best-score)
+          (reset</span><span style="color:#fa6e32;">! </span><span style="color:#61676c;">best-score score)
+          (reset</span><span style="color:#fa6e32;">! </span><span style="color:#61676c;">best-child child))))
+    </span><span style="color:#fa6e32;">@</span><span style="color:#61676c;">best-child))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">expand </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board </span><span style="color:#f07171;">node </span><span style="color:#ff8f40;">ai-colour</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">pos </span><span style="color:#61676c;">(.-pos </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)]
+    (</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#f07171;">not</span><span style="color:#fa6e32;">= </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">pos) </span><span style="font-style:italic;color:#abb0b6;">;; top node has pos 0 - probably a smell
+      </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">set-colour board pos (.-colour </span><span style="color:#f07171;">node</span><span style="color:#61676c;">))))
+  (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">valid-pos </span><span style="color:#61676c;">(.</span><span style="color:#f07171;">pop </span><span style="color:#61676c;">(.-valids </span><span style="color:#f07171;">node</span><span style="color:#61676c;">))]
+    (.push (.-nodes </span><span style="color:#f07171;">node</span><span style="color:#61676c;">) (expand-leaf board ai-colour </span><span style="color:#f07171;">node </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">opposite-colour (.-colour </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)) valid-pos))
+    (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">child </span><span style="color:#61676c;">(</span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(</span><span style="color:#ed9366;">= </span><span style="color:#61676c;">(.-colour </span><span style="color:#f07171;">node</span><span style="color:#61676c;">) ai-colour)
+                     (worst-child </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)
+                     (best-child </span><span style="color:#f07171;">node</span><span style="color:#61676c;">))]
+      (expand board child ai-colour)
+      </span><span style="color:#ff8f40;">nil </span><span style="font-style:italic;color:#abb0b6;">;; no possible moves - pass
+      </span><span style="color:#61676c;">)))
+</span></pre>
+<p>On reaching a leaf we extend it by one more move, estimate the value of that move using monte-carlo simulations and then propagate the value back up the path to the top of tree.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">expand-leaf </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board ai-colour parent colour pos</span><span style="color:#61676c;">]
+  (board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">set-colour board pos colour)
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">valids </span><span style="color:#61676c;">(valids board (board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">opposite-colour colour))]
+    (random</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">with-random-moves-from board </span><span style="color:#ff8f40;">100 </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">opposite-colour colour) (</span><span style="color:#f07171;">aclone </span><span style="color:#61676c;">valids))
+    (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">value </span><span style="color:#61676c;">(value board ai-colour)]
+      (add-value parent value)
+      (</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">&gt;Node parent colour pos </span><span style="color:#ff8f40;">1 </span><span style="color:#61676c;">value (object-array </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) valids))))
+
+(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">add-value </span><span style="color:#61676c;">[</span><span style="color:#f07171;">node </span><span style="color:#ff8f40;">value</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-count </span><span style="color:#f07171;">node</span><span style="color:#61676c;">) (</span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">(.-count </span><span style="color:#f07171;">node</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">))
+  (</span><span style="color:#fa6e32;">set! </span><span style="color:#61676c;">(.-sum </span><span style="color:#f07171;">node</span><span style="color:#61676c;">) (</span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">(.-sum </span><span style="color:#f07171;">node</span><span style="color:#61676c;">) value))
+  (</span><span style="color:#fa6e32;">if-let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">parent </span><span style="color:#61676c;">(.-parent </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)]
+    (</span><span style="color:#fa6e32;">recur </span><span style="color:#61676c;">parent value)))
+</span></pre>
+<p>Finally, the ai chooses its move by running a number of iterations of this algorithm and returning the value of <code>best-child</code> at the root (this is probably wrong - at this point we should just exploit, not explore).</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">(</span><span style="color:#fa6e32;">defn </span><span style="color:#f29718;">move-for </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">board colour n</span><span style="color:#61676c;">]
+  (</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">[</span><span style="color:#f07171;">node </span><span style="color:#61676c;">(hugo-a-go-go</span><span style="color:#ed9366;">.</span><span style="color:#61676c;">tree</span><span style="color:#ed9366;">/</span><span style="color:#fa6e32;">new </span><span style="color:#61676c;">(board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">copy board) colour)]
+    (</span><span style="color:#fa6e32;">dotimes </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">_ </span><span style="color:#61676c;">n]
+      (expand (board</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">copy board) </span><span style="color:#f07171;">node </span><span style="color:#61676c;">colour))
+    (</span><span style="color:#fa6e32;">when-let </span><span style="color:#61676c;">[</span><span style="color:#ff8f40;">child </span><span style="color:#61676c;">(best-child </span><span style="color:#f07171;">node</span><span style="color:#61676c;">)]
+      (.-pos child))))
+</span></pre><h2 id="postmortem">Postmortem</h2>
+<p>Together we spent around 20 man-hours on the competition. I spent the first two thirds of the competition just getting the board representation to work correctly. Part of the delay was that after moving to a cljs-only implementation the feedback loop was much slower. I wasted an hour or two tring to get brepl working without any success and after that had to rely on print statements and pre-compiled test cases. Finding errors in cljs also leaves a lot to be desired (eg a typo in a field name resulted in an <code>undefined</code> value which, several functions later, became a <code>NaN</code> which then behaves interestingly inside max/min). I only started on the UCT code an hour or two before the deadline. Tom started on the user input around the same time. We played our first game against the ai about five minutes before the deadline and frantically submitted whatever code we had running.</p>
+<p>If we were taking it more seriously we certainly could have done a lot more to prepare - being familiar with the cljs dev tools, actually learning the rules of go, sketching out the board representation and the UCT implementation before the weekend started, not walking a marathon on the same weekend. But winning was not the goal and instead we had a lot of fun and excitement seeing just how much we can hack together in such a short space of time.</p>
+<p>Our AI is definitely not correct so it's difficult to evaluate the project yet. The code is relatively short and simple (especially compared to eg <a href="http://git.savannah.gnu.org/cgit/gnugo.git/tree/engine">gnugo</a>) but that doesn't mean much until it actually works. The performance is promising - the current version can simulate around 5k games per second in chrome. Fixing the monte-carlo step and the scoring will eat into that performance but I've already spotted plenty of inefficiencies in other places. We haven't even started experimenting with <a href="https://github.com/ztellman/vertigo">vertigo</a> or <a href="http://asmjs.org/">asm.js</a> yet so there is certainly lots of headroom.</p>
+<p>I am definitely hoping to come back to this project. To echo <a href="http://www.youtube.com/watch?v=v5dYE0CMmHQ">Zach Tellman's motivation</a>, it will be really interesting to see if it is possible to write a competitive go AI in a high-level language. We've also thought about distributing the UCT step and have team games pitching the aggregated wisdom of a group of human players voting on their next move against the assembled computing power of their browsing machines.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

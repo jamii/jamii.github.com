@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Zero-copy deserialization in Julia
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Zero-copy deserialization in Julia</h1>
+
+<article>
+  <p>While working with <a href="http://relational.ai/">RelationalAI</a> I wrote a library for zero-copy deserialization in Julia. Not super exciting in itself, but it nicely demonstrates the kinds of zero-overhead abstractions that are possible in Julia.</p>
+<h2 id="the-problem">The problem</h2>
+<p>Folks at RelationalAI want to build various complex on-disk data-structures, with these constraints:</p>
+<ul>
+<li>
+<p>The system is typically bottle-necked on memory bandwidth already, so deserializing on-disk data-structures into a separate in-memory data-structure is unacceptable. They need to operate directly on mmap-ed memory.</p>
+</li>
+<li>
+<p>The data-structures will be mmap-ed into multiple different processes. The virtual memory mapping won't stay the same, so the data-structures have to use relative offsets instead of absolute pointers.</p>
+</li>
+<li>
+<p>The data-structures are large and most use-cases typically only touch a small portion of each mmap-ed chunk, so converting all offsets to pointers in place at load time (aka <a href="https://en.wikipedia.org/wiki/Pointer_swizzling">pointer swizzling</a>) is too wasteful of memory bandwidth.</p>
+</li>
+</ul>
+<p>Additionally, the query compiler reading these data-structures is written in Julia. We still could implement the data-structures in C, but then the query compiler wouldn't be able to benefit from specializing on the types of the data-structures. In other words, there is a potential performance boost if we can do the whole thing in Julia.</p>
+<p>Let's even throw in some additional constraints:</p>
+<ul>
+<li>
+<p>When debugging, we want to do bounds-checking so we get exceptions instead of segfaults.</p>
+</li>
+<li>
+<p>When not debugging, we want to have minimal overhead vs writing the same code in C.</p>
+</li>
+</ul>
+<h2 id="building-blocks">Building blocks</h2>
+<p>Julia offers pointers:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">p </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Libc.</span><span style="color:#f07171;">malloc</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">2</span><span style="color:#ed9366;">^</span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">)
+</span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x00000000019887a0
+</span></pre>
+<p>Pointers are typed, but we can cast them to other types freely:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">p </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">convert</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Int64}</span><span style="color:#61676c;">, p)
+</span><span style="font-style:italic;color:#55b4d4;">Ptr{Int64} </span><span style="color:#61676c;">@0x00000000019887a0
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_store!</span><span style="color:#61676c;">(p, </span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">)
+</span><span style="font-style:italic;color:#55b4d4;">Ptr{Int64} </span><span style="color:#61676c;">@0x00000000019887a0
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(p)
+</span><span style="color:#ff8f40;">42
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_store!</span><span style="color:#61676c;">(p</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+</span><span style="font-style:italic;color:#55b4d4;">Ptr{Int64} </span><span style="color:#61676c;">@0x00000000019887a1
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(p</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">)
+</span><span style="color:#ff8f40;">0
+</span></pre>
+<p>And we can use any plain-old-data type, not just primitives:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">struct </span><span style="color:#399ee6;">Foo
+         </span><span style="color:#61676c;">x</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Int64
+         </span><span style="color:#61676c;">y</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Float64
+         </span><span style="color:#61676c;">z</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Bool
+       </span><span style="color:#fa6e32;">end
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">p </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">convert</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Foo}</span><span style="color:#61676c;">, p)
+</span><span style="font-style:italic;color:#55b4d4;">Ptr{Foo} </span><span style="color:#61676c;">@0x00000000019887a0
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_store!</span><span style="color:#61676c;">(p, </span><span style="color:#f29718;">Foo</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">3.14</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">))
+</span><span style="font-style:italic;color:#55b4d4;">Ptr{Foo} </span><span style="color:#61676c;">@0x00000000019887a0
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(p)
+</span><span style="color:#f29718;">Foo</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">3.14</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+</span></pre>
+<p>In <a href="https://docs.julialang.org/en/v1/manual/performance-tips/#Write-%22type-stable%22-functions-1">type-stable</a> code, these operations compile down to the corresponding llvm primitives, producing the same asm you would expect from C:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">p</span><span style="color:#61676c;">)
+         p </span><span style="color:#ed9366;">+= </span><span style="color:#f07171;">sizeof</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Int64</span><span style="color:#61676c;">) </span><span style="font-style:italic;color:#abb0b6;"># skip Foo.x
+         </span><span style="color:#61676c;">p </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">convert</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Float64}</span><span style="color:#61676c;">, p)
+         </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(p) </span><span style="font-style:italic;color:#abb0b6;"># read Foo.y
+       </span><span style="color:#fa6e32;">end
+</span><span style="color:#61676c;">f (generic </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">with </span><span style="color:#ff8f40;">1 method</span><span style="color:#61676c;">)
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">@code_native </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(p)
+	.text
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#61676c;">f {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">REPL[</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">]</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#f07171;">pointer</span><span style="color:#61676c;">.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">105</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">REPL[</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">]</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">2
+	</span><span style="color:#61676c;">vmovsd	</span><span style="color:#ff8f40;">8</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rdi), </span><span style="color:#ed9366;">%</span><span style="color:#61676c;">xmm0          </span><span style="font-style:italic;color:#abb0b6;"># xmm0 = mem[0],zero</span><span style="color:#61676c;">
+;}}
+	retq
+	nopw	</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">cs</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax,</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax)
+;}
+</span></pre>
+<p>But like C they are totally unsafe:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(p</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">2</span><span style="color:#ed9366;">^</span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+
+signal (</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">)</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">Segmentation fault
+</span></pre>
+<p>And they require us to do all our offset calculation and pointer arithmetic by hand.</p>
+<h2 id="blobs">Blobs</h2>
+<p>The <a href="https://github.com/jamii/Blobs.jl/tree/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44">Blobs</a> library just adds some structure on top of these building blocks, while still compiling down to efficient native code.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">using </span><span style="color:#61676c;">Pkg
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">Pkg.</span><span style="color:#f29718;">add</span><span style="color:#61676c;">(</span><span style="color:#f29718;">PackageSpec</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">url</span><span style="color:#ed9366;">=</span><span style="color:#86b300;">&quot;git@github.com:jamii/Blobs.jl.git&quot;</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">rev</span><span style="color:#ed9366;">=</span><span style="color:#86b300;">&quot;c1c906&quot;</span><span style="color:#61676c;">))
+...
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">using </span><span style="color:#61676c;">Blobs
+
+</span></pre>
+<p>Blobs are created from raw pointers:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Foo}</span><span style="color:#61676c;">(Libc.</span><span style="color:#f07171;">malloc</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">2</span><span style="color:#ed9366;">^</span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">), </span><span style="color:#ff8f40;">2</span><span style="color:#ed9366;">^</span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">)
+</span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Foo}</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+</span></pre>
+<p>There is some syntax sugar for load/store:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b[] </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Foo</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">3.14</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+</span><span style="color:#f29718;">Foo</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">3.14</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b[]
+</span><span style="color:#f29718;">Foo</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">3.14</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+</span></pre>
+<p>And for the pointer arithmetic needed to read individual fields:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b.y
+</span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc8, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b.y </span><span style="color:#ed9366;">- </span><span style="color:#61676c;">b
+</span><span style="color:#ff8f40;">0x0000000000000008
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b.y[] </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">1.0
+1.0
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b.y[]
+</span><span style="color:#ff8f40;">1.0
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b[]
+</span><span style="color:#f29718;">Foo</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">42</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">1.0</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">false</span><span style="color:#61676c;">)
+</span></pre>
+<p>Dereferenceing is bounds-checked</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;"> (b </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">)[]
+ERROR</span><span style="color:#ed9366;">: </span><span style="font-style:italic;color:#55b4d4;">BoundsError</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">attempt to access </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Foo}</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdbf, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+Stacktrace</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">
+ [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">] boundscheck at </span><span style="color:#ed9366;">/</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">47</span><span style="color:#61676c;"> [inlined]
+ [</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">] </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">) at </span><span style="color:#ed9366;">/</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">53</span><span style="color:#61676c;">
+ [</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">] top</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">level scope at none</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">0
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;"> (b </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">2</span><span style="color:#ed9366;">^</span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">)[]
+ERROR</span><span style="color:#ed9366;">: </span><span style="font-style:italic;color:#55b4d4;">BoundsError</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">attempt to access </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Foo}</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fde0, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+Stacktrace</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">
+ [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">] boundscheck at </span><span style="color:#ed9366;">/</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">47</span><span style="color:#61676c;"> [inlined]
+ [</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">] </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">) at </span><span style="color:#ed9366;">/</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">53</span><span style="color:#61676c;">
+ [</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">] top</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">level scope at none</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">0
+</span></pre>
+<p>Bounds-checking can be turned off, either locally with the <code>@inbounds</code> macro or globally by starting julia with <code>--check-bounds=no</code>. With bounds-checking disabled, the only overhead is a single extra <code>movq</code> to unpack the <code>Blob</code> struct.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#61676c;">)
+         @inbounds b.y[]
+       </span><span style="color:#fa6e32;">end
+</span><span style="color:#61676c;">f (generic </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">with </span><span style="color:#ff8f40;">1 method</span><span style="color:#61676c;">)
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">@code_native </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(b)
+	.text
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#61676c;">f {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">REPL[</span><span style="color:#ff8f40;">24</span><span style="color:#61676c;">]</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getproperty</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">150</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">91</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#fa6e32;">macro </span><span style="color:#399ee6;">expansion; {
+; Location: blob.jl:95
+; Function +; {
+; Location: blob.jl:32
+; Function +; {
+; Location: pointer.jl:155
+; Function Type; {
+; Location: REPL[24]:2
+	movq	8</span><span style="color:#61676c;">(%</span><span style="color:#ff8f40;">rdi</span><span style="color:#61676c;">), </span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax
+;}}}}}}
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">54</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">110</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#fa6e32;">macro </span><span style="color:#399ee6;">expansion; {
+; Location: blob.jl:113
+; Function unsafe_load; {
+; Location: pointer.jl:105
+; Function unsafe_load; {
+; Location: pointer.jl:105
+	vmovsd	8</span><span style="color:#61676c;">(%</span><span style="color:#ff8f40;">rax</span><span style="color:#61676c;">), </span><span style="color:#ed9366;">%</span><span style="color:#61676c;">xmm0          </span><span style="font-style:italic;color:#abb0b6;"># xmm0 = mem[0],zero</span><span style="color:#61676c;">
+;}}}}}
+	retq
+	nopw	(</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax,</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax)
+;}
+</span></pre>
+<p>Even for nested structs:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">struct </span><span style="color:#399ee6;">Bar
+           </span><span style="color:#61676c;">x</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Int64
+           </span><span style="color:#61676c;">foo</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Foo
+       </span><span style="color:#fa6e32;">end
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">struct </span><span style="color:#399ee6;">Quux
+           </span><span style="color:#61676c;">bar</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Bar
+           </span><span style="color:#61676c;">y</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Int64
+       </span><span style="color:#fa6e32;">end
+
+</span><span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">b </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Quux}</span><span style="color:#61676c;">(b)
+</span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Quux}</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="font-style:italic;color:#55b4d4;">Ptr{Nothing} </span><span style="color:#61676c;">@0x0000000003a2fdc0, </span><span style="color:#ff8f40;">32</span><span style="color:#61676c;">)
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">g</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#61676c;">)
+           @inbounds b.bar.foo.y[]
+       </span><span style="color:#fa6e32;">end
+</span><span style="color:#61676c;">g (generic </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">with </span><span style="color:#ff8f40;">1 method</span><span style="color:#61676c;">)
+
+julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">@code_native </span><span style="color:#f29718;">g</span><span style="color:#61676c;">(b)
+	.text
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#61676c;">g {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">REPL[</span><span style="color:#ff8f40;">29</span><span style="color:#61676c;">]</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getproperty</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">150</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">91</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#fa6e32;">macro </span><span style="color:#399ee6;">expansion; {
+; Location: blob.jl:95
+; Function +; {
+; Location: blob.jl:32
+; Function +; {
+; Location: pointer.jl:155
+; Function Type; {
+; Location: REPL[29]:2
+	movq	8</span><span style="color:#61676c;">(%</span><span style="color:#ff8f40;">rdi</span><span style="color:#61676c;">), </span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax
+;}}}}}}
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">54</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">110</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#fa6e32;">macro </span><span style="color:#399ee6;">expansion; {
+; Location: blob.jl:113
+; Function unsafe_load; {
+; Location: pointer.jl:105
+; Function unsafe_load; {
+; Location: pointer.jl:105
+	vmovsd	16</span><span style="color:#61676c;">(%</span><span style="color:#ff8f40;">rax</span><span style="color:#61676c;">), </span><span style="color:#ed9366;">%</span><span style="color:#61676c;">xmm0         </span><span style="font-style:italic;color:#abb0b6;"># xmm0 = mem[0],zero</span><span style="color:#61676c;">
+;}}}}}
+	retq
+	nopw	(</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax,</span><span style="color:#ed9366;">%</span><span style="color:#61676c;">rax)
+;}
+</span></pre><h2 id="how-it-works">How it works</h2>
+<p>Let's unpack the magic step by step.</p>
+<p>We start with a simple function call</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#61676c;">)
+  @inbounds b.y[]
+</span><span style="color:#fa6e32;">end
+
+</span><span style="color:#61676c;">b </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Foo}</span><span style="color:#61676c;">(b)
+
+</span><span style="color:#f29718;">f</span><span style="color:#61676c;">(b)
+</span></pre>
+<p><code>.</code> and <code>[]</code> are just syntactic sugar for <code>Base.getproperty</code> and <code>Base.getindex</code> respectively:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1 </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">getproperty</span><span style="color:#61676c;">(b, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">y</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(tmp1)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Although the function has no type declarations, Julia does just-in-time type-inference and specialization. To begin with, all it can figure out is the type of the argument <code>b</code>, so we have something like:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1 </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">getproperty</span><span style="color:#61676c;">(b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">y</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(tmp1)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Since it knows the types of all the arguments to <code>getproperty</code> it can find the correct method:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">@inline </span><span style="color:#fa6e32;">function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">getproperty</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">k</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Symbol</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">x
+        </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Int64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">8</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">elseif </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">y
+        </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">elseif </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">z
+        </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Bool}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">24</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">else
+        </span><span style="color:#f07171;">error</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;type Blob{Foo} has no field </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">k</span><span style="color:#86b300;">&quot;</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>And after inlining <code>Base.getproperty</code> our function looks like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1 </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">begin
+            if </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">y </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">x
+                </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Int64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">8</span><span style="color:#61676c;">)
+            </span><span style="color:#fa6e32;">elseif </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">y </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">y
+                </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+            </span><span style="color:#fa6e32;">elseif </span><span style="color:#ed9366;">:</span><span style="color:#61676c;">y </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">z
+                </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Bool}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">24</span><span style="color:#61676c;">)
+            </span><span style="color:#fa6e32;">else
+                </span><span style="color:#f07171;">error</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;type Blob{Foo} has no field </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">:</span><span style="color:#86b300;">y</span><span style="color:#61676c;">)</span><span style="color:#86b300;">&quot;</span><span style="color:#61676c;">)
+            </span><span style="color:#fa6e32;">end
+        end
+        </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(tmp1)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Constant propagation has a field day with expressions like <code>if :y === :x</code>, leaving us with:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1 </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(tmp1)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Type inference kicks in again, figuring out the obvious type of <code>tmp</code>:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Float64} </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo} </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">(tmp1</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Float64}</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Now it can find the correct method for <code>getindex</code>:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">Base.@propagate_inbounds </span><span style="color:#fa6e32;">function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">getindex</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{T}</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">where </span><span style="font-style:italic;color:#55b4d4;">T
+    </span><span style="color:#f29718;">boundscheck</span><span style="color:#61676c;">(blob)
+    </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(blob)
+</span><span style="color:#fa6e32;">end
+
+</span><span style="color:#61676c;">Base.@propagate_inbounds </span><span style="color:#fa6e32;">function </span><span style="color:#f29718;">boundscheck</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{T}</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">where </span><span style="font-style:italic;color:#55b4d4;">T
+    </span><span style="color:#61676c;">@boundscheck </span><span style="color:#fa6e32;">begin
+        if </span><span style="color:#ed9366;">!</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">0 </span><span style="color:#ed9366;">&lt;= </span><span style="color:#f07171;">getfield</span><span style="color:#61676c;">(blob, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">offset</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">- </span><span style="color:#f07171;">getfield</span><span style="color:#61676c;">(blob, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">base</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">&lt;= </span><span style="color:#f07171;">getfield</span><span style="color:#61676c;">(blob, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">limit</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">- </span><span style="color:#f29718;">self_size</span><span style="color:#61676c;">(T))
+            </span><span style="color:#f07171;">throw</span><span style="color:#61676c;">(</span><span style="color:#f29718;">BoundsError</span><span style="color:#61676c;">(blob))
+        </span><span style="color:#fa6e32;">end
+    end
+end
+</span></pre>
+<p>After inlining again we have:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Float64} </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo} </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+        @boundscheck </span><span style="color:#fa6e32;">begin
+            if </span><span style="color:#ed9366;">!</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">0 </span><span style="color:#ed9366;">&lt;= </span><span style="color:#f07171;">getfield</span><span style="color:#61676c;">(blob, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">offset</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">- </span><span style="color:#f07171;">getfield</span><span style="color:#61676c;">(blob, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">base</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">&lt;= </span><span style="color:#f07171;">getfield</span><span style="color:#61676c;">(blob, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">limit</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">- </span><span style="color:#f29718;">self_size</span><span style="color:#61676c;">(T))
+                </span><span style="color:#f07171;">throw</span><span style="color:#61676c;">(</span><span style="color:#f29718;">BoundsError</span><span style="color:#61676c;">(blob))
+            </span><span style="color:#fa6e32;">end
+        end
+        </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(blob)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Any <code>@boundscheck</code> that is inside an <code>@inbounds</code>, either lexically or after inlining through <code>@propagate_inbounds</code>, is removed.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">)
+    @inbounds </span><span style="color:#fa6e32;">begin
+        </span><span style="color:#61676c;">tmp1</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Float64} </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo} </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">(blob)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Since we know at compile time that <code>tmp1</code> has type <code>Blob{Float64}</code>, which is an immutable value-type, it will be stack allocated, leaving us with some fairly tight LLVM bitcode:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">julia</span><span style="color:#ed9366;">&gt; </span><span style="color:#61676c;">@code_llvm </span><span style="color:#f29718;">f</span><span style="color:#61676c;">(b)
+
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#61676c;">f
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">REPL[</span><span style="color:#ff8f40;">31</span><span style="color:#61676c;">]</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">2
+</span><span style="color:#61676c;">define double @julia_f_36819({ i64, i64, i64 } </span><span style="color:#f29718;">addrspace</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">)</span><span style="color:#ed9366;">* </span><span style="color:#61676c;">nocapture nonnull readonly </span><span style="color:#f29718;">dereferenceable</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">24</span><span style="color:#61676c;">)) {
+top</span><span style="color:#ed9366;">:</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getproperty</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: /</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">150</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: /</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">91</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#fa6e32;">macro </span><span style="color:#399ee6;">expansion; {
+; Location: /home/jamie/.julia/dev/Blobs/src/blob.jl:95
+; Function +; {
+; Location: /home/jamie/.julia/dev/Blobs/src/blob.jl:32
+  %1 = getelementptr inbounds { i64, i64, i64 }, { i64, i64, i64 } addrspace</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">)</span><span style="color:#ed9366;">* %</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">, i64 </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">, i32 </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#ed9366;">+</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#f07171;">pointer</span><span style="color:#61676c;">.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">155</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function Type</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#61676c;">boot.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">728
+  </span><span style="color:#ed9366;">%</span><span style="color:#ff8f40;">2 </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">bitcast i64 </span><span style="color:#f29718;">addrspace</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">)</span><span style="color:#ed9366;">* %</span><span style="color:#ff8f40;">1 </span><span style="color:#61676c;">to i8</span><span style="color:#ed9366;">* </span><span style="color:#f29718;">addrspace</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">)</span><span style="color:#ed9366;">*
+  %</span><span style="color:#ff8f40;">3 </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">load i8</span><span style="color:#ed9366;">*</span><span style="color:#61676c;">, i8</span><span style="color:#ed9366;">* </span><span style="color:#f29718;">addrspace</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">11</span><span style="color:#61676c;">)</span><span style="color:#ed9366;">* %</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">, align </span><span style="color:#ff8f40;">8</span><span style="color:#61676c;">
+;}
+  </span><span style="color:#ed9366;">%</span><span style="color:#ff8f40;">4 </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">getelementptr i8, i8</span><span style="color:#ed9366;">* %</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">, i64 </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">
+;}}}}}
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">getindex</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: /</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">54</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: /</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">110</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#fa6e32;">macro </span><span style="color:#61676c;">expansion; {
+; Location</span><span style="color:#ed9366;">: /</span><span style="color:#61676c;">home</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">jamie</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">.julia</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">dev</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">Blobs</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">src</span><span style="color:#ed9366;">/</span><span style="color:#61676c;">blob.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">113</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#f07171;">pointer</span><span style="color:#61676c;">.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">105</span><span style="color:#61676c;">
+; </span><span style="font-style:italic;color:#55b4d4;">Function </span><span style="color:#f07171;">unsafe_load</span><span style="color:#61676c;">; {
+; Location</span><span style="color:#ed9366;">: </span><span style="color:#f07171;">pointer</span><span style="color:#61676c;">.jl</span><span style="color:#ed9366;">:</span><span style="color:#ff8f40;">105
+  </span><span style="color:#ed9366;">%</span><span style="color:#ff8f40;">5 </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">bitcast i8</span><span style="color:#ed9366;">* %</span><span style="color:#ff8f40;">4 </span><span style="color:#61676c;">to double</span><span style="color:#ed9366;">*
+  %</span><span style="color:#ff8f40;">6 </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">load double, double</span><span style="color:#ed9366;">* %</span><span style="color:#ff8f40;">5</span><span style="color:#61676c;">, align </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">
+;}}}}}
+  ret double </span><span style="color:#ed9366;">%</span><span style="color:#ff8f40;">6</span><span style="color:#61676c;">
+}
+</span></pre><h2 id="generated-functions">Generated functions</h2>
+<p>I glossed over one important step - where did this method of <code>Base.getproperty</code> come from?</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">@inline </span><span style="color:#fa6e32;">function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">getproperty</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">b</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{Foo}</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">k</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Symbol</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">x
+        </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Int64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">8</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">elseif </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">y
+        </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Float64}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">16</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">elseif </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">=== :</span><span style="color:#86b300;">z
+        </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{Bool}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">24</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">else
+        </span><span style="color:#f07171;">error</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;type Blob{Foo} has no field </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">k</span><span style="color:#86b300;">&quot;</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Obviously, we don't want to write this by hand.</p>
+<p>We could do some metaprogramming trick where we register the types we want to use and this creates all the appropriate methods:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">register_blob_type</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">T</span><span style="color:#61676c;">)
+    code </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">quote
+        function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">getproperty</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{$T}</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">field</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Symbol</span><span style="color:#61676c;">)
+           </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(</span><span style="color:#f29718;">Expr</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">:</span><span style="color:#86b300;">meta</span><span style="color:#61676c;">, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">inline</span><span style="color:#61676c;">))
+           </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(@splice (i, </span><span style="color:#f07171;">fieldname</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">enumerate</span><span style="color:#61676c;">(</span><span style="color:#f07171;">fieldnames</span><span style="color:#61676c;">(T)) </span><span style="color:#fa6e32;">quote
+               if </span><span style="color:#61676c;">field </span><span style="color:#ed9366;">== $</span><span style="color:#f07171;">fieldname
+                   </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{$(fieldtype(T, i))}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">blob_offset</span><span style="color:#61676c;">(T, </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Val{i}</span><span style="color:#61676c;">)))
+               </span><span style="color:#fa6e32;">end
+           end</span><span style="color:#61676c;">)
+           </span><span style="color:#f07171;">error</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;type </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">T</span><span style="color:#86b300;"> has no field </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">field</span><span style="color:#86b300;">&quot;</span><span style="color:#61676c;">)
+        </span><span style="color:#fa6e32;">end
+    end
+    </span><span style="color:#f07171;">eval</span><span style="color:#61676c;">(code)
+</span><span style="color:#fa6e32;">end
+
+</span><span style="color:#f29718;">register_blob_type</span><span style="color:#61676c;">(Foo)
+</span></pre>
+<p>But Julia offers us something nicer. Rather than registering types in advance, we can make a 'generated' function, one which hooks into Julia's just-in-time specialization and decides what code to compile based on the types of it's arguments.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">@generated </span><span style="color:#fa6e32;">function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">getproperty</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">blob</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Blob{T}</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">field</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Symbol</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">where </span><span style="font-style:italic;color:#55b4d4;">T
+    </span><span style="color:#fa6e32;">quote
+        </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(</span><span style="color:#f29718;">Expr</span><span style="color:#61676c;">(</span><span style="color:#ed9366;">:</span><span style="color:#86b300;">meta</span><span style="color:#61676c;">, </span><span style="color:#ed9366;">:</span><span style="color:#86b300;">inline</span><span style="color:#61676c;">))
+        </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(@splice (i, </span><span style="color:#f07171;">fieldname</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">enumerate</span><span style="color:#61676c;">(</span><span style="color:#f07171;">fieldnames</span><span style="color:#61676c;">(T)) </span><span style="color:#fa6e32;">quote
+            if </span><span style="color:#61676c;">field </span><span style="color:#ed9366;">== $</span><span style="color:#f07171;">fieldname
+                </span><span style="color:#fa6e32;">return </span><span style="color:#f29718;">Blob</span><span style="font-style:italic;color:#55b4d4;">{$(fieldtype(T, i))}</span><span style="color:#61676c;">(blob </span><span style="color:#ed9366;">+ </span><span style="color:#f29718;">blob_offset</span><span style="color:#61676c;">(T, </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">(</span><span style="font-style:italic;color:#55b4d4;">Val{i}</span><span style="color:#61676c;">)))
+            </span><span style="color:#fa6e32;">end
+        end</span><span style="color:#61676c;">)
+        </span><span style="color:#f07171;">error</span><span style="color:#61676c;">(</span><span style="color:#86b300;">&quot;type </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">T</span><span style="color:#86b300;"> has no field </span><span style="color:#ed9366;">$</span><span style="color:#61676c;">field</span><span style="color:#86b300;">&quot;</span><span style="color:#61676c;">)
+    </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>From the outside, generated functions behave just like a normal function. This allows seamlessly mixing metaprogrammed code generation into normal code, without changing the outward interface or requiring consumers of the library to pre-register types.</p>
+<h2 id="and-the-rest">And the rest</h2>
+<p>The rest of the library packs in custom memory layout by adding new methods to the layout functions (which is how nested Blobs are <a href="https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/blob.jl#L157-L172">converted to/from offsets on read/write</a>), implementations of <a href="https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/vector.jl">fixed size vectors</a> / <a href="https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/bit_vector.jl">bitvectors</a> / <a href="https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/string.jl">strings</a> and <a href="https://github.com/jamii/Blobs.jl/blob/c1c9061659b8480f7b7264a8cd1d4d0075e6bd44/src/layout.jl">helper functions for initialization of complex data-structures</a>. All with similarly minimal overhead vs C.</p>
+<p>As with the examples here, most of the work is done by the combination of type inference, type specialization and generated functions, with occasional uses of forced inlining to guarantee constant propagation. Unlike, say, a tracing JIT, this is predictable and deterministic. With some experience, it's easy to write this kind of code and predict what Julia will do with it, allowing libraries like Blobs to provide abstractions without runtime overhead.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+A practical relational query compiler in 500 lines of code
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>A practical relational query compiler in 500 lines of code</h1>
+
+<article>
+  <p><a href="https://github.com/jamii/imp/">Imp</a> needed a relational database that is simple enough to experiment with but fast enough to power real applications.</p>
+<p>Relational databases are usually complicated beasts. Even SQLite, a relatively lightweight database, is <a href="https://www.sqlite.org/testing.html">116,000 lines of code</a>. Its <a href="http://www.sqlite.org/src/artifact/7a45743fb947c89b">btree implementation</a> alone is almost 10,000 lines, and the <a href="http://www.sqlite.org/src/artifact/f43aa96f2efe9bc8">core of the query plan interpreter</a> is another 7000 lines. At 100 lines of correct code per day, that's half a year of work just for those two files. I don't have the time to build something like that.</p>
+<p>Using <a href="https://scala-lms.github.io/">Lightweight Modular Staging</a> it's possible to build <a href="https://www.cs.purdue.edu/homes/rompf/papers/rompf-icfp15.pdf">a basic query compiler in 500 lines of code</a>. For a few 1000 lines more the <a href="http://www.vldb.org/pvldb/vol7/p853-klonatos.pdf">LegoBase compiler</a> is able to outperform commercial in-memory systems. This is an exciting approach to <em>query compilation</em>, but neither of these systems have anything to say about <em>query planning</em> - LegoBase borrows the query planner from an existing database, while the smaller compiler doesn't do any planning at all.</p>
+<p>The system I built for Imp is not nearly as elegant as LegoBase, and likely not as fast either, but it is similarly concise at ~500 lines of essential code and it includes an unusual approach to query planning based on programmer hints. While the implementation here is written in <a href="http://julialang.org/">Julia</a>, it could be easily ported to any language that has a macro system or preprocessor.</p>
+<p>In the rest of this post I'll walk through the underlying data-structures, the query compiler and the planning system, followed by a set of benchmarks against PostgreSQL on a real-world dataset.</p>
+<h2 id="relations">Relations</h2>
+<p>There is a <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.211.8649&amp;rep=rep1&amp;type=pdf">fundamental tradeoff</a> between read and write speed in index data-structures. In Imp writes can usually be batched together so I optimize the indexes for read speed.</p>
+<p>I store each column in a single array and then sort the entire index. Each relation might need to be sorted in many different orders, so relations contain a map from column orderings to sorted indexes.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">type </span><span style="font-style:italic;color:#55b4d4;">Relation{T </span><span style="color:#ed9366;">&lt;: </span><span style="font-style:italic;color:#55b4d4;">Tuple</span><span style="color:#61676c;">} </span><span style="font-style:italic;color:#abb0b6;"># where T is a tuple of columns
+  </span><span style="color:#61676c;">columns</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">T
+  </span><span style="color:#61676c;">indexes</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Dict{Vector{Int},T}
+</span><span style="color:#fa6e32;">end
+
+function </span><span style="color:#f29718;">index</span><span style="font-style:italic;color:#55b4d4;">{T}</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">relation</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Relation{T}</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">order</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Vector{Int}</span><span style="color:#61676c;">)
+  </span><span style="color:#f07171;">get!</span><span style="color:#61676c;">(relation.indexes, order) </span><span style="color:#fa6e32;">do
+    </span><span style="color:#61676c;">columns </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">tuple</span><span style="color:#61676c;">(((ix </span><span style="color:#fa6e32;">in </span><span style="color:#61676c;">order) </span><span style="color:#ed9366;">? </span><span style="color:#f07171;">copy</span><span style="color:#61676c;">(column) </span><span style="color:#ed9366;">: </span><span style="color:#f29718;">Vector</span><span style="font-style:italic;color:#55b4d4;">{eltype(column)}</span><span style="color:#61676c;">() </span><span style="color:#fa6e32;">for</span><span style="color:#61676c;"> (ix, column) </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">enumerate</span><span style="color:#61676c;">(relation.columns))...)
+    </span><span style="color:#f07171;">sort!</span><span style="color:#61676c;">(</span><span style="color:#f07171;">tuple</span><span style="color:#61676c;">((columns[ix] </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">ix </span><span style="color:#fa6e32;">in </span><span style="color:#61676c;">order)...))
+    columns
+  </span><span style="color:#fa6e32;">end</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">T
+</span><span style="color:#fa6e32;">end
+</span></pre>
+<p>Of course, <code>sort!</code> doesn't know how to sort a tuple of columns. In an ideal world, I would just define the array interface on indexes as though they were an array of tuples and then existing array functions like <code>sort!</code> would come for free.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">type </span><span style="font-style:italic;color:#55b4d4;">Index{T </span><span style="color:#ed9366;">&lt;: </span><span style="font-style:italic;color:#55b4d4;">Tuple</span><span style="color:#61676c;">}
+  columns</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">T
+</span><span style="color:#fa6e32;">end
+
+function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">length</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">index</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Index</span><span style="color:#61676c;">)
+  </span><span style="color:#f07171;">length</span><span style="color:#61676c;">(index.columns[</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">])
+</span><span style="color:#fa6e32;">end
+
+function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">getindex</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">index</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Index</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">i</span><span style="color:#61676c;">)
+  </span><span style="color:#f07171;">map</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">c </span><span style="color:#ed9366;">-&gt; </span><span style="color:#61676c;">c[i], index.columns)
+</span><span style="color:#fa6e32;">end
+
+function </span><span style="color:#61676c;">Base</span><span style="color:#ed9366;">.</span><span style="color:#f29718;">setindex</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">index</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Index</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">i</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">vals</span><span style="color:#61676c;">)
+  </span><span style="color:#fa6e32;">for</span><span style="color:#61676c;"> (c, v) </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">zip</span><span style="color:#61676c;">(index.columns, vals)
+    c[i] </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">v
+  </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>Unfortunately, until <a href="https://github.com/JuliaLang/julia/pull/18632">Julia's unboxing is improved</a> those tuples will sometimes be allocated on the heap, and this leads to pretty heavy performance penalties on large indexes. For the time being I've had to <a href="https://github.com/jamii/imp/blob/d27ab3fed056e6d551a58fa3525a8ed1a11c98c5/src/Data.jl#L7-L92">inline the entire sort implementation</a>.</p>
+<p>That's all thats needed to support queries. The <a href="https://github.com/jamii/imp/blob/d27ab3fed056e6d551a58fa3525a8ed1a11c98c5/src/Data.jl#L109-L253">remaining 150 lines</a> define some useful but non-essential functions for creating, updating and diffing relations.</p>
+<h2 id="queries-in-theory">Queries (in theory)</h2>
+<p>Let's take a simple SQL query.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">SELECT </span><span style="color:#ff8f40;">track</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">name</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">artist</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">name
+</span><span style="color:#fa6e32;">FROM</span><span style="color:#61676c;"> playlist, playlist_track, track, album, artist
+</span><span style="color:#fa6e32;">WHERE </span><span style="color:#ff8f40;">playlist</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">name </span><span style="color:#ed9366;">= </span><span style="color:#86b300;">&#39;Heavy Metal Classic&#39;
+  </span><span style="color:#fa6e32;">AND </span><span style="color:#ff8f40;">playlist</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">id </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">playlist_track</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">playlist
+  </span><span style="color:#fa6e32;">AND </span><span style="color:#ff8f40;">track</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">id </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">playlist_track</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">track
+  </span><span style="color:#fa6e32;">AND </span><span style="color:#ff8f40;">album</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">id </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">track</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">album
+  </span><span style="color:#fa6e32;">AND </span><span style="color:#ff8f40;">artist</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">id </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">album</span><span style="color:#61676c;">.</span><span style="color:#ff8f40;">artist
+</span></pre>
+<p>Here is the same query in Imp.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">@query </span><span style="color:#fa6e32;">begin
+  </span><span style="color:#f29718;">playlist</span><span style="color:#61676c;">(playlist_id, </span><span style="color:#86b300;">&quot;Heavy Metal Classic&quot;</span><span style="color:#61676c;">)
+  </span><span style="color:#f29718;">playlist_track</span><span style="color:#61676c;">(playlist_id, track_id)
+  </span><span style="color:#f29718;">track</span><span style="color:#61676c;">(track_id, track_name, album_id)
+  </span><span style="color:#f29718;">album</span><span style="color:#61676c;">(album_id, _, artist_id)
+  </span><span style="color:#f29718;">artist</span><span style="color:#61676c;">(artist_id, artist_name)
+  </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> (track_name</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">, artist_name</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">,)
+</span><span style="color:#fa6e32;">end
+</span></pre>
+<p>Imp is aimed at highly-normalized schemas so it uses positional arguments instead of named columns. <code>playlist</code> and <code>playlist_track</code> etc are table names. <code>playlist_id</code> and <code>track_id</code> etc are variable names. Whenever the same variable is used in more than one field, it indicates a join on those fields.</p>
+<p>Rather than the traditional <a href="http://www.neilconway.org/talks/optimizer/optimizer.pdf">tree of operators</a> used by most database query planners, Imp uses <a href="https://arxiv.org/abs/1210.0481">Leapfrog Triejoin</a>, one of the recently developed <a href="http://arxiv.org/abs/1310.3314">worst-case-optimal</a> join algorithms. This algorithm essentially performs a backtracking search over all the unknown variables in the query.</p>
+<p>Given the query above and an order in which to explore the variables, the query compiler emits code that looks something like:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">index_playlist </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(playlist, [</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">])
+index_playlist_track </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(playlist_track, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">])
+index_track </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(track, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">])
+index_album </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(album, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">])
+index_artist </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(artist, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">])
+results_track_name </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Vector</span><span style="font-style:italic;color:#55b4d4;">{String}</span><span style="color:#61676c;">()
+results_artist_name </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Vector</span><span style="font-style:italic;color:#55b4d4;">{String}</span><span style="color:#61676c;">()
+</span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">playlist_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_playlist[</span><span style="color:#86b300;">&quot;Heavy Metal Classic&quot;</span><span style="color:#61676c;">], index_playlist_track)
+  </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">track_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_playlist_track[playlist_id], index_track)
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">track_name </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_track[track_id])
+      </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">album_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_track[track_id, track_name], index_album)
+        </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">artist_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_album[album_id], index_artist)
+          </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">artist_name </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_artist[artist_id])
+            </span><span style="color:#f07171;">push!</span><span style="color:#61676c;">(results_track_name, track_name)
+            </span><span style="color:#f07171;">push!</span><span style="color:#61676c;">(results_artist_name, artist_name)
+          </span><span style="color:#fa6e32;">end
+        end
+      end
+    end
+  end
+end
+return </span><span style="color:#f29718;">Relation</span><span style="color:#61676c;">((results_track_name, results_artist_name,))
+</span></pre>
+<p>Let's unpack that a little.</p>
+<p>First, we find or build an index for each table whose columns are sorted in the same order that the query is exploring the variables.</p>
+<p>For example, the query explores <code>album_id</code> before <code>artist_id</code>, so the index for <code>album(album_id, _, artist_id)</code> needs to be sorted first by <code>album_id</code> and then by <code>artist_id</code>.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">index_playlist </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(playlist, [</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">])
+index_playlist_track </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(playlist_track, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">])
+index_track </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(track, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">])
+index_album </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(album, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">3</span><span style="color:#61676c;">])
+index_artist </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">index</span><span style="color:#61676c;">(artist, [</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">])
+</span></pre>
+<p>We also create some empty arrays to hold the results of the query.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">results_track_name </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Vector</span><span style="font-style:italic;color:#55b4d4;">{String}</span><span style="color:#61676c;">()
+results_artist_name </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">Vector</span><span style="font-style:italic;color:#55b4d4;">{String}</span><span style="color:#61676c;">()
+</span></pre>
+<p>Next, we find all the playlist ids in <code>playlist</code> where the playlist name is <code>&quot;Heavy Metal Classic&quot;</code>, and all the playlist ids in <code>playlist_track</code>, and lazily iterate over the playlist ids that occur in both.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">for </span><span style="color:#61676c;">playlist_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_playlist[</span><span style="color:#86b300;">&quot;Heavy Metal Classic&quot;</span><span style="color:#61676c;">], index_playlist_track)
+  ...
+</span><span style="color:#fa6e32;">end
+</span></pre>
+<p>Then for each playlist id, we find all the track ids in <code>playlist_track</code> that have a matching playlist id, and all the track ids in <code>track</code>, and lazily iterate over the track ids that occur in both.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">for </span><span style="color:#61676c;">playlist_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_playlist[</span><span style="color:#86b300;">&quot;Heavy Metal Classic&quot;</span><span style="color:#61676c;">], index_playlist_track)
+  </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">track_id </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_playlist_track[playlist_id], index_track)
+    ...
+  </span><span style="color:#fa6e32;">end
+end
+</span></pre>
+<p>And so on, until we have found a valid value for every variable, at which point we can emit a result row.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#f07171;">push!</span><span style="color:#61676c;">(results_track_name, track_name)
+</span><span style="color:#f07171;">push!</span><span style="color:#61676c;">(results_artist_name, artist_name)
+</span></pre>
+<p>Finally, the <code>Relation</code> constructor sorts the results columns and removes duplicate entries.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">return </span><span style="color:#f29718;">Relation</span><span style="color:#61676c;">((results_track_name, results_artist_name,))
+</span></pre>
+<p>Pretty simple so far. All of the magic happens in <code>intersect</code>. Here is a simplified version:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">function </span><span style="color:#f29718;">intersect</span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">column_a</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">column_b</span><span style="color:#61676c;">)
+  ix_a </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">1
+  </span><span style="color:#61676c;">ix_b </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">1
+  </span><span style="color:#fa6e32;">while </span><span style="color:#ff8f40;">true
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">ix_a </span><span style="color:#ed9366;">&gt; </span><span style="color:#f07171;">length</span><span style="color:#61676c;">(column_a)
+      </span><span style="color:#fa6e32;">return
+    end
+    </span><span style="color:#61676c;">value_a </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">column_a[ix_a]
+    ix_b </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">gallop</span><span style="color:#61676c;">(column_b, ix_b, </span><span style="color:#ed9366;">&gt;=</span><span style="color:#61676c;">, value_a)
+    value_b </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">column_b[ix_b]
+    </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">value_a </span><span style="color:#ed9366;">== </span><span style="color:#61676c;">value_b
+      </span><span style="color:#f07171;">yield </span><span style="color:#61676c;">value_a
+      ix_a </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">gallop</span><span style="color:#61676c;">(column_a, ix_a, </span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;">, value_a)
+      ix_b </span><span style="color:#ed9366;">= </span><span style="color:#f29718;">gallop</span><span style="color:#61676c;">(column_b, ix_b, </span><span style="color:#ed9366;">&gt;</span><span style="color:#61676c;">, value_b)
+    </span><span style="color:#fa6e32;">else
+      </span><span style="color:#61676c;">ix_a, ix_b </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">ix_b, ix_a
+      column_a, column_b </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">column_b, column_a
+    </span><span style="color:#fa6e32;">end
+  end
+end
+</span></pre>
+<p>At each step, we take the current value in one column and search (using a variant of binary search) for the first equal-or-greater value in the other column. If we find an equal value, we yield that value and skip ahead in both columns. If we find a greater value, we swap the two columns and go back to the start of the loop.</p>
+<p>This has the useful property of adapting to the distribution of the data, running in <code>O(min_length(columns) log max_length(columns))</code> time for any number of columns.</p>
+<p>(There are <a href="http://www.frankmcsherry.org/dataflow/relational/join/2015/04/11/genericjoin.html">simpler ways</a> to achieve this, but they require more complexity in the index - either removing duplicate keys in each column or adding extra metadata to count them.)</p>
+<p>We can add user-defined functions and filters by inserting the quoted code into the appropriate place in the search.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">@query </span><span style="color:#fa6e32;">begin
+  </span><span style="color:#f29718;">foo</span><span style="color:#61676c;">(x)
+  </span><span style="color:#f29718;">bar</span><span style="color:#61676c;">(x)
+  y </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">x </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1
+  </span><span style="color:#61676c;">@when x </span><span style="color:#ed9366;">&lt; </span><span style="color:#61676c;">y
+  </span><span style="color:#f29718;">quux</span><span style="color:#61676c;">(y, z)
+  </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> (x, y, z)
+</span><span style="color:#fa6e32;">end
+</span></pre><pre style="background-color:#fafafa;">
+<span style="color:#61676c;">...
+</span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">x </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_foo, index_bar)
+  y </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">x </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1
+  </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">x </span><span style="color:#ed9366;">&lt; </span><span style="color:#61676c;">y
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">z </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(index_quux[y])
+      ...
+    </span><span style="color:#fa6e32;">end
+  end
+end</span><span style="color:#61676c;">
+...
+</span></pre>
+<p>Similarly, we can aggregate using normal Julia functions, and use nested queries to group results.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">@query </span><span style="color:#fa6e32;">begin
+  </span><span style="color:#f29718;">playlist</span><span style="color:#61676c;">(p, pn)
+  tracks </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">@query </span><span style="color:#fa6e32;">begin
+    </span><span style="color:#f29718;">playlist_track</span><span style="color:#61676c;">(p, t)
+    </span><span style="color:#f29718;">track</span><span style="color:#61676c;">(t, _, _, _, _, _, _, _, price)
+    </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> (t</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Int64</span><span style="color:#61676c;">, price</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Float64</span><span style="color:#61676c;">)
+  </span><span style="color:#fa6e32;">end
+  </span><span style="color:#61676c;">total </span><span style="color:#ed9366;">= </span><span style="color:#f07171;">sum</span><span style="color:#61676c;">(tracks[</span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">])
+  </span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> (pn</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">, total</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">Float64</span><span style="color:#61676c;">)
+</span><span style="color:#fa6e32;">end
+</span></pre>
+<p>All of this leads to a simple mental model for performance. The total amount of memory allocated by a query is proportional to the number of results (plus the size of the indexes, the first time they are built). The total runtime is, to a first approximation, proportional to the total number of times each loop is reached.</p>
+<h2 id="queries-in-practice">Queries (in practice)</h2>
+<p>That's the basic idea, but efficiently implementing this is a little more complicated in practice.</p>
+<p>Firstly, in the example above, every loop begins by looking up values that were just found in the preceding loops. In the actual implementation, the intersect function returns not only the values but the ranges at which those values were found, so that we don't have to repeat that work:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">for</span><span style="color:#61676c;"> (playlist_id, range_playlist, range_playlist_track) </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">((playlist, platlist_track), (range_playlist, range_playlist_track))
+  ...
+</span><span style="color:#fa6e32;">end
+</span></pre>
+<p>Secondly, in many queries it's possible to skip some results. For example in:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">for </span><span style="color:#61676c;">x </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(...)
+  </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">y </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(...)
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">z </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(...)
+      </span><span style="color:#f07171;">push!</span><span style="color:#61676c;">(results_x, x)
+    </span><span style="color:#fa6e32;">end
+  end
+end
+</span></pre>
+<p>Once we find one valid set of values for <code>x,y,z</code>, finding other sets of values with the same <code>x</code> is just wasted work, so we might as well skip directly to finding the next <code>x</code>.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#61676c;">xs</span><span style="color:#ed9366;">: </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">x </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(...)
+  </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">y </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(...)
+    </span><span style="color:#fa6e32;">for </span><span style="color:#61676c;">z </span><span style="color:#fa6e32;">in </span><span style="color:#f07171;">intersect</span><span style="color:#61676c;">(...)
+      </span><span style="color:#f07171;">push!</span><span style="color:#61676c;">(results_x, x)
+      </span><span style="color:#fa6e32;">continue </span><span style="color:#61676c;">xs
+    </span><span style="color:#fa6e32;">end
+  end
+end
+</span></pre>
+<p>Lastly, while it's possible to generate code more or less as presented, we again run afoul of the current unboxing limitations in Julia. Rather than generating elegant code and bearing the cache pressure of allocating on each loop iteration I instead generate, well, this:</p>
+<p><a href="https://gist.github.com/jamii/a23433c52265e975417b0a2eee4c7c8e"><img src="/img/imp-codegen.png" alt="Generated code" /></a></p>
+<p>I'm not even ashamed.</p>
+<p>Essentially, this is what you get if you take the pretty code we had before and manually inline all the functions, data-structures and expensive control-flow. It's not pretty, but it works and it was easy to implement. Hopefully it won't be long before Julia improves to the point that I can write the pretty version without sacrificing performance.</p>
+<p>However, even the the current version in all its grotesque splendor is only <a href="https://github.com/jamii/imp/blob/d27ab3fed056e6d551a58fa3525a8ed1a11c98c5/src/Query.jl#L7-L357">350 lines</a>, including parsing and planning.</p>
+<h2 id="planning">Planning</h2>
+<p>Earlier we assumed the query compiler was given an order in which to explore the variables.</p>
+<p>Different variable orderings can produce vastly different performance. The example query started at <code>playlist_id</code> and finished at <code>artist_name</code>. If it had instead started at <code>artist_name</code> and finished at <code>playlist_id</code> it would have enumerated every single artist-track-album-playlist combination before filtering the results down to the heavy metal playlist. That would be a disaster.</p>
+<p>Traditional OLTP databases employ <a href="http://www.neilconway.org/talks/optimizer/optimizer.pdf">complex heuristic query planners</a> which use statistical summaries of the database to estimate the costs of various possible query plans. Making these reliable requires many programmer-years of careful tuning and even then they still occasionally fumble an <a href="http://db.cs.berkeley.edu/cs286/papers/queryopt-sigmodblog2014.pdf">order of magnitude or seven</a>.</p>
+<p>Even if I was capable of building such a planner by myself, I would have to sacrifice my goal of <em>predictable</em> performance.</p>
+<p>So I have employed a cunning solution to the problem of automatic query planning - I don't do it.</p>
+<p>Using Leapfrog Triejoin (or any of its <a href="https://arxiv.org/abs/1504.04044">many</a> <a href="http://dl.acm.org/citation.cfm?id=2764946">cousins</a>) reduces the entire planning problem to choosing the variable ordering. This is a much simpler problem than the trees of operators used in most databases, which means that finding a reasonable solution by hand becomes feasible. (And 'reasonable' is definitely the goal - I don't mind not finding the best possible ordering and so long as I can avoid the 7-orders-of-magnitude disasters.)</p>
+<p>So Imp simply searches the variables in the order they are first mentioned.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#f29718;">playlist</span><span style="color:#61676c;">(playlist_id, </span><span style="color:#86b300;">&quot;Heavy Metal Classic&quot;</span><span style="color:#61676c;">)
+</span><span style="color:#f29718;">playlist_track</span><span style="color:#61676c;">(playlist_id, track_id)
+</span><span style="color:#f29718;">track</span><span style="color:#61676c;">(track_id, track_name, album_id)
+</span><span style="color:#f29718;">album</span><span style="color:#61676c;">(album_id, _, artist_id)
+</span><span style="color:#f29718;">artist</span><span style="color:#61676c;">(artist_id, artist_name)
+</span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> (track_name</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">, artist_name</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">,)
+
+</span><span style="font-style:italic;color:#abb0b6;"># becomes...
+
+</span><span style="color:#61676c;">constant_1 </span><span style="color:#ed9366;">= </span><span style="color:#86b300;">&quot;Heavy Metal Classic&quot;
+</span><span style="color:#f29718;">playlist</span><span style="color:#61676c;">(playlist_id, constant_1)
+</span><span style="color:#f29718;">playlist_track</span><span style="color:#61676c;">(playlist_id, track_id)
+</span><span style="color:#f29718;">track</span><span style="color:#61676c;">(track_id, track_name, album_id)
+</span><span style="color:#f29718;">album</span><span style="color:#61676c;">(album_id, _, artist_id)
+</span><span style="color:#f29718;">artist</span><span style="color:#61676c;">(artist_id, artist_name)
+</span><span style="color:#fa6e32;">return</span><span style="color:#61676c;"> (track_name</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">, artist_name</span><span style="color:#ed9366;">::</span><span style="font-style:italic;color:#55b4d4;">String</span><span style="color:#61676c;">,)
+
+</span><span style="font-style:italic;color:#abb0b6;"># which is ordered...
+
+</span><span style="color:#61676c;">constant_1
+playlist_id
+track_id
+track_name
+album_id
+artist_id
+artist_name
+</span></pre>
+<p>The programmer can change the variable ordering by reordering the lines of the query. Reordering the lines can only change the performance of the query, not the results, so we still have a clean separation between the query logic and the execution plan, and it's still much less work than writing out the imperative code by hand.</p>
+<p>This preserves the simple mental model and doesn't require much more work than writing the query in the first place. But how well does it work in practice?</p>
+<h2 id="benchmarks">Benchmarks</h2>
+<p>I translated 112 queries from the <a href="http://www.vldb.org/pvldb/vol9/p204-leis.pdf">Join Order Benchmark</a> into Imp and benchmarked them against Postgres.</p>
+<p>This is in no way intended to be a direct comparison to Postgres - the two systems are so wildly different on pretty much every axis. Instead, I'm using Postgres as the bar for 'fast enough'. If Imp can keep up with Postgres on a real dataset then it's fast enough to be interesting.</p>
+<p>These queries in the benchark test complex joins with many constraints, but do not test aggregation or subqueries. They run against the <a href="http://www.imdb.com/interfaces">IMDB dataset</a> which contains 3.7GB of data across 74m rows. As the paper demonstrates, planning queries on a real-world dataset like this one is much more challenging then the synthetic datasets used by <a href="http://www.tpc.org/">TPC</a>.</p>
+<p>I wrote each Imp query based only on knowing the sizes of the two largest tables (cast_info at 36m rows and movie_info at 15m rows) and common-sense deductions based on the table names. The translation process was mostly mechanical - put a variable that looks like it has high selectivity near the top and walk through the joins from there. I only made one attempt at each query, so this is testing how well I choose variable orderings without feedback.</p>
+<p>I'll spare you the <a href="https://github.com/jamii/imp/blob/master/examples/Job.md">full protocol</a> (but please do read it <em>before</em> criticizing the results) and skip straight to the pretty pictures.</p>
+<p><a href="https://docs.google.com/spreadsheets/d/1X3kBUYrTZSBfUPzJ2DLtdjp97rcPBE-AKner5KUzScc/edit?usp=sharing"><img src="/img/job-graph.png" alt="Bar chart of results" /></a></p>
+<p>The vast majority of queries are between 10x slower and 10x faster, putting Imp squarely in the 'fast enough' range.</p>
+<p>There are a few outliers where Imp is up to 867x faster. The worst of them is <a href="https://gist.github.com/jamii/c36a0036503be18834a2127ba4e2e02c">29a</a>, whose <a href="https://explain.depesz.com/s/R628">plan</a> underestimates the number of rows by 4890x. Despite their claims to innocence, it's pretty clear the author deliberately crafted this query to confuse Postgres with cross-constraint correlations. While many of the queries contain correlations that might realistically come up (eg <code>company.country_code = '[jp]'</code> and <code>name.name like '%Yu%'</code>) but the worst outliers have silly redundant constraints (eg <code>title.title = 'Shrek 2'</code> and <code>keyword.keyword = 'computer-animation'</code>).</p>
+<p>Memory usage for Imp during the benchmarks is around 16GB. The dataset is only 3.7GB on disk and overhead of the indexes doesn't account for more than a few GB. I haven't run a memory profiler yet, but I suspect it's caused by string allocation overhead and memory fragmentation (Julia doesn't have a compacting collector). The natural way to fix this would be to concatenate each column into a single string and store an array of indexes into that string, but boxing rears its ugly head again when we try to return substrings. A problem for another day.</p>
+<p>What's missing from this experiment is an understanding of how the different design choices contribute to the results. It seems likely that Imp has a large constant-factor performance advantage due to the lack of IO and concurrency overheads. It also seems likely that I'm undoing most of that advantage by choosing sub-optimal plans. But without a more controlled experiment it's just speculation. A useful follow-up would be to extract variable orderings from <a href="http://www.logicblox.com/">LogicBlox</a>, which uses the same join algorithm, and run them in Imp to see how much performance a commercial-quality planner buys.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>There are three things that I think are worth taking away from this experiment:</p>
+<ol>
+<li>
+<p>Julia is <em>almost</em> a fantastic language for <a href="http://drops.dagstuhl.de/opus/volltexte/2015/5029/pdf/19.pdf">generative programming</a>. The combination of a dynamic language, multiple dispatch, quasi-quoting, macros, eval and <a href="http://docs.julialang.org/en/release-0.5/manual/metaprogramming/#generated-functions">generated functions</a> with <em>predictable</em> type-inference and specialization is killer. But in almost every part of Imp there was an elegant, efficient, extensible design that <em>would</em> work if the support for unboxing was <a href="https://github.com/JuliaLang/julia/pull/18632">as complete as the Julia team wants it to be</a>. It's so nearly there.</p>
+</li>
+<li>
+<p>The recent wave of worst-case-optimal join algorithms are really easy to implement with code generation and this lowers the bar for writing a query compiler. LegoBase and co already demonstrated the power of staging, but if you don't already have a fancy staging compiler for your favorite language you don't have to wait - Imp's query compiler could be directly translated into pretty much any language, either as a macro or as a preprocessor pass.</p>
+</li>
+<li>
+<p>Automatic query planning might not be essential for every use-case. It certainly makes sense for interactive usage, and for cases where you are splicing user input into a query. But in cases where the queries are fixed and you have a rough idea of what the data looks like, it's possible to gain many of the benefits of a query compiler without the opacity of a full query planner.</p>
+</li>
+</ol>
+<p>I have a plenty more ideas for the query compiler and language, but I think for the next month or two I'm going to switch focus to the other side of Imp - building interactive GUIs on top of relations and views.</p>
+<p><em>Thanks to Lindsey Kuper and Joe Edelman for comments, and to Michael Malis for advice on tuning Postgres.</em></p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

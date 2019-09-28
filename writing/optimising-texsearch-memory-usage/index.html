@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Optimising texsearch: memory usage
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Optimising texsearch: memory usage</h1>
+
+<article>
+  <p>In my last post I discussed the new search algorithm behind texsearch. There is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
+<p>The main data structure looks like this:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type &#39;a t </span><span style="color:#61676ccc;">=
+  </span><span style="color:#61676c;">{ latexs : Latex</span><span style="color:#fa6e32;">.t </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">opaques : </span><span style="color:#fa6e32;">&#39;a </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">deleted : </span><span style="color:#fa6e32;">bool </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">next_id : </span><span style="color:#fa6e32;">id
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">array : (</span><span style="color:#fa6e32;">id </span><span style="color:#ed9366;">* </span><span style="color:#fa6e32;">pos</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">array
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">unsorted : (</span><span style="color:#fa6e32;">&#39;a </span><span style="color:#ed9366;">* </span><span style="color:#61676c;">Latex</span><span style="color:#fa6e32;">.t</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">list </span><span style="color:#61676c;">}
+</span></pre>
+<p>The array field is responsible for the vast majority of the memory usage. Each cell in the array contains a pointer to a tuple containing two integers for a total of 4 words per suffix. The types id and pos are both small integers so if we pack them into a single unboxed integer we can reduce this to 1 word per suffix. We have a new module suffix.ml with some simple bit-munging:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type id </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+type pos </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+
+type t </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+
+let </span><span style="color:#61676c;">pack_size </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">(Sys.word_size </span><span style="color:#ed9366;">/ </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1
+</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">max_size </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">lsl</span><span style="color:#61676c;"> pack_size
+
+</span><span style="color:#fa6e32;">exception </span><span style="color:#399ee6;">Invalid_suffix</span><span style="color:#61676c;"> of id </span><span style="color:#ed9366;">*</span><span style="color:#61676c;"> pos
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">pack </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">id</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">pos</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(id </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(id </span><span style="color:#ed9366;">&gt;=</span><span style="color:#61676c;"> max_size)
+  </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(pos </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(pos </span><span style="color:#ed9366;">&gt;=</span><span style="color:#61676c;"> max_size)
+  </span><span style="color:#fa6e32;">then</span><span style="color:#61676c;"> raise (</span><span style="color:#399ee6;">Invalid_suffix </span><span style="color:#61676c;">(id, pos))
+  </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;"> pos </span><span style="color:#ed9366;">lor </span><span style="color:#61676c;">(id </span><span style="color:#ed9366;">lsl</span><span style="color:#61676c;"> pack_size)
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">unpack </span><span style="color:#ff8f40;">suffix </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">id </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> suffix </span><span style="color:#ed9366;">lsr</span><span style="color:#61676c;"> pack_size </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">pos </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> suffix </span><span style="color:#ed9366;">land </span><span style="color:#61676c;">(max_size </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in
+  </span><span style="color:#61676c;">(id, pos)
+</span></pre>
+<p>Notice how confusing infix functions are in ocaml.</p>
+<p>The suffix array type becomes:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type &#39;a t </span><span style="color:#61676ccc;">=
+  </span><span style="color:#61676c;">{ latexs : Latex</span><span style="color:#fa6e32;">.t </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">opaques : </span><span style="color:#fa6e32;">&#39;a </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">deleted : </span><span style="color:#fa6e32;">bool </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">next_id : </span><span style="color:#fa6e32;">id
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">array : Suffix</span><span style="color:#fa6e32;">.t array
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">unsorted : (</span><span style="color:#fa6e32;">&#39;a </span><span style="color:#ed9366;">* </span><span style="color:#61676c;">Latex</span><span style="color:#fa6e32;">.t</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">list </span><span style="color:#61676c;">}
+</span></pre>
+<p>With this change the memory usage drops down to 1.4 gb. The mean search time also improves. It seems that having fewer cache misses makes up for the extra computation involved in unpacking the suffixes.</p>
+<p>Now that the array field is a single block it is easy to move it out of the heap entirely so the gc never has to scan it.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let </span><span style="color:#f29718;">ancientify </span><span style="color:#ff8f40;">sa </span><span style="color:#ed9366;">=</span><span style="color:#61676c;">
+  sa.</span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">&lt;- </span><span style="color:#61676c;">Ancient.follow (Ancient.mark sa.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#61676c;">Gc.full_major </span><span style="color:#ff8f40;">()
+</span></pre>
+<p>This eliminates the annoyingly noticeable gc pauses.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

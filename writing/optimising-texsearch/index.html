@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>
+Optimising texsearch
+</title>
+  <link rel="alternate" type="application/rss+xml" title="Scattered Thoughts" href="/rss.xml" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" type="text/css" href="/normalize.css">
+  <link rel="stylesheet" type="text/css" href="/readable.css">
+  
+
+</head>
+
+<body>
+
+  <div class="container">
+    
+
+<nav>
+  
+  
+  <a href="http:&#x2F;&#x2F;scattered-thoughts.net&#x2F;writing&#x2F;">
+    <span style="font-size: 2em";>
+      ◤
+    </span>
+  </a>
+</nav>
+
+<h1>Optimising texsearch</h1>
+
+<article>
+  <p><a href="https://github.com/jamii/texsearch">Texsearch</a> is a search engine for LaTeX formulae. It forms part of the backend for <a href="http://latexsearch.com">latexsearch.com</a> which indexes the entire Springer corpus.</p>
+<p>Texsearch has only a minimal understanding of LaTeX and no understanding of the structure of the formulae it searches in, but unlike it's competitors (eg <a href="http://uniquation.com/en/">Uniquation</a>) it's able to index the entire Springer corpus and answer queries quickly and cheaply. It's a brute force solution that gave us an good-enough search engine search engine with minimal research risk.</p>
+<h2 id="parsing">Parsing</h2>
+<p>When searching within LaTeX content we want results that represent the same formulae as the search term. Unfortunately LaTeX presents plenty of opportunities for obfuscating content with macros, presentation commands and just plain weird lexing.</p>
+<p>Texsearch uses <a href="http://plastex.sourceforge.net/">PlasTeX</a> to parse LaTeX formulae and expand macros. The preprocessor then discards any LaTeX elements which relate to presentation rather than content (font, weight, colouring etc). The remaining LaTeX elements are each hashed into a 63 bit integer. This massively reduces the memory consumption, allowing the entire corpus and search index to be held in RAM. Collisions should be rare given that there are far less than 2^63 possible elements.</p>
+<h2 id="indexing">Indexing</h2>
+<p>At the core of texsearch is a search algorithm which performs approximate searches over the search corpus. Specifically, given a search term S and a search radius R we want to return all corpus terms T such that the <a href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> between S and some substring of T is less than R. This is a common problem in bioinformatics and NLP and there is a <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.7225&amp;rep=rep1&amp;type=pdf">substantial amount of research</a> on how to solve this efficiently. I have been through a range of different algorithms in previous iterations of texsearch and have only recently achieved reasonable performance (mean search time is now ~300ms for a corpus of 1.5m documents). The code is available <a href="https://github.com/jamii/texsearch">here</a>.</p>
+<p>We define the distance from latexL to latexR as the minimum Levenshtein distance between latexL and any substring of latexR. With this definition we can specify the results of the search algorithm more simply as returning all corpus terms with distance R of S.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let </span><span style="color:#f29718;">distance </span><span style="color:#ff8f40;">latexL latexR </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let</span><span style="color:#61676c;"> maxl, maxr </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.length latexL, Array.length latexR </span><span style="color:#fa6e32;">in
+  if</span><span style="color:#61676c;"> maxl </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">then </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">else
+  if</span><span style="color:#61676c;"> maxr </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">then</span><span style="color:#61676c;"> maxl </span><span style="color:#fa6e32;">else
+  </span><span style="font-style:italic;color:#abb0b6;">(* cache.(l).(r) is the distance between latexL[l to maxl] and latexR[r to maxr] *)
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">cache </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.make_matrix (maxl </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) (maxr </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">in
+  </span><span style="font-style:italic;color:#abb0b6;">(* Must match everything on the left *)
+  </span><span style="color:#fa6e32;">for</span><span style="color:#61676c;"> l </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> maxl </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1 </span><span style="color:#fa6e32;">downto </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">do</span><span style="color:#61676c;">
+    cache.(l).(maxr) </span><span style="color:#ed9366;">&lt;- </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> cache.(l</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">).(maxr)
+  </span><span style="color:#fa6e32;">done</span><span style="color:#61676ccc;">;
+  </span><span style="font-style:italic;color:#abb0b6;">(* General matching *)
+  </span><span style="color:#fa6e32;">for</span><span style="color:#61676c;"> l </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> maxl </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1 </span><span style="color:#fa6e32;">downto </span><span style="color:#ff8f40;">1 </span><span style="color:#fa6e32;">do
+    for</span><span style="color:#61676c;"> r </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> maxr </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1 </span><span style="color:#fa6e32;">downto </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">do</span><span style="color:#61676c;">
+      cache.(l).(r) </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;">
+          minimum
+            (</span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> cache.(l).(r</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">))
+            (</span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> cache.(l</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">).(r))
+            ((abs (compare latexL.(l) latexR.(r))) </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> cache.(l</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">).(r</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">))
+  </span><span style="color:#fa6e32;">done done</span><span style="color:#61676ccc;">;
+  </span><span style="font-style:italic;color:#abb0b6;">(* Non-matches on the right dont count until left starts matching *)
+  </span><span style="color:#fa6e32;">for</span><span style="color:#61676c;"> r </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> maxr </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1 </span><span style="color:#fa6e32;">downto </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">do</span><span style="color:#61676c;">
+    cache.(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">).(r) </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;">
+        minimum
+          (cache.(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">).(r</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">))
+          (</span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> cache.(</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">).(r))
+          ((abs (compare latexL.(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) latexR.(r))) </span><span style="color:#ed9366;">+</span><span style="color:#61676c;"> cache.(</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">).(r</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">))
+  </span><span style="color:#fa6e32;">done</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  cache.(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">).(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+</span></pre>
+<p>The search algorithm is built around a <a href="http://en.wikipedia.org/wiki/Suffix_array">suffix array</a> presenting the following interface:</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type &#39;a t
+
+val create : unit -&gt; &#39;a t
+val add : &#39;a t -&gt; (&#39;a * Latex.t) list -&gt; unit
+val prepare : &#39;a t -&gt; unit
+
+val delete : &#39;a t -&gt; (&#39;a -&gt; bool) -&gt; unit
+
+val find_exact : &#39;a t -&gt; Latex.t -&gt; (int * &#39;a) list
+val find_approx : &#39;a t -&gt; float -&gt; Latex.t -&gt; (int * &#39;a) list
+val find_query : &#39;a t -&gt; float -&gt; Query.t -&gt; (int * &#39;a) list
+</span></pre>
+<p>The data structure is pretty straightforward. We store the LaTeX elements in a DynArray and represent suffixes by a pair of pointers - the first into the DynArray and the second into the LaTeX term itself. Each LaTeX term is matched to an opaque object which is used by the consumer of this module to id the terms.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">type id </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+type pos </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+
+type &#39;a t </span><span style="color:#61676ccc;">=
+  </span><span style="color:#61676c;">{ latexs : Latex</span><span style="color:#fa6e32;">.t </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#61676c;">opaques : </span><span style="color:#fa6e32;">&#39;a </span><span style="color:#61676c;">DynArray</span><span style="color:#fa6e32;">.t
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">next_id : </span><span style="color:#fa6e32;">id
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">array : (</span><span style="color:#fa6e32;">id </span><span style="color:#ed9366;">* </span><span style="color:#fa6e32;">pos</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">array
+  </span><span style="color:#ed9366;">; </span><span style="color:#fa6e32;">mutable </span><span style="color:#61676c;">unsorted : (</span><span style="color:#fa6e32;">&#39;a </span><span style="color:#ed9366;">* </span><span style="color:#61676c;">Latex</span><span style="color:#fa6e32;">.t</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">list </span><span style="color:#61676c;">}
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">create </span><span style="color:#ff8f40;">() </span><span style="color:#ed9366;">=
+  </span><span style="color:#61676c;">{ latexs </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">DynArray.create </span><span style="color:#ff8f40;">()
+  </span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> opaques </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">DynArray.create </span><span style="color:#ff8f40;">()
+  </span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> next_id </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">0
+  </span><span style="color:#61676ccc;">; </span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.make </span><span style="color:#ff8f40;">0 </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">,</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">)
+  </span><span style="color:#61676ccc;">;</span><span style="color:#61676c;"> unsorted </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">[]</span><span style="color:#61676c;">}
+</span></pre>
+<p>The suffix array is built in a completely naive way. We just throw all the suffixes into a list and sort it. There are much more efficient methods known but this is fast enough, especially since we do updates offline. The building is separated into two functions to make incremental updates easier.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let </span><span style="color:#f29718;">add </span><span style="color:#ff8f40;">sa latexs </span><span style="color:#ed9366;">=</span><span style="color:#61676c;">
+  sa.unsorted </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;"> latexs </span><span style="color:#ed9366;">@</span><span style="color:#61676c;"> sa.unsorted
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">insert </span><span style="color:#ff8f40;">sa </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">opaque</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">latex</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">id </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> sa.next_id </span><span style="color:#fa6e32;">in</span><span style="color:#61676c;">
+  sa.next_id </span><span style="color:#ed9366;">&lt;-</span><span style="color:#61676c;"> id </span><span style="color:#ed9366;">+ </span><span style="color:#ff8f40;">1</span><span style="color:#61676ccc;">;
+  </span><span style="color:#61676c;">DynArray.add sa.opaques opaque</span><span style="color:#61676ccc;">;
+  </span><span style="color:#61676c;">DynArray.add sa.latexs latex</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  id
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">prepare </span><span style="color:#ff8f40;">sa </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">ids </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">List.map (insert sa) sa.unsorted </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">new_suffixes </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Util.concat_map (suffixes sa) ids </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">cmp </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> compare_suffix sa </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">array </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.of_list (List.merge cmp (List.fast_sort cmp new_suffixes) (Array.to_list sa.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;">)) </span><span style="color:#fa6e32;">in</span><span style="color:#61676c;">
+  sa.unsorted </span><span style="color:#ed9366;">&lt;- </span><span style="color:#ff8f40;">[]</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  sa.</span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">&lt;- </span><span style="color:#fa6e32;">array
+</span></pre><h2 id="exact-queries">Exact queries</h2>
+<p>So now we have a sorted array of suffixes of all our corpus terms. If we want to find all exact matches for a given search term we just do a binary search to find the first matching suffix and then scan through the array until the last matching suffix. For reasons that will make more sense later, we divide this into two stages. Most of the work is done in <code>gather_exact</code>, where we perform the search and dump the resulting LaTeX term ids into a HashSet. Then <code>find_exact</code> runs through the HashSet and looks up the matching opaques.</p>
+<pre style="background-color:#fafafa;">
+<span style="font-style:italic;color:#abb0b6;">(* binary search *)
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">gather_exact </span><span style="color:#ff8f40;">ids sa latex </span><span style="color:#ed9366;">=
+  </span><span style="font-style:italic;color:#abb0b6;">(* find beginning of region *)
+  (* lo &lt; latex *)
+  (* hi &gt;= latex *)
+  </span><span style="color:#fa6e32;">let rec </span><span style="color:#f29718;">narrow </span><span style="color:#ff8f40;">lo hi </span><span style="color:#ed9366;">=
+    </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">mid </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> lo </span><span style="color:#ed9366;">+ </span><span style="color:#61676c;">((hi</span><span style="color:#ed9366;">-</span><span style="color:#61676c;">lo) </span><span style="color:#ed9366;">/ </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in
+    if</span><span style="color:#61676c;"> lo </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> mid </span><span style="color:#fa6e32;">then</span><span style="color:#61676c;"> hi </span><span style="color:#fa6e32;">else
+    if</span><span style="color:#61676c;"> leq sa latex sa.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;">.(mid)
+    </span><span style="color:#fa6e32;">then</span><span style="color:#61676c;"> narrow lo mid
+    </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;"> narrow mid hi </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">n </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Array.length sa.</span><span style="color:#fa6e32;">array in
+  let rec </span><span style="color:#f29718;">traverse </span><span style="color:#ff8f40;">index </span><span style="color:#ed9366;">=
+    </span><span style="color:#fa6e32;">if</span><span style="color:#61676c;"> index </span><span style="color:#ed9366;">&gt;=</span><span style="color:#61676c;"> n </span><span style="color:#fa6e32;">then </span><span style="color:#ff8f40;">() </span><span style="color:#fa6e32;">else
+    let </span><span style="color:#61676c;">(id, pos) </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> sa.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;">.(index) </span><span style="color:#fa6e32;">in
+    if</span><span style="color:#61676c;"> is_prefix sa latex (id, pos)
+    </span><span style="color:#fa6e32;">then
+      begin
+	</span><span style="color:#61676c;">Hashset.add ids id</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+	traverse (index</span><span style="color:#ed9366;">+</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">)
+      </span><span style="color:#fa6e32;">end
+    else </span><span style="color:#ff8f40;">() </span><span style="color:#fa6e32;">in</span><span style="color:#61676c;">
+  traverse (narrow (</span><span style="color:#ed9366;">-</span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) (n</span><span style="color:#ff8f40;">-1</span><span style="color:#61676c;">))
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">exact_match </span><span style="color:#ff8f40;">sa id </span><span style="color:#ed9366;">=
+  </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">, DynArray.get sa.opaques id)
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">find_exact </span><span style="color:#ff8f40;">sa latex </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">ids </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Hashset.create </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">in</span><span style="color:#61676c;">
+  gather_exact ids sa latex</span><span style="color:#61676ccc;">;
+  </span><span style="color:#61676c;">List.map (exact_match sa) (Hashset.to_list ids)
+</span></pre><h2 id="approximate-queries">Approximate queries</h2>
+<p>Suppose the distance from our search term S to some corpus term T is strictly less than the search radius R. That means that if we split S into R pieces at least one of those pieces must match a substring of T exactly. So our approximate search algorithm is to perform exact searches for each of the R pieces and then calculate the distance to each of the results. Notice the similarity in structure to the previous algorithm. You can also see now that the exact search is split into two functions so that we can reuse <code>gather_exact</code>.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let </span><span style="color:#f29718;">gather_approx </span><span style="color:#ff8f40;">sa precision latex </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">k </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Latex.cutoff precision latex </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">ids </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">Hashset.create </span><span style="color:#ff8f40;">0 </span><span style="color:#fa6e32;">in
+  </span><span style="color:#61676c;">List.iter (gather_exact ids sa) (Latex.fragments latex k)</span><span style="color:#61676ccc;">;</span><span style="color:#61676c;">
+  ids
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">approx_match </span><span style="color:#ff8f40;">sa precision latexL id </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">latexR </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">DynArray.get sa.latexs id </span><span style="color:#fa6e32;">in
+  match </span><span style="color:#61676c;">Latex.similar precision latexL latexR </span><span style="color:#fa6e32;">with
+  | </span><span style="color:#399ee6;">Some </span><span style="color:#ff8f40;">dist </span><span style="color:#61676ccc;">-&gt;
+      </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">opaque </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">DynArray.get sa.opaques id </span><span style="color:#fa6e32;">in
+      </span><span style="color:#399ee6;">Some </span><span style="color:#61676c;">(dist, opaque)
+  </span><span style="color:#fa6e32;">| </span><span style="color:#399ee6;">None </span><span style="color:#61676ccc;">-&gt;
+      </span><span style="color:#399ee6;">None
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">find_approx </span><span style="color:#ff8f40;">sa precision latex </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">ids </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> gather_approx sa precision latex </span><span style="color:#fa6e32;">in
+  </span><span style="color:#61676c;">Util.filter_map (approx_match sa precision latex) (Hashset.to_list ids)
+</span></pre>
+<p>We can also extend this to allow boolean queries.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let rec </span><span style="color:#f29718;">gather_query </span><span style="color:#ff8f40;">sa precision query </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">match</span><span style="color:#61676c;"> query </span><span style="color:#fa6e32;">with
+  | </span><span style="color:#61676c;">Query.</span><span style="color:#399ee6;">Latex </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">latex</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">_</span><span style="color:#61676c;">) </span><span style="color:#61676ccc;">-&gt;</span><span style="color:#61676c;"> gather_approx sa precision latex
+  </span><span style="color:#fa6e32;">| </span><span style="color:#61676c;">Query.</span><span style="color:#399ee6;">And </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">query1</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">query2</span><span style="color:#61676c;">) </span><span style="color:#61676ccc;">-&gt; </span><span style="color:#61676c;">Hashset.inter (gather_query sa precision query1) (gather_query sa precision query2)
+  </span><span style="color:#fa6e32;">| </span><span style="color:#61676c;">Query.</span><span style="color:#399ee6;">Or </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">query1</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">query2</span><span style="color:#61676c;">) </span><span style="color:#61676ccc;">-&gt; </span><span style="color:#61676c;">Hashset.union (gather_query sa precision query1) (gather_query sa precision query2)
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">query_match </span><span style="color:#ff8f40;">sa precision query id </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">latexR </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">DynArray.get sa.latexs id </span><span style="color:#fa6e32;">in
+  match </span><span style="color:#61676c;">Query.similar precision query latexR </span><span style="color:#fa6e32;">with
+  | </span><span style="color:#399ee6;">Some </span><span style="color:#ff8f40;">dist </span><span style="color:#61676ccc;">-&gt;
+      </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">opaque </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">DynArray.get sa.opaques id </span><span style="color:#fa6e32;">in
+      </span><span style="color:#399ee6;">Some </span><span style="color:#61676c;">(dist, opaque)
+  </span><span style="color:#fa6e32;">| </span><span style="color:#399ee6;">None </span><span style="color:#61676ccc;">-&gt;
+      </span><span style="color:#399ee6;">None
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">find_query </span><span style="color:#ff8f40;">sa precision query </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">ids </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> gather_query sa precision query </span><span style="color:#fa6e32;">in
+  </span><span style="color:#61676c;">Util.filter_map (query_match sa precision query) (Hashset.to_list ids)
+</span></pre>
+<p>This is a lot simpler than my previous approach, which required some uncomfortable reasoning about overlapping regions in quasi-metric spaces.</p>
+<h2 id="memory-usage">Memory usage</h2>
+<p>This is a significant speed improvement over previous versions but it now consumes a ridiculous amount of memory. The instance running <a href="http://latexsearch.com">latexsearch.com</a> wavers around 4.7 gb during normal operation and reaches 7-8 gb when updating the index. This pushes other services out of main memory and everything is horribly slow until they swap back in.</p>
+<p>The main data structure is a suffix array with type <code>(id * pos) array</code>, which is responsible for the vast majority of the memory usage. Each cell in the array contains a pointer to a tuple containing two integers, for a total of 4 words per suffix. The types id and pos are both small integers so if we pack them into a single unboxed integer we can reduce this to 1 word per suffix.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">module </span><span style="color:#399ee6;">Suffix </span><span style="color:#ed9366;">= </span><span style="color:#fa6e32;">struct
+
+type id </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+type pos </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+
+type t </span><span style="color:#61676ccc;">= </span><span style="color:#fa6e32;">int
+
+let </span><span style="color:#61676c;">pack_size </span><span style="color:#ed9366;">= </span><span style="color:#61676c;">(Sys.word_size </span><span style="color:#ed9366;">/ </span><span style="color:#ff8f40;">2</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1
+</span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">max_size </span><span style="color:#ed9366;">= </span><span style="color:#ff8f40;">1 </span><span style="color:#ed9366;">lsl</span><span style="color:#61676c;"> pack_size
+
+</span><span style="color:#fa6e32;">exception </span><span style="color:#399ee6;">Invalid_suffix</span><span style="color:#61676c;"> of id </span><span style="color:#ed9366;">*</span><span style="color:#61676c;"> pos
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">pack </span><span style="color:#61676c;">(</span><span style="color:#ff8f40;">id</span><span style="color:#61676c;">, </span><span style="color:#ff8f40;">pos</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">if </span><span style="color:#61676c;">(id </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(id </span><span style="color:#ed9366;">&gt;=</span><span style="color:#61676c;"> max_size)
+  </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(pos </span><span style="color:#ed9366;">&lt; </span><span style="color:#ff8f40;">0</span><span style="color:#61676c;">) </span><span style="color:#ed9366;">|| </span><span style="color:#61676c;">(pos </span><span style="color:#ed9366;">&gt;=</span><span style="color:#61676c;"> max_size)
+  </span><span style="color:#fa6e32;">then</span><span style="color:#61676c;"> raise (</span><span style="color:#399ee6;">Invalid_suffix </span><span style="color:#61676c;">(id, pos))
+  </span><span style="color:#fa6e32;">else</span><span style="color:#61676c;"> pos </span><span style="color:#ed9366;">lor </span><span style="color:#61676c;">(id </span><span style="color:#ed9366;">lsl</span><span style="color:#61676c;"> pack_size)
+
+</span><span style="color:#fa6e32;">let </span><span style="color:#f29718;">unpack </span><span style="color:#ff8f40;">suffix </span><span style="color:#ed9366;">=
+  </span><span style="color:#fa6e32;">let </span><span style="color:#61676c;">id </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> suffix </span><span style="color:#ed9366;">lsr</span><span style="color:#61676c;"> pack_size </span><span style="color:#fa6e32;">in
+  let </span><span style="color:#61676c;">pos </span><span style="color:#ed9366;">=</span><span style="color:#61676c;"> suffix </span><span style="color:#ed9366;">land </span><span style="color:#61676c;">(max_size </span><span style="color:#ed9366;">- </span><span style="color:#ff8f40;">1</span><span style="color:#61676c;">) </span><span style="color:#fa6e32;">in
+  </span><span style="color:#61676c;">(id, pos)
+
+</span><span style="color:#fa6e32;">end
+</span></pre>
+<p>The main data structure then becomes <code>Suffix.t array</code>. With this change the memory usage drops down to 1.4 gb. The mean search time also improves. It seems that having fewer cache misses makes up for the extra computation involved in unpacking the suffixes.</p>
+<p>Now that the array field is a single block in memory it is easy to move it out of the heap entirely so the gc never has to scan it.</p>
+<pre style="background-color:#fafafa;">
+<span style="color:#fa6e32;">let </span><span style="color:#f29718;">ancientify </span><span style="color:#ff8f40;">sa </span><span style="color:#ed9366;">=</span><span style="color:#61676c;">
+  sa.</span><span style="color:#fa6e32;">array </span><span style="color:#ed9366;">&lt;- </span><span style="color:#61676c;">Ancient.follow (Ancient.mark sa.</span><span style="color:#fa6e32;">array</span><span style="color:#61676c;">)</span><span style="color:#61676ccc;">;
+  </span><span style="color:#61676c;">Gc.full_major </span><span style="color:#ff8f40;">()
+</span></pre>
+<p>This eliminates gc pauses, and we finally have a usable system.</p>
+
+</article>
+
+<footer>
+  <div class="links">
+    <a href="mailto:jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a>
+  </div>
+</footer>
+
+  </div>
+
+   
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html><html lang="en"><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>A UI library for a relational language</title><meta name="author" content="Jamie Brandon" /><link rel="alternate" type="application/rss+xml" title="Scattered Thoughts - " href="/feed.xml" /><style> @import url("https://fonts.googleapis.com/css?family=Fira+Code:400,700|Fira+Sans:400,400i,700,700i&display=swap");progress,sub,sup{vertical-align:baseline}button,hr,input{overflow:visible}html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}figcaption,menu,article,aside,details,figure,footer,header,main,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:bolder}dfn{font-style:italic}h1{font-size:2em;margin:.67em 0}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}img{border-style:none}svg:not(:root){overflow:hidden}code,kbd,pre,samp{font-family:monospace,monospace;font-size:1em}figure{margin:1em 40px}hr{box-sizing:content-box;height:0}button,input,optgroup,select,textarea{font:inherit;margin:0}optgroup{font-weight:700}button,select{text-transform:none}[type=submit],[type=reset],button,html [type=button]{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:ButtonText dotted 1px}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-input-placeholder{color:inherit;opacity:.54}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}code{background:#ffffff}.highlight{background:#ffffff}.highlight pre{background-color:#fff;font-size:16px}.highlight .c{color:#999988;font-style:italic}.highlight .err{color:#a61717;background-color:#e3d2d2}.highlight .k{font-weight:bold}.highlight .o{font-weight:bold}.highlight .cm{color:#999988;font-style:italic}.highlight .cp{color:#999999;font-weight:bold}.highlight .c1{color:#999988;font-style:italic}.highlight .cs{color:#999999;font-weight:bold;font-style:italic}.highlight .gd{color:#000000;background-color:#fdd}.highlight .gd .x{color:#000000;background-color:#faa}.highlight .ge{font-style:italic}.highlight .gr{color:#a00}.highlight .gh{color:#999}.highlight .gi{color:#000000;background-color:#dfd}.highlight .gi .x{color:#000000;background-color:#afa}.highlight .go{color:#888}.highlight .gp{color:#555}.highlight .gs{font-weight:bold}.highlight .gu{color:#aaa}.highlight .gt{color:#a00}.highlight .kc{font-weight:bold}.highlight .kd{font-weight:bold}.highlight .kp{font-weight:bold}.highlight .kr{font-weight:bold}.highlight .kt{color:#445588;font-weight:bold}.highlight .m{color:#099}.highlight .s{color:#d14}.highlight .na{color:teal}.highlight .nb{color:#0086B3}.highlight .nc{color:#445588;font-weight:bold}.highlight .no{color:teal}.highlight .ni{color:purple}.highlight .ne{color:#990000;font-weight:bold}.highlight .nf{color:#990000;font-weight:bold}.highlight .nn{color:#555}.highlight .nt{color:navy}.highlight .nv{color:teal}.highlight .ow{font-weight:bold}.highlight .w{color:#bbb}.highlight .mf{color:#099}.highlight .mh{color:#099}.highlight .mi{color:#099}.highlight .mo{color:#099}.highlight .sb{color:#d14}.highlight .sc{color:#d14}.highlight .sd{color:#d14}.highlight .s2{color:#d14}.highlight .se{color:#d14}.highlight .sh{color:#d14}.highlight .si{color:#d14}.highlight .sx{color:#d14}.highlight .sr{color:#009926}.highlight .s1{color:#d14}.highlight .ss{color:#990073}.highlight .bp{color:#999}.highlight .vc{color:teal}.highlight .vg{color:teal}.highlight .vi{color:teal}.highlight .il{color:#099}.highlight .lineno{color:rgba(0,0,0,0.3);padding:0 10px;-webkit-user-select:none;-moz-user-select:none;-o-user-select:none}.lineno::-moz-selection{background-color:transparent}.lineno::selection{background-color:transparent}body{padding:32px;color:#333333;background-color:#ffffff;font-family:Fira Sans, serif}.container{max-width:45em;margin:0 auto;font-size:20px}body blockquote{border-left:2px solid #333333 !important}article{font-size:1em}h1,h2,h3{font-weight:800;font-family:Fira Sans, sans-serif}h1{text-align:center;font-size:2.0em}h2{text-align:center;font-size:1.2em;margin-top:4em}h3{text-align:center;font-size:1em}h4{text-align:center}a{text-decoration:underline;font-weight:normal}a,a:visited,a:hover,a:active{color:#0085a1}*{max-width:100%}pre,figure,.wp-caption{margin:0px -10px 20px -10px;padding:0px 10px 0px 10px}blockquote{margin:0;padding:0px 10px 0px 10px;border-radius:5px}p>img:only-child,p>a:only-child>img:only-child,.wp-caption img,figure img{display:block}img{margin-left:auto;margin-right:auto}.caption,.wp-caption-text,figcaption{font-size:0.9em;line-height:1.48em;font-style:italic}code,pre{white-space:pre;overflow:visible;font-family:Fira Code, monospace}ul,ol{padding:0}ul{padding-left:30px;list-style:disc}ol{padding-left:30px;list-style:decimal}.post-link{padding-bottom:10px;text-align:center}.post-link a{text-decoration:none;color:#333333}.post-link a:focus,.post-link a:hover{color:#0085a1}.post-link .post-title{margin:0;font-size:18px}nav{text-align:center}nav a{font-size:1.4em}nav a,nav a:visited{text-decoration:none;color:#333333}nav a:focus,nav a:hover{color:#0085a1}.menu ul{list-style:none;padding:0;margin:0}header{margin:2em 0 2em 0;text-align:center}header h1{margin:0}footer{margin-top:4em;text-align:center;font-style:italic}iframe{width:560px;height:315px;display:block;margin:0 auto;padding-top:1em}table{margin-left:auto;margin-right:auto;border-collapse:collapse}table,th,td{padding:0.5em;border:0.5px solid #333333}hr{width:7em;margin-top:3em;margin-bottom:3em;border:0;height:1px;background-image:linear-gradient(to right, transparent, rgba(0,0,0,0.75), transparent)}</style><nav> <a href="/"> JAMIE BRANDON </a></nav><div class="container"><header><h1>A UI library for a relational language</h1></header><article role="main"><p>TLDR:<ul><li><a href="#imp">I’m working on a relational programming language intended for rapid GUI dev.</a><li><a href="#templates">Having tried a couple of different approaches to describing GUIs, I’ve settled on a React-like library that binds relational data to HTML templates.</a><li><a href="#patching">The library has very simple semantics, including an easy mental model for patching the DOM.</a><li><a href="#implementation">The template language can be implemented almost entirely by compiling to relational queries.</a><li><a href="#performance">The current implementation has been used to build a few simple examples, with performance on par with similar libraries in OOPy languages.</a></ul><h2 id="background">Background</h2><p>The typical architecture for a small web or native app looks like:<div class="highlighter-rouge"><pre class="highlight"><code>datastore (relations) &lt;-&gt; application logic (objects) &lt;-&gt; GUI (trees)
+</code></pre></div><p>Moving data back and forth between the first two layers is painful because of the <a href="https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch">object-relational mismatch</a>. Developers typically try to solve this by <a href="https://en.wikipedia.org/wiki/Object-relational_mapping">hiding</a> or <a href="https://en.wikipedia.org/wiki/NoSQL">getting rid off</a> relations.<p>But relational data models have a lot of great qualities, so it’s interesting to try getting rid off the objects instead by making a datastore query language that can comfortably express the application logic.<p>But that still leaves us with another data model mismatch - between the relational model in the application logic and the tree model that almost every GUI uses.<div class="highlighter-rouge"><pre class="highlight"><code>datastore + application logic (relations) &lt;-&gt; GUI (trees)
+</code></pre></div><p>That’s what we’re going to deal with in this post.<p>To keep things concrete, we’ll use this very simple chat app as a running example.<p><img src="/img/chat.png" alt="" /><p>Yes, it is hideous, but it illustrates all the important cases while being small enough to show large chunks of the internal dataflow.<h2 id="imp">Imp</h2><p><a href="https://github.com/jamii/imp/">Imp</a> is a <a href="https://en.wikipedia.org/wiki/Datalog">datalog</a>-ish language in the same family as <a href="http://evelang.com/">Eve</a>, <a href="http://www.logicblox.com/">LogicBlox</a>, <a href="http://bloom-lang.net/">Bloom</a>, <a href="http://www.cs.jhu.edu/~nwf/datalog20-paper.pdf">Dyna</a> etc.<p>Imp is focused on reducing the number of layers and concepts involved in writing GUI apps - prioritizing simplicity over scale/power.<p>The goal is to build apps that run on one machine or that serve small number of users on a local network, and not so much to build public apps that scale to large numbers of users. Think <a href="https://github.com/rstudio/shiny">shiny</a> or <a href="http://nitrogenproject.com/learn">nitrogen</a>, not <a href="http://rubyonrails.org/">rails</a>.<p>Imp data is stored in relations. The schema is usually <a href="https://en.wikipedia.org/wiki/Sixth_normal_form">highly normalized</a> - this has some important advantages that we will see later.<p>Here are the relations used in the chat example:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="kd">const</span> <span class="n">Session</span> <span class="o">=</span> <span class="kt">Int64</span>
+<span class="kd">const</span> <span class="n">Message</span> <span class="o">=</span> <span class="kt">Int64</span>
+
+<span class="nd">@relation</span> <span class="n">username</span><span class="x">(</span><span class="n">Session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="kt">String</span>
+<span class="nd">@relation</span> <span class="n">message</span><span class="x">(</span><span class="n">Message</span><span class="x">)</span>
+<span class="nd">@relation</span> <span class="n">text</span><span class="x">(</span><span class="n">Message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="kt">String</span>
+<span class="nd">@relation</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">Message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="kt">String</span>
+<span class="nd">@relation</span> <span class="n">sent_at</span><span class="x">(</span><span class="n">Message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">DateTime</span>
+<span class="nd">@relation</span> <span class="n">likes</span><span class="x">(</span><span class="n">username</span><span class="o">::</span><span class="kt">String</span><span class="x">,</span> <span class="n">Message</span><span class="x">)</span>
+</code></pre></div><p>And a direct translation into sql:<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">create</span> <span class="k">table</span> <span class="n">username</span><span class="p">(</span><span class="k">session</span> <span class="n">int</span><span class="p">,</span> <span class="n">username</span> <span class="n">varchar</span><span class="p">,</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="k">session</span><span class="p">));</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">message</span><span class="p">(</span><span class="n">id</span> <span class="n">int</span><span class="p">,</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">id</span><span class="p">));</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">text</span><span class="p">(</span><span class="n">id</span> <span class="n">int</span><span class="p">,</span> <span class="n">text</span> <span class="n">varchar</span><span class="p">,</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">id</span><span class="p">));</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">sent_by</span><span class="p">(</span><span class="n">id</span> <span class="n">int</span><span class="p">,</span> <span class="n">username</span> <span class="n">varchar</span><span class="p">,</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">id</span><span class="p">));</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">sent_at</span><span class="p">(</span><span class="n">id</span> <span class="n">int</span><span class="p">,</span> <span class="n">time</span> <span class="k">timestamp</span><span class="p">,</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">id</span><span class="p">));</span>
+<span class="k">create</span> <span class="k">table</span> <span class="n">likes</span><span class="p">(</span><span class="n">username</span> <span class="n">varchar</span><span class="p">,</span> <span class="n">id</span> <span class="n">int</span><span class="p">,</span> <span class="k">primary</span> <span class="k">key</span> <span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">id</span><span class="p">));</span>
+</code></pre></div><p>Imp programs are built out of relational queries. Each line within the query refers to a single relation and its columns. Whenever the same variable name is used for more than one column, those columns are joined together. Subqueries begin with <code class="highlighter-rouge">@query</code> and return an array of results for each column.<p>Here is a query that records data for each new message:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">new_message</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">text</span><span class="x">)</span>
+  <span class="n">username</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">username</span>
+  <span class="nd">@query</span> <span class="n">begin</span>
+    <span class="n">message</span><span class="x">(</span><span class="n">id</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="k">end</span>
+  <span class="n">new_message</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">length</span><span class="x">(</span><span class="n">id</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">message</span><span class="x">(</span><span class="n">new_message</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">text</span><span class="x">(</span><span class="n">new_message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span>
+  <span class="k">return</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">new_message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">username</span>
+  <span class="k">return</span> <span class="n">sent_at</span><span class="x">(</span><span class="n">new_message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">now</span><span class="x">()</span>
+<span class="k">end</span>
+</code></pre></div><p>And again, a direct translation into sql:<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">begin</span><span class="p">;</span>
+<span class="k">create</span> <span class="k">temporary</span> <span class="k">table</span> <span class="n">results</span> <span class="k">as</span> <span class="p">(</span>
+  <span class="k">select</span> <span class="n">new_message</span><span class="p">.</span><span class="n">text</span> <span class="k">as</span> <span class="n">text</span><span class="p">,</span> <span class="n">username</span><span class="p">.</span><span class="n">username</span> <span class="k">as</span> <span class="n">username</span><span class="p">,</span> <span class="p">((</span><span class="k">select</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span> <span class="k">from</span> <span class="n">message</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">next_message</span>
+  <span class="k">from</span> <span class="n">new_message</span><span class="p">,</span> <span class="n">username</span>
+  <span class="k">where</span> <span class="n">new_message</span><span class="p">.</span><span class="k">session</span> <span class="o">=</span> <span class="n">username</span><span class="p">.</span><span class="k">session</span>
+<span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">message</span> <span class="k">select</span> <span class="n">next_message</span> <span class="k">from</span> <span class="n">results</span><span class="p">;</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">text</span> <span class="k">select</span> <span class="n">next_message</span><span class="p">,</span> <span class="n">text</span> <span class="k">from</span> <span class="n">results</span><span class="p">;</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">sent_by</span> <span class="k">select</span> <span class="n">next_message</span><span class="p">,</span> <span class="n">username</span> <span class="k">from</span> <span class="n">results</span><span class="p">;</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">sent_at</span> <span class="k">select</span> <span class="n">next_message</span><span class="p">,</span> <span class="n">now</span><span class="p">()</span> <span class="k">from</span> <span class="n">results</span><span class="p">;</span>
+<span class="k">commit</span><span class="p">;</span>
+</code></pre></div><p>Imp is built on top of <a href="https://julialang.org/">Julia</a>. The queries are <a href="http://scattered-thoughts.net/blog/2016/10/11/a-practical-relational-query-compiler-in-500-lines/">compiled to Julia code</a> and can use any Julia types and functions. The <code class="highlighter-rouge">DateTime</code> type and the <code class="highlighter-rouge">now()</code> function used above are part of the Julia standard library.<h2 id="previous-approaches">Previous approaches</h2><p>In a typical OOPy language we would probably build these trees using a template language like this one:<div class="highlighter-rouge"><pre class="highlight"><code>&lt;table&gt;
+  {% for message in messages %}
+    &lt;tr&gt;
+      &lt;td&gt;{% message.sent_by %}:&lt;/td&gt;
+      &lt;td&gt;{% message.text %}&lt;/td&gt;
+      &lt;td&gt;
+        {% for like in message.likes %}
+          &lt;div&gt;{% like.liker %} likes this&lt;/div&gt;
+        {% endfor %}
+      &lt;/td&gt;
+      &lt;td&gt;
+        &lt;button onclick="new_like({% session %}, {% message.id %})"&gt;
+          like!
+        &lt;/button&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  {% endfor %}
+&lt;/table&gt;
+</code></pre></div><p>There are all kinds of template languages, but what they generally have in common is that their visual appearance mimics the mental model of the tree they are producing. This makes them much easier to read and navigate.<p>In previous versions of Imp, I’ve tried two different approaches to building trees. Both are pretty hard to follow, so just let your eyes glaze over and see the rough outline.<p>The first approach was to just use an existing tree datatype and use subqueries and aggregation to build it up:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">using</span> <span class="n">Hiccup</span> <span class="c"># virtual DOM library</span>
+
+<span class="nd">@relation</span> <span class="n">tree</span><span class="x">()</span> <span class="o">=&gt;</span> <span class="n">Hiccup</span><span class="o">.</span><span class="n">Node</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">session</span><span class="x">(</span><span class="n">session</span><span class="x">)</span>
+  <span class="nd">@query</span> <span class="n">begin</span>
+    <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span>
+    <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span>
+    <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span>
+    <span class="nd">@query</span> <span class="n">begin</span>
+      <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span>
+      <span class="n">like_node</span> <span class="o">=</span> <span class="n">div</span><span class="x">(</span><span class="s">"</span><span class="si">$</span><span class="s">liker likes this"</span><span class="x">)</span>
+      <span class="k">return</span> <span class="n">like_node</span>
+    <span class="k">end</span>
+    <span class="n">message_node</span> <span class="o">=</span> <span class="n">tr</span><span class="x">(</span>
+      <span class="n">td</span><span class="x">(</span><span class="n">sent_by</span><span class="x">),</span>
+      <span class="n">td</span><span class="x">(</span><span class="n">text</span><span class="x">),</span>
+      <span class="n">td</span><span class="x">(</span><span class="n">like_node</span><span class="o">...</span><span class="x">),</span>
+      <span class="n">button</span><span class="x">(</span><span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">,</span> <span class="s">"like!"</span><span class="x">)</span>
+    <span class="x">)</span>
+    <span class="k">return</span> <span class="n">message_node</span>
+  <span class="k">end</span>
+  <span class="n">table_node</span> <span class="o">=</span> <span class="n">table</span><span class="x">(</span><span class="n">message_node</span><span class="o">...</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">tree</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">table_node</span>
+<span class="k">end</span>
+</code></pre></div><p>The second was to represent the tree as a set of relations, using hashes to create unique node ids:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">struct</span> <span class="n">Node</span>
+  <span class="n">id</span><span class="o">::</span><span class="kt">UInt64</span>
+<span class="k">end</span>
+
+<span class="nd">@relation</span> <span class="n">root</span><span class="x">(</span><span class="n">Session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">Node</span>
+<span class="nd">@relation</span> <span class="n">parent</span><span class="x">(</span><span class="n">Node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">Node</span>
+<span class="nd">@relation</span> <span class="n">sort_key</span><span class="x">(</span><span class="n">Node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="kt">Any</span>
+<span class="nd">@relation</span> <span class="n">tag</span><span class="x">(</span><span class="n">Node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="kt">String</span>
+<span class="nd">@relation</span> <span class="n">attribute</span><span class="x">(</span><span class="n">Node</span><span class="x">,</span> <span class="kt">String</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="kt">String</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">session</span><span class="x">(</span><span class="n">session</span><span class="x">)</span>
+  <span class="n">table_node</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">table</span><span class="x">,</span> <span class="n">session</span><span class="x">))</span>
+  <span class="k">return</span> <span class="n">root</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">table_node</span>
+  <span class="k">return</span> <span class="n">tab</span><span class="x">(</span><span class="n">table_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"table"</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">session</span><span class="x">(</span><span class="n">session</span><span class="x">)</span>
+  <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span>
+  <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span>
+  <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span>
+  <span class="n">table_node</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">table</span><span class="x">,</span> <span class="n">session</span><span class="x">))</span>
+  <span class="n">tr_node</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">tr</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">))</span>
+  <span class="n">td_node_1</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">td</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">))</span>
+  <span class="n">td_node_2</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">td</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">2</span><span class="x">))</span>
+  <span class="n">td_node_3</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">td</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">3</span><span class="x">))</span>
+  <span class="n">button_node</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">button</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">))</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="x">(</span><span class="n">tr_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">table_node</span>
+  <span class="k">return</span> <span class="n">tag</span><span class="x">(</span><span class="n">tr_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"tr"</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="x">(</span><span class="n">td_node_1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">tr_node</span>
+  <span class="k">return</span> <span class="n">tag</span><span class="x">(</span><span class="n">td_node_1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"td"</span>
+  <span class="k">return</span> <span class="n">attribute</span><span class="x">(</span><span class="n">td_node_1</span><span class="x">,</span> <span class="s">"textContent"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span>
+  <span class="k">return</span> <span class="n">sort_key</span><span class="x">(</span><span class="n">td_node_1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="x">(</span><span class="n">td_node_2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">tr_node</span>
+  <span class="k">return</span> <span class="n">tag</span><span class="x">(</span><span class="n">td_node_2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"td"</span>
+  <span class="k">return</span> <span class="n">attribute</span><span class="x">(</span><span class="n">td_node_2</span><span class="x">,</span> <span class="s">"textContent"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span>
+  <span class="k">return</span> <span class="n">sort_key</span><span class="x">(</span><span class="n">td_node_2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mi">2</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="x">(</span><span class="n">td_node_3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">tr_node</span>
+  <span class="k">return</span> <span class="n">tag</span><span class="x">(</span><span class="n">td_node_3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"td"</span>
+  <span class="k">return</span> <span class="n">sort_key</span><span class="x">(</span><span class="n">td_node_3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mi">3</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="x">(</span><span class="n">button_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">tr_node</span>
+  <span class="k">return</span> <span class="n">tag</span><span class="x">(</span><span class="n">button_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"button"</span>
+  <span class="k">return</span> <span class="n">attribute</span><span class="x">(</span><span class="n">button_node</span><span class="x">,</span> <span class="s">"textContent"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"like!"</span>
+  <span class="k">return</span> <span class="n">attribute</span><span class="x">(</span><span class="n">button_node</span><span class="x">,</span> <span class="s">"onclick"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span>
+  <span class="k">return</span> <span class="n">sort_key</span><span class="x">(</span><span class="n">button_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mi">4</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">session</span><span class="x">(</span><span class="n">session</span><span class="x">)</span>
+  <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span>
+  <span class="n">td_node_3</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">td</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">4</span><span class="x">))</span>
+  <span class="n">liker_node</span> <span class="o">=</span> <span class="n">Node</span><span class="x">(</span><span class="nb">hash</span><span class="x">(:</span><span class="n">like</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">liker</span><span class="x">))</span>
+  <span class="k">return</span> <span class="n">parent</span><span class="x">(</span><span class="n">liker_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">td_node_3</span>
+  <span class="k">return</span> <span class="n">tag</span><span class="x">(</span><span class="n">liker_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"div"</span>
+  <span class="k">return</span> <span class="n">sort_key</span><span class="x">(</span><span class="n">liker_node</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span>
+  <span class="k">return</span> <span class="n">attribute</span><span class="x">(</span><span class="n">liker_node</span><span class="x">,</span> <span class="s">"textContent"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">liker</span>
+<span class="k">end</span>
+</code></pre></div><p>The extreme verbosity of the second approach can be tamed with <a href="https://github.com/witheve/eve-starter/blob/master/programs/todomvc.eve#L99-L103">a little syntax sugar</a>, but both approaches still suffer from the lack of visual similarity between the code structure and the UI structure.<p>The core problem is these nested <code class="highlighter-rouge">for</code> loops in the OOPy template:<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">message</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">messages</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+      </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">like</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">message.likes</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+        </span><span class="err">...</span><span class="w">
+      </span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">endfor</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+  </span><span class="err">...</span><span class="w">
+</span><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">endfor</span><span class="w"> </span><span class="err">%</span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>We can try to emulate this structure with a relational query:<div class="language-sql highlighter-rouge"><pre class="highlight"><code><span class="k">select</span> <span class="n">message</span><span class="p">.</span><span class="n">id</span><span class="p">,</span> <span class="n">likes</span><span class="p">.</span><span class="n">liker</span>
+<span class="k">from</span> <span class="n">message</span><span class="p">,</span> <span class="n">likes</span>
+<span class="k">where</span> <span class="n">message</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">likes</span><span class="p">.</span><span class="n">message</span>
+</code></pre></div><p>But this query does not return any results for messages which have no likes. To generate the correct UI tree we have to break this up into multiple queries, use subqueries or use <a href="https://blog.heapanalytics.com/postgresqls-powerful-new-join-type-lateral/">lateral joins</a>. That leads to tangled query code that is hard to visually match up to the resulting tree.<p>So I created a relational analogue to the OOPy template language, that expresses these nested joins in a way that visually mimics the structure of the resulting HTML tree.<h2 id="templates">Templates</h2><p>Imp templates look like this:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">table</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="n">begin</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span><span class="x">]</span>
+        <span class="k">end</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+<span class="x">]</span>
+</code></pre></div><p>Templates are made up of four kinds of elements:<ul><li>DOM nodes like <code class="highlighter-rouge">[table ...]</code><li>DOM attributes like <code class="highlighter-rouge">onclick="new_like($session, $message)"</code><li>Text nodes like <code class="highlighter-rouge">"$liker likes this!"</code><li>Query fragments like <code class="highlighter-rouge">@query likes(liker, message) begin ... end</code></ul><p>Query fragments like <code class="highlighter-rouge">@query likes(liker, message) begin ... end</code> acts much like a <code class="highlighter-rouge">for</code> loop. For each row in the <code class="highlighter-rouge">likes</code> relation, we create a copy of everything between <code class="highlighter-rouge">begin</code> and <code class="highlighter-rouge">end</code>. But any variables that have already appeared in an enclosing query fragment are already bound to some value, so we keep only the rows that have matching values. In this case, <code class="highlighter-rouge">message</code> already appeared the in the enclosing query fragment <code class="highlighter-rouge">message(message) begin ... end</code>. The equivalent code in the OOPy template would be <code class="highlighter-rouge"><span class="p">{</span><span class="err">%</span><span class="w"> </span><span class="err">for</span><span class="w"> </span><span class="err">like</span><span class="w"> </span><span class="err">in</span><span class="w"> </span><span class="err">likes</span><span class="w"> </span><span class="err">if</span><span class="w"> </span><span class="err">like.message</span><span class="w"> </span><span class="err">==</span><span class="w"> </span><span class="err">message.id</span><span class="w"> </span><span class="err">%</span><span class="p">}</span></code>.<p>The order the rows appear in is determined by sorting them by their variables in lexicographic order. So rows from <code class="highlighter-rouge">likes(liker, message)</code> are sorted first by <code class="highlighter-rouge">liker</code> and then by <code class="highlighter-rouge">message</code>.<p>Let’s see how this works out in practice. Here is the data behind the screenshot from the beginning of this post:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">message</span><span class="x">(</span><span class="mi">1</span><span class="x">)</span>
+<span class="n">message</span><span class="x">(</span><span class="mi">2</span><span class="x">)</span>
+<span class="n">message</span><span class="x">(</span><span class="mi">3</span><span class="x">)</span>
+<span class="n">message</span><span class="x">(</span><span class="mi">4</span><span class="x">)</span>
+
+<span class="n">sent_by</span><span class="x">(</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"alice"</span>
+<span class="n">sent_by</span><span class="x">(</span><span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"bob"</span>
+<span class="n">sent_by</span><span class="x">(</span><span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"chia"</span>
+<span class="n">sent_by</span><span class="x">(</span><span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"chia"</span>
+
+<span class="n">text</span><span class="x">(</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"hello"</span>
+<span class="n">text</span><span class="x">(</span><span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"hi"</span>
+<span class="n">text</span><span class="x">(</span><span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"greetings"</span>
+<span class="n">text</span><span class="x">(</span><span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="s">"free tacos all round!"</span>
+
+<span class="n">likes</span><span class="x">(</span><span class="s">"alice"</span><span class="x">,</span> <span class="mi">4</span><span class="x">)</span>
+<span class="n">likes</span><span class="x">(</span><span class="s">"bob"</span><span class="x">,</span> <span class="mi">4</span><span class="x">)</span>
+</code></pre></div><p>When we run the query fragments in our templates on this data, we get:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">table</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"alice"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"hello"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">2</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"bob"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"hi"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">3</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"chia"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"greetings"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"chia"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"free tacos all round!"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="o">=</span><span class="s">"alice"</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="n">begin</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span><span class="x">]</span>
+        <span class="k">end</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="o">=</span><span class="s">"bob"</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="n">begin</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span><span class="x">]</span>
+        <span class="k">end</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+<span class="x">]</span>
+</code></pre></div><p>Next we take all the text nodes, such as <code class="highlighter-rouge">"$liker likes this!"</code>, and replace the <code class="highlighter-rouge">$</code>-interpolated variables with their values.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">table</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"alice"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"alice:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"hello"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"hello"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 1)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">2</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"bob"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"bob:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"hi"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"hi"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 2)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">3</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"chia"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"greetings"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"greetings"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 3)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"chia"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"free tacos all round!"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"free tacos all round!"</span><span class="x">]</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="o">=</span><span class="s">"alice"</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="n">begin</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"alice likes this!"</span><span class="x">]</span>
+        <span class="k">end</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="o">=</span><span class="s">"bob"</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">4</span><span class="x">)</span> <span class="n">begin</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"bob likes this!"</span><span class="x">]</span>
+        <span class="k">end</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 4)"</span><span class="x">]</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+<span class="x">]</span>
+</code></pre></div><p>Now that the interpolated variables have been filled in we don’t need the query fragments anymore, so they are each removed and replaced by their children, yielding our final DOM tree:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">table</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"alice:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"hello"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 1)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"bob:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"hi"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 2)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"greetings"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 3)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"free tacos all round!"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">div</span> <span class="s">"alice likes this!"</span><span class="x">]</span>
+      <span class="x">[</span><span class="n">div</span> <span class="s">"bob likes this!"</span><span class="x">]</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 4)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+<span class="x">]</span>
+</code></pre></div><h2 id="patching">Patching</h2><p>As described so far, this is only good for one-off rendering. We need to define what happens when the underlying data changes. Suppose Alice retracts her liking of free tacos, Bob deletes his message entirely and Chia sends a new message complaining about their fickleness.<div class="language-diff highlighter-rouge"><pre class="highlight"><code>message(1)
+<span class="gd">-message(2)
+</span>message(3)
+message(4)
+<span class="gi">+message(5)
+</span>
+sent_by(1) =&gt; "alice"
+<span class="gd">-sent_by(2) =&gt; "bob"
+</span>sent_by(3) =&gt; "chia"
+sent_by(4) =&gt; "chia"
+<span class="gi">+sent_by(5) =&gt; "chia"
+</span>
+text(1) =&gt; "hello"
+<span class="gd">-text(2) =&gt; "hi"
+</span>text(3) =&gt; "greetings"
+text(4) =&gt; "free tacos all round!"
+<span class="gi">+text(5) =&gt; "who doesn't like free tacos?"
+</span>
+<span class="gd">-likes("alice", 4)
+</span>likes("bob", 4)
+</code></pre></div><p>With the new data, the template now specifies this DOM tree:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">table</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"alice:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"hello"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 1)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"greetings"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 3)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"free tacos all round!"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">div</span> <span class="s">"bob likes this!"</span><span class="x">]</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 4)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+  <span class="x">[</span><span class="n">tr</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"chia:"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span> <span class="s">"who doesn't like free tacos?"</span><span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+    <span class="x">]</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 5)"</span><span class="x">]</span>
+    <span class="x">]</span>
+  <span class="x">]</span>
+<span class="x">]</span>
+</code></pre></div><p>Obviously, we want to guarantee that changes are made to the DOM in the browser so that the end result matches the new results from the template.<p>But it’s not enough to specify only the end result. Some DOM nodes have their own state that is not reflected in the template, such as scroll position or text entered by the user. It’s not practical to manage this state from the server, both because of the latency involved and the inability to block the client or save up keystrokes. But deleting and recreating a node will erase its state. So as part of the semantics of the template library we have to specify exactly what changes it makes to the DOM on the way to the correct end result.<p>Libraries like <a href="https://facebook.github.io/react/">React</a> do this by <a href="https://facebook.github.io/react/docs/reconciliation.html">specifying</a> an algorithm that compares the old and new DOM trees and computes a set of changes that will turn one into the other. When comparing large lists of elements, it recommends that users supply a unique key for each element to help React decide whether to mutate an old list element or delete and replace it. It warns:<blockquote><p>It is important to remember that the reconciliation algorithm is an implementation detail… We are regularly refining the heuristics in order to make common use cases faster.</blockquote><blockquote><p>Keys should be stable, predictable, and unique. Unstable keys … will cause many component instances and DOM nodes to be unnecessarily recreated, which can cause performance degradation and lost state in child components.</blockquote><p>Given that varying the heuristics can result in lost state in child components, I’m reluctant to endorse describing them as an implementation detail. But it’s difficult for React to do much better because the mapping from data to virtual DOM is defined by opaque javascript code.<p>In our templates we have much better information about how data maps to the filled out template, so we can adopt a much simpler set of rules:<ul><li>When a new row is added to a relation, everything under the corresponding query fragment is created from scratch.<li>When a row is removed from a relation, everything under the corresponding query fragment is deleted.</ul><p>Updating a row is the same as removing the old row and adding the new row. Since the schema is so heavily normalized this generally doesn’t affect any values other than the one that was changed.<p>So if the change to our data is:<div class="language-diff highlighter-rouge"><pre class="highlight"><code>message(1)
+<span class="gd">-message(2)
+</span>message(3)
+message(4)
+<span class="gi">+message(5)
+</span>
+sent_by(1) =&gt; "alice"
+<span class="gd">-sent_by(2) =&gt; "bob"
+</span>sent_by(3) =&gt; "chia"
+sent_by(4) =&gt; "chia"
+<span class="gi">+sent_by(5) =&gt; "chia"
+</span>
+text(1) =&gt; "hello"
+<span class="gd">-text(2) =&gt; "hi"
+</span>text(3) =&gt; "greetings"
+text(4) =&gt; "free tacos all round!"
+<span class="gi">+text(5) =&gt; "who doesn't like free tacos?"
+</span>
+<span class="gd">-likes("alice", 4)
+</span>likes("bob", 4)
+</code></pre></div><p>Then the change to the DOM will be:<div class="language-diff highlighter-rouge"><pre class="highlight"><code>[table
+  [tr
+    [td "alice:"]
+    [td "hello"]
+    [td
+    ]
+    [td
+      [button "like!" onclick="new_like(42, 1)"]
+    ]
+  ]
+<span class="gd">-  [tr
+-    [td "bob:"]
+-    [td "hi"]
+-    [td
+-    ]
+-    [td
+-      [button "like!" onclick="new_like(42, 2)"]
+-    ]
+-  ]
+</span>  [tr
+    [td "chia:"]
+    [td "greetings"]
+    [td
+    ]
+    [td
+      [button "like!" onclick="new_like(42, 3)"]
+    ]
+  ]
+  [tr
+    [td "chia:"]
+    [td "free tacos all round!"]
+    [td
+<span class="gd">-      [div "alice likes this!"]
+</span>      [div "bob likes this!"]
+    ]
+    [td
+      [button "like!" onclick="new_like(42, 4)"]
+    ]
+  ]
+<span class="gi">+  [tr
++    [td "chia:"]
++    [td "who doesn't like free tacos?"]
++    [td
++    ]
++    [td
++      [button "like!" onclick="new_like(42, 5)"]
++    ]
++  ]
+</span>]
+</code></pre></div><p>That is, we delete the <code class="highlighter-rouge">[tr ...]</code> subtree containing Bobs message, we delete the <code class="highlighter-rouge">[div ...]</code> containing Alices like and we create a new subtree for Chias new message.<p>That may seem obvious, but we could just as correctly have decided to leave the four message subtrees intact but change the text of each. Without unique keys to help match up the old and new subtrees, React might decide to do exactly that.<p>Tying the identity of each subtree to the rows that feed them data provides a simple mental model that is easy to map to the visual appearance of the template.<h2 id="events">Events</h2><p>We also need to be able to react to user input.<p>In Imp, we can tag relations as event relations:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@event</span> <span class="n">new_like</span><span class="x">(</span><span class="n">Session</span><span class="x">,</span> <span class="n">Message</span><span class="x">)</span>
+</code></pre></div><p>For every event relation, a matching javascript function is created that will insert a row into that relation. Event handlers in the template can call these functions to send data back to the server.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+</code></pre></div><p>And then we can write Imp queries to react to these events:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">new_like</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span>
+  <span class="n">username</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">username</span>
+  <span class="k">return</span> <span class="n">likes</span><span class="x">(</span><span class="n">username</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span>
+<span class="k">end</span>
+</code></pre></div><p>We also still allow arbitrary javascript in event handlers, which is useful for eg reading state from the DOM.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">input</span>
+  <span class="n">style</span><span class="o">=</span><span class="s">"width: 100%; height: 2em"</span>
+  <span class="n">placeholder</span><span class="o">=</span><span class="s">"What do you want to say?"</span>
+  <span class="n">onkeydown</span><span class="o">=</span><span class="s">"if (event.which == 13) {new_message(</span><span class="si">$</span><span class="s">session, this.value); this.value=''}"</span>
+<span class="x">]</span>
+</code></pre></div><p>Again, if this was running in the browser itself or we were using a native UI toolkit it might be useful to manage such state directly. But in the current server/client implementation it’s more practical to leave low-latency interactions such as typing and scrolling to the browser.<h2 id="sessions">Sessions</h2><p>We give each browser tab a unique session key. The template is implicitly wrapped in <code class="highlighter-rouge">@query session(session) begin ... end</code> so that it can behave differently for each session.<p>For example, when someone clicks <code class="highlighter-rouge">like!</code> we record their session id so we can later display their username in the likes list.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+</code></pre></div><h2 id="implementation">Implementation</h2><p>As much as possible we want to do the work in Imp queries. This lets us take advantage of the query compiler for efficient joins. It also means that when I get around to implementing <a href="http://blogs.evergreen.edu/sosw/files/2014/04/Green-Vol5-DBS-017.pdf">incremental view maintenance</a>, I’ll get incremental template evaluation for free.<p>Let’s walk through how the template compiler deals with our example.<p>The first thing the compiler does is number all the nodes (in pre-order) to make it easier to refer to them.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">[</span><span class="n">table</span> <span class="c"># 1</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="n">begin</span> <span class="c"># 2</span>
+    <span class="x">[</span><span class="n">tr</span> <span class="c"># 3</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span> <span class="n">begin</span> <span class="c"># 4</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span> <span class="c"># 8</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span> <span class="n">begin</span> <span class="c"># 5</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span> <span class="c"># 9</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span> <span class="c"># 6</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="n">begin</span> <span class="c"># 10</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span><span class="x">]</span> <span class="c"># 12</span>
+        <span class="k">end</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span> <span class="c"># 7</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span> <span class="c"># 11</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+<span class="x">]</span>
+</code></pre></div><p>Next, for each query fragment we create a corresponding query that performs a join against all the data produced by the enclosing queries. We also create an id for each filled out query fragment by hashing together the node id and all the variable values. (This id is just used as a shorthand reference - if hash collisions are worrying you could use some kind of lookup table or even just use the list of variable values directly.)<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@query</span> <span class="n">begin</span> <span class="c"># special dummy query for the root of the tree</span>
+  <span class="n">session</span><span class="x">(</span><span class="n">session</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">query_0</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="nb">hash</span><span class="x">(</span><span class="n">session</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_0</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="n">message</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">2</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">))</span>
+  <span class="k">return</span> <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">my_hash</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="n">sent_by</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="n">message</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">4</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)))</span>
+  <span class="k">return</span> <span class="n">query_4</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">my_hash</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="x">,</span> <span class="n">text</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="n">text</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="n">message</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">5</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)))</span>
+  <span class="k">return</span> <span class="n">query_5</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">text</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">my_hash</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="n">message</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">10</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)))</span>
+  <span class="k">return</span> <span class="n">query_10</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">liker</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">my_hash</span>
+<span class="k">end</span>
+</code></pre></div><p>When we run these queries on the original data, we get something like this (but with real hashes):<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">query_0</span><span class="x">(</span><span class="mi">42</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x00</span>
+
+<span class="n">query_2</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x01</span>
+<span class="n">query_2</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x02</span>
+<span class="n">query_2</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x03</span>
+<span class="n">query_2</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x04</span>
+
+<span class="n">query_4</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">"alice"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x05</span>
+<span class="n">query_4</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="s">"bob"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x06</span>
+<span class="n">query_4</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">"chia"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x07</span>
+<span class="n">query_4</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">"chia"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x08</span>
+
+<span class="n">query_5</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">"hello"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x09</span>
+<span class="n">query_5</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="s">"hi"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x10</span>
+<span class="n">query_5</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">"greetings"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x11</span>
+<span class="n">query_5</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">"free tacos all round!"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x12</span>
+
+<span class="n">query_10</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">"alice"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x13</span>
+<span class="n">query_10</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">"bob"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="mh">0x14</span>
+</code></pre></div><p>Next we need to calculate what order the remaining nodes will be in after the query fragments are removed. Doing this in a way that is amenable to efficient incremental maintenance is tricky eg if we just calculate positions of each child within its parent, inserting one child would mean updating the positions of all the children that came after it.<p>But I eventually hit upon an elegant solution. The position of each node can be described by the positions and variable values of all the query nodes between it and its eventual parent:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="c"># --- template ---</span>
+
+<span class="x">[</span><span class="n">table</span> <span class="c"># 1</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="n">begin</span> <span class="c"># 2</span>
+    <span class="x">[</span><span class="n">tr</span> <span class="c"># 3</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span> <span class="n">begin</span> <span class="c"># 4</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span> <span class="c"># 8</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span> <span class="n">begin</span> <span class="c"># 5</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span> <span class="c"># 9</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span> <span class="c"># 6</span>
+        <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="n">begin</span> <span class="c"># 10</span>
+          <span class="x">[</span><span class="n">div</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span><span class="x">]</span> <span class="c"># 12</span>
+        <span class="k">end</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span> <span class="c"># 7</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span> <span class="c"># 11</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+<span class="x">]</span>
+
+<span class="c"># --- filled out template ---</span>
+
+<span class="x">[</span><span class="n">table</span> <span class="c"># node 1</span>
+  <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="n">begin</span>
+    <span class="x">[</span><span class="n">tr</span> <span class="c"># 1st child of node 1 -&gt; 1st child of node 2 -&gt; message=1</span>
+      <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"alice"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"alice:"</span><span class="x">]</span> <span class="c"># 1st child of node 1 -&gt; 1st child of node 2 -&gt; message=1 -&gt; 1st child of node 3 -&gt; sent_by="alice" -&gt; 1st child of node 4</span>
+      <span class="k">end</span>
+      <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span><span class="o">=</span><span class="s">"hello"</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">td</span> <span class="s">"hello"</span><span class="x">]</span> <span class="c"># 1st child of node 1 -&gt; 1st child of node 2 -&gt; message=1 -&gt; 2nd child of node 3 -&gt; text="hello" -&gt; 1st child of node 5</span>
+      <span class="k">end</span>
+      <span class="x">[</span><span class="n">td</span> <span class="c"># 1st child of node 1 -&gt; 1st child of node 2 -&gt; message=1 -&gt; 3rd child of node 3</span>
+      <span class="x">]</span>
+      <span class="x">[</span><span class="n">td</span> <span class="c"># 1st child of node 1 -&gt; 1st child of node 2 -&gt; message=1 -&gt; 4th child of node 3</span>
+        <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 1)"</span><span class="x">]</span> <span class="c"># 1st child of node 1 -&gt; 1st child of node 2 -&gt; message=1 -&gt; 4th child of node 3 -&gt; 1st child of node 7</span>
+      <span class="x">]</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+  <span class="c"># etc...</span>
+<span class="x">]</span>
+</code></pre></div><p>(A potential confusion - when we say “nth child of node x” we mean the nth child in the <em>template</em>, not in the resulting DOM tree. We can’t use the positions in the DOM tree because those are exactly what we are trying to calculate.)<p>If we represent these paths as tuples and use them as sort keys, the nodes at each level will end up sorted in the correct order:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"alice"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span> <span class="s">"alice:"</span><span class="x">]</span>
+<span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="n">text</span><span class="o">=</span><span class="s">"hello"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span> <span class="s">"hello"</span><span class="x">]</span>
+<span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">3</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span><span class="x">]</span>
+<span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">4</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span> <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 1)"</span><span class="x">]]</span>
+</code></pre></div><p>When we insert new nodes around an existing one its key doesn’t change, so whatever incremental maintenance algorithm I end up using will only have to deal with inserting and deleting rows for each node and not updating any additional bookkeeping information elsewhere.<p>Julia can avoid dynamic dispatch when given stable types. To make sure all the sort keys have the same type, we can just fill in dummy columns.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">"alice"</span><span class="x">,</span> <span class="n">text</span><span class="o">=</span><span class="s">""</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span> <span class="s">"alice:"</span><span class="x">]</span>
+<span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">""</span><span class="x">,</span> <span class="n">text</span><span class="o">=</span><span class="s">"hello"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span> <span class="s">"hello"</span><span class="x">]</span>
+<span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">""</span><span class="x">,</span> <span class="n">text</span><span class="o">=</span><span class="s">""</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span><span class="x">]</span>
+<span class="x">(</span><span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="o">=</span><span class="mi">1</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="n">sent_by</span><span class="o">=</span><span class="s">""</span><span class="x">,</span> <span class="n">text</span><span class="o">=</span><span class="s">""</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">[</span><span class="n">td</span> <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(42, 1)"</span><span class="x">]]</span>
+</code></pre></div><p>Now for each DOM node in the template we create a query that calculates the correct sort key, as well as the node id, the parent node id, the type of DOM node and the content.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_0</span><span class="x">(</span><span class="n">session</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_hash</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">0</span><span class="x">,</span> <span class="n">query_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_0</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="kt">UInt64</span><span class="x">(</span><span class="mi">0</span><span class="x">),</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"table"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_0</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">3</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_1</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"tr"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_4</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_1</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">8</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_5</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">text</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_1</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">9</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="n">text</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_1</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">6</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_1</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">7</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_4</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">11</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_8</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">sent_by</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Text</span><span class="x">,</span> <span class="n">string</span><span class="x">(</span><span class="n">sent_by</span><span class="x">,</span> <span class="s">":"</span><span class="x">))</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_5</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">text</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="n">text</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">12</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_9</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">text</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Text</span><span class="x">,</span> <span class="n">string</span><span class="x">(</span><span class="n">text</span><span class="x">))</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">13</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_7</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"button"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_10</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">liker</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_3</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">14</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_6</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">liker</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"div"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_7</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">15</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_13</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Text</span><span class="x">,</span> <span class="s">"like!"</span><span class="x">)</span>
+<span class="k">end</span>
+
+<span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_10</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">liker</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">query_parent_hash</span>
+  <span class="n">group_6</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="n">liker</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="n">my_hash</span> <span class="o">=</span> <span class="nb">hash</span><span class="x">(</span><span class="mi">17</span><span class="x">,</span> <span class="n">query_parent_hash</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">group_14</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="n">liker</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">my_hash</span><span class="x">,</span> <span class="n">Text</span><span class="x">,</span> <span class="n">string</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="s">" likes this!"</span><span class="x">))</span>
+  <span class="k">end</span>
+</code></pre></div><p>When we run these queries on the original data, we get something like this (but with real hashes):<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">group_0</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x00</span><span class="x">,</span> <span class="mh">0x01</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"table"</span><span class="x">)</span>
+
+<span class="n">group_1</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x01</span><span class="x">,</span> <span class="mh">0x02</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"tr"</span><span class="x">)</span>
+<span class="n">group_1</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x01</span><span class="x">,</span> <span class="mh">0x03</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"tr"</span><span class="x">)</span>
+<span class="n">group_1</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x01</span><span class="x">,</span> <span class="mh">0x04</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"tr"</span><span class="x">)</span>
+<span class="n">group_1</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x01</span><span class="x">,</span> <span class="mh">0x05</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"tr"</span><span class="x">)</span>
+
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">"alice"</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x02</span><span class="x">,</span> <span class="mh">0x06</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">"hello"</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x02</span><span class="x">,</span> <span class="mh">0x07</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x02</span><span class="x">,</span> <span class="mh">0x08</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x02</span><span class="x">,</span> <span class="mh">0x09</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">"bob"</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x03</span><span class="x">,</span> <span class="mh">0x10</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">"hi"</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x03</span><span class="x">,</span> <span class="mh">0x11</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x03</span><span class="x">,</span> <span class="mh">0x12</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x03</span><span class="x">,</span> <span class="mh">0x13</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span> <span class="mi">1</span><span class="x">,</span> <span class="s">"chia"</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x04</span><span class="x">,</span> <span class="mh">0x14</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span> <span class="mi">2</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">"greetings"</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x04</span><span class="x">,</span> <span class="mh">0x15</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x04</span><span class="x">,</span> <span class="mh">0x16</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x04</span><span class="x">,</span> <span class="mh">0x17</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">"chia"</span><span class="x">,</span> <span class="mi">1</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x05</span><span class="x">,</span> <span class="mh">0x18</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="mi">2</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">"free tacos all round!"</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x05</span><span class="x">,</span> <span class="mh">0x19</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="mi">3</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x05</span><span class="x">,</span> <span class="mh">0x20</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">group_3</span><span class="x">(</span><span class="mi">42</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="mi">4</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">,</span> <span class="s">""</span><span class="x">,</span> <span class="mi">0</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="mh">0x05</span><span class="x">,</span> <span class="mh">0x21</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+
+<span class="c"># etc...</span>
+</code></pre></div><p>Now we have a list of every DOM node together with a (probably) unique id and the id of its parent node. Since they are sorted in the correct order we can also easily find the siblings of each node. That will come in handy later when we patch the DOM tree.<p>DOM attributes like <code class="highlighter-rouge">onclick="new_like($session, $message)"</code> are handled similarly to DOM nodes, except that their order doesn’t matter so there is no sort key.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@query</span> <span class="n">begin</span>
+  <span class="n">query_2</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">_</span>
+  <span class="n">group_7</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="mi">1</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="x">(</span><span class="n">_</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="n">_</span><span class="x">,</span> <span class="n">_</span><span class="x">)</span>
+  <span class="k">return</span> <span class="n">attribute_16</span><span class="x">(</span><span class="n">session</span><span class="x">,</span> <span class="n">fixed_parent_hash</span><span class="x">,</span> <span class="s">"onclick"</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">string</span><span class="x">(</span><span class="s">"new_like("</span><span class="x">,</span> <span class="n">session</span><span class="x">,</span> <span class="s">", "</span><span class="x">,</span> <span class="n">message</span><span class="x">,</span> <span class="s">")"</span><span class="x">)</span>
+<span class="k">end</span>
+</code></pre></div><p>Now lets consider again what happens when our source data changes:<div class="language-diff highlighter-rouge"><pre class="highlight"><code>message(1)
+<span class="gd">-message(2)
+</span>message(3)
+message(4)
+<span class="gi">+message(5)
+</span>
+sent_by(1) =&gt; "alice"
+<span class="gd">-sent_by(2) =&gt; "bob"
+</span>sent_by(3) =&gt; "chia"
+sent_by(4) =&gt; "chia"
+<span class="gi">+sent_by(5) =&gt; "chia"
+</span>
+text(1) =&gt; "hello"
+<span class="gd">-text(2) =&gt; "hi"
+</span>text(3) =&gt; "greetings"
+text(4) =&gt; "free tacos all round!"
+<span class="gi">+text(5) =&gt; "who doesn't like free tacos?"
+</span>
+<span class="gd">-likes("alice", 4)
+</span>likes("bob", 4)
+</code></pre></div><p>This results in downstream changes in the compiled queries:<div class="language-diff highlighter-rouge"><pre class="highlight"><code>group_0(42, 1) =&gt; (0x00, 0x01, Html, "table")
+
+group_1(42, 1, 1, 1) =&gt; (0x01, 0x02, Html, "tr")
+<span class="gd">-group_1(42, 1, 2, 1) =&gt; (0x01, 0x03, Html, "tr")
+</span>group_1(42, 1, 3, 1) =&gt; (0x01, 0x04, Html, "tr")
+group_1(42, 1, 4, 1) =&gt; (0x01, 0x05, Html, "tr")
+<span class="gi">+group_1(42, 1, 5, 1) =&gt; (0x01, 0x22, Html, "tr")
+</span>
+group_3(42, 1, 1, "alice", 1, "", 0) =&gt; (0x02, 0x06, Html, "td")
+group_3(42, 1, 2, "", 0, "hello", 1) =&gt; (0x02, 0x07, Html, "td")
+group_3(42, 1, 3, "", 0, "", 0) =&gt; (0x02, 0x08, Html, "td")
+group_3(42, 1, 4, "", 0, "", 0) =&gt; (0x02, 0x09, Html, "td")
+<span class="gd">-group_3(42, 2, 1, "bob", 1, "", 0) =&gt; (0x03, 0x10, Html, "td")
+-group_3(42, 2, 2, "", 0, "hi", 1) =&gt; (0x03, 0x11, Html, "td")
+-group_3(42, 2, 3, "", 0, "", 0) =&gt; (0x03, 0x12, Html, "td")
+-group_3(42, 2, 4, "", 0, "", 0) =&gt; (0x03, 0x13, Html, "td")
+</span>group_3(42, 3, 1, "chia", 1, "", 0) =&gt; (0x04, 0x14, Html, "td")
+group_3(42, 3, 2, "", 0, "greetings", 1) =&gt; (0x04, 0x15, Html, "td")
+group_3(42, 3, 3, "", 0, "", 0) =&gt; (0x04, 0x16, Html, "td")
+group_3(42, 3, 4, "", 0, "", 0) =&gt; (0x04, 0x17, Html, "td")
+group_3(42, 4, 1, "chia", 1, "", 0) =&gt; (0x05, 0x18, Html, "td")
+group_3(42, 4, 2, "", 0, "free tacos all round!", 1) =&gt; (0x05, 0x19, Html, "td")
+group_3(42, 4, 3, "", 0, "", 0) =&gt; (0x05, 0x20, Html, "td")
+group_3(42, 4, 4, "", 0, "", 0) =&gt; (0x05, 0x21, Html, "td")
+<span class="gi">+group_3(42, 5, 1, "chia", 1, "", 0) =&gt; (0x22, 0x23, Html, "td")
++group_3(42, 5, 2, "", 0, "who doesn't like free tacos?", 1) =&gt; (0x22, 0x24, Html, "td")
++group_3(42, 5, 3, "", 0, "", 0) =&gt; (0x22, 0x25, Html, "td")
++group_3(42, 5, 4, "", 0, "", 0) =&gt; (0x22, 0x26, Html, "td")
+</span>
+# etc...
+</code></pre></div><p>First, for each old node that is not in the new output we instruct the browser to delete the node.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">deleteNode</span><span class="x">(</span><span class="mh">0x03</span><span class="x">)</span>
+
+<span class="n">deleteNode</span><span class="x">(</span><span class="mh">0x10</span><span class="x">)</span>
+<span class="n">deleteNode</span><span class="x">(</span><span class="mh">0x11</span><span class="x">)</span>
+<span class="n">deleteNode</span><span class="x">(</span><span class="mh">0x12</span><span class="x">)</span>
+<span class="n">deleteNode</span><span class="x">(</span><span class="mh">0x13</span><span class="x">)</span>
+
+<span class="c"># etc...</span>
+</code></pre></div><p>Second, for each new node that is not in the old output we find its sibling, if it has one, and instruct the browser to create the new node and insert it in the appropriate place.<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">insertAtEnd</span><span class="x">(</span><span class="mh">0x22</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"tr"</span><span class="x">)</span>
+
+<span class="n">insertAtEnd</span><span class="x">(</span><span class="mh">0x26</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">insertBefore</span><span class="x">(</span><span class="mh">0x26</span><span class="x">,</span> <span class="mh">0x25</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">insertBefore</span><span class="x">(</span><span class="mh">0x25</span><span class="x">,</span> <span class="mh">0x24</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+<span class="n">insertBefore</span><span class="x">(</span><span class="mh">0x24</span><span class="x">,</span> <span class="mh">0x23</span><span class="x">,</span> <span class="n">Html</span><span class="x">,</span> <span class="s">"td"</span><span class="x">)</span>
+
+<span class="c"># etc...</span>
+</code></pre></div><p>The nodes in each group are sorted in the order they will appear in the DOM and the groups themselves are sorted in depth-first order, so if we generate these instructions by order of group and then reverse order within the group, we can be sure that by the time each instruction is run the parent and sibling will always exist.<p>(What about html escaping? Well, the only way we ever create DOM nodes is via <code class="highlighter-rouge">document.createElement</code> or <code class="highlighter-rouge">document.createTextNode</code> so injection attacks are not possible there. It <em>is</em> currently possible to inject javascript into interpolated values in event handlers. I plan to deal with that by jsonifying data before interpolating it into javascript strings.)<h2 id="expressiveness">Expressiveness</h2><p>All the examples in this post only spliced data into text nodes, but the implementation allows splicing anywhere:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="nd">@query</span> <span class="n">dynamic_tag</span><span class="x">(</span><span class="n">tag</span><span class="x">)</span> <span class="n">begin</span>
+  <span class="x">[</span><span class="s">"</span><span class="si">$</span><span class="s">tag"</span>
+    <span class="nd">@query</span> <span class="n">dynamic_attributes</span><span class="x">(</span><span class="n">key</span><span class="x">,</span> <span class="n">val</span><span class="x">)</span> <span class="n">begin</span>
+      <span class="s">"</span><span class="si">$</span><span class="s">key"</span><span class="o">=</span><span class="s">"</span><span class="si">$</span><span class="s">val"</span>
+    <span class="k">end</span>
+  <span class="x">]</span>
+<span class="k">end</span>
+</code></pre></div><p>The templates are just Julia ASTs, so it’s possible to create components using ordinary Julia code:<div class="language-julia highlighter-rouge"><pre class="highlight"><code><span class="n">template</span> <span class="o">=</span> <span class="n">quote</span>
+  <span class="x">[</span><span class="n">table</span>
+    <span class="nd">@query</span> <span class="n">message</span><span class="x">(</span><span class="n">message</span><span class="x">)</span> <span class="n">begin</span>
+      <span class="x">[</span><span class="n">tr</span>
+        <span class="o">$</span><span class="x">(</span><span class="n">message_template</span><span class="x">(:</span><span class="n">message</span><span class="x">)</span><span class="o">...</span><span class="x">)</span>
+        <span class="o">$</span><span class="x">(</span><span class="n">likes_template</span><span class="x">(:</span><span class="n">message</span><span class="x">))</span>
+        <span class="x">[</span><span class="n">td</span>
+          <span class="x">[</span><span class="n">button</span> <span class="s">"like!"</span> <span class="n">onclick</span><span class="o">=</span><span class="s">"new_like(</span><span class="si">$</span><span class="s">session, </span><span class="si">$</span><span class="s">message)"</span><span class="x">]</span>
+        <span class="x">]</span>
+      <span class="x">]</span>
+    <span class="k">end</span>
+  <span class="x">]</span>
+<span class="k">end</span>
+
+<span class="k">function</span><span class="nf"> message_template</span><span class="x">(</span><span class="n">message</span><span class="x">)</span>
+  <span class="n">quote</span> <span class="x">[</span>
+    <span class="nd">@query</span> <span class="n">sent_by</span><span class="x">(</span><span class="o">$</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">sent_by</span> <span class="n">begin</span>
+      <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">sent_by:"</span><span class="x">]</span>
+    <span class="k">end</span>
+    <span class="nd">@query</span> <span class="n">text</span><span class="x">(</span><span class="o">$</span><span class="n">message</span><span class="x">)</span> <span class="o">=&gt;</span> <span class="n">text</span> <span class="n">begin</span>
+      <span class="x">[</span><span class="n">td</span> <span class="s">"</span><span class="si">$</span><span class="s">text"</span><span class="x">]</span>
+    <span class="k">end</span>
+  <span class="x">]</span> <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">function</span><span class="nf"> likes_template</span><span class="x">(</span><span class="n">message</span><span class="x">)</span>
+  <span class="n">quote</span>
+    <span class="x">[</span><span class="n">td</span>
+      <span class="nd">@query</span> <span class="n">likes</span><span class="x">(</span><span class="n">liker</span><span class="x">,</span> <span class="o">$</span><span class="n">message</span><span class="x">)</span> <span class="n">begin</span>
+        <span class="x">[</span><span class="n">div</span> <span class="s">"</span><span class="si">$</span><span class="s">liker likes this!"</span><span class="x">]</span>
+      <span class="k">end</span>
+    <span class="x">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div><p>It should be trivial to provide a macro that makes the syntax more direct.<p>Currently templates are limited to a fixed depth, so they can’t express eg a file browser where the depth depends on the data. Allowing components to include themselves recursively would fix this, but it’s non-obvious how to combine recursion with the query-based implementation I described earlier. It’s probably not impossible, but I won’t attempt to deal with it until I definitely need it.<h2 id="performance">Performance</h2><p>I won’t know for sure how well this will perform until I’ve built something more substantial, but for early feedback I ran some simple timings on the <a href="https://github.com/jamii/imp/blob/old-experiments/examples/Todo.jl">Todomvc example</a> and compared it the <a href="http://todomvc.com/examples/react/#/">official React implementation</a> and <a href="http://swannodette.github.io/todomvc/labs/architecture-examples/om/index.html">some old Om implementation</a>. This is not intended to be a pissing contest - I’m just trying to get a handle on whether performance is likely to be a problem.<p>My approach is not particularly rigorous. I just ran through all the benchmarks a few times to warmup, and then recorded a profile and eyeballed the time from the user event until the start of layout/rendering/painting.<p>Imp does all the hard work on the server, so its profiles just show the initial message send and then the patching at the end. React does all the work at once, leading to single long trace. Om does some work to update the app model, and then calculates the diff and patches the DOM on the next animation frame, resulting in two traces.<p>Times in ms:<table><thead><tr><th> <th>adding 1st todo<th>adding 200 todos at once<th>adding 201st todo<tbody><tr><td>imp<td><a href="/img/imp-1.png">10</a><td><a href="/img/imp-200.png">22</a><td><a href="/img/imp-201.png">12</a><tr><td>react<td><a href="/img/react-1.png">6</a><td>x<td><a href="/img/react-201.png">14</a><tr><td>om<td><a href="/img/om-1.png">5</a><td><a href="/img/om-200.png">100</a><td><a href="/img/om-201.png">28</a></table><p>(I couldn’t be bothered to download and compile the React version myself to add a button to add 200 todos at once.)<p>I won’t bother reading too much detail into those numbers, but it’s clear that Imp is at least in the same ballpark as React and Om for this simple example, which means that this approach could feasibly work.<p>I also tested how the server scales with multiple sessions connected. This table shows the total time taken by the server to add the 201st todo and update every client (mean of 100 runs).<table><thead><tr><th>tabs<th>time (ms)<tbody><tr><td>1<td>9<tr><td>10<td>22<tr><td>100<td>168<tr><td>1000*<td>2056</table><p>(*Chrome has a cunning optimization where after ~150 tabs it just stops loading pages, so the last row is 100 real tabs and 900 fake sessions.)<p>This is the cost to recalculate everything from scratch and is not proportional to the number of events processed, so if I add some kind of event batching it looks like I could handle up to 100 clients with reasonable latency.<p>Breaking down the costs at 100 tabs:<ul><li><p>The marginal cost per tab is about 1.6ms. The bulk of the time is spent sorting and resorting relations, rather than solving queries.<li><p>The marginal allocation rate per tab is 1mb across 5373 allocations. This is almost entirely in the template queries. Most of the individual allocations are from creating identical event strings on each of 200 todos x 100 tabs, but the bulk of the allocation size is from many, many copies of the columns in these relations.</ul><p>So there is probably a lot of margin for improvement in the control flow layer that binds the queries together and handles sorting/indexing relations. Which is unsurprising, because one of the top items on my todo list is <code class="highlighter-rouge">control flow is a pile of poop - make it not that</code>.<p>Bear in mind also that this is recalculating the UI for each tab from scratch on each event. The UI calculation is built up entirely out of simple joins and maps so in theory it should be easy to maintain incrementally.<p>Overall, I’m pleasantly surprised that it’s already this fast.<h2 id="status">Status</h2><p>The current implementation is not pretty, but it works well enough to demonstrate that this is feasible for simple examples.<p>I targeted the browser purely for familiarity. The same approach should work with native UI toolkits too, and I may well switch in the future.<p>Running everything on the server has obvious limitations wrt latency and maximum load. I <em>think</em> this approach could be scaled to handle public webapps with many users, but it would require a much more sophisticated implementation, with some way to run parts of the logic on the client.<p>I haven’t given much thought to security yet. A good start would be to track what events are present in the template and refuse to allow clients to submit any events that aren’t on the list.<p>The implementation strategy here produces non-recursive views which only use simple joins, string concatenation and hashing. It should be possible to target pretty much any relational system. I’ve <a href="https://github.com/jamii/imp/tree/eea5f31a07e8d33b01d059ca491dd6cceb74d752/lb">implemented the underlying layers</a> in <a href="http://logicblox.com/">LogicBlox</a> and I’m just waiting on some upcoming features before doing the work to compile templates automatically. It would be useful to target something like sqlite too.<p><em>Thanks to rtnz for extensive feedback on the first drafts.</em></article><footer><div>Questions? Comments? Just want to chat?</div><div><a href="mailto:jamie@scattered-thoughts.net>jamie@scattered-thoughts.net">jamie@scattered-thoughts.net</a></div><br><p><a href="/feed.xml"><img src="/img/rss.png"></img></a></footer></div>
